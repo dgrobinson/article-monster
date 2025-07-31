@@ -121,14 +121,40 @@ class EmailService:
                 subject = email_message['Subject'] or ""
                 sender = email_message['From'] or ""
                 
-                # Determine email type and process accordingly
+                # Determine email type
                 if self._is_fivefilters_email(sender, subject):
-                    await self._process_fivefilters_content(email_message, db)
+                    email_type = "fivefilters"
                 elif self._is_newsletter_email(sender, subject):
-                    await self._process_newsletter_content(email_message, db)
+                    email_type = "newsletter"
                 else:
-                    # Generic forwarded email - try to extract content
-                    await self._process_generic_email(email_message, db)
+                    email_type = "forwarded"
+                
+                # Archive email for future replay and debugging
+                from app.services.email_archive_service import email_archive_service
+                archive_id = email_archive_service.archive_email(email_message, email_type)
+                
+                # Process email based on type
+                processing_result = {}
+                try:
+                    if email_type == "fivefilters":
+                        await self._process_fivefilters_content(email_message, db)
+                        processing_result = {"status": "success", "type": "fivefilters"}
+                    elif email_type == "newsletter":
+                        await self._process_newsletter_content(email_message, db)
+                        processing_result = {"status": "success", "type": "newsletter"}
+                    else:
+                        await self._process_generic_email(email_message, db)
+                        processing_result = {"status": "success", "type": "generic"}
+                        
+                    # Update archive with processing result
+                    if archive_id:
+                        email_archive_service.update_processing_result(archive_id, processing_result)
+                        
+                except Exception as processing_error:
+                    processing_result = {"status": "error", "error": str(processing_error)}
+                    if archive_id:
+                        email_archive_service.update_processing_result(archive_id, processing_result)
+                    raise
                 
                 # Mark email as read
                 mail.store(email_num, '+FLAGS', '\\Seen')

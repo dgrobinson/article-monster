@@ -67,3 +67,26 @@ class EmailQueue(Base):
     sent = Column(Boolean, default=False)
     sent_at = Column(DateTime)
     error_message = Column(Text)
+
+class EmailArchive(Base):
+    __tablename__ = "email_archive"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    message_id = Column(String, unique=True, index=True)  # Email Message-ID header
+    sender = Column(String, nullable=False)
+    recipient = Column(String, nullable=False)
+    subject = Column(String)
+    raw_email = Column(Text, nullable=False)  # Complete raw email
+    headers = Column(Text)  # JSON string of headers
+    body_text = Column(Text)  # Plain text body
+    body_html = Column(Text)  # HTML body
+    attachments = Column(Text)  # JSON string of attachment info
+    received_at = Column(DateTime, server_default=func.now())
+    processed = Column(Boolean, default=False)
+    processing_result = Column(Text)  # JSON string of processing results
+    email_type = Column(String)  # 'fivefilters', 'newsletter', 'forwarded', 'unknown'
+    
+    # For replay and debugging
+    replay_count = Column(Integer, default=0)
+    last_replayed_at = Column(DateTime)
+    tags = Column(String)  # comma-separated tags for categorization

@@ -225,8 +225,41 @@ docker-compose exec db psql -U postgres -d article_library
 - **Redis**: Task queue status
 - **Celery**: Background task processing
 
+## Testing and Debugging
+
+### Automated Testing
+- **Synthetic email generation**: Creates realistic test emails automatically
+- **External service integration**: Uses Mailinator, Webhook.site for validation
+- **RSS feed testing**: Validates article extraction from real feeds
+- **Continuous testing**: Runs tests at regular intervals
+
+### Email Archive System
+- **Complete email storage**: Archives all incoming emails with full metadata
+- **Replay capability**: Re-process archived emails for debugging
+- **Batch operations**: Test improvements on historical data
+- **Categorization**: Tag and organize emails by type and source
+
+### API Endpoints for Testing
+```bash
+# Run automated tests
+curl -X POST "http://localhost:8000/api/v1/testing/run-automated-tests"
+
+# Send test email
+curl -X POST "http://localhost:8000/api/v1/testing/send-test-email" \
+  -H "Content-Type: application/json" \
+  -d '{"test_type": "newsletter"}'
+
+# Get archived emails
+curl "http://localhost:8000/api/v1/archive/emails?limit=10&email_type=newsletter"
+
+# Replay archived email
+curl -X POST "http://localhost:8000/api/v1/archive/emails/123/replay"
+```
+
 ## Roadmap
 
+- [x] Email archiving and replay system
+- [x] Automated testing framework
 - [ ] AI-powered article summarization
 - [ ] Advanced content categorization
 - [ ] Web dashboard for article management
