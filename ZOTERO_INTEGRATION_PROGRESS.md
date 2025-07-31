@@ -12,6 +12,14 @@ Integrate Zotero library with the article processing system to enable:
 1. **FiveFilters**: Does NOT support EPUB output - only RSS/JSON
 2. **Zotero API**: Supports both PDF and EPUB file uploads via Web API
 3. **EPUB vs PDF**: EPUB is better for flowing text (no fixed pagination)
+4. **FiveFilters Limitation**: Only allows sending to kindle.com addresses - we may need to clone/replicate this infrastructure
+
+### Additional Requirements
+
+**Bookmarklet Strategy**: Need to create a bookmarklet that:
+- Sends articles to Kindle (like FiveFilters does)
+- ALSO sends to our system for Zotero library integration
+- This gives dual functionality: reading on Kindle + markup in Zotero
 
 ### Test-First Approach Plan
 
@@ -42,12 +50,58 @@ Current step: **Step 1 - Test current system**
 - Markdown file storage with YAML frontmatter
 - Kindle delivery via email
 
+### Architecture Considerations
+
+Since FiveFilters only allows sending to kindle.com addresses, we have several options:
+
+1. **Use FiveFilters API directly** (if available) to get article content, then process ourselves
+2. **Clone/replicate FiveFilters functionality** using open-source alternatives
+3. **Create our own article extraction service** (we already have this with newspaper3k/BeautifulSoup)
+4. **Bookmarklet approach**: Direct submission to our API, bypassing email entirely
+
+### Bookmarklet Implementation Plan
+
+The bookmarklet should:
+1. Capture current page URL and title
+2. Send to our API endpoint (`/api/v1/articles/process-url` - already exists!)
+3. Our system then:
+   - Extracts article content
+   - Generates EPUB for Zotero
+   - Sends formatted version to Kindle
+   - Returns success/failure status
+
+**Good news**: We already have the `/api/v1/articles/process-url` endpoint that accepts URLs directly. This makes the bookmarklet implementation much simpler!
+
+### Sample Bookmarklet Code
+
+```javascript
+javascript:(function(){
+  const apiUrl = 'https://articles.robinsonian.com/api/v1/articles/process-url';
+  const data = {
+    url: window.location.href,
+    send_to_kindle: true,
+    send_to_zotero: true  // New field we'll add
+  };
+  
+  fetch(apiUrl, {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify(data)
+  })
+  .then(r => r.json())
+  .then(d => alert('Article sent for processing!'))
+  .catch(e => alert('Error: ' + e));
+})();
+```
+
 ### Next Immediate Actions
 
 1. **Check Docker availability** to run the current system
 2. **Create .env file** with email credentials if not exists
 3. **Start system with Docker Compose** to test article extraction
 4. **Send test email** to verify pipeline works
+5. **Research FiveFilters alternatives** or API access
+6. **Design bookmarklet** for direct article submission
 
 ### Files to Reference
 - `/app/services/article_extractor.py` - Article content extraction
