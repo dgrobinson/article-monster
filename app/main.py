@@ -5,7 +5,7 @@ import os
 from dotenv import load_dotenv
 
 from app.database import engine, Base
-from app.routers import articles, newsletters, health
+from app.routers import articles, newsletters, health, email
 
 load_dotenv()
 
@@ -35,6 +35,7 @@ app.add_middleware(
 app.include_router(health.router, prefix="/api/v1")
 app.include_router(articles.router, prefix="/api/v1")
 app.include_router(newsletters.router, prefix="/api/v1")
+app.include_router(email.router, prefix="/api/v1")
 
 @app.get("/")
 async def root():

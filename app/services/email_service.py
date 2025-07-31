@@ -83,19 +83,19 @@ class EmailService:
         
         return content
 
-    async def check_for_fivefilters_emails(self):
-        """Check for incoming emails from FiveFilters and process them"""
+    async def check_for_incoming_emails(self):
+        """Check for incoming emails and process them"""
         try:
             mail = imaplib.IMAP4_SSL(self.imap_server, self.imap_port)
             mail.login(self.smtp_username, self.smtp_password)
             mail.select('inbox')
             
-            # Search for unread emails from FiveFilters
-            status, messages = mail.search(None, 'UNSEEN FROM "fivefilters"')
+            # Search for unread emails
+            status, messages = mail.search(None, 'UNSEEN')
             
-            if status == 'OK':
+            if status == 'OK' and messages[0]:
                 for num in messages[0].split():
-                    await self._process_fivefilters_email(mail, num)
+                    await self._process_incoming_email(mail, num)
             
             mail.close()
             mail.logout()
@@ -103,8 +103,12 @@ class EmailService:
         except Exception as e:
             logger.error(f"Error checking emails: {e}")
 
-    async def _process_fivefilters_email(self, mail, email_num):
-        """Process a single FiveFilters email"""
+    async def check_for_fivefilters_emails(self):
+        """Check for incoming emails from FiveFilters and process them (legacy method)"""
+        await self.check_for_incoming_emails()
+
+    async def _process_incoming_email(self, mail, email_num):
+        """Process incoming email - could be FiveFilters, newsletter, or forwarded content"""
         db = SessionLocal()
         
         try:
@@ -114,39 +118,179 @@ class EmailService:
                 email_body = msg_data[0][1]
                 email_message = email.message_from_bytes(email_body)
                 
-                subject = email_message['Subject']
-                sender = email_message['From']
+                subject = email_message['Subject'] or ""
+                sender = email_message['From'] or ""
                 
-                # Extract URLs from email content
-                urls = self._extract_urls_from_email(email_message)
-                
-                for url in urls:
-                    # Check if article already exists
-                    existing = db.query(Article).filter(Article.url == url).first()
-                    
-                    if not existing:
-                        # Create new article
-                        article = Article(
-                            title=subject or "Article from FiveFilters",
-                            url=url,
-                            source="fivefilters_email",
-                            created_at=datetime.now()
-                        )
-                        db.add(article)
-                        db.commit()
-                        db.refresh(article)
-                        
-                        # Process article content
-                        from app.services.article_extractor import extract_article_content
-                        await extract_article_content(article.id, send_to_kindle=True)
+                # Determine email type and process accordingly
+                if self._is_fivefilters_email(sender, subject):
+                    await self._process_fivefilters_content(email_message, db)
+                elif self._is_newsletter_email(sender, subject):
+                    await self._process_newsletter_content(email_message, db)
+                else:
+                    # Generic forwarded email - try to extract content
+                    await self._process_generic_email(email_message, db)
                 
                 # Mark email as read
                 mail.store(email_num, '+FLAGS', '\\Seen')
                 
         except Exception as e:
-            logger.error(f"Error processing FiveFilters email: {e}")
+            logger.error(f"Error processing email: {e}")
         finally:
             db.close()
+
+    def _is_fivefilters_email(self, sender: str, subject: str) -> bool:
+        """Check if email is from FiveFilters"""
+        sender_lower = sender.lower()
+        return 'fivefilters' in sender_lower or 'full-text-rss' in sender_lower
+
+    def _is_newsletter_email(self, sender: str, subject: str) -> bool:
+        """Check if email is a newsletter"""
+        newsletter_indicators = [
+            'newsletter', 'digest', 'weekly', 'daily', 'update',
+            'bulletin', 'briefing', 'roundup', 'summary'
+        ]
+        
+        subject_lower = subject.lower()
+        sender_lower = sender.lower()
+        
+        return any(indicator in subject_lower or indicator in sender_lower 
+                  for indicator in newsletter_indicators)
+
+    async def _process_fivefilters_content(self, email_message, db):
+        """Process FiveFilters email content"""
+        subject = email_message['Subject']
+        urls = self._extract_urls_from_email(email_message)
+        
+        for url in urls:
+            existing = db.query(Article).filter(Article.url == url).first()
+            
+            if not existing:
+                article = Article(
+                    title=subject or "Article from FiveFilters",
+                    url=url,
+                    source="fivefilters_email",
+                    created_at=datetime.now()
+                )
+                db.add(article)
+                db.commit()
+                db.refresh(article)
+                
+                from app.services.article_extractor import extract_article_content
+                await extract_article_content(article.id, send_to_kindle=True)
+
+    async def _process_newsletter_content(self, email_message, db):
+        """Process newsletter email content"""
+        subject = email_message['Subject']
+        sender = email_message['From']
+        
+        # Get email body
+        body = self._get_email_body(email_message)
+        
+        # Create newsletter record
+        newsletter = Newsletter(
+            name=self._extract_newsletter_name(sender, subject),
+            email=sender,
+            subject=subject,
+            sender=sender,
+            raw_content=body,
+            received_at=datetime.now()
+        )
+        
+        db.add(newsletter)
+        db.commit()
+        db.refresh(newsletter)
+        
+        # Process newsletter content in background
+        from app.services.newsletter_processor import process_newsletter
+        await process_newsletter(newsletter.id)
+
+    async def _process_generic_email(self, email_message, db):
+        """Process generic forwarded email"""
+        subject = email_message['Subject']
+        sender = email_message['From']
+        body = self._get_email_body(email_message)
+        
+        # Try to extract URLs first
+        urls = self._extract_urls_from_email(email_message)
+        
+        if urls:
+            # Process as articles
+            for url in urls:
+                existing = db.query(Article).filter(Article.url == url).first()
+                
+                if not existing:
+                    article = Article(
+                        title=subject or "Forwarded Article",
+                        url=url,
+                        source="forwarded_email",
+                        created_at=datetime.now()
+                    )
+                    db.add(article)
+                    db.commit()
+                    db.refresh(article)
+                    
+                    from app.services.article_extractor import extract_article_content
+                    await extract_article_content(article.id, send_to_kindle=True)
+        else:
+            # No URLs found - treat as newsletter content
+            newsletter = Newsletter(
+                name=f"Forwarded Content from {sender}",
+                email=sender,
+                subject=subject,
+                sender=sender,
+                raw_content=body,
+                received_at=datetime.now()
+            )
+            
+            db.add(newsletter)
+            db.commit()
+            db.refresh(newsletter)
+            
+            from app.services.newsletter_processor import process_newsletter
+            await process_newsletter(newsletter.id)
+
+    def _extract_newsletter_name(self, sender: str, subject: str) -> str:
+        """Extract a readable name for the newsletter"""
+        # Try to extract name from sender
+        if '<' in sender:
+            # Format: "Newsletter Name <email@domain.com>"
+            name = sender.split('<')[0].strip().strip('"')
+            if name:
+                return name
+        
+        # Try to extract from subject
+        if subject:
+            # Remove common prefixes
+            subject_clean = re.sub(r'^(Re:|Fwd?:|Newsletter:?|Update:?)\s*', '', subject, flags=re.IGNORECASE)
+            if subject_clean and len(subject_clean) < 50:
+                return subject_clean
+        
+        # Fallback to sender email
+        return sender
+
+    def _get_email_body(self, email_message) -> str:
+        """Extract email body content"""
+        body = ""
+        
+        if email_message.is_multipart():
+            for part in email_message.walk():
+                content_type = part.get_content_type()
+                if content_type in ["text/plain", "text/html"]:
+                    try:
+                        payload = part.get_payload(decode=True)
+                        if payload:
+                            body += payload.decode('utf-8', errors='ignore') + "\n"
+                    except:
+                        continue
+        else:
+            try:
+                payload = email_message.get_payload(decode=True)
+                if payload:
+                    body = payload.decode('utf-8', errors='ignore')
+            except:
+                body = str(email_message.get_payload())
+        
+        return body
 
     def _extract_urls_from_email(self, email_message) -> list:
         """Extract URLs from email content"""
