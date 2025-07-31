@@ -44,11 +44,13 @@ Current step: **Step 1 - Test current system**
 - Requires metadata: filename, MD5 hash, modification time, content type
 
 #### Current System Architecture:
-- Email processing via IMAP
+- Email processing via IMAP (Celery checks every 5 minutes)
 - Article extraction with newspaper3k/BeautifulSoup
 - AI summarization (OpenAI/Anthropic/Ollama)
 - Markdown file storage with YAML frontmatter
 - Kindle delivery via email
+- **Real-time processing**: Uses FastAPI BackgroundTasks for immediate async processing
+- **Event-driven**: When email arrives or API called, extraction/delivery happens immediately
 
 ### Architecture Considerations
 
@@ -64,13 +66,22 @@ Since FiveFilters only allows sending to kindle.com addresses, we have several o
 The bookmarklet should:
 1. Capture current page URL and title
 2. Send to our API endpoint (`/api/v1/articles/process-url` - already exists!)
-3. Our system then:
-   - Extracts article content
-   - Generates EPUB for Zotero
-   - Sends formatted version to Kindle
+3. Our system then (in real-time via BackgroundTasks):
+   - Extracts article content immediately
+   - Generates EPUB for Zotero (NEW)
+   - Sends formatted version to Kindle (already works)
+   - Updates Zotero library (NEW)
    - Returns success/failure status
 
-**Good news**: We already have the `/api/v1/articles/process-url` endpoint that accepts URLs directly. This makes the bookmarklet implementation much simpler!
+**Good news**: 
+- We already have the `/api/v1/articles/process-url` endpoint that accepts URLs directly
+- The system already processes articles in real-time using FastAPI BackgroundTasks
+- Email checking runs every 5 minutes via Celery (can be made more frequent if needed)
+
+**What needs to be added for Zotero**:
+- EPUB generation step in the processing pipeline
+- Zotero API integration in the background task
+- New field in ProcessUrlRequest schema for `send_to_zotero`
 
 ### Sample Bookmarklet Code
 
