@@ -13,12 +13,12 @@ async def health_check(db: Session = Depends(get_db)):
         return {
             "status": "healthy",
             "database": "connected",
-            "service": "article-library"
+            "service": "article-monster"
         }
     except Exception as e:
         return {
             "status": "unhealthy",
             "database": "disconnected",
             "error": str(e),
-            "service": "article-library"
+            "service": "article-monster"
         }

@@ -6,6 +6,7 @@ from app.models import Article
 import logging
 from datetime import datetime
 from urllib.parse import urlparse
+from app.services.ai_summarization_service import generate_ai_summaries, SummaryType, AIProvider
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,9 @@ async def extract_article_content(article_id: int, send_to_kindle: bool = False)
             
             # Generate simple summary (first 200 words)
             article.summary = generate_summary(content)
+            
+            # Generate AI summaries
+            await generate_ai_summaries_for_article(article, content)
             
             db.commit()
             
@@ -147,3 +151,74 @@ def generate_summary(content: str, max_words: int = 200) -> str:
         summary += "..."
     
     return summary
+
+async def generate_ai_summaries_for_article(article: Article, content: str):
+    """Generate AI summaries for an article and update the database record"""
+    try:
+        logger.info(f"Generating AI summaries for article {article.id}")
+        
+        # Generate AI summaries
+        summaries = await generate_ai_summaries(content, article.title)
+        
+        # Update article with AI summaries
+        article.ai_summary_brief = summaries.get(SummaryType.BRIEF)
+        article.ai_summary_standard = summaries.get(SummaryType.STANDARD)
+        article.ai_summary_detailed = summaries.get(SummaryType.DETAILED)
+        
+        # Set provider info
+        from app.services.ai_summarization_service import AISummarizationService
+        service = AISummarizationService()
+        provider, model = service.get_provider_info()
+        article.ai_summary_provider = provider
+        article.ai_summary_model = model
+        article.ai_summary_generated_at = datetime.now()
+        
+        logger.info(f"Successfully generated AI summaries for article {article.id}")
+        
+    except Exception as e:
+        logger.error(f"Failed to generate AI summaries for article {article.id}: {e}")
+        # Don't fail the entire process if AI summarization fails
+        pass
+
+async def regenerate_ai_summaries(article_id: int, provider: AIProvider = None):
+    """Regenerate AI summaries for an existing article"""
+    db = SessionLocal()
+    
+    try:
+        article = db.query(Article).filter(Article.id == article_id).first()
+        if not article:
+            logger.error(f"Article {article_id} not found")
+            return False
+        
+        if not article.content:
+            logger.error(f"Article {article_id} has no content to summarize")
+            return False
+        
+        logger.info(f"Regenerating AI summaries for article {article_id}")
+        
+        # Generate AI summaries with specific provider if requested
+        summaries = await generate_ai_summaries(article.content, article.title, provider)
+        
+        # Update article with new AI summaries
+        article.ai_summary_brief = summaries.get(SummaryType.BRIEF)
+        article.ai_summary_standard = summaries.get(SummaryType.STANDARD)
+        article.ai_summary_detailed = summaries.get(SummaryType.DETAILED)
+        
+        # Set provider info
+        from app.services.ai_summarization_service import AISummarizationService
+        service = AISummarizationService()
+        provider_name, model = service.get_provider_info(provider)
+        article.ai_summary_provider = provider_name
+        article.ai_summary_model = model
+        article.ai_summary_generated_at = datetime.now()
+        
+        db.commit()
+        
+        logger.info(f"Successfully regenerated AI summaries for article {article_id}")
+        return True
+        
+    except Exception as e:
+        logger.error(f"Error regenerating AI summaries for article {article_id}: {e}")
+        return False
+    finally:
+        db.close()

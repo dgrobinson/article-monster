@@ -3,7 +3,7 @@ import os
 
 # Create Celery app
 celery_app = Celery(
-    "article_library",
+    "article_monster",
     broker=os.getenv("REDIS_URL", "redis://redis:6379"),
     backend=os.getenv("REDIS_URL", "redis://redis:6379"),
     include=[

@@ -1,11 +1,11 @@
-# Complete Article Library System Documentation
+# Complete Article Monster System Documentation
 
 ## 🎯 System Overview
 This is a comprehensive cloud-native article processing system that enhances FiveFilters functionality with AI summarization, email archiving, automated testing, and a modern web dashboard.
 
 ## 📁 Repository Structure
 ```
-article-library/
+article-monster/
 ├── app/                          # FastAPI application
 │   ├── main.py                   # Main FastAPI app with all routers
 │   ├── database.py               # SQLAlchemy database connection
@@ -261,7 +261,7 @@ CONNECTION_POOL_SIZE=20
 ### Immediate Next Steps
 1. **Railway Deployment**:
    - Guide user through Railway signup
-   - Connect article-library GitHub repository
+   - Connect article-monster GitHub repository
    - Add PostgreSQL database service
    - Configure environment variables
    - Set up custom domain (articles.robinsonian.com)

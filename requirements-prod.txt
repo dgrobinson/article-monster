@@ -1,0 +1,30 @@
+# Base requirements
+-r requirements.txt
+
+# Production server
+gunicorn==21.2.0
+
+# Monitoring and logging
+prometheus-client==0.17.1
+psutil==5.9.5
+structlog==23.1.0
+
+# Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# Performance
+asyncpg==0.28.0
+redis[hiredis]==5.0.1
+
+# Health checks and diagnostics
+psycopg2-binary==2.9.9
+
+# Environment management
+python-dotenv==1.0.0
+
+# Additional utilities
+flower==2.0.1
+
+# YAML parsing for markdown frontmatter
+PyYAML==6.0.1

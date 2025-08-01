@@ -1,0 +1,349 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: articles-pvc
+  namespace: article-monster
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  storageClassName: standard
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: article-monster-app
+  namespace: article-monster
+  labels:
+    app: article-monster-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: article-monster-app
+  template:
+    metadata:
+      labels:
+        app: article-monster-app
+    spec:
+      containers:
+      - name: app
+        image: article-monster:latest
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://article_user:$(POSTGRES_PASSWORD)@postgres-service:5432/article_library"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: postgres-password
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: redis-url
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: environment
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: log-level
+        - name: WORKERS
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: workers
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: secret-key
+        - name: SMTP_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: smtp-server
+        - name: SMTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: smtp-port
+        - name: SMTP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: smtp-username
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: smtp-password
+        - name: IMAP_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: imap-server
+        - name: IMAP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: imap-port
+        - name: KINDLE_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: kindle-email
+        - name: FROM_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: from-email
+        - name: ALLOWED_HOSTS
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: allowed-hosts
+        ports:
+        - containerPort: 8000
+        volumeMounts:
+        - name: articles-storage
+          mountPath: /app/articles
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "0.5"
+          limits:
+            memory: "1Gi"
+            cpu: "1.0"
+        livenessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8000
+          initialDelaySeconds: 60
+          periodSeconds: 30
+          timeoutSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/v1/health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          fsGroup: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+      volumes:
+      - name: articles-storage
+        persistentVolumeClaim:
+          claimName: articles-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: article-monster-service
+  namespace: article-monster
+  labels:
+    app: article-monster-app
+spec:
+  selector:
+    app: article-monster-app
+  ports:
+  - port: 8000
+    targetPort: 8000
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-worker
+  namespace: article-monster
+  labels:
+    app: celery-worker
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: celery-worker
+  template:
+    metadata:
+      labels:
+        app: celery-worker
+    spec:
+      containers:
+      - name: worker
+        image: article-monster:latest
+        command:
+          - celery
+          - -A
+          - app.celery_app
+          - worker
+          - --loglevel=info
+          - --concurrency=4
+          - --max-tasks-per-child=1000
+          - --time-limit=300
+          - --soft-time-limit=240
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://article_user:$(POSTGRES_PASSWORD)@postgres-service:5432/article_library"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: postgres-password
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: redis-url
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: environment
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: log-level
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: secret-key
+        - name: SMTP_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: smtp-server
+        - name: SMTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: smtp-port
+        - name: SMTP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: smtp-username
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: smtp-password
+        - name: IMAP_SERVER
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: imap-server
+        - name: IMAP_PORT
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: imap-port
+        - name: KINDLE_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: kindle-email
+        - name: FROM_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: from-email
+        volumeMounts:
+        - name: articles-storage
+          mountPath: /app/articles
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "0.5"
+          limits:
+            memory: "1Gi"
+            cpu: "1.0"
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          fsGroup: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true
+      volumes:
+      - name: articles-storage
+        persistentVolumeClaim:
+          claimName: articles-pvc
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-scheduler
+  namespace: article-monster
+  labels:
+    app: celery-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: celery-scheduler
+  template:
+    metadata:
+      labels:
+        app: celery-scheduler
+    spec:
+      containers:
+      - name: scheduler
+        image: article-monster:latest
+        command:
+          - celery
+          - -A
+          - app.celery_app
+          - beat
+          - --loglevel=info
+          - --schedule=/app/celerybeat-schedule
+          - --pidfile=/app/celerybeat.pid
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://article_user:$(POSTGRES_PASSWORD)@postgres-service:5432/article_library"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: article-monster-secrets
+              key: postgres-password
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: redis-url
+        - name: ENVIRONMENT
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: environment
+        - name: LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              name: article-monster-config
+              key: log-level
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "0.125"
+          limits:
+            memory: "256Mi"
+            cpu: "0.25"
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+          fsGroup: 1000
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          runAsNonRoot: true

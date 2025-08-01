@@ -16,6 +16,9 @@ class ArticleUpdate(BaseModel):
     title: Optional[str] = None
     content: Optional[str] = None
     summary: Optional[str] = None
+    ai_summary_brief: Optional[str] = None
+    ai_summary_standard: Optional[str] = None
+    ai_summary_detailed: Optional[str] = None
     author: Optional[str] = None
     tags: Optional[str] = None
     processed: Optional[bool] = None
@@ -25,6 +28,12 @@ class Article(ArticleBase):
     id: int
     content: Optional[str] = None
     summary: Optional[str] = None
+    ai_summary_brief: Optional[str] = None
+    ai_summary_standard: Optional[str] = None
+    ai_summary_detailed: Optional[str] = None
+    ai_summary_provider: Optional[str] = None
+    ai_summary_model: Optional[str] = None
+    ai_summary_generated_at: Optional[datetime] = None
     publication_date: Optional[datetime] = None
     created_at: datetime
     updated_at: datetime
@@ -76,3 +85,19 @@ class ProcessUrlRequest(BaseModel):
     url: HttpUrl
     send_to_kindle: bool = False
     tags: Optional[str] = None
+
+class AISummaryRequest(BaseModel):
+    provider: Optional[str] = None
+    regenerate: bool = False
+
+class BatchAISummaryRequest(BaseModel):
+    provider: Optional[str] = None
+    limit: int = 50
+    skip: int = 0
+    only_missing: bool = True
+
+class AISummaryResponse(BaseModel):
+    article_id: int
+    title: str
+    summaries: dict
+    ai_metadata: dict

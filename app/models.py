@@ -11,7 +11,13 @@ class Article(Base):
     url = Column(String, nullable=False, unique=True)
     content = Column(Text)
     markdown_content = Column(Text)  # Markdown with YAML frontmatter
-    summary = Column(Text)
+    summary = Column(Text)  # Simple text summary (first 200 words)
+    ai_summary_brief = Column(Text)  # AI-generated brief summary (1-2 sentences)
+    ai_summary_standard = Column(Text)  # AI-generated standard summary (paragraph)
+    ai_summary_detailed = Column(Text)  # AI-generated detailed summary (multiple paragraphs)
+    ai_summary_provider = Column(String)  # Which AI provider was used
+    ai_summary_model = Column(String)  # Which model was used
+    ai_summary_generated_at = Column(DateTime)  # When AI summaries were generated
     author = Column(String)
     publication_date = Column(DateTime)
     created_at = Column(DateTime, server_default=func.now())

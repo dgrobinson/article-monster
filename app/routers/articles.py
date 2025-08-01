@@ -1,10 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 from app.database import get_db
 from app import models, schemas
-from app.services.article_extractor import extract_article_content
+from app.services.article_extractor import extract_article_content, regenerate_ai_summaries
 from app.services.email_service import send_to_kindle
+from app.services.ai_summarization_service import AIProvider
 
 router = APIRouter(prefix="/articles", tags=["articles"])
 
@@ -122,3 +123,125 @@ async def send_article_to_kindle(
     background_tasks.add_task(send_to_kindle, article_id)
     
     return {"message": "Sending article to Kindle"}
+
+@router.post("/{article_id}/regenerate-ai-summaries")
+async def regenerate_article_ai_summaries(
+    article_id: int,
+    background_tasks: BackgroundTasks,
+    provider: Optional[str] = None,
+    db: Session = Depends(get_db)
+):
+    """Regenerate AI summaries for an existing article"""
+    article = db.query(models.Article).filter(
+        models.Article.id == article_id
+    ).first()
+    
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+    
+    if not article.processed or not article.content:
+        raise HTTPException(
+            status_code=400, 
+            detail="Article must be processed and have content before generating AI summaries"
+        )
+    
+    # Validate provider if specified
+    ai_provider = None
+    if provider:
+        try:
+            ai_provider = AIProvider(provider.lower())
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid provider. Must be one of: {[p.value for p in AIProvider]}"
+            )
+    
+    # Regenerate summaries in background
+    background_tasks.add_task(regenerate_ai_summaries, article_id, ai_provider)
+    
+    return {
+        "message": "AI summary regeneration started",
+        "article_id": article_id,
+        "provider": provider or "default"
+    }
+
+@router.post("/batch-regenerate-ai-summaries")
+async def batch_regenerate_ai_summaries(
+    background_tasks: BackgroundTasks,
+    provider: Optional[str] = None,
+    limit: int = 50,
+    skip: int = 0,
+    only_missing: bool = True,
+    db: Session = Depends(get_db)
+):
+    """Batch regenerate AI summaries for multiple articles"""
+    
+    # Validate provider if specified
+    ai_provider = None
+    if provider:
+        try:
+            ai_provider = AIProvider(provider.lower())
+        except ValueError:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Invalid provider. Must be one of: {[p.value for p in AIProvider]}"
+            )
+    
+    # Build query
+    query = db.query(models.Article).filter(
+        models.Article.processed == True,
+        models.Article.content.isnot(None)
+    )
+    
+    # If only_missing is True, only process articles without AI summaries
+    if only_missing:
+        query = query.filter(
+            models.Article.ai_summary_brief.is_(None)
+        )
+    
+    articles = query.offset(skip).limit(limit).all()
+    
+    if not articles:
+        return {
+            "message": "No articles found matching criteria",
+            "count": 0
+        }
+    
+    # Add background tasks for each article
+    for article in articles:
+        background_tasks.add_task(regenerate_ai_summaries, article.id, ai_provider)
+    
+    return {
+        "message": f"AI summary regeneration started for {len(articles)} articles",
+        "count": len(articles),
+        "provider": provider or "default"
+    }
+
+@router.get("/{article_id}/summaries")
+async def get_article_summaries(
+    article_id: int,
+    db: Session = Depends(get_db)
+):
+    """Get all available summaries for an article"""
+    article = db.query(models.Article).filter(
+        models.Article.id == article_id
+    ).first()
+    
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+    
+    return {
+        "article_id": article_id,
+        "title": article.title,
+        "summaries": {
+            "basic": article.summary,
+            "ai_brief": article.ai_summary_brief,
+            "ai_standard": article.ai_summary_standard,
+            "ai_detailed": article.ai_summary_detailed
+        },
+        "ai_metadata": {
+            "provider": article.ai_summary_provider,
+            "model": article.ai_summary_model,
+            "generated_at": article.ai_summary_generated_at
+        }
+    }

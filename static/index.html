@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Library Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-book-open"></i> Article Library</h2>
+            </div>
+            <ul class="sidebar-menu">
+                <li class="menu-item active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="menu-item" data-page="articles">
+                    <i class="fas fa-newspaper"></i>
+                    <span>Articles</span>
+                </li>
+                <li class="menu-item" data-page="archive">
+                    <i class="fas fa-archive"></i>
+                    <span>Email Archive</span>
+                </li>
+                <li class="menu-item" data-page="testing">
+                    <i class="fas fa-vial"></i>
+                    <span>Testing</span>
+                </li>
+                <li class="menu-item" data-page="analytics">
+                    <i class="fas fa-chart-bar"></i>
+                    <span>Analytics</span>
+                </li>
+                <li class="menu-item" data-page="system">
+                    <i class="fas fa-cog"></i>
+                    <span>System Health</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-content">
+                    <h1 id="page-title">Dashboard</h1>
+                    <div class="header-actions">
+                        <div class="status-indicator" id="system-status">
+                            <i class="fas fa-circle"></i>
+                            <span>Checking...</span>
+                        </div>
+                        <button class="btn btn-primary" id="refresh-btn">
+                            <i class="fas fa-sync-alt"></i>
+                            Refresh
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content Container -->
+            <div class="content-container">
+                <!-- Dashboard Page -->
+                <div class="page-content active" id="dashboard-page">
+                    <div class="dashboard-grid">
+                        <!-- Quick Stats Cards -->
+                        <div class="stats-row">
+                            <div class="stat-card">
+                                <div class="stat-icon articles">
+                                    <i class="fas fa-newspaper"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="total-articles">-</h3>
+                                    <p>Total Articles</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon processed">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="processed-articles">-</h3>
+                                    <p>Processed Articles</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon archive">
+                                    <i class="fas fa-archive"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="archived-emails">-</h3>
+                                    <p>Archived Emails</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon kindle">
+                                    <i class="fas fa-tablet-alt"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="kindle-sent">-</h3>
+                                    <p>Sent to Kindle</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <div class="dashboard-section">
+                            <h2>Recent Articles</h2>
+                            <div class="recent-articles" id="recent-articles">
+                                <div class="loading">Loading recent articles...</div>
+                            </div>
+                        </div>
+
+                        <!-- System Activity -->
+                        <div class="dashboard-section">
+                            <h2>Recent Email Activity</h2>
+                            <div class="recent-activity" id="recent-activity">
+                                <div class="loading">Loading recent activity...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Articles Page -->
+                <div class="page-content" id="articles-page">
+                    <div class="page-header">
+                        <h2>Article Management</h2>
+                        <div class="page-actions">
+                            <button class="btn btn-primary" id="add-article-btn">
+                                <i class="fas fa-plus"></i>
+                                Add Article
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Article Filters -->
+                    <div class="filters-section">
+                        <div class="filter-group">
+                            <label for="article-status-filter">Status:</label>
+                            <select id="article-status-filter">
+                                <option value="">All</option>
+                                <option value="true">Processed</option>
+                                <option value="false">Unprocessed</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="article-search">Search:</label>
+                            <input type="text" id="article-search" placeholder="Search articles...">
+                        </div>
+                    </div>
+
+                    <div class="articles-list" id="articles-list">
+                        <div class="loading">Loading articles...</div>
+                    </div>
+                </div>
+
+                <!-- Archive Page -->
+                <div class="page-content" id="archive-page">
+                    <div class="page-header">
+                        <h2>Email Archive</h2>
+                        <div class="page-actions">
+                            <button class="btn btn-secondary" id="batch-replay-btn">
+                                <i class="fas fa-play"></i>
+                                Batch Replay
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Archive Filters -->
+                    <div class="filters-section">
+                        <div class="filter-group">
+                            <label for="email-type-filter">Type:</label>
+                            <select id="email-type-filter">
+                                <option value="">All Types</option>
+                                <option value="fivefilters">Five Filters</option>
+                                <option value="newsletter">Newsletter</option>
+                                <option value="forwarded">Forwarded</option>
+                                <option value="unknown">Unknown</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label for="sender-filter">Sender:</label>
+                            <input type="text" id="sender-filter" placeholder="Filter by sender...">
+                        </div>
+                        <div class="filter-group">
+                            <label for="days-back-filter">Days Back:</label>
+                            <select id="days-back-filter">
+                                <option value="">All Time</option>
+                                <option value="1">Last Day</option>
+                                <option value="7">Last Week</option>
+                                <option value="30">Last Month</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="archive-list" id="archive-list">
+                        <div class="loading">Loading archived emails...</div>
+                    </div>
+                </div>
+
+                <!-- Testing Page -->
+                <div class="page-content" id="testing-page">
+                    <div class="page-header">
+                        <h2>Testing Dashboard</h2>
+                    </div>
+                    
+                    <div class="testing-grid">
+                        <!-- Test Controls -->
+                        <div class="testing-section">
+                            <h3>Automated Tests</h3>
+                            <div class="test-controls">
+                                <button class="btn btn-primary" id="run-tests-btn">
+                                    <i class="fas fa-play"></i>
+                                    Run All Tests
+                                </button>
+                                <button class="btn btn-secondary" id="validate-system-btn">
+                                    <i class="fas fa-check-double"></i>
+                                    Validate System
+                                </button>
+                            </div>
+                            <div class="test-results" id="test-results">
+                                <div class="loading">Loading test results...</div>
+                            </div>
+                        </div>
+
+                        <!-- Test Email Controls -->
+                        <div class="testing-section">
+                            <h3>Test Emails</h3>
+                            <div class="test-email-controls">
+                                <select id="test-email-type">
+                                    <option value="">Select test type...</option>
+                                </select>
+                                <button class="btn btn-primary" id="send-test-email-btn">
+                                    <i class="fas fa-envelope"></i>
+                                    Send Test Email
+                                </button>
+                            </div>
+                            <div class="test-email-results" id="test-email-results"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Page -->
+                <div class="page-content" id="analytics-page">
+                    <div class="page-header">
+                        <h2>Analytics & Statistics</h2>
+                    </div>
+                    
+                    <div class="analytics-grid">
+                        <div class="chart-container">
+                            <h3>Articles Over Time</h3>
+                            <canvas id="articles-chart"></canvas>
+                        </div>
+                        <div class="chart-container">
+                            <h3>Email Types Distribution</h3>
+                            <canvas id="email-types-chart"></canvas>
+                        </div>
+                        <div class="stats-detailed" id="detailed-stats">
+                            <h3>Detailed Statistics</h3>
+                            <div class="loading">Loading statistics...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Health Page -->
+                <div class="page-content" id="system-page">
+                    <div class="page-header">
+                        <h2>System Health</h2>
+                    </div>
+                    
+                    <div class="system-grid">
+                        <div class="health-section">
+                            <h3>Health Status</h3>
+                            <div id="health-status" class="health-indicators">
+                                <div class="loading">Checking system health...</div>
+                            </div>
+                        </div>
+                        <div class="health-section">
+                            <h3>System Information</h3>
+                            <div id="system-info" class="system-details">
+                                <div class="loading">Loading system information...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal for Add Article -->
+    <div class="modal" id="add-article-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Add New Article</h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="add-article-form">
+                    <div class="form-group">
+                        <label for="article-url">Article URL:</label>
+                        <input type="url" id="article-url" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="article-tags">Tags (optional):</label>
+                        <input type="text" id="article-tags" placeholder="comma, separated, tags">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="send-to-kindle">
+                            Send to Kindle after processing
+                        </label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-add">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Add Article</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="api-client.js"></script>
+    <script src="dashboard.js"></script>
+</body>
+</html>

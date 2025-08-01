@@ -1,0 +1,352 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  release:
+    types: [ published ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: test_article_monster
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      
+      redis:
+        image: redis:7-alpine
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 6379:6379
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements-prod.txt
+        pip install pytest pytest-asyncio pytest-cov httpx
+
+    - name: Set up environment variables
+      run: |
+        echo "DATABASE_URL=postgresql://postgres:postgres@localhost:5432/test_article_monster" >> $GITHUB_ENV
+        echo "REDIS_URL=redis://localhost:6379" >> $GITHUB_ENV
+        echo "ENVIRONMENT=test" >> $GITHUB_ENV
+
+    - name: Run database migrations
+      run: |
+        # Add Alembic migrations here if you have them
+        python -c "from app.database import engine, Base; Base.metadata.create_all(bind=engine)"
+
+    - name: Run tests
+      run: |
+        pytest --cov=app --cov-report=xml --cov-report=html -v
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+
+    - name: Security scan with Bandit
+      run: |
+        pip install bandit
+        bandit -r app/ -f json -o bandit-report.json || true
+
+    - name: Upload security scan results
+      uses: actions/upload-artifact@v3
+      with:
+        name: security-scan-results
+        path: bandit-report.json
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install linting tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install black isort flake8 mypy
+
+    - name: Run Black
+      run: black --check --diff app/
+
+    - name: Run isort
+      run: isort --check-only --diff app/
+
+    - name: Run Flake8
+      run: flake8 app/ --max-line-length=88 --extend-ignore=E203,W503
+
+    - name: Run MyPy
+      run: mypy app/ --ignore-missing-imports
+
+  build:
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    outputs:
+      image-tag: ${{ steps.meta.outputs.tags }}
+      image-digest: ${{ steps.build.outputs.digest }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Log in to Container Registry
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
+          type=sha,prefix={{branch}}-
+
+    - name: Build and push Docker image
+      id: build
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        file: ./Dockerfile.prod
+        push: true
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+        platforms: linux/amd64,linux/arm64
+
+  security-scan:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: ${{ needs.build.outputs.image-tag }}
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+
+    - name: Upload Trivy scan results to GitHub Security tab
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: 'trivy-results.sarif'
+
+  deploy-staging:
+    needs: [build, security-scan]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.yourdomain.com
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.28.0'
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name article-library-staging
+
+    - name: Deploy to staging
+      run: |
+        # Update image tag in deployment
+        sed -i "s|image: article-library:latest|image: ${{ needs.build.outputs.image-tag }}|g" k8s/application.yaml
+        
+        # Apply configurations
+        kubectl apply -f k8s/namespace.yaml
+        kubectl apply -f k8s/secrets.yaml
+        kubectl apply -f k8s/postgresql.yaml
+        kubectl apply -f k8s/redis.yaml
+        kubectl apply -f k8s/application.yaml
+        
+        # Wait for deployment
+        kubectl rollout status deployment/article-library-app -n article-library --timeout=300s
+
+    - name: Run health check
+      run: |
+        kubectl wait --for=condition=available --timeout=300s deployment/article-library-app -n article-library
+        
+        # Get service URL and test health endpoint
+        SERVICE_URL=$(kubectl get svc article-library-service -n article-library -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+        if [ -n "$SERVICE_URL" ]; then
+          curl -f http://$SERVICE_URL:8000/health || exit 1
+        fi
+
+  deploy-production:
+    needs: [build, security-scan]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+    environment:
+      name: production
+      url: https://yourdomain.com
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.28.0'
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name article-library-cluster
+
+    - name: Deploy to production
+      run: |
+        # Update image tag in deployment
+        sed -i "s|image: article-library:latest|image: ${{ needs.build.outputs.image-tag }}|g" k8s/application.yaml
+        
+        # Apply configurations
+        kubectl apply -f k8s/namespace.yaml
+        kubectl apply -f k8s/secrets.yaml
+        kubectl apply -f k8s/postgresql.yaml
+        kubectl apply -f k8s/redis.yaml
+        kubectl apply -f k8s/application.yaml
+        
+        # Rolling update strategy
+        kubectl rollout status deployment/article-library-app -n article-library --timeout=600s
+
+    - name: Run production health check
+      run: |
+        kubectl wait --for=condition=available --timeout=300s deployment/article-library-app -n article-library
+        
+        # Test health endpoint
+        SERVICE_URL=$(kubectl get svc article-library-service -n article-library -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+        if [ -n "$SERVICE_URL" ]; then
+          curl -f http://$SERVICE_URL:8000/health || exit 1
+        fi
+
+    - name: Create deployment notification
+      uses: 8398a7/action-slack@v3
+      with:
+        status: ${{ job.status }}
+        channel: '#deployments'
+        text: |
+          Production deployment completed successfully!
+          Version: ${{ github.event.release.tag_name }}
+          Image: ${{ needs.build.outputs.image-tag }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: always()
+
+  backup:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    schedule:
+      - cron: '0 2 * * *'  # Daily at 2 AM UTC
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Set up kubectl
+      uses: azure/setup-kubectl@v3
+      with:
+        version: 'v1.28.0'
+
+    - name: Update kubeconfig
+      run: |
+        aws eks update-kubeconfig --region ${{ secrets.AWS_REGION }} --name article-library-cluster
+
+    - name: Run database backup
+      run: |
+        # Create backup job
+        kubectl create job --from=cronjob/postgres-backup manual-backup-$(date +%Y%m%d-%H%M%S) -n article-library
+        
+        # Wait for backup to complete
+        kubectl wait --for=condition=complete --timeout=1800s job/manual-backup-$(date +%Y%m%d-%H%M%S) -n article-library
+
+    - name: Sync backups to S3
+      run: |
+        # This assumes you have a backup sync process set up
+        aws s3 sync /backups s3://${{ secrets.BACKUP_S3_BUCKET }}/daily/ --delete
+
+  notify:
+    needs: [test, lint, build, security-scan]
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+    - name: Notify on failure
+      uses: 8398a7/action-slack@v3
+      with:
+        status: failure
+        channel: '#alerts'
+        text: |
+          CI/CD Pipeline failed!
+          Repository: ${{ github.repository }}
+          Branch: ${{ github.ref }}
+          Commit: ${{ github.sha }}
+      env:
+        SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      if: failure()

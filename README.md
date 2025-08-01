@@ -1,4 +1,4 @@
-# Article Library
+# Article Monster 🦾
 
 Enhanced cloud-native article and newsletter management system that improves upon FiveFilters functionality.
 
@@ -18,7 +18,7 @@ Enhanced cloud-native article and newsletter management system that improves upo
 1. **Clone and setup**:
    ```bash
    git clone <your-repo>
-   cd article-library
+   cd article-monster
    cp .env.example .env
    # Edit .env with your email credentials
    ```
@@ -215,7 +215,7 @@ docker-compose up --build
 docker-compose logs -f app
 
 # Run database shell
-docker-compose exec db psql -U postgres -d article_library
+docker-compose exec db psql -U postgres -d article_monster
 ```
 
 ## Monitoring

@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Library Dashboard Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 2rem;
+            background-color: #f8fafc;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        .feature {
+            padding: 1.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            background: #f8fafc;
+        }
+        .feature h3 {
+            margin-top: 0;
+            color: #2563eb;
+        }
+        .feature ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .feature li {
+            margin-bottom: 0.5rem;
+        }
+        .launch-button {
+            display: inline-block;
+            background: #2563eb;
+            color: white;
+            padding: 1rem 2rem;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .launch-button:hover {
+            background: #1d4ed8;
+        }
+        .status {
+            background: #f0f9ff;
+            border: 1px solid #bae6fd;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        .status.warning {
+            background: #fefce8;
+            border-color: #fde047;
+        }
+        .api-endpoints {
+            background: #f1f5f9;
+            padding: 1rem;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 0.875rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Article Library Dashboard</h1>
+            <p>Comprehensive web interface for article and email management</p>
+        </div>
+
+        <div class="status" id="server-status">
+            <strong>Server Status:</strong> <span id="status-text">Checking...</span>
+        </div>
+
+        <div class="feature-grid">
+            <div class="feature">
+                <h3>📊 Dashboard Overview</h3>
+                <ul>
+                    <li>Real-time system statistics</li>
+                    <li>Recent articles with status</li>
+                    <li>Email archive activity</li>
+                    <li>System health monitoring</li>
+                </ul>
+            </div>
+
+            <div class="feature">
+                <h3>📰 Article Management</h3>
+                <ul>
+                    <li>Add articles via URL processing</li>
+                    <li>Filter by processing status</li>
+                    <li>Send articles to Kindle</li>
+                    <li>Search and organize articles</li>
+                </ul>
+            </div>
+
+            <div class="feature">
+                <h3>📧 Email Archive</h3>
+                <ul>
+                    <li>Browse archived emails</li>
+                    <li>Advanced filtering options</li>
+                    <li>Replay email processing</li>
+                    <li>Debug processing issues</li>
+                </ul>
+            </div>
+
+            <div class="feature">
+                <h3>🧪 Testing Interface</h3>
+                <ul>
+                    <li>Run automated test suites</li>
+                    <li>Send test emails</li>
+                    <li>Validate system configuration</li>
+                    <li>Monitor test results</li>
+                </ul>
+            </div>
+
+            <div class="feature">
+                <h3>📈 Analytics</h3>
+                <ul>
+                    <li>Visual charts and graphs</li>
+                    <li>Processing success rates</li>
+                    <li>Email type distribution</li>
+                    <li>Detailed system metrics</li>
+                </ul>
+            </div>
+
+            <div class="feature">
+                <h3>⚙️ System Health</h3>
+                <ul>
+                    <li>Database connectivity</li>
+                    <li>API service status</li>
+                    <li>Testing framework health</li>
+                    <li>Real-time monitoring</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="api-endpoints">
+            <strong>Available API Endpoints:</strong><br>
+            GET /api/v1/health<br>
+            GET /api/v1/articles<br>
+            POST /api/v1/articles/process-url<br>
+            GET /api/v1/archive/emails<br>
+            POST /api/v1/archive/emails/{id}/replay<br>
+            POST /api/v1/testing/run-automated-tests<br>
+            GET /api/v1/testing/test-results<br>
+            ...and many more
+        </div>
+
+        <div style="text-align: center; margin-top: 2rem;">
+            <a href="/dashboard" class="launch-button" id="launch-dashboard">
+                🚀 Launch Dashboard
+            </a>
+        </div>
+
+        <div style="margin-top: 2rem; font-size: 0.875rem; color: #64748b;">
+            <p><strong>Quick Start:</strong></p>
+            <ol>
+                <li>Ensure FastAPI server is running: <code>uvicorn app.main:app --reload</code></li>
+                <li>Access this demo at: <code>http://localhost:8000/static/demo.html</code></li>
+                <li>Launch the full dashboard at: <code>http://localhost:8000/dashboard</code></li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        // Check server status
+        async function checkServerStatus() {
+            const statusElement = document.getElementById('status-text');
+            const statusContainer = document.getElementById('server-status');
+            const launchButton = document.getElementById('launch-dashboard');
+            
+            try {
+                const response = await fetch('/api/v1/health');
+                const health = await response.json();
+                
+                if (health.status === 'healthy') {
+                    statusElement.textContent = 'Server is running and healthy';
+                    statusContainer.classList.remove('warning');
+                    launchButton.style.display = 'inline-block';
+                } else {
+                    statusElement.textContent = 'Server running but issues detected';
+                    statusContainer.classList.add('warning');
+                    launchButton.style.display = 'inline-block';
+                }
+            } catch (error) {
+                statusElement.textContent = 'Server not responding - ensure FastAPI server is running';
+                statusContainer.classList.add('warning');
+                launchButton.style.display = 'none';
+            }
+        }
+
+        // Check status on page load
+        checkServerStatus();
+        
+        // Check status every 10 seconds
+        setInterval(checkServerStatus, 10000);
+    </script>
+</body>
+</html>

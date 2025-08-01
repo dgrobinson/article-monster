@@ -49,7 +49,7 @@ Purpose: Receives newsletters, FiveFilters emails, forwards
 ### 1. Prepare Repository
 ```bash
 git clone your-repo
-cd article-library
+cd article-monster
 ```
 
 ### 2. Create App on DigitalOcean
