@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Article Bookmarklet Service</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            font-size: 1.1em;
+        }
+        
+        .section {
+            background: #f8f9fa;
+            padding: 25px;
+            margin: 25px 0;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+        
+        .bookmarklet-link {
+            display: inline-block;
+            background: #3498db;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            margin: 10px 0;
+            cursor: move;
+        }
+        
+        .bookmarklet-link:hover {
+            background: #2980b9;
+        }
+        
+        .code-block {
+            background: #2c3e50;
+            color: #ecf0f1;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        
+        .status {
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        
+        .status.online {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .status.offline {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .warning {
+            background: #fff3cd;
+            color: #856404;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        
+        .step {
+            margin: 15px 0;
+            padding: 15px;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #dee2e6;
+        }
+        
+        .step-number {
+            background: #3498db;
+            color: white;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📚 Article Bookmarklet Service</h1>
+        <p class="subtitle">Send articles to both Kindle and Zotero with one click</p>
+    </div>
+
+    <div id="status" class="status offline">
+        <p>🔄 Checking service status...</p>
+    </div>
+
+    <div class="section">
+        <h2>🔖 Install Bookmarklet</h2>
+        <p>Drag this link to your bookmarks bar:</p>
+        
+        <a href="#" id="bookmarklet-link" class="bookmarklet-link" title="Drag me to your bookmarks bar!">
+            📖 Send to Kindle + Zotero
+        </a>
+        
+        <div class="warning">
+            ⚠️ <strong>Before using:</strong> Make sure you've configured your Kindle email and Zotero API key in the service settings.
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📝 Setup Instructions</h2>
+        
+        <div class="step">
+            <span class="step-number">1</span>
+            <strong>Configure Kindle:</strong> Add your approved email to your Kindle's Personal Document Settings at Amazon.
+        </div>
+        
+        <div class="step">
+            <span class="step-number">2</span>
+            <strong>Configure Zotero:</strong> Create an API key with write permissions at zotero.org/settings/keys
+        </div>
+        
+        <div class="step">
+            <span class="step-number">3</span>
+            <strong>Set Environment Variables:</strong> Configure your service with the required API keys and email settings.
+        </div>
+        
+        <div class="step">
+            <span class="step-number">4</span>
+            <strong>Install Bookmarklet:</strong> Drag the bookmarklet link above to your browser's bookmarks bar.
+        </div>
+        
+        <div class="step">
+            <span class="step-number">5</span>
+            <strong>Use It:</strong> Visit any article page and click the bookmarklet to send it to both Kindle and Zotero!
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>🛠️ Environment Variables Required</h2>
+        <div class="code-block">
+# Email settings (for Kindle)
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-app-password
+KINDLE_EMAIL=your-kindle@kindle.com
+
+# Zotero settings
+ZOTERO_USER_ID=your-user-id
+ZOTERO_API_KEY=your-api-key
+ZOTERO_TEST_COLLECTION=collection-key-optional
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>✨ Features</h2>
+        <ul>
+            <li>🔐 <strong>Works with authenticated content</strong> - extracts articles from sites you're logged into</li>
+            <li>📧 <strong>Kindle integration</strong> - sends clean HTML that converts automatically</li>
+            <li>📚 <strong>Zotero integration</strong> - creates proper citations with EPUB attachments</li>
+            <li>🎯 <strong>Browser-side extraction</strong> - no server-side web scraping needed</li>
+            <li>⚡ <strong>Fast processing</strong> - parallel sending to both platforms</li>
+            <li>🛡️ <strong>Safe for your Zotero library</strong> - uses test collections first</li>
+        </ul>
+    </div>
+
+    <script>
+        // Generate bookmarklet code
+        function generateBookmarklet() {
+            const serviceUrl = window.location.origin + '/process-article';
+            
+            // Load the bookmarklet code and replace the service URL
+            fetch('/bookmarklet.js')
+                .then(response => response.text())
+                .then(code => {
+                    // Replace the placeholder URL with the actual service URL
+                    const updatedCode = code.replace('https://your-service.digitalocean.app/process-article', serviceUrl);
+                    
+                    // Create the bookmarklet href
+                    const bookmarkletHref = 'javascript:' + encodeURIComponent(updatedCode);
+                    
+                    // Update the link
+                    document.getElementById('bookmarklet-link').href = bookmarkletHref;
+                })
+                .catch(error => {
+                    console.error('Failed to load bookmarklet code:', error);
+                });
+        }
+        
+        // Check service status
+        function checkStatus() {
+            fetch('/health')
+                .then(response => response.json())
+                .then(data => {
+                    const statusDiv = document.getElementById('status');
+                    statusDiv.className = 'status online';
+                    statusDiv.innerHTML = '<p>✅ Service is online and ready!</p>';
+                })
+                .catch(error => {
+                    const statusDiv = document.getElementById('status');
+                    statusDiv.className = 'status offline';
+                    statusDiv.innerHTML = '<p>❌ Service is offline. Please check your deployment.</p>';
+                });
+        }
+        
+        // Initialize
+        generateBookmarklet();
+        checkStatus();
+        
+        // Refresh status every 30 seconds
+        setInterval(checkStatus, 30000);
+    </script>
+</body>
+</html>

@@ -1,268 +1,104 @@
-# Article Monster 🦾
+# Article Bookmarklet Service
 
-Enhanced cloud-native article and newsletter management system that improves upon FiveFilters functionality.
+A cloud service that sends web articles to both Kindle and Zotero with a single bookmarklet click.
 
 ## Features
 
-- **Multi-source ingestion**: URLs, RSS feeds, email newsletters
-- **Enhanced content processing**: Better extraction and cleaning
-- **Markdown storage**: Articles saved as markdown with YAML frontmatter
-- **Email integration**: Receive from FiveFilters, send to Kindle
-- **Weekly digests**: Automated summaries via email
-- **Background processing**: Celery tasks for scalability
-- **Cloud-ready**: Docker containerized with PostgreSQL
+- 🔐 **Works with authenticated content** - extracts articles from paywalled sites you're logged into
+- 📧 **Kindle integration** - sends clean HTML that Kindle converts automatically
+- 📚 **Zotero integration** - creates proper citations with EPUB attachments for highlighting
+- 🎯 **Browser-side extraction** - uses Mozilla Readability.js in your browser
+- ⚡ **Fast processing** - sends to both platforms in parallel
+- 🛡️ **Safe for Zotero** - uses test collections and careful API integration
 
 ## Quick Start
 
-### Local Development
-1. **Clone and setup**:
-   ```bash
-   git clone <your-repo>
-   cd article-monster
-   cp .env.example .env
-   # Edit .env with your email credentials
-   ```
+### 1. Prerequisites
 
-2. **Deploy locally**:
-   ```bash
-   docker-compose up -d
-   ```
+- Node.js 18+
+- Gmail account (for Kindle email sending)
+- Zotero account with API key
+- Kindle device with email configured
 
-3. **Test the API**:
-   ```bash
-   curl http://localhost:8000/api/v1/health
-   ```
+### 2. Configuration
 
-### Cloud Deployment
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed cloud deployment instructions.
+```bash
+# Copy environment template
+cp .env.example .env
 
-**Quick cloud setup**:
-1. Create dedicated Gmail account for processing
-2. Deploy to DigitalOcean/Railway/Render
-3. Configure environment variables
-4. Start forwarding newsletters and articles!
-
-## Email Workflows
-
-### 1. Newsletter Forwarding
-Forward any newsletter to your processing email:
+# Edit with your actual credentials
+nano .env
 ```
-To: your-processing-email@gmail.com
-Subject: Fwd: Morning Brew Newsletter
-```
-System extracts articles → Processes content → Sends to Kindle
 
-### 2. FiveFilters Integration  
-Configure FiveFilters to send to your processing email instead of Kindle:
-- **Before**: FiveFilters → Kindle
-- **After**: FiveFilters → Your System → Enhanced Processing → Kindle
+Required environment variables:
+```
+EMAIL_USER=your-email@gmail.com
+EMAIL_PASS=your-gmail-app-password
+KINDLE_EMAIL=your-username@kindle.com
+ZOTERO_USER_ID=your-numeric-user-id
+ZOTERO_API_KEY=your-api-key
+```
 
-### 3. Manual Article Processing
-Forward URLs or articles directly:
+### 3. Setup Kindle
+
+1. Go to [Amazon Manage Your Content and Devices](https://www.amazon.com/mn/dcw/myx.html)
+2. Go to Preferences → Personal Document Settings
+3. Add your `EMAIL_USER` to the approved email list
+
+### 4. Setup Zotero
+
+1. Go to [Zotero API Keys](https://www.zotero.org/settings/keys)
+2. Create new key with "Allow library access" and "Allow write access"
+3. Copy your User ID and API key
+4. Create a test collection called "Bookmarklet Test"
+
+### 5. Run Locally
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
-To: your-processing-email@gmail.com
-Subject: Interesting Article
-Body: https://example.com/great-article
-```
+
+Visit http://localhost:3000 to install the bookmarklet.
+
+### 6. Deploy to Cloud
+
+The service is designed for DigitalOcean App Platform:
+
+1. Push code to GitHub
+2. Connect to DigitalOcean App Platform
+3. Set environment variables in the dashboard
+4. Deploy!
+
+## Usage
+
+1. Install the bookmarklet from your running service
+2. Visit any article page
+3. Click the bookmarklet
+4. Article appears in both Kindle and Zotero!
 
 ## Architecture
 
-### Core Components
-
-- **FastAPI**: REST API for article management
-- **PostgreSQL**: Article/newsletter storage
-- **Redis**: Task queue and caching
-- **Celery**: Background task processing
-- **Docker**: Containerized deployment
-
-### Data Flow
-
-1. **FiveFilters → Your System**: Emails processed automatically
-2. **Content Extraction**: Full-text extraction with multiple fallbacks
-3. **Markdown Storage**: Articles saved with YAML frontmatter
-4. **Kindle Delivery**: Enhanced formatting for e-readers
-5. **Weekly Digests**: Automated summaries and highlights
-
-## API Endpoints
-
-### Articles
-- `POST /api/v1/articles/process-url` - Process a new article URL
-- `GET /api/v1/articles/` - List articles
-- `GET /api/v1/articles/{id}` - Get specific article
-- `POST /api/v1/articles/{id}/send-to-kindle` - Send to Kindle
-
-### Newsletters
-- `POST /api/v1/newsletters/` - Process newsletter
-- `GET /api/v1/newsletters/` - List newsletters
-
-### Health
-- `GET /api/v1/health` - System health check
-
-## Configuration
-
-### Environment Variables
-
-```bash
-# Email Configuration
-SMTP_SERVER=smtp.gmail.com
-SMTP_USERNAME=your-email@gmail.com
-SMTP_PASSWORD=your-app-password
-KINDLE_EMAIL=your-kindle@kindle.com
-
-# Database (optional)
-DATABASE_URL=postgresql://user:pass@host:5432/dbname
+```
+Browser (with auth) → Bookmarklet extracts content → Cloud Service → Kindle + Zotero
 ```
 
-### Email Setup
+The bookmarklet runs Mozilla Readability.js in your browser to extract clean article content, then sends it to the cloud service which formats and delivers to both platforms.
 
-1. **Gmail App Password**:
-   - Enable 2FA on Gmail
-   - Generate app-specific password
-   - Use this password (not your regular password)
+## Safety
 
-2. **Kindle Email**:
-   - Find your Kindle email in Amazon account settings
-   - Add your sending email to approved senders list
+- Zotero operations only ADD items, never modify existing ones
+- Uses test collections to protect your main library
+- All operations are logged for debugging
+- Browser-side extraction respects your authentication
 
-## Usage Examples
+## Troubleshooting
 
-### Process a single URL
-```bash
-curl -X POST "http://localhost:8000/api/v1/articles/process-url" \
-  -H "Content-Type: application/json" \
-  -d '{
-    "url": "https://example.com/article",
-    "send_to_kindle": true,
-    "tags": "tech,ai"
-  }'
-```
-
-### FiveFilters Integration
-
-1. **Current Flow**: FiveFilters → Kindle
-2. **New Flow**: FiveFilters → Your System → Enhanced Processing → Kindle
-
-Configure FiveFilters to send emails to a dedicated address that your system monitors.
-
-## File Structure
-
-```
-articles/               # Stored markdown files
-├── 2024-01-15_article-title.md
-└── 2024-01-16_another-article.md
-
-app/
-├── main.py            # FastAPI application
-├── models.py          # Database models
-├── services/          # Business logic
-│   ├── article_extractor.py
-│   ├── email_service.py
-│   └── markdown_service.py
-└── tasks/             # Celery background tasks
-```
-
-## Markdown Format
-
-Articles are stored as markdown with YAML frontmatter:
-
-```yaml
----
-title: "Article Title"
-url: "https://example.com/article"
-author: "Author Name"
-published: "2024-01-15T10:00:00"
-tags: ["tech", "ai"]
-summary: "Brief summary..."
----
-
-# Article Title
-
-**Author:** Author Name  
-**Published:** January 15, 2024  
-**Source:** [example.com](https://example.com/article)
-
----
-
-Article content in markdown format...
-```
-
-## Development
-
-### Local Development
-```bash
-# Install dependencies
-pip install -r requirements.txt
-
-# Run database migrations
-# (Auto-created on startup)
-
-# Start the API
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# Start Celery worker (separate terminal)
-celery -A app.celery_app worker --loglevel=info
-
-# Start Celery beat scheduler (separate terminal)
-celery -A app.celery_app beat --loglevel=info
-```
-
-### Docker Development
-```bash
-# Build and start all services
-docker-compose up --build
-
-# View logs
-docker-compose logs -f app
-
-# Run database shell
-docker-compose exec db psql -U postgres -d article_monster
-```
-
-## Monitoring
-
-- **Health Check**: `GET /api/v1/health`
-- **Database**: Check PostgreSQL connectivity
-- **Redis**: Task queue status
-- **Celery**: Background task processing
-
-## Testing and Debugging
-
-### Automated Testing
-- **Synthetic email generation**: Creates realistic test emails automatically
-- **External service integration**: Uses Mailinator, Webhook.site for validation
-- **RSS feed testing**: Validates article extraction from real feeds
-- **Continuous testing**: Runs tests at regular intervals
-
-### Email Archive System
-- **Complete email storage**: Archives all incoming emails with full metadata
-- **Replay capability**: Re-process archived emails for debugging
-- **Batch operations**: Test improvements on historical data
-- **Categorization**: Tag and organize emails by type and source
-
-### API Endpoints for Testing
-```bash
-# Run automated tests
-curl -X POST "http://localhost:8000/api/v1/testing/run-automated-tests"
-
-# Send test email
-curl -X POST "http://localhost:8000/api/v1/testing/send-test-email" \
-  -H "Content-Type: application/json" \
-  -d '{"test_type": "newsletter"}'
-
-# Get archived emails
-curl "http://localhost:8000/api/v1/archive/emails?limit=10&email_type=newsletter"
-
-# Replay archived email
-curl -X POST "http://localhost:8000/api/v1/archive/emails/123/replay"
-```
-
-## Roadmap
-
-- [x] Email archiving and replay system
-- [x] Automated testing framework
-- [ ] AI-powered article summarization
-- [ ] Advanced content categorization
-- [ ] Web dashboard for article management
-- [ ] RSS feed generation for processed articles
-- [ ] Integration with read-later services
-- [ ] Mobile app for article management
+- Check service status at your deployed URL
+- Verify environment variables are set correctly
+- Ensure Kindle email is approved for your sender
+- Test Zotero API key permissions
+- Check browser console for bookmarklet errors

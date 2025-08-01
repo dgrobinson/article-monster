@@ -1,0 +1,23 @@
+{
+  "name": "article-bookmarklet-service",
+  "version": "1.0.0",
+  "description": "Cloud service that sends articles to both Kindle and Zotero via bookmarklet",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node src/test.js"
+  },
+  "dependencies": {
+    "@mozilla/readability": "^0.4.4",
+    "axios": "^1.6.2",
+    "dotenv": "^17.2.1",
+    "epub-gen": "^0.1.0",
+    "express": "^4.18.2",
+    "jsdom": "^23.0.1",
+    "nodemailer": "^6.9.7"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

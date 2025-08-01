@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: article-monster
-  labels:
-    name: article-monster
-    environment: production
