@@ -1,4 +1,7 @@
-require('dotenv').config();
+// Only load .env in development
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config();
+}
 const express = require('express');
 const { extractArticle } = require('./articleExtractor');
 const { sendToKindle } = require('./kindleSender');
@@ -109,4 +112,10 @@ app.post('/test-extract', async (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`Article bookmarklet service running on port ${PORT}`);
+  console.log('Environment check:', {
+    EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'NOT SET',
+    KINDLE_EMAIL: process.env.KINDLE_EMAIL ? 'SET' : 'NOT SET',
+    ZOTERO_USER_ID: process.env.ZOTERO_USER_ID ? 'SET' : 'NOT SET',
+    NODE_ENV: process.env.NODE_ENV || 'not set'
+  });
 });
