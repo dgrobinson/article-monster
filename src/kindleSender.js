@@ -3,6 +3,7 @@ const nodemailer = require('nodemailer');
 async function sendToKindle(article) {
   try {
     console.log(`Sending to Kindle: "${article.title}"`);
+    console.log('Nodemailer type:', typeof nodemailer, 'createTransporter?', typeof nodemailer.createTransporter);
 
     // Create email transporter (will need to be configured with environment variables)
     const transporter = nodemailer.createTransporter({
