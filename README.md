@@ -1,15 +1,26 @@
-# Article Bookmarklet Service
+# Article Bookmarklet + Zotero MCP Service
 
-A cloud service that sends web articles to both Kindle and Zotero with a single bookmarklet click.
+A cloud service that:
+1. Sends web articles to both Kindle and Zotero with a single bookmarklet click
+2. Provides MCP (Model Context Protocol) access to your Zotero library for ChatGPT and Claude
 
 ## Features
 
+### Bookmarklet Service
 - 🔐 **Works with authenticated content** - extracts articles from paywalled sites you're logged into
 - 📧 **Kindle integration** - sends clean HTML that Kindle converts automatically
 - 📚 **Zotero integration** - creates proper citations with EPUB attachments for highlighting
 - 🎯 **Browser-side extraction** - uses Mozilla Readability.js in your browser
 - ⚡ **Fast processing** - sends to both platforms in parallel
 - 🛡️ **Safe for Zotero** - uses test collections and careful API integration
+
+### MCP Server for AI Assistants
+- 🤖 **ChatGPT Integration** - Access your Zotero library from ChatGPT
+- 🧠 **Claude Integration** - Use your research with Claude
+- 🔍 **Search your library** - Full-text search across all items
+- 📑 **Get item details** - Retrieve complete metadata and notes
+- 📁 **Browse collections** - Navigate your organized research
+- ➕ **Add new items** - Save references directly from AI conversations
 
 ## Quick Start
 
@@ -32,11 +43,16 @@ nano .env
 
 Required environment variables:
 ```
+# Bookmarklet Service
 EMAIL_USER=your-email@gmail.com
 EMAIL_PASS=your-gmail-app-password
 KINDLE_EMAIL=your-username@kindle.com
 ZOTERO_USER_ID=your-numeric-user-id
 ZOTERO_API_KEY=your-api-key
+ZOTERO_TEST_COLLECTION=optional-collection-key
+
+# MCP Server (optional, for AI access)
+MCP_API_KEY=generate-a-secure-token-here
 ```
 
 ### 3. Setup Kindle
@@ -102,3 +118,74 @@ The bookmarklet runs Mozilla Readability.js in your browser to extract clean art
 - Ensure Kindle email is approved for your sender
 - Test Zotero API key permissions
 - Check browser console for bookmarklet errors
+
+## MCP Configuration for AI Assistants
+
+### ChatGPT Setup
+
+1. Go to ChatGPT Settings → Actions
+2. Create new action with:
+   - **Name**: Zotero Library
+   - **Authentication**: API Key
+   - **API Key**: Your MCP_API_KEY value
+   - **Auth Type**: Bearer
+
+3. Use this OpenAPI schema:
+```yaml
+openapi: 3.0.0
+info:
+  title: Zotero MCP API
+  version: 1.0.0
+servers:
+  - url: https://your-app.ondigitalocean.app
+paths:
+  /mcp/search:
+    post:
+      summary: Search Zotero library
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                limit:
+                  type: integer
+                  default: 25
+      responses:
+        200:
+          description: Search results
+  /mcp/item/{key}:
+    get:
+      summary: Get item details
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Item details
+  /mcp/collections:
+    get:
+      summary: List collections
+      responses:
+        200:
+          description: Collections list
+```
+
+### Claude Desktop Setup
+
+1. Edit Claude Desktop config file
+2. Add MCP server configuration pointing to your deployed URL
+3. Include Bearer token authentication
+
+### Security Notes
+
+- Keep your MCP_API_KEY secret
+- Only share with trusted AI assistants
+- Regenerate if compromised
+- Monitor usage in logs

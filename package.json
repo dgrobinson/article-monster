@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
-    "test": "node src/test.js"
+    "test": "node src/test.js",
+    "test:mcp": "node src/test-mcp.js",
+    "generate:mcp-key": "node scripts/generate-mcp-key.js"
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.4",

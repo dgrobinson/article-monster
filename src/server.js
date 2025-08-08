@@ -3,6 +3,7 @@ const express = require('express');
 const { extractArticle } = require('./articleExtractor');
 const { sendToKindle } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
+const mcpRouter = require('./mcpServer');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,9 +12,19 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('public'));
 
+// Mount MCP server routes
+app.use('/mcp', mcpRouter);
+
 // Health check endpoint
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  res.json({ 
+    status: 'ok', 
+    services: {
+      bookmarklet: 'active',
+      mcp: process.env.MCP_API_KEY ? 'active' : 'disabled'
+    },
+    timestamp: new Date().toISOString() 
+  });
 });
 
 // Main bookmarklet endpoint
