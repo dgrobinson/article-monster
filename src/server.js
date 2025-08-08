@@ -2,6 +2,15 @@
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config();
 }
+
+// Log environment status immediately
+console.log('Environment variables loaded:', {
+  EMAIL_USER: process.env.EMAIL_USER ? 'YES' : 'NO',
+  EMAIL_PASS: process.env.EMAIL_PASS ? 'YES (hidden)' : 'NO',
+  KINDLE_EMAIL: process.env.KINDLE_EMAIL || 'NOT SET',
+  ZOTERO_USER_ID: process.env.ZOTERO_USER_ID || 'NOT SET',
+  NODE_ENV: process.env.NODE_ENV || 'development'
+});
 const express = require('express');
 const { extractArticle } = require('./articleExtractor');
 const { sendToKindle } = require('./kindleSender');
