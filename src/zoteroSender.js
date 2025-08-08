@@ -36,13 +36,19 @@ async function sendToZotero(article) {
     const itemKey = itemResponse.data.successful[0].key;
     console.log(`Successfully created Zotero item with key: ${itemKey}`);
 
-    // Step 2: Generate and attach EPUB
-    console.log('Generating EPUB for Zotero attachment...');
-    const epub = await generateEpub(article);
-    
-    // Step 3: Upload EPUB as attachment
-    console.log('Uploading EPUB attachment to Zotero...');
-    const attachmentKey = await uploadAttachment(baseUrl, headers, itemKey, epub, article);
+    // Step 2: Generate and attach EPUB (non-fatal if fails)
+    let attachmentKey = null;
+    try {
+      console.log('Generating EPUB for Zotero attachment...');
+      const epub = await generateEpub(article);
+      
+      // Step 3: Upload EPUB as attachment
+      console.log('Uploading EPUB attachment to Zotero...');
+      attachmentKey = await uploadAttachment(baseUrl, headers, itemKey, epub, article);
+    } catch (attachmentError) {
+      console.warn('EPUB attachment failed (item still created):', attachmentError.message);
+      // Don't throw - the main item was successfully created
+    }
     
     // Step 4: Optionally add to test collection
     if (testCollection) {
@@ -50,7 +56,10 @@ async function sendToZotero(article) {
       await addToCollection(baseUrl, headers, itemKey, testCollection);
     }
 
-    console.log(`Successfully sent to Zotero: item ${itemKey}, attachment ${attachmentKey}`);
+    const message = attachmentKey 
+      ? `item ${itemKey}, attachment ${attachmentKey}`
+      : `item ${itemKey} (attachment failed)`;
+    console.log(`Successfully sent to Zotero: ${message}`);
     
     return {
       success: true,
