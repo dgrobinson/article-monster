@@ -46,6 +46,7 @@ async function sendToZotero(article) {
     
     // Step 4: Optionally add to test collection
     if (testCollection) {
+      console.log(`Adding item to collection: ${testCollection}`);
       await addToCollection(baseUrl, headers, itemKey, testCollection);
     }
 
@@ -131,16 +132,24 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article) {
     }
 
     const uploadUrl = authResponse.data.url;
-    const uploadParams = authResponse.data.params;
+    const uploadParams = authResponse.data.params || {};
+    
+    console.log('Upload auth response:', {
+      exists: authResponse.data.exists,
+      url: uploadUrl ? 'present' : 'missing',
+      params: uploadParams ? Object.keys(uploadParams).length + ' params' : 'missing'
+    });
 
     // Create form data for upload
     const FormData = require('form-data');
     const form = new FormData();
     
     // Add all required parameters
-    Object.keys(uploadParams).forEach(key => {
-      form.append(key, uploadParams[key]);
-    });
+    if (uploadParams && typeof uploadParams === 'object') {
+      Object.keys(uploadParams).forEach(key => {
+        form.append(key, uploadParams[key]);
+      });
+    }
     
     // Add file
     form.append('file', epub.buffer, {
