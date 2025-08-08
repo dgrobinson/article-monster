@@ -19,7 +19,7 @@
     document.body.appendChild(indicator);
     
     // Extract article content using simplified Readability
-    const reader = new Readability(document.cloneNode(true));
+    const reader = new Readability(document);
     const article = reader.parse();
     
     if (!article) {
