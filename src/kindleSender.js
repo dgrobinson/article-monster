@@ -1,11 +1,11 @@
-const nodemailer = require('nodemailer');
+const { createTransport } = require('nodemailer');
 
 async function sendToKindle(article) {
   try {
     console.log(`Sending to Kindle: "${article.title}"`);
 
     // Create email transporter (will need to be configured with environment variables)
-    const transporter = nodemailer.createTransporter({
+    const transporter = createTransport({
       service: 'gmail', // or your preferred email service
       auth: {
         user: process.env.EMAIL_USER,
