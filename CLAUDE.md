@@ -1,5 +1,27 @@
 # Article Monster - Claude Context Instructions
 
+## 🚨 CRITICAL: Documentation-First Methodology
+
+**BEFORE doing ANY work in this repo, Claude MUST:**
+
+1. **📖 Read ALL documentation first** - Every .md file in the repo
+2. **🔍 Audit actual functionality** - Test what's really working vs what's documented
+3. **📊 Reconcile discrepancies** - Note where docs are stale or missing
+4. **✅ Verify production state** - Check deployed environment, not just local code
+5. **📝 Update docs BEFORE adding new ones** - Fix existing before creating new
+
+**Why this matters:**
+- Documentation goes stale quickly
+- Planned features get documented but never implemented  
+- Code exists but isn't integrated or tested
+- Production environment may differ from code
+
+**When creating new documentation:**
+- First audit what exists and its accuracy
+- Update/fix existing docs before adding new ones
+- Always test actual functionality, don't assume from code presence
+- Coordinate all .md files for consistency
+
 ## Project Overview
 This is Article Monster - a cloud service that provides:
 1. **Bookmarklet Service**: Sends web articles to both Kindle and Zotero with a single bookmarklet click
@@ -31,6 +53,14 @@ When launched in this repository, Claude should read these files to understand t
 7. **public/bookmarklet.js** - Client-side content extraction
 
 ## Key Context Points
+
+### CRITICAL DESIGN PRINCIPLE
+**NEVER write publication-specific code!** 
+- This service must remain publication-agnostic
+- ALL site-specific extraction logic comes from FiveFilters configs
+- We maintain feature parity with FiveFilters Full-Text RSS
+- The fivefilters-config submodule provides all site-specific rules
+- If a site doesn't extract properly, the fix belongs in FiveFilters configs, NOT in our code
 
 ### Security
 - This is a defensive tool for personal research management
@@ -71,6 +101,23 @@ Claude has access to these CLI tools for managing this project:
 - View logs: `doctl apps logs <app-id>`
 - App ID: `214fb1d0-54f7-4a28-ba39-7db566e8a8e6`
 - App URL: https://seal-app-t4vff.ondigitalocean.app
+
+## Known Issues & Solutions
+
+### WSJ Content Extraction
+- **Root Cause**: Bookmarklet fetches FiveFilters config asynchronously but doesn't wait for it
+- **What Happens**:
+  1. Bookmarklet checks for cached site config (not found)
+  2. Fetches config from server but continues immediately (async)
+  3. Falls back to simplified extraction which fails on WSJ
+  4. Config gets stored for "next time" but current extraction already failed
+- **The Fix**: Bookmarklet must wait for FiveFilters config before attempting extraction
+- **Note**: WSJ has a full FiveFilters config at `site-configs/wsj.com.txt` that would work if used
+
+### EPUB Table of Contents
+- epub-gen library always includes a basic TOC structure
+- Setting empty titles or excludeFromToc can break EPUB generation
+- Current approach: Minimal TOC with single entry for the article
 
 ## Auto-Context Reading Instruction
 
