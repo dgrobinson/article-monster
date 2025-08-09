@@ -9,6 +9,8 @@ on:
 jobs:
   check-submodule:
     runs-on: ubuntu-latest
+    outputs:
+      updated: ${{ steps.sync.outputs.updated }}
     steps:
     - name: Checkout code with submodules
       uses: actions/checkout@v4
@@ -18,19 +20,83 @@ jobs:
 
     - name: Update submodule to latest
       run: |
+        echo "🔄 Starting submodule update process..."
+        echo "Current submodule commit: $(git rev-parse HEAD:site-configs)"
+        
         git submodule update --remote site-configs
         
+        echo "New submodule commit: $(git rev-parse HEAD:site-configs)"
+        echo "Submodule status:"
+        git submodule status site-configs
+        
     - name: Check for changes and commit
+      id: sync
       run: |
         git config user.name "GitHub Actions Bot"
         git config user.email "actions@github.com"
         
+        echo "🔍 Checking for submodule changes..."
+        git status --porcelain
+        
         if ! git diff --quiet site-configs; then
-          echo "Submodule changes detected, committing..."
+          echo "✅ Submodule changes detected!"
+          echo "Changes:"
+          git diff --name-status site-configs
+          
           git add site-configs
-          git commit -m "Update site-configs submodule to latest version"
+          
+          # Get the latest commit message from the submodule for context
+          SUBMODULE_COMMIT=$(cd site-configs && git log -1 --pretty=format:"%h - %s")
+          echo "Latest submodule commit: $SUBMODULE_COMMIT"
+          
+          git commit -m "Update site-configs submodule to latest version
+
+Auto-sync: $SUBMODULE_COMMIT
+Triggered: $(date -u '+%Y-%m-%d %H:%M:%S UTC')"
+          
+          echo "📤 Pushing changes..."
           git push
-          echo "Submodule updated and pushed"
+          echo "✅ Submodule updated and pushed successfully!"
+          
+          # Set output for potential notifications
+          echo "updated=true" >> $GITHUB_OUTPUT
         else
-          echo "No submodule changes detected"
+          echo "ℹ️ No submodule changes detected - site-configs is up to date"
+          echo "updated=false" >> $GITHUB_OUTPUT
         fi
+
+    - name: Create issue on failure
+      uses: actions/github-script@v7
+      if: failure()
+      with:
+        script: |
+          const title = `Submodule sync failed - ${new Date().toISOString().split('T')[0]}`;
+          const body = `## Submodule Sync Failure
+          
+          The automated submodule sync workflow failed.
+          
+          **Workflow Run:** ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          **Time:** ${{ github.event.head_commit.timestamp || github.run_started_at }}
+          **Branch:** ${{ github.ref }}
+          
+          Please check the logs and resolve the issue.
+          
+          This issue was automatically created by the submodule sync workflow.`;
+          
+          // Check if similar issue already exists
+          const issues = await github.rest.issues.listForRepo({
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            state: 'open',
+            labels: ['submodule-sync-failure']
+          });
+          
+          if (issues.data.length === 0) {
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: title,
+              body: body,
+              labels: ['submodule-sync-failure', 'automated']
+            });
+          }
