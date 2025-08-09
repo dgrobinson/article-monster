@@ -10,8 +10,8 @@ async function generateEpub(article) {
     const filename = `${sanitizeFilename(article.title)}.epub`;
     const outputPath = path.join('/tmp', filename);
     
-    // Process images and get the updated content with embedded images
-    const { processedContent, imageAssets } = await processImagesForEpub(article.content);
+    // Extract image URLs for epub-gen to handle
+    const imageAssets = extractImageUrls(article.content);
     
     const options = {
       title: article.title,
@@ -71,7 +71,7 @@ async function generateEpub(article) {
       content: [
         {
           title: article.title,
-          data: createEpubContent({...article, content: processedContent}),
+          data: createEpubContent(article),
           excludeFromToc: true
         }
       ],
@@ -212,72 +212,27 @@ function formatContentWithParagraphs(content) {
   return paragraphs.map(p => `<p>${p}</p>`).join('\n');
 }
 
-async function processImagesForEpub(content) {
-  if (!content) return { processedContent: '', imageAssets: [] };
+function extractImageUrls(content) {
+  if (!content) return [];
   
-  const imageAssets = [];
-  let processedContent = content;
-  
-  // Find all img tags in the content
+  const imageUrls = [];
   const imgRegex = /<img[^>]+src="([^"]+)"[^>]*>/gi;
-  const matches = [...content.matchAll(imgRegex)];
+  let match;
   
-  console.log(`Found ${matches.length} images to process`);
-  
-  for (let i = 0; i < matches.length; i++) {
-    const [fullMatch, src] = matches[i];
+  while ((match = imgRegex.exec(content)) !== null) {
+    const src = match[1];
     
-    try {
-      // Skip data URLs and relative URLs
-      if (src.startsWith('data:') || src.startsWith('/') || !src.includes('://')) {
-        console.log(`Skipping image: ${src.substring(0, 50)}...`);
-        continue;
-      }
-      
-      console.log(`Processing image ${i + 1}: ${src.substring(0, 100)}...`);
-      
-      // Download the image
-      const response = await axios.get(src, {
-        responseType: 'arraybuffer',
-        timeout: 10000,
-        headers: {
-          'User-Agent': 'Mozilla/5.0 (compatible; Article Monster/1.0)'
-        }
+    // Skip data URLs, relative URLs, and other non-http(s) URLs
+    if (src && src.includes('://') && (src.startsWith('http://') || src.startsWith('https://'))) {
+      imageUrls.push({
+        url: src,
+        alt: `Image from ${new URL(src).hostname}`
       });
-      
-      // Determine file extension from content-type or URL
-      const contentType = response.headers['content-type'] || '';
-      let extension = 'jpg';
-      if (contentType.includes('png')) extension = 'png';
-      else if (contentType.includes('gif')) extension = 'gif';
-      else if (contentType.includes('webp')) extension = 'webp';
-      else if (src.includes('.png')) extension = 'png';
-      else if (src.includes('.gif')) extension = 'gif';
-      else if (src.includes('.webp')) extension = 'webp';
-      
-      const filename = `image_${i + 1}.${extension}`;
-      
-      // Add to image assets for EPUB
-      imageAssets.push({
-        id: `img_${i + 1}`,
-        url: filename,
-        data: Buffer.from(response.data),
-        mediaType: contentType || 'image/jpeg'
-      });
-      
-      // Replace the img tag to reference the local file
-      const newImgTag = fullMatch.replace(src, filename);
-      processedContent = processedContent.replace(fullMatch, newImgTag);
-      
-      console.log(`Successfully processed image: ${filename}`);
-      
-    } catch (error) {
-      console.warn(`Failed to process image ${src}: ${error.message}`);
-      // Keep the original img tag if download fails
     }
   }
   
-  return { processedContent, imageAssets };
+  console.log(`Found ${imageUrls.length} images for EPUB embedding`);
+  return imageUrls;
 }
 
 module.exports = { generateEpub };
