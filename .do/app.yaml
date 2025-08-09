@@ -1,0 +1,43 @@
+name: article-monster
+services:
+- name: web
+  source_dir: /
+  github:
+    repo: dgrobinson/article-monster
+    branch: main
+  run_command: npm start
+  environment_slug: node-js
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  build_command: |
+    git submodule update --init --recursive
+    npm ci
+  routes:
+  - path: /
+  envs:
+  - key: NODE_ENV
+    value: production
+  - key: EMAIL_USER
+    scope: RUN_TIME
+    type: SECRET
+  - key: EMAIL_PASS
+    scope: RUN_TIME
+    type: SECRET
+  - key: KINDLE_EMAIL
+    scope: RUN_TIME
+    type: SECRET
+  - key: ZOTERO_USER_ID
+    scope: RUN_TIME
+    type: SECRET
+  - key: ZOTERO_API_KEY
+    scope: RUN_TIME
+    type: SECRET
+  - key: ZOTERO_TEST_COLLECTION
+    scope: RUN_TIME
+    type: SECRET
+  - key: MCP_API_KEY
+    scope: RUN_TIME
+    type: SECRET
+domains:
+- domain: article-monster.robinsonian.com
+  type: PRIMARY

@@ -8,7 +8,9 @@
     "dev": "node --watch src/server.js",
     "test": "node src/test.js",
     "test:mcp": "node src/test-mcp.js",
-    "generate:mcp-key": "node scripts/generate-mcp-key.js"
+    "generate:mcp-key": "node scripts/generate-mcp-key.js",
+    "build": "npm run setup:submodules",
+    "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'"
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.4",
