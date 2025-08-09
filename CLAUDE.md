@@ -119,6 +119,23 @@ Claude has access to these CLI tools for managing this project:
 - Setting empty titles or excludeFromToc can break EPUB generation
 - Current approach: Minimal TOC with single entry for the article
 
+## Current Known Issues (August 2025)
+
+### 🔴 High Priority
+1. **EPUB Images Not Working** - Images are not appearing in generated EPUBs despite epub-gen supporting them
+   - Location: `src/epubGenerator.js`
+   - Impact: EPUBs lack visual content
+
+2. **Kindle Filename Formatting** - Article titles appear as "ALL_CAPS_WITH_UNDERSCORES" instead of clean formatting
+   - Should match FiveFilters style: proper capitalization, maybe publication prefix
+   - Location: `src/emailService.js` or similar
+
+### 🟡 Medium Priority  
+3. **MCP Implementation Status Unclear** - Extensive planning exists but actual working state needs verification
+   - Files exist: `src/mcpServer.js`, `MCP_INTEGRATION_PLAN.md`
+   - Health endpoint shows "active" but needs real testing
+   - Next: Test with actual API key and AI assistant integration
+
 ## Auto-Context Reading Instruction
 
 **IMPORTANT**: Every time Claude is launched in this repository, automatically read the following files in this order to understand the full project context:
