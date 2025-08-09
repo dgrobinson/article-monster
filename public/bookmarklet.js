@@ -179,9 +179,9 @@
       document.body.removeChild(indicator);
       
       if (data.success) {
-        showResult('✅ Article sent successfully!\\n\\n' + 
-                   '📧 Kindle: ' + data.kindle + '\\n' +
-                   '📚 Zotero: ' + data.zotero + '\\n\\n' +
+        showResult('✅ Article sent successfully!\n\n' + 
+                   '📧 Kindle: ' + data.kindle + '\n' +
+                   '📚 Zotero: ' + data.zotero + '\n\n' +
                    '📄 "' + article.title + '"');
       } else {
         throw new Error(data.message || 'Service returned an error');
@@ -189,7 +189,7 @@
     })
     .catch(error => {
       document.body.removeChild(indicator);
-      showResult('❌ Error: ' + error.message + '\\n\\nPlease try again or check your internet connection.');
+      showResult('❌ Error: ' + error.message + '\n\nPlease try again or check your internet connection.');
     })
     .finally(() => {
       window.articleBookmarkletProcessing = false;
