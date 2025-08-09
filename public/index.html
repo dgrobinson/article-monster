@@ -132,8 +132,16 @@
             >> 📖
         </a>
         
+        <a href="#" id="debug-bookmarklet-link" class="bookmarklet-link" style="background: #e74c3c; margin-left: 10px;" title="Debug version - shows extraction comparison">
+            🐛 DEBUG
+        </a>
+        
         <div class="warning">
             ⚠️ <strong>Before using:</strong> Make sure you've configured your Kindle email and Zotero API key in the service settings.
+        </div>
+        
+        <div style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 6px; border-left: 4px solid #ffc107; margin: 15px 0; font-size: 14px;">
+            <strong>🐛 Debug Bookmarklet:</strong> Use the red DEBUG button to troubleshoot extraction issues. It shows a side-by-side comparison of the full page HTML vs. extracted content, with one-click copy to share with support.
         </div>
     </div>
 
@@ -198,7 +206,7 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
         function generateBookmarklet() {
             const serviceUrl = window.location.origin + '/process-article';
             
-            // Load the bookmarklet code and replace the service URL
+            // Load the main bookmarklet code and replace the service URL
             fetch('/bookmarklet.js')
                 .then(response => response.text())
                 .then(code => {
@@ -213,6 +221,20 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
                 })
                 .catch(error => {
                     console.error('Failed to load bookmarklet code:', error);
+                });
+            
+            // Load the debug bookmarklet code
+            fetch('/bookmarklet-debug.js')
+                .then(response => response.text())
+                .then(code => {
+                    // Create the debug bookmarklet href
+                    const debugBookmarkletHref = 'javascript:' + encodeURIComponent(code);
+                    
+                    // Update the debug link
+                    document.getElementById('debug-bookmarklet-link').href = debugBookmarkletHref;
+                })
+                .catch(error => {
+                    console.error('Failed to load debug bookmarklet code:', error);
                 });
         }
         
