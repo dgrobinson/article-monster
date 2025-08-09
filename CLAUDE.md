@@ -81,10 +81,11 @@ When launched in this repository, Claude should read these files to understand t
 ## Development Context
 - **IMPORTANT: This service is deployed on DigitalOcean App Platform**
 - **Always test in production - local testing is not the standard workflow**
+- **NEVER run the service locally** - development workflow is cloud-first
 - Push changes to GitHub → Auto-deploys to DigitalOcean
 - No database - stateless service using external APIs
 - Browser-side extraction preserves user authentication
-- Uses `npm run dev` for development with --watch flag (rarely needed)
+- Local `npm run dev` exists but is not used in standard workflow
 
 ## Available CLI Tools
 Claude has access to these CLI tools for managing this project:
