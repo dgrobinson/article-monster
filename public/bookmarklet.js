@@ -63,14 +63,22 @@
     },
 
     _grabArticle: function(doc) {
-      // Remove unwanted elements
-      this._removeNodes(doc, 'script, style, noscript, iframe, object, embed');
+      // Remove unwanted elements (more aggressive)
+      this._removeNodes(doc, 'script, style, noscript, iframe, object, embed, nav, header, footer, aside');
+      
+      // Remove common ad and social elements
+      this._removeNodes(doc, '[class*="ad"], [id*="ad"], [class*="social"], [class*="share"], [class*="newsletter"], [class*="subscribe"], [class*="popup"], [class*="modal"], [class*="overlay"]');
+      
+      // Remove elements with ad-like text content
+      this._removeAdContent(doc);
       
       // Try to find the main content
       var candidates = this._getCandidates(doc);
       var topCandidate = this._getTopCandidate(candidates);
       
       if (topCandidate) {
+        // Clean the selected content further
+        this._cleanContent(topCandidate);
         return topCandidate;
       }
 
@@ -79,11 +87,13 @@
       for (var i = 0; i < selectors.length; i++) {
         var element = doc.querySelector(selectors[i]);
         if (element && element.textContent.length > 500) {
+          this._cleanContent(element);
           return element;
         }
       }
 
-      // Last resort: return body
+      // Last resort: return body (but clean it)
+      this._cleanContent(doc.body);
       return doc.body;
     },
 
@@ -136,6 +146,43 @@
       
       candidates.sort(function(a, b) { return b.score - a.score; });
       return candidates[0].element;
+    },
+
+    _removeAdContent: function(doc) {
+      // Remove elements with ad-like text patterns
+      var allElements = doc.querySelectorAll('*');
+      for (var i = allElements.length - 1; i >= 0; i--) {
+        var element = allElements[i];
+        var text = element.textContent || '';
+        var className = element.className || '';
+        var id = element.id || '';
+        
+        // Remove if contains ad-like text or attributes
+        if (/advertisement|sponsored|promo|banner|popup/i.test(text + ' ' + className + ' ' + id)) {
+          if (text.length < 200) { // Only remove short ad-like content
+            element.remove();
+          }
+        }
+      }
+    },
+
+    _cleanContent: function(element) {
+      if (!element) return;
+      
+      // Remove remaining unwanted elements within the content
+      var unwantedSelectors = [
+        '.advertisement', '.ad', '.ads', '.sponsored', '.promo',
+        '.social-share', '.share-buttons', '.newsletter', '.subscribe',
+        '.popup', '.modal', '.overlay', '.sidebar', '.related-articles',
+        '[data-ad]', '[data-advertisement]'
+      ];
+      
+      for (var i = 0; i < unwantedSelectors.length; i++) {
+        var unwanted = element.querySelectorAll(unwantedSelectors[i]);
+        for (var j = unwanted.length - 1; j >= 0; j--) {
+          unwanted[j].remove();
+        }
+      }
     }
   };
   
