@@ -9,6 +9,64 @@ class ConfigFetcher {
     this.configCache = new Map();
     this.cacheTimeout = 24 * 60 * 60 * 1000; // 24 hours
     this.configDir = path.join(__dirname, '../site-configs');
+    this.loadBuiltInConfigs();
+  }
+
+  // Built-in configs as fallback for deployment issues
+  loadBuiltInConfigs() {
+    // Pre-load critical site configs directly
+    this.configCache.set('theatlantic.com', {
+      config: {
+        title: ["//meta[@property='og:title']/@content"],
+        body: [
+          "//article[@id='main-article']",
+          "//div[@id='main-article']",
+          "//article[contains(@class, 'ArticleLayout_article')]",
+          "//div[@itemprop='articleBody']",
+          "//div[@class='articleText']",
+          "//div[@class='articleContent']",
+          "//div[@id='article']"
+        ],
+        author: [
+          "//meta[@name=\"author\"]/@content",
+          "//div[@id='profile']//*[@class='authors']//a[1]",
+          "//*[@class='author']/span"
+        ],
+        strip: [
+          "//*[contains(@class, 'share-social') or contains(@id, 'share-social')]",
+          "//header",
+          "//gpt-ad",
+          "//div[contains(@class, 'ArticleBio_social')]",
+          "//*[contains(@class, 'ArticleRecirc')]",
+          "//*[contains(@class, 'ArticleRelatedContentModule')]",
+          "//aside[contains(@class, 'Pullquote')]",
+          "//div[@class='moreOnBoxWithImages']",
+          "//aside[@role=\"complementary\"]"
+        ],
+        date: ["//*[contains(@class, 'date')]"]
+      },
+      timestamp: Date.now()
+    });
+
+    this.configCache.set('nytimes.com', {
+      config: {
+        title: ["//meta[@property='og:title']/@content"],
+        body: [
+          "//section[@name='articleBody']",
+          "//div[@class='StoryBodyCompanionColumn']",
+          "//div[contains(@class, 'ArticleBody')]"
+        ],
+        author: ["//meta[@name='author']/@content"],
+        strip: [
+          "//aside",
+          "//*[contains(@class, 'ad')]",
+          "//*[contains(@class, 'newsletter')]"
+        ]
+      },
+      timestamp: Date.now()
+    });
+
+    console.log('Built-in configs loaded for deployment');
   }
 
   async getConfigForSite(hostname) {
