@@ -16,9 +16,14 @@ const { extractArticle } = require('./articleExtractor');
 const { sendToKindle } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
 const mcpRouter = require('./mcpServer');
+const ConfigFetcher = require('./configFetcher');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Initialize config fetcher and preload popular sites
+const configFetcher = new ConfigFetcher();
+configFetcher.preloadConfigs();
 
 // Middleware
 app.use(express.json());
@@ -48,6 +53,37 @@ app.get('/health', (req, res) => {
     },
     timestamp: new Date().toISOString() 
   });
+});
+
+// Site configuration endpoint - provides dynamic FiveFilters configs to bookmarklet
+app.get('/site-config/:hostname', async (req, res) => {
+  try {
+    const hostname = req.params.hostname;
+    const config = await configFetcher.getConfigForSite(hostname);
+    
+    if (config) {
+      res.json({
+        success: true,
+        hostname: hostname,
+        config: config,
+        source: 'fivefilters',
+        updatedAt: new Date().toISOString()
+      });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: 'No configuration found for this site',
+        hostname: hostname
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching site config:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to fetch site configuration',
+      message: error.message
+    });
+  }
 });
 
 // Main bookmarklet endpoint

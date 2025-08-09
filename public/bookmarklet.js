@@ -22,10 +22,22 @@
   Readability.prototype = {
     parse: function() {
       try {
-        // First try JSON-LD structured data (common on modern news sites)
+        // First try site-specific configuration
+        var siteConfig = this._extractWithSiteConfig();
+        if (siteConfig) {
+          return siteConfig;
+        }
+        
+        // Then try JSON-LD structured data (New Yorker, Atlantic, etc.)
         var jsonLdContent = this._extractFromJsonLd();
         if (jsonLdContent) {
           return jsonLdContent;
+        }
+        
+        // Try Substack data format 
+        var substackContent = this._extractFromSubstack();
+        if (substackContent) {
+          return substackContent;
         }
         
         // Fall back to DOM-based extraction
@@ -262,6 +274,299 @@
     _createExcerpt: function(text) {
       if (!text) return '';
       return text.substring(0, 300).trim() + (text.length > 300 ? '...' : '');
+    },
+
+    _extractFromSubstack: function() {
+      try {
+        // Look for Substack's window._preloads object
+        if (!window._preloads) return null;
+        
+        var preloads = typeof window._preloads === 'string' ? JSON.parse(window._preloads) : window._preloads;
+        
+        // Navigate through the data structure to find post content
+        if (preloads.feedData && preloads.feedData.readingQueue && preloads.feedData.readingQueue.posts) {
+          var posts = preloads.feedData.readingQueue.posts;
+          
+          // Find the current post by checking URL slug or ID
+          var currentSlug = this._getCurrentSlug();
+          
+          for (var i = 0; i < posts.length; i++) {
+            var post = posts[i];
+            
+            // Match by slug or if it's the only/first post
+            if (posts.length === 1 || (post.slug && currentSlug && currentSlug.includes(post.slug))) {
+              if (post.body_html && post.body_html.length > 500) {
+                var author = '';
+                if (post.publishedBylines && post.publishedBylines.length > 0) {
+                  author = post.publishedBylines.map(function(byline) {
+                    return byline.name;
+                  }).join(', ');
+                }
+                
+                return {
+                  title: post.title || this._getArticleTitle(),
+                  content: post.body_html,
+                  textContent: this._htmlToText(post.body_html),
+                  length: post.wordcount || this._htmlToText(post.body_html).length,
+                  excerpt: post.description || this._createExcerpt(this._htmlToText(post.body_html)),
+                  byline: author || this._getArticleMetadata('author'),
+                  siteName: 'Substack',
+                  publishedTime: post.post_date || this._getArticleMetadata('published_time'),
+                  source: 'substack-preloads'
+                };
+              }
+            }
+          }
+        }
+        
+        return null;
+      } catch (e) {
+        console.error('Substack extraction failed:', e);
+        return null;
+      }
+    },
+
+    _getCurrentSlug: function() {
+      try {
+        var pathname = window.location.pathname;
+        var parts = pathname.split('/');
+        return parts[parts.length - 1] || parts[parts.length - 2];
+      } catch (e) {
+        return '';
+      }
+    },
+
+    _htmlToText: function(html) {
+      try {
+        var div = document.createElement('div');
+        div.innerHTML = html;
+        return div.textContent || div.innerText || '';
+      } catch (e) {
+        return html.replace(/<[^>]*>/g, '');
+      }
+    },
+
+    _extractWithSiteConfig: function() {
+      try {
+        var hostname = window.location.hostname.replace(/^www\./, '');
+        var config = this._getSiteConfig(hostname);
+        if (!config) {
+          // Try to fetch dynamic config from server (non-blocking)
+          this._fetchDynamicConfig(hostname);
+          return null;
+        }
+
+        // If site prefers JSON-LD, let that handler take over
+        if (config.preferJsonLd) return null;
+
+        var result = {
+          source: 'site-config',
+          hostname: hostname
+        };
+
+        // Extract title
+        if (config.title) {
+          for (var i = 0; i < config.title.length; i++) {
+            var element = this._evaluateXPath(config.title[i]);
+            if (element) {
+              result.title = config.title[i].endsWith('/@content') ? 
+                element.value : element.textContent;
+              if (result.title) {
+                result.title = result.title.trim();
+                break;
+              }
+            }
+          }
+        }
+
+        // Extract body
+        if (config.body) {
+          for (var i = 0; i < config.body.length; i++) {
+            var element = this._evaluateXPath(config.body[i]);
+            if (element && element.textContent && element.textContent.length > 500) {
+              // Clone and clean the element
+              var cleanElement = this._cleanElementWithConfig(element, config.strip || []);
+              result.content = cleanElement.innerHTML;
+              result.textContent = cleanElement.textContent || cleanElement.innerText || '';
+              result.length = result.textContent.length;
+              break;
+            }
+          }
+        }
+
+        // Extract author
+        if (config.author) {
+          for (var i = 0; i < config.author.length; i++) {
+            var element = this._evaluateXPath(config.author[i]);
+            if (element) {
+              result.byline = config.author[i].endsWith('/@content') ? 
+                element.value : element.textContent;
+              if (result.byline) {
+                result.byline = result.byline.trim();
+                break;
+              }
+            }
+          }
+        }
+
+        // Add other metadata
+        result.excerpt = this._createExcerpt(result.textContent);
+        result.siteName = hostname;
+        result.publishedTime = this._getArticleMetadata('published_time') || this._getArticleMetadata('date');
+
+        // Only return if we successfully extracted content
+        return result.content ? result : null;
+
+      } catch (e) {
+        console.error('Site config extraction failed:', e);
+        return null;
+      }
+    },
+
+    _evaluateXPath: function(xpath, contextNode) {
+      try {
+        contextNode = contextNode || this._doc;
+        var result = this._doc.evaluate(
+          xpath, 
+          contextNode, 
+          null, 
+          XPathResult.FIRST_ORDERED_NODE_TYPE, 
+          null
+        );
+        return result.singleNodeValue;
+      } catch (e) {
+        console.warn('XPath evaluation failed:', xpath, e);
+        return null;
+      }
+    },
+
+    _cleanElementWithConfig: function(element, stripXPaths) {
+      var clone = element.cloneNode(true);
+      
+      // Remove elements specified in strip rules
+      for (var i = 0; i < stripXPaths.length; i++) {
+        var elementsToRemove = this._doc.evaluate(
+          stripXPaths[i],
+          clone,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+        
+        for (var j = elementsToRemove.snapshotLength - 1; j >= 0; j--) {
+          var elementToRemove = elementsToRemove.snapshotItem(j);
+          if (elementToRemove && elementToRemove.remove) {
+            elementToRemove.remove();
+          }
+        }
+      }
+
+      return clone;
+    },
+
+    _getSiteConfig: function(hostname) {
+      var configs = {
+        'theatlantic.com': {
+          title: [
+            "//meta[@property='og:title']/@content",
+            "//h1[@class='ArticleHeader_headline__B8PsX']",
+            "//h1"
+          ],
+          body: [
+            "//article[@id='main-article']",
+            "//div[@id='main-article']", 
+            "//div[@class='ArticleBody_root__2jqPc']",
+            "//div[contains(@class, 'ArticleBody')]//div[@class='markup']",
+            "//div[@itemprop='articleBody']",
+            "//div[@class='articleText']"
+          ],
+          author: [
+            "//meta[@name='author']/@content",
+            "//div[@class='AttributionDetails_author__1uPE-']//a"
+          ],
+          strip: [
+            "//nav",
+            "//header[contains(@class, 'SiteHeader')]", 
+            "//div[contains(@class, 'Advertisement')]",
+            "//div[contains(@class, 'Share')]",
+            "//div[contains(@class, 'Newsletter')]"
+          ]
+        },
+        
+        'substack.com': {
+          title: [
+            "//meta[@property='og:title']/@content",
+            "//h1[@class='post-title']"
+          ],
+          body: [
+            "//div[@class='available-content']",
+            "//div[@class='body markup']//div[1]"
+          ],
+          author: [
+            "//meta[@name='author']/@content",
+            "//a[@class='publication-logo']"
+          ],
+          strip: [
+            "//div[contains(@class, 'subscription')]",
+            "//div[contains(@class, 'paywall')]",
+            "//button",
+            "//svg"
+          ]
+        },
+
+        'newyorker.com': {
+          preferJsonLd: true, // New Yorker has full content in JSON-LD
+          title: [
+            "//meta[@property='og:title']/@content",
+            "//h1"
+          ],
+          body: [
+            "//div[@data-testid='ArticleBodyWrapper']",
+            "//article//div[@class='GridItem']"
+          ],
+          author: [
+            "//meta[@name='author']/@content",
+            "//span[@class='byline-name']//a"
+          ]
+        }
+      };
+      
+      return configs[hostname];
+    },
+
+    _fetchDynamicConfig: function(hostname) {
+      // This is asynchronous and will help improve future extractions
+      // Not used for current extraction but stored for next time
+      try {
+        var serviceUrl = SERVICE_URL.replace('/process-article', '');
+        fetch(serviceUrl + '/site-config/' + hostname)
+          .then(function(response) {
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Config not found');
+          })
+          .then(function(data) {
+            if (data.success && data.config) {
+              // Store in session storage for potential future use
+              try {
+                sessionStorage.setItem('siteConfig_' + hostname, JSON.stringify({
+                  config: data.config,
+                  timestamp: Date.now()
+                }));
+                console.log('Fetched site config for', hostname, 'from FiveFilters');
+              } catch (e) {
+                // Session storage not available, ignore
+              }
+            }
+          })
+          .catch(function(error) {
+            // Silently fail - this is a nice-to-have feature
+            console.log('No dynamic config available for', hostname);
+          });
+      } catch (e) {
+        // Ignore any errors in dynamic config fetching
+      }
     }
   };
   
