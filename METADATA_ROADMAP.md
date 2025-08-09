@@ -49,32 +49,45 @@ This document outlines potential future improvements for bibliographic metadata 
 - **Benefits**:
   - Complete citations for academic work
 
-### 2. Site-Specific Extraction Rules
-**Priority: Medium** - Improves reliability for popular sites
+### 2. Leverage Existing Metadata Extraction Tools
+**Priority: High** - Avoid duplicating work, use proven solutions
 
-#### Integration with FiveFilters Configs
-- **Goal**: Leverage existing site-specific extraction rules
-- **Current Gap**: FiveFilters configs focus on content, not metadata
-- **Implementation Ideas**:
-  - Extend FiveFilters config format to include metadata selectors
-  - Create supplementary metadata configs for popular sites
-  - Build a metadata extraction registry
-- **Target Sites** (most valuable):
-  - **News**: WSJ, NYTimes, The Atlantic, New Yorker, WaPo
-  - **Academic**: arXiv, PubMed, JSTOR, ScienceDirect
-  - **Tech**: Medium, Substack, Dev.to, GitHub
-  - **Magazines**: Wired, The Verge, Ars Technica
+#### Option A: Integrate Zotero's Embedded Metadata Translator
+- **Goal**: Use Zotero's proven metadata extraction logic
+- **Source**: [Zotero's Embedded Metadata.js](https://github.com/zotero/translators/blob/master/Embedded%20Metadata.js)
+- **Advantages**:
+  - Battle-tested across thousands of sites
+  - Handles Dublin Core, OpenGraph, Schema.org, Citation metadata
+  - Sophisticated author parsing and date handling
+  - Built-in DOI cleaning and validation
+- **Implementation Options**:
+  - **Server-side**: Port Zotero translator to Node.js, run on extracted HTML
+  - **Client-side**: Adapt translator logic for bookmarklet execution
+  - **Hybrid**: Run basic extraction in bookmarklet, enhanced extraction server-side
+- **Benefits**:
+  - Immediate access to comprehensive metadata extraction
+  - Community-maintained and constantly improved
+  - Handles edge cases we haven't encountered
 
-#### Custom Extraction Patterns
-- **Goal**: Handle sites with non-standard metadata
-- **Examples**:
-  - Medium uses custom JSON-LD structures
-  - Substack has unique author/date patterns
-  - Academic preprint servers have specific formats
-- **Implementation**: 
-  - Site detection by domain
-  - Custom extraction functions per site
-  - Fallback to generic extraction
+#### Option B: EPUB Metadata Analysis & Enhancement
+- **Goal**: Extract and enhance metadata from generated EPUBs
+- **Approach**: 
+  - Generate EPUB with current extraction
+  - Parse EPUB metadata using `epub-metadata-parser` npm package
+  - Cross-reference with Zotero's embedded metadata extraction
+  - Enhance missing fields through secondary extraction
+- **Libraries**:
+  - `epub-metadata-parser` - extracts Dublin Core metadata from EPUB
+  - Could integrate with Zotero translator for comparison/enhancement
+- **Benefits**:
+  - Post-processing approach - less impact on bookmarklet performance
+  - EPUB already contains structured metadata we can analyze
+  - Can identify gaps and fill them systematically
+
+#### Option C: Hybrid Approach (Recommended)
+1. **Primary**: Integrate Zotero's Embedded Metadata translator logic into our extraction
+2. **Secondary**: Use EPUB metadata analysis to identify and fill gaps
+3. **Tertiary**: Maintain minimal site-specific rules only where absolutely necessary
 
 ### 3. Enhanced Author Processing
 **Priority: Medium** - Improves citation quality
@@ -146,23 +159,43 @@ This document outlines potential future improvements for bibliographic metadata 
 
 ## Implementation Strategy
 
-### Phase 1: Academic Essentials (Next Session)
-1. DOI detection and extraction
-2. Journal/publication metadata
-3. Page numbers and article numbers
-4. Test with academic sites (arXiv, PubMed, journal sites)
+### Phase 1: Zotero Translator Integration (Next Session - Recommended)
+1. **Extract Zotero's Embedded Metadata logic**:
+   - Study the [Embedded Metadata.js translator](https://github.com/zotero/translators/blob/master/Embedded%20Metadata.js)
+   - Port key functions to JavaScript (can run in both Node.js and browser)
+   - Focus on: DOI extraction, author parsing, date handling, meta tag processing
+   
+2. **Integration approach**:
+   - **Option A**: Add to bookmarklet (client-side) - gets full page access
+   - **Option B**: Add to server (post-processing) - cleaner architecture
+   - **Recommended**: Hybrid - critical metadata in bookmarklet, enhancement server-side
 
-### Phase 2: Site-Specific Rules (Future)
-1. Create metadata config format
-2. Build configs for top 10 sites
-3. Implement config loader in bookmarklet
-4. Test and refine
+3. **Immediate benefits**:
+   - DOI extraction from citation meta tags
+   - Better author name parsing
+   - Journal/publication metadata
+   - Academic article detection
 
-### Phase 3: Advanced Features (Long-term)
-1. Author role detection
+### Phase 2: EPUB Metadata Analysis (Future Session)
+1. **Add EPUB metadata parsing**:
+   - Install `epub-metadata-parser` npm package
+   - Parse generated EPUB files to extract Dublin Core metadata
+   - Compare extracted metadata with original article data
+   
+2. **Gap analysis and filling**:
+   - Identify common metadata gaps
+   - Re-extract missing fields from original HTML
+   - Enhance EPUB metadata before sending to Zotero
+   
+3. **Quality validation**:
+   - Cross-validate metadata between sources
+   - Flag inconsistencies for manual review
+
+### Phase 3: Refinement and Advanced Features (Long-term)
+1. Metadata confidence scoring
 2. ORCID support
-3. Item type intelligence
-4. Confidence scoring
+3. Advanced author role detection
+4. Custom overrides for problematic sites
 
 ## Testing Sites for Validation
 
@@ -198,11 +231,31 @@ This document outlines potential future improvements for bibliographic metadata 
 - **User Satisfaction**: Fewer manual corrections needed
 
 ## Notes for Next Session
-1. Start with DOI extraction - highest value for academic users
-2. Test current extraction quality on academic sites
-3. Consider creating test suite with expected metadata
-4. Evaluate whether to extend FiveFilters configs or create separate system
-5. Assess effort vs benefit for each enhancement
+1. **Primary Focus**: Integrate Zotero's Embedded Metadata translator
+   - This gives us battle-tested extraction logic without reinventing the wheel
+   - Immediate gains in DOI extraction, author parsing, academic metadata
+   - Community-maintained and constantly improving
+
+2. **Implementation Decision**: Client-side vs Server-side
+   - **Client-side advantage**: Access to full page DOM, user authentication context
+   - **Server-side advantage**: Cleaner architecture, can process extracted HTML
+   - **Recommendation**: Try client-side first for maximum metadata access
+
+3. **Quick Wins to Implement**:
+   - DOI extraction from citation meta tags (`meta[name="citation_doi"]`)
+   - Journal metadata (`meta[name="citation_journal_title"]`, `citation_volume`, etc.)
+   - Better author parsing with first/last name splitting
+   - Academic vs news article detection
+
+4. **EPUB Analysis as Secondary**:
+   - After implementing Zotero translator integration
+   - Use for quality validation and gap detection
+   - Could help identify metadata that wasn't captured initially
+
+5. **Avoid Duplicating FiveFilters Work**:
+   - FiveFilters handles content extraction excellently
+   - Focus on metadata that content extraction doesn't capture
+   - Use their extracted content as input for metadata analysis
 
 ## Related Files
 - `public/bookmarklet.js` - Main extraction logic
