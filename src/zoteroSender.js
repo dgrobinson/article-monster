@@ -130,7 +130,7 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article) {
 
     const authResponse = await axios.post(
       `${baseUrl}/items/${attachmentKey}/file`,
-      `md5=${generateMD5(epub.buffer)}&filename=${encodeURIComponent(epub.filename)}&filesize=${epub.size}&mtime=${Date.now()}`,
+      `md5=${generateMD5(epub.buffer)}&filename=${encodeURIComponent(epub.filename)}&filesize=${epub.size}&mtime=${Date.now()}&params=1`,
       { headers: uploadHeaders }
     );
 
@@ -146,7 +146,8 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article) {
     console.log('Upload auth response:', {
       exists: authResponse.data.exists,
       url: uploadUrl ? 'present' : 'missing',
-      params: uploadParams ? Object.keys(uploadParams).length + ' params' : 'missing'
+      params: uploadParams ? Object.keys(uploadParams).length + ' params' : 'missing',
+      full_response: JSON.stringify(authResponse.data)
     });
 
     // Create form data for upload
@@ -166,11 +167,13 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article) {
       contentType: 'application/epub+zip'
     });
 
-    await axios.post(uploadUrl, form, {
+    const uploadResult = await axios.post(uploadUrl, form, {
       headers: form.getHeaders(),
       maxContentLength: Infinity,
       maxBodyLength: Infinity
     });
+    
+    console.log('S3 upload result:', uploadResult.status);
 
     // Step 4: Register upload
     await axios.post(`${baseUrl}/items/${attachmentKey}/file`, 'upload=' + authResponse.data.uploadKey, {
