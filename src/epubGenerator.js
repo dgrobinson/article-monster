@@ -15,6 +15,8 @@ async function generateEpub(article) {
       publisher: article.siteName || 'Robinsonian Article Monster',
       output: outputPath,
       cover: null, // We could add cover generation later
+      appendChapterTitles: false, // Disable automatic h1 titles that interfere with content
+      tocTitle: '', // Remove Table of Contents title
       css: `
         body {
           font-family: Georgia, serif;
@@ -57,8 +59,9 @@ async function generateEpub(article) {
       `,
       content: [
         {
-          title: article.title,
-          data: createEpubContent(article)
+          title: '', // Empty title to avoid duplication in TOC
+          data: createEpubContent(article),
+          excludeFromToc: true // Exclude from table of contents entirely
         }
       ],
       tempDir: '/tmp',
@@ -96,6 +99,8 @@ async function generateEpub(article) {
 
 function createEpubContent(article) {
   return `
+    <h1>${escapeHtml(article.title)}</h1>
+    
     <div class="meta">
       <p><strong>Source:</strong> ${escapeHtml(article.siteName)}</p>
       <p><strong>Author:</strong> ${escapeHtml(article.byline)}</p>

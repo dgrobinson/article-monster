@@ -56,6 +56,22 @@ When launched in this repository, Claude should read these files to understand t
 - Browser-side extraction preserves user authentication
 - Uses `npm run dev` for development with --watch flag (rarely needed)
 
+## Available CLI Tools
+Claude has access to these CLI tools for managing this project:
+
+### GitHub CLI (`gh`)
+- Check workflow status: `gh workflow list`
+- View workflow runs: `gh run list`
+- Trigger deployments via GitHub Actions if needed
+- Manage pull requests and issues
+
+### DigitalOcean CLI (`doctl`)
+- Check app status: `doctl apps list`
+- Monitor deployments: `doctl apps get-deployment <app-id> <deployment-id>`
+- View logs: `doctl apps logs <app-id>`
+- App ID: `214fb1d0-54f7-4a28-ba39-7db566e8a8e6`
+- App URL: https://seal-app-t4vff.ondigitalocean.app
+
 ## Auto-Context Reading Instruction
 
 **IMPORTANT**: Every time Claude is launched in this repository, automatically read the following files in this order to understand the full project context:
