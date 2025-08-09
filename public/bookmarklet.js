@@ -3,7 +3,7 @@
   'use strict';
   
   // Configuration - replace with your actual service URL
-  const SERVICE_URL = 'https://your-service.digitalocean.app/process-article';
+  const SERVICE_URL = 'https://seal-app-t4vff.ondigitalocean.app/process-article';
   
   // Check if we're already processing to avoid double-clicks
   if (window.articleBookmarkletProcessing) {
@@ -351,7 +351,11 @@
         var hostname = window.location.hostname.replace(/^www\./, '');
         var config = this._getSiteConfig(hostname);
         if (!config) {
-          // Try to fetch dynamic config from server (non-blocking)
+          // Check session storage for previously fetched config
+          config = this._getCachedConfig(hostname);
+        }
+        if (!config) {
+          // Config not available - will be fetched for next time
           this._fetchDynamicConfig(hostname);
           return null;
         }
@@ -462,6 +466,23 @@
       }
 
       return clone;
+    },
+
+    _getCachedConfig: function(hostname) {
+      try {
+        var cached = sessionStorage.getItem('siteConfig_' + hostname);
+        if (cached) {
+          var data = JSON.parse(cached);
+          // Check if cache is less than 24 hours old
+          if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
+            console.log('Using cached FiveFilters config for', hostname);
+            return data.config;
+          }
+        }
+      } catch (e) {
+        // Session storage not available or parsing failed
+      }
+      return null;
     },
 
     _getSiteConfig: function(hostname) {
@@ -578,57 +599,122 @@
       }
     }
   };
+
+  // Async function to extract article, waiting for site config if needed
+  function extractArticleWithConfig(indicator) {
+    return new Promise(function(resolve, reject) {
+      var hostname = window.location.hostname.replace(/^www\./, '');
+      var reader = new Readability(document);
+      
+      // Check if we have a config already (built-in or cached)
+      var config = reader._getSiteConfig(hostname) || reader._getCachedConfig(hostname);
+      
+      if (config) {
+        // We have config, extract immediately
+        var article = reader.parse();
+        resolve(article);
+        return;
+      }
+      
+      // No config available, try to fetch it
+      updateIndicator(indicator, '📖 Getting site-specific extraction rules...');
+      
+      var serviceUrl = SERVICE_URL.replace('/process-article', '');
+      fetch(serviceUrl + '/site-config/' + hostname)
+        .then(function(response) {
+          if (response.ok) {
+            return response.json();
+          }
+          throw new Error('No config available');
+        })
+        .then(function(data) {
+          if (data.success && data.config) {
+            // Store the config and extract with it
+            try {
+              sessionStorage.setItem('siteConfig_' + hostname, JSON.stringify({
+                config: data.config,
+                timestamp: Date.now()
+              }));
+              console.log('Using fresh FiveFilters config for', hostname);
+            } catch (e) {
+              // Session storage not available, continue anyway
+            }
+            
+            updateIndicator(indicator, '📖 Extracting with site-specific rules...');
+            
+            // Now extract with the config available
+            var article = reader.parse();
+            resolve(article);
+          } else {
+            // No config available, fall back to regular extraction
+            updateIndicator(indicator, '📖 Extracting with general rules...');
+            var article = reader.parse();
+            resolve(article);
+          }
+        })
+        .catch(function(error) {
+          // Config fetch failed, fall back to regular extraction
+          console.log('Config fetch failed for', hostname, '- using fallback extraction');
+          updateIndicator(indicator, '📖 Extracting with general rules...');
+          var article = reader.parse();
+          resolve(article);
+        });
+    });
+  }
   
   try {
     // Create a simple UI indicator
     const indicator = createIndicator();
     document.body.appendChild(indicator);
     
-    // Extract article content using simplified Readability
-    const reader = new Readability(document);
-    const article = reader.parse();
-    
-    if (!article) {
-      throw new Error('Could not extract article content from this page');
-    }
-    
-    // Enhance article data
-    const enhancedArticle = {
-      ...article,
-      url: window.location.href,
-      domain: window.location.hostname,
-      extractedAt: new Date().toISOString(),
-      userAgent: navigator.userAgent.substring(0, 100)
-    };
-    
-    // Send to service
-    updateIndicator(indicator, 'Sending to Kindle and Zotero...');
-    
-    fetch(SERVICE_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    // Extract article content - first try to get site config if needed
+    extractArticleWithConfig(indicator).then(function(article) {
+      if (!article) {
+        throw new Error('Could not extract article content from this page');
+      }
+
+      // Enhance article data
+      const enhancedArticle = {
+        ...article,
         url: window.location.href,
-        article: enhancedArticle
-      })
+        domain: window.location.hostname,
+        extractedAt: new Date().toISOString(),
+        userAgent: navigator.userAgent.substring(0, 100)
+      };
+      
+      // Send to service
+      updateIndicator(indicator, 'Sending to Kindle and Zotero...');
+      
+      return fetch(SERVICE_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          url: window.location.href,
+          article: enhancedArticle
+        })
+      });
     })
     .then(response => response.json())
     .then(data => {
       document.body.removeChild(indicator);
       
-      if (data.success) {
-        showResult('✅ Article sent successfully!\n\n' + 
-                   '📧 Kindle: ' + data.kindle + '\n' +
-                   '📚 Zotero: ' + data.zotero + '\n\n' +
-                   '📄 "' + article.title + '"');
-      } else {
-        throw new Error(data.message || 'Service returned an error');
-      }
+      // Show results
+      const results = [];
+      if (data.kindle === 'sent') results.push('✅ Sent to Kindle');
+      else results.push('❌ Kindle failed');
+      
+      if (data.zotero === 'sent') results.push('✅ Saved to Zotero');
+      else results.push('❌ Zotero failed');
+      
+      const message = `📖 "${data.article.title}"\n\n${results.join('\n')}\n\n👆 Results for your bookmarklet`;
+      showResult(message);
     })
     .catch(error => {
-      document.body.removeChild(indicator);
+      if (document.querySelector('#article-bookmarklet-indicator')) {
+        document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
+      }
       showResult('❌ Error: ' + error.message + '\n\nPlease try again or check your internet connection.');
     })
     .finally(() => {
