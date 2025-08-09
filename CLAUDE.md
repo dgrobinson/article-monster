@@ -129,10 +129,11 @@ Claude has access to these CLI tools for managing this project:
    - Location: `src/epubGenerator.js`, `public/bookmarklet.js`
    - Impact: EPUBs lack visual content
    - **Fix Plan**: See "EPUB Image Fix Implementation Plan" below
+   - **Status**: Phase 1 completed - relative URLs now converted to absolute
 
-2. **Kindle Filename Formatting** - Article titles appear as "ALL_CAPS_WITH_UNDERSCORES" instead of clean formatting
-   - Should match FiveFilters style: proper capitalization, maybe publication prefix
-   - Location: `src/emailService.js` or similar
+2. **Kindle Filename Formatting** - ~~Article titles appear as "ALL_CAPS_WITH_UNDERSCORES" instead of clean formatting~~
+   - **FIXED**: Now uses proper capitalization with hyphens (e.g., "The-Atlantic-Article-Title.epub")
+   - Location: `src/kindleSender.js`, `src/epubGenerator.js`
 
 ### 🟡 Medium Priority  
 3. **MCP Implementation Not Yet Tested** - Code exists but no real-world testing has been performed
@@ -140,6 +141,16 @@ Claude has access to these CLI tools for managing this project:
    - Health endpoint shows "active" but this is just a status check
    - **Status**: Never tested with actual AI assistants or API key validation
    - Next: Test with actual MCP_API_KEY and AI assistant integration (ChatGPT/Claude)
+
+### 🟢 Recently Fixed
+1. **Enhanced Bibliographic Metadata Extraction** (August 2025)
+   - **Improvements Made**:
+     - Extended metadata selectors to include Twitter Cards, Dublin Core, Schema.org
+     - Added DOM fallbacks for author extraction (class names, itemprop, rel attributes)
+     - Added DOM fallbacks for date extraction (time elements, common class patterns)
+     - Improved author parsing for Zotero (splits first/last names, handles multiple authors)
+   - **Files Updated**: `public/bookmarklet.js`, `src/zoteroSender.js`
+   - **Impact**: Better citation quality in Zotero with more complete metadata
 
 ## EPUB Image Fix Implementation Plan
 

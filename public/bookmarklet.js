@@ -77,8 +77,104 @@
     },
 
     _getArticleMetadata: function(property) {
-      var meta = this._doc.querySelector('meta[property="article:' + property + '"], meta[name="' + property + '"], meta[property="og:' + property + '"]');
-      return meta ? meta.getAttribute('content') : null;
+      // Enhanced metadata extraction with more fallbacks
+      var selectors = [
+        'meta[property="article:' + property + '"]',
+        'meta[property="og:article:' + property + '"]',
+        'meta[property="og:' + property + '"]',
+        'meta[name="' + property + '"]',
+        'meta[name="article:' + property + '"]',
+        'meta[itemprop="' + property + '"]',
+        'meta[name="twitter:' + property + '"]',
+        'meta[name="dc.' + property + '"]', // Dublin Core
+        'meta[name="DC.' + property + '"]'
+      ];
+      
+      for (var i = 0; i < selectors.length; i++) {
+        var meta = this._doc.querySelector(selectors[i]);
+        if (meta) {
+          var content = meta.getAttribute('content') || meta.getAttribute('value');
+          if (content && content.trim()) {
+            return content.trim();
+          }
+        }
+      }
+      
+      // Additional fallbacks for specific properties
+      if (property === 'author' || property === 'byline') {
+        return this._extractAuthorFromDOM();
+      }
+      
+      if (property === 'published_time' || property === 'date') {
+        return this._extractDateFromDOM();
+      }
+      
+      return null;
+    },
+    
+    _extractAuthorFromDOM: function() {
+      // Try to find author in common DOM locations
+      var authorSelectors = [
+        '[rel="author"]',
+        '[class*="author-name"]',
+        '[class*="byline"]',
+        '[class*="by-line"]',
+        '[class*="writer"]',
+        '[itemprop="author"]',
+        '.author',
+        '.byline',
+        '.by',
+        'address'
+      ];
+      
+      for (var i = 0; i < authorSelectors.length; i++) {
+        var element = this._doc.querySelector(authorSelectors[i]);
+        if (element) {
+          var text = element.textContent.trim();
+          // Clean up common author prefixes
+          text = text.replace(/^by\s+/i, '').replace(/^written\s+by\s+/i, '');
+          if (text && text.length > 2 && text.length < 100) {
+            return text;
+          }
+        }
+      }
+      return null;
+    },
+    
+    _extractDateFromDOM: function() {
+      // Try to find publication date in common DOM locations
+      var dateSelectors = [
+        'time[datetime]',
+        'time[pubdate]',
+        '[itemprop="datePublished"]',
+        '[class*="publish-date"]',
+        '[class*="published-date"]',
+        '[class*="post-date"]',
+        '[class*="entry-date"]',
+        '.date',
+        '.published',
+        '.timestamp'
+      ];
+      
+      for (var i = 0; i < dateSelectors.length; i++) {
+        var element = this._doc.querySelector(dateSelectors[i]);
+        if (element) {
+          var dateStr = element.getAttribute('datetime') || 
+                       element.getAttribute('content') || 
+                       element.textContent.trim();
+          if (dateStr) {
+            try {
+              var date = new Date(dateStr);
+              if (!isNaN(date.getTime())) {
+                return date.toISOString();
+              }
+            } catch (e) {
+              // Continue to next selector
+            }
+          }
+        }
+      }
+      return null;
     },
 
     _grabArticle: function(doc) {

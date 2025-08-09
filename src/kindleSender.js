@@ -115,11 +115,14 @@ function createKindleHTML(article) {
 }
 
 function sanitizeFilename(filename) {
+  // Preserve proper capitalization and use hyphens for readability
   return filename
-    .replace(/[^a-z0-9]/gi, '_')
-    .replace(/_+/g, '_')
-    .replace(/^_|_$/g, '')
-    .substring(0, 100);
+    .trim()
+    .replace(/[^a-zA-Z0-9\s-]/g, '') // Keep letters, numbers, spaces, hyphens
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Collapse multiple hyphens
+    .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
+    .substring(0, 100); // Limit length for filesystem compatibility
 }
 
 function escapeHtml(text) {

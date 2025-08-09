@@ -81,11 +81,14 @@ async function sendToZotero(article) {
 }
 
 function createZoteroItem(article) {
+  // Parse authors into Zotero's preferred format
+  const creators = parseAuthors(article.byline);
+  
   // Create a Zotero item of type "webpage"
   return {
     itemType: 'webpage',
     title: article.title || 'Untitled Article',
-    creators: article.byline ? [{ creatorType: 'author', name: article.byline }] : [],
+    creators: creators,
     url: article.url,
     websiteTitle: article.siteName || extractSiteFromUrl(article.url),
     date: formatZoteroDate(article.publishedTime),
@@ -98,6 +101,44 @@ function createZoteroItem(article) {
       { tag: 'web-article', type: 1 }
     ]
   };
+}
+
+function parseAuthors(bylineString) {
+  if (!bylineString) return [];
+  
+  // Handle multiple authors separated by common delimiters
+  const authorStrings = bylineString
+    .split(/(?:,\s*and\s+|,\s*&\s*|\s+and\s+|\s+&\s+|,\s*)/i)
+    .map(s => s.trim())
+    .filter(s => s.length > 0);
+  
+  return authorStrings.map(authorStr => {
+    // Try to parse first and last names
+    const parts = authorStr.split(/\s+/);
+    
+    if (parts.length === 1) {
+      // Single word - treat as single name
+      return { creatorType: 'author', name: authorStr };
+    } else if (parts.length === 2) {
+      // Likely first and last name
+      return {
+        creatorType: 'author',
+        firstName: parts[0],
+        lastName: parts[1]
+      };
+    } else {
+      // Multiple parts - try to intelligently split
+      // Assume last word is last name, everything else is first/middle
+      const lastName = parts[parts.length - 1];
+      const firstName = parts.slice(0, -1).join(' ');
+      
+      return {
+        creatorType: 'author',
+        firstName: firstName,
+        lastName: lastName
+      };
+    }
+  });
 }
 
 async function uploadAttachment(baseUrl, headers, parentKey, epub, article) {
