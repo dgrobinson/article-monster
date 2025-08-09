@@ -190,7 +190,7 @@ async function addToCollection(baseUrl, headers, itemKey, collectionKey) {
   try {
     console.log(`Adding item to collection: ${collectionKey}`);
     
-    await axios.patch(`${baseUrl}/collections/${collectionKey}/items`, itemKey, {
+    await axios.post(`${baseUrl}/collections/${collectionKey}/items`, itemKey, {
       headers: {
         ...headers,
         'Content-Type': 'text/plain'
