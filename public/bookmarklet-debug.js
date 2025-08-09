@@ -181,23 +181,56 @@
     const reader = new Readability(document);
     const article = reader.parse();
     
-    if (!article) {
-      throw new Error('Could not extract article content from this page');
-    }
-    
     // Get the full page HTML (sanitized for display)
     const fullHTML = document.documentElement.outerHTML
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '[SCRIPT REMOVED]')
       .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '[STYLE REMOVED]');
     
-    // Show comparison dialog
-    showDebugComparison(fullHTML, article);
+    // If extraction failed, create a fallback article object
+    if (!article) {
+      const fallbackArticle = {
+        title: document.title || 'Could not extract title',
+        content: 'EXTRACTION FAILED - No content could be extracted by the simplified Readability algorithm',
+        textContent: 'EXTRACTION FAILED',
+        length: 0,
+        excerpt: 'No excerpt available - extraction failed',
+        byline: 'Unknown',
+        siteName: window.location.hostname,
+        publishedTime: 'Unknown',
+        extractionError: 'The simplified Readability algorithm could not identify article content on this page'
+      };
+      
+      showDebugComparison(fullHTML, fallbackArticle, true);
+    } else {
+      // Show comparison dialog
+      showDebugComparison(fullHTML, article, false);
+    }
     
   } catch (error) {
-    alert('❌ Debug extraction failed: ' + error.message);
+    alert('❌ Debug extraction failed: ' + error.message + '\n\nTrying to show debug info anyway...');
+    
+    // Even if there's an error, try to show what we can
+    try {
+      const fullHTML = document.documentElement.outerHTML;
+      const errorArticle = {
+        title: document.title || 'Error during extraction',
+        content: 'CRITICAL ERROR: ' + error.message,
+        textContent: 'CRITICAL ERROR: ' + error.message,
+        length: 0,
+        excerpt: 'Error occurred',
+        byline: 'Error',
+        siteName: window.location.hostname,
+        publishedTime: 'Error',
+        extractionError: error.message
+      };
+      
+      showDebugComparison(fullHTML, errorArticle, true);
+    } catch (secondError) {
+      alert('❌ Complete failure: ' + secondError.message);
+    }
   }
   
-  function showDebugComparison(fullHTML, extractedArticle) {
+  function showDebugComparison(fullHTML, extractedArticle, isExtractionFailure = false) {
     // Create debug dialog
     const dialog = document.createElement('div');
     dialog.style.cssText = `
@@ -215,7 +248,9 @@
     dialog.innerHTML = `
       <div style="padding: 20px; color: white;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h2 style="color: white; margin: 0;">🐛 Article Extraction Debug</h2>
+          <h2 style="color: ${isExtractionFailure ? '#e74c3c' : 'white'}; margin: 0;">
+            🐛 Article Extraction Debug ${isExtractionFailure ? '(EXTRACTION FAILED)' : ''}
+          </h2>
           <div>
             <button onclick="copyBothToClipboard()" style="
               background: #f39c12; color: white; border: none; padding: 10px 20px;
@@ -296,6 +331,8 @@
 URL: ${window.location.href}
 Title: ${extractedArticle.title || 'No Title'}
 Date: ${new Date().toISOString()}
+Extraction Status: ${extractedArticle.extractionError ? 'FAILED' : 'SUCCESS'}
+${extractedArticle.extractionError ? 'Error: ' + extractedArticle.extractionError : ''}
 
 ========================================
 EXTRACTION METADATA
