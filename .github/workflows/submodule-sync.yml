@@ -1,0 +1,36 @@
+name: Sync Submodule Updates
+
+on:
+  schedule:
+    # Check for updates every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  check-submodule:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code with submodules
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+        token: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Update submodule to latest
+      run: |
+        git submodule update --remote site-configs
+        
+    - name: Check for changes and commit
+      run: |
+        git config user.name "GitHub Actions Bot"
+        git config user.email "actions@github.com"
+        
+        if ! git diff --quiet site-configs; then
+          echo "Submodule changes detected, committing..."
+          git add site-configs
+          git commit -m "Update site-configs submodule to latest version"
+          git push
+          echo "Submodule updated and pushed"
+        else
+          echo "No submodule changes detected"
+        fi
