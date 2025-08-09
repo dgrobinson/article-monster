@@ -4,7 +4,7 @@
 
 **BEFORE doing ANY work in this repo, Claude MUST:**
 
-1. **📖 Read ALL documentation first** - Every .md file in the repo
+1. **📖 Read root documentation first** - Root .md files in the repo (README.md, etc.)
 2. **🔍 Audit actual functionality** - Test what's really working vs what's documented
 3. **📊 Reconcile discrepancies** - Note where docs are stale or missing
 4. **✅ Verify production state** - Check deployed environment, not just local code
@@ -131,10 +131,11 @@ Claude has access to these CLI tools for managing this project:
    - Location: `src/emailService.js` or similar
 
 ### 🟡 Medium Priority  
-3. **MCP Implementation Status Unclear** - Extensive planning exists but actual working state needs verification
+3. **MCP Implementation Not Yet Tested** - Code exists but no real-world testing has been performed
    - Files exist: `src/mcpServer.js`, `MCP_INTEGRATION_PLAN.md`
-   - Health endpoint shows "active" but needs real testing
-   - Next: Test with actual API key and AI assistant integration
+   - Health endpoint shows "active" but this is just a status check
+   - **Status**: Never tested with actual AI assistants or API key validation
+   - Next: Test with actual MCP_API_KEY and AI assistant integration (ChatGPT/Claude)
 
 ## Auto-Context Reading Instruction
 
