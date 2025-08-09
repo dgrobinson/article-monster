@@ -152,6 +152,28 @@ Claude has access to these CLI tools for managing this project:
    - **Files Updated**: `public/bookmarklet.js`, `src/zoteroSender.js`
    - **Impact**: Better citation quality in Zotero with more complete metadata
 
+## Future Enhancement Roadmap
+
+For detailed future improvement plans, see **[METADATA_ROADMAP.md](./METADATA_ROADMAP.md)**
+
+### Upcoming Priorities:
+1. **Academic Metadata Enhancement** (Next Session):
+   - DOI detection and extraction
+   - Journal/publication metadata
+   - Page numbers and article identifiers
+   - Academic item type detection
+
+2. **Site-Specific Extraction Rules** (Future):
+   - Extend FiveFilters configs for metadata
+   - Custom extraction for popular sites (NYTimes, WSJ, Medium, arXiv)
+   - Academic publisher support (Nature, Science, JSTOR)
+
+3. **Advanced Features** (Long-term):
+   - ORCID identifier support
+   - Author role detection (Editor, Translator, etc.)
+   - Metadata confidence scoring
+   - Duplicate prevention
+
 ## EPUB Image Fix Implementation Plan
 
 ### Problem Analysis

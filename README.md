@@ -111,6 +111,12 @@ The bookmarklet runs Mozilla Readability.js in your browser to extract clean art
 - All operations are logged for debugging
 - Browser-side extraction respects your authentication
 
+## Development & Future Plans
+
+- **Documentation**: See [CLAUDE.md](./CLAUDE.md) for development context and known issues
+- **Future Enhancements**: See [METADATA_ROADMAP.md](./METADATA_ROADMAP.md) for planned metadata improvements
+- **Contributing**: See [CONTRIBUTING_TO_FIVEFILTERS.md](./CONTRIBUTING_TO_FIVEFILTERS.md) for site extraction rules
+
 ## Troubleshooting
 
 - Check service status at your deployed URL
