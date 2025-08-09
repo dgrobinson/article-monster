@@ -22,6 +22,13 @@
   Readability.prototype = {
     parse: function() {
       try {
+        // First try JSON-LD structured data (common on modern news sites)
+        var jsonLdContent = this._extractFromJsonLd();
+        if (jsonLdContent) {
+          return jsonLdContent;
+        }
+        
+        // Fall back to DOM-based extraction
         var documentClone = this._doc.cloneNode(true);
         var article = this._grabArticle(documentClone);
         
@@ -183,6 +190,78 @@
           unwanted[j].remove();
         }
       }
+    },
+
+    _extractFromJsonLd: function() {
+      try {
+        var jsonLdScripts = this._doc.querySelectorAll('script[type="application/ld+json"]');
+        
+        for (var i = 0; i < jsonLdScripts.length; i++) {
+          var script = jsonLdScripts[i];
+          var jsonData = JSON.parse(script.textContent || script.innerText);
+          
+          // Handle both single objects and arrays
+          var articles = Array.isArray(jsonData) ? jsonData : [jsonData];
+          
+          for (var j = 0; j < articles.length; j++) {
+            var data = articles[j];
+            
+            // Look for NewsArticle or Article types
+            if (data['@type'] === 'NewsArticle' || data['@type'] === 'Article') {
+              if (data.articleBody && data.articleBody.length > 500) {
+                // Convert plain text to basic HTML with paragraphs
+                var htmlContent = this._textToHtml(data.articleBody);
+                
+                return {
+                  title: data.headline || data.name || this._getArticleTitle(),
+                  content: htmlContent,
+                  textContent: data.articleBody,
+                  length: data.articleBody.length,
+                  excerpt: data.description || this._createExcerpt(data.articleBody),
+                  byline: this._extractAuthor(data.author) || this._getArticleMetadata('author'),
+                  siteName: data.publisher && data.publisher.name || this._getArticleMetadata('site_name') || document.title,
+                  publishedTime: data.datePublished || this._getArticleMetadata('published_time'),
+                  source: 'json-ld'
+                };
+              }
+            }
+          }
+        }
+        
+        return null;
+      } catch (e) {
+        console.error('JSON-LD extraction failed:', e);
+        return null;
+      }
+    },
+
+    _textToHtml: function(text) {
+      // Convert plain text to basic HTML with paragraph breaks
+      return '<div>' + text
+        .split(/\n\s*\n/)  // Split on double line breaks
+        .map(function(paragraph) {
+          return '<p>' + paragraph.replace(/\n/g, ' ').trim() + '</p>';
+        })
+        .join('') + '</div>';
+    },
+
+    _extractAuthor: function(authorData) {
+      if (!authorData) return null;
+      
+      if (typeof authorData === 'string') return authorData;
+      
+      if (Array.isArray(authorData)) {
+        return authorData.map(function(author) {
+          return author.name || author;
+        }).join(', ');
+      }
+      
+      return authorData.name || null;
+    },
+
+    _createExcerpt: function(text) {
+      if (!text) return '';
+      return text.substring(0, 300).trim() + (text.length > 300 ? '...' : '');
     }
   };
   
