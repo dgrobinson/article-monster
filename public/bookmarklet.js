@@ -673,6 +673,11 @@
         throw new Error('Could not extract article content from this page');
       }
 
+      // Fix image URLs to ensure they're absolute
+      if (article.content) {
+        article.content = fixImageUrls(article.content);
+      }
+
       // Enhance article data
       const enhancedArticle = {
         ...article,
@@ -727,6 +732,61 @@
     }
     showResult('❌ Extraction failed: ' + error.message);
     window.articleBookmarkletProcessing = false;
+  }
+  
+  // Fix relative image URLs to absolute URLs
+  function fixImageUrls(html) {
+    try {
+      var div = document.createElement('div');
+      div.innerHTML = html;
+      var baseUrl = window.location.origin;
+      
+      // Fix img src attributes
+      var images = div.querySelectorAll('img');
+      for (var i = 0; i < images.length; i++) {
+        var img = images[i];
+        
+        // Fix relative URLs to absolute
+        if (img.src && !img.src.startsWith('http')) {
+          try {
+            img.src = new URL(img.src, baseUrl).href;
+          } catch (e) {
+            console.warn('Could not fix image URL:', img.src);
+          }
+        }
+        
+        // Also fix srcset for responsive images
+        if (img.srcset) {
+          var srcsetParts = img.srcset.split(',');
+          var fixedSrcset = [];
+          
+          for (var j = 0; j < srcsetParts.length; j++) {
+            var part = srcsetParts[j].trim();
+            var spaceIndex = part.lastIndexOf(' ');
+            var url = spaceIndex > -1 ? part.substring(0, spaceIndex) : part;
+            var descriptor = spaceIndex > -1 ? part.substring(spaceIndex) : '';
+            
+            if (!url.startsWith('http')) {
+              try {
+                url = new URL(url, baseUrl).href;
+              } catch (e) {
+                console.warn('Could not fix srcset URL:', url);
+                continue;
+              }
+            }
+            
+            fixedSrcset.push(url + descriptor);
+          }
+          
+          img.srcset = fixedSrcset.join(', ');
+        }
+      }
+      
+      return div.innerHTML;
+    } catch (e) {
+      console.error('Error fixing image URLs:', e);
+      return html; // Return original HTML if fixing fails
+    }
   }
   
   function createIndicator() {
