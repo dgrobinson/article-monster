@@ -515,18 +515,27 @@
         },
 
         'newyorker.com': {
-          preferJsonLd: true, // New Yorker has full content in JSON-LD
           title: [
             "//meta[@property='og:title']/@content",
             "//h1"
           ],
           body: [
-            "//div[@data-testid='ArticleBodyWrapper']",
-            "//article//div[@class='GridItem']"
+            "//em[@data-testid='SplitScreenContentHeaderWrapper']",
+            "//div[@class='body__inner-container']"
           ],
           author: [
-            "//meta[@name='author']/@content",
+            "//meta[@property='article:author']/@content",
             "//span[@class='byline-name']//a"
+          ],
+          strip: [
+            "//button[@id='bookmark']",
+            "//div[@data-testid='ResponsiveClipVideoContainer']",
+            "//div[@data-testid='ContentHeaderRubric']",
+            "//div[@data-testid='BylinesWrapper']",
+            "//ul[@data-testid='socialIconslist']",
+            "//div[@data-testid='GenericCallout']",
+            "//figure[@data-testid='IframeEmbed']",
+            "//div[contains(@class, 'responsive-cartoon')]"
           ]
         }
       };
