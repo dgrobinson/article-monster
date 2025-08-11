@@ -298,7 +298,8 @@ mcpRouter.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     service: 'Zotero MCP Server',
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
+    apiKeyConfigured: !!process.env.MCP_API_KEY
   });
 });
 
