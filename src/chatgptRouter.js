@@ -185,6 +185,77 @@ chatgptRouter.get('/items', async (req, res) => {
   }
 });
 
+// OpenAPI schema for ChatGPT Actions discovery
+chatgptRouter.get('/openapi.yaml', (req, res) => {
+  res.setHeader('Content-Type', 'application/x-yaml');
+  res.send(`openapi: 3.0.0
+info:
+  title: Personal Zotero Library Access
+  version: 1.0.0
+  description: Access your personal Zotero research library for AI assistance
+servers:
+  - url: https://seal-app-t4vff.ondigitalocean.app/chatgpt
+
+paths:
+  /search:
+    post:
+      summary: Search Zotero library
+      description: Search across all items in your personal Zotero library
+      operationId: searchLibrary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: Search terms (title, author, keywords, etc.)
+                limit:
+                  type: integer
+                  default: 25
+                  maximum: 50
+              required:
+                - query
+      responses:
+        '200':
+          description: Search results from your library
+
+  /item/{key}:
+    get:
+      summary: Get detailed item information
+      operationId: getItemDetails
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detailed item information
+
+  /items:
+    get:
+      summary: Browse library items
+      operationId: listItems
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 25
+        - name: start
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: List of library items`);
+});
+
 // Health check for ChatGPT
 chatgptRouter.get('/health', (req, res) => {
   res.json({ 

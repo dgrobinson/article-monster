@@ -1,0 +1,212 @@
+openapi: 3.0.0
+info:
+  title: Personal Zotero Library Access
+  version: 1.0.0
+  description: Access your personal Zotero research library for AI assistance
+servers:
+  - url: https://seal-app-t4vff.ondigitalocean.app/chatgpt
+    description: Personal Zotero API Server
+
+paths:
+  /search:
+    post:
+      summary: Search Zotero library
+      description: Search across all items in your personal Zotero library
+      operationId: searchLibrary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: Search terms (title, author, keywords, etc.)
+                  example: "climate change"
+                limit:
+                  type: integer
+                  default: 25
+                  maximum: 50
+                  description: Maximum number of results to return
+              required:
+                - query
+      responses:
+        '200':
+          description: Search results from your library
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  query:
+                    type: string
+                  count:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LibraryItem'
+
+  /item/{key}:
+    get:
+      summary: Get detailed item information
+      description: Get complete details of a specific item from your library
+      operationId: getItemDetails
+      parameters:
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Item key from search results
+          example: "ABCD1234"
+      responses:
+        '200':
+          description: Detailed item information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetailedItem'
+        '404':
+          description: Item not found
+
+  /items:
+    get:
+      summary: Browse library items
+      description: List items from your library with pagination
+      operationId: listItems
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 25
+            maximum: 50
+          description: Number of items to return
+        - name: start
+          in: query
+          schema:
+            type: integer
+            default: 0
+          description: Starting position for pagination
+        - name: sort
+          in: query
+          schema:
+            type: string
+            default: dateModified
+            enum: [dateModified, dateAdded, title, creator]
+          description: Field to sort by
+        - name: direction
+          in: query
+          schema:
+            type: string
+            default: desc
+            enum: [asc, desc]
+          description: Sort direction
+      responses:
+        '200':
+          description: List of library items
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  start:
+                    type: integer
+                  limit:
+                    type: integer
+                  total:
+                    type: integer
+                  items:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LibraryItem'
+
+components:
+  schemas:
+    LibraryItem:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Unique item identifier
+        type:
+          type: string
+          description: Type of item (journalArticle, book, webpage, etc.)
+        title:
+          type: string
+          description: Title of the item
+        creators:
+          type: array
+          items:
+            type: object
+            properties:
+              firstName:
+                type: string
+              lastName:
+                type: string
+              name:
+                type: string
+              creatorType:
+                type: string
+        date:
+          type: string
+          description: Publication date
+        url:
+          type: string
+          description: URL of the item
+        abstract:
+          type: string
+          description: Abstract or summary
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              tag:
+                type: string
+        collections:
+          type: array
+          items:
+            type: string
+
+    DetailedItem:
+      allOf:
+        - $ref: '#/components/schemas/LibraryItem'
+        - type: object
+          properties:
+            version:
+              type: integer
+            data:
+              type: object
+              description: Complete Zotero item data
+            attachments:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  title:
+                    type: string
+                  contentType:
+                    type: string
+                  filename:
+                    type: string
+            notes:
+              type: array
+              items:
+                type: object
+                properties:
+                  key:
+                    type: string
+                  note:
+                    type: string
+            meta:
+              type: object
+              properties:
+                created:
+                  type: string
+                modified:
+                  type: string
