@@ -67,16 +67,16 @@ curl https://seal-app-t4vff.ondigitalocean.app/mcp/item/NTKVD7M7 \
 
 1. Go to ChatGPT Settings → Connectors
 2. Click "Add custom connector" 
-3. Enter the MCP server URL: `https://seal-app-t4vff.ondigitalocean.app/chatgpt`
+3. Enter the MCP server URL: `https://seal-app-t4vff.ondigitalocean.app/mcp-jsonrpc`
 4. Authentication: "No authentication" (personal use)
-5. The connector will auto-discover the required `search` and `fetch` tools
+5. The connector will auto-discover the required `search` and `fetch` tools via JSON-RPC protocol
 
-**MCP Endpoints Available:**
-- **Metadata**: `/mcp/metadata` - Tool discovery
-- **Search Tool**: `/tools/search` - Search your library  
-- **Fetch Tool**: `/tools/fetch` - Get item details
+**JSON-RPC MCP Methods Available:**
+- **initialize** - Protocol handshake and server info
+- **tools/list** - Discover available tools (search, fetch)
+- **tools/call** - Execute search and fetch operations
 
-**No OpenAPI schema needed** - MCP handles tool discovery automatically.
+**No OpenAPI schema needed** - MCP uses JSON-RPC 2.0 protocol with automatic tool discovery.
 
 ### For Claude Desktop
 
