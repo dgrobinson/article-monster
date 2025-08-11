@@ -40,8 +40,11 @@ app.use((req, res, next) => {
   next();
 });
 
-// Mount MCP server routes
+// Mount MCP server routes (with authentication)
 app.use('/mcp', mcpRouter);
+
+// Mount ChatGPT-compatible routes (no auth required for personal use)
+app.use('/chatgpt', require('./chatgptRouter'));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
