@@ -65,10 +65,11 @@ curl https://seal-app-t4vff.ondigitalocean.app/mcp/item/NTKVD7M7 \
 
 **✅ UPDATED FOR 2025 - Now uses MCP (Model Context Protocol)**
 **✅ COMPLIANT WITH OPENAI SPECIFICATION - Updated to match required response formats**
+**✅ SSE TRANSPORT SUPPORT - Now includes Server-Sent Events for ChatGPT compatibility**
 
 1. Go to ChatGPT Settings → Connectors
 2. Click "Add custom connector" 
-3. Enter the MCP server URL: `https://seal-app-t4vff.ondigitalocean.app/mcp-jsonrpc`
+3. Enter the MCP server URL: `https://seal-app-t4vff.ondigitalocean.app/mcp-jsonrpc/sse`
 4. Authentication: "No authentication" (personal use)
 5. The connector will auto-discover the required `search` and `fetch` tools via JSON-RPC protocol
 
