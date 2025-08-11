@@ -151,13 +151,6 @@ Claude has access to these CLI tools for managing this project:
    - **FIXED**: Now uses proper capitalization with hyphens (e.g., "The-Atlantic-Article-Title.epub")
    - Location: `src/kindleSender.js`, `src/epubGenerator.js`
 
-### 🟡 Medium Priority  
-3. **MCP Implementation Not Yet Tested** - Code exists but no real-world testing has been performed
-   - Files exist: `src/mcpServer.js`, `MCP_INTEGRATION_PLAN.md`
-   - Health endpoint shows "active" but this is just a status check
-   - **Status**: Never tested with actual AI assistants or API key validation
-   - Next: Test with actual MCP_API_KEY and AI assistant integration (ChatGPT/Claude)
-
 ### 🟢 Recently Fixed
 1. **Enhanced Bibliographic Metadata Extraction** (August 2025)
    - **Improvements Made**:
@@ -174,6 +167,15 @@ Claude has access to these CLI tools for managing this project:
    - **Status**: Phase 1 complete - public site images now work
    - **Files Updated**: `public/bookmarklet.js`
    - **Next**: Phase 2 (base64 embedding for auth sites) if needed
+
+3. **MCP Server Implementation** (August 2025)
+   - **Status**: WORKING - MCP server is fully functional and tested
+   - **API Key**: `0530bf0ab5c4749e3c867d9cb7e8a5822b7dbc4b74be68c5d1d0eea54f2ce80f` (keep secret)
+   - **Tested Endpoints**: Health ✅, Search ✅, Item Details ✅
+   - **Known Issue**: Collections endpoint returns 400 error (needs debugging)
+   - **Files**: `src/mcpServer.js`, `MCP_SETUP_GUIDE.md`
+   - **URL**: https://seal-app-t4vff.ondigitalocean.app/mcp/*
+   - **Next**: Set up with ChatGPT/Claude AI assistants
 
 ## Future Enhancement Roadmap
 
