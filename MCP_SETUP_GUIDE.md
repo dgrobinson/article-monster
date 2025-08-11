@@ -64,6 +64,7 @@ curl https://seal-app-t4vff.ondigitalocean.app/mcp/item/NTKVD7M7 \
 ### For ChatGPT (Connectors - 2025)
 
 **✅ UPDATED FOR 2025 - Now uses MCP (Model Context Protocol)**
+**✅ COMPLIANT WITH OPENAI SPECIFICATION - Updated to match required response formats**
 
 1. Go to ChatGPT Settings → Connectors
 2. Click "Add custom connector" 
