@@ -61,169 +61,22 @@ curl https://seal-app-t4vff.ondigitalocean.app/mcp/item/NTKVD7M7 \
 
 ## AI Assistant Setup
 
-### For ChatGPT (Actions)
+### For ChatGPT (Connectors - 2025)
 
-1. Go to ChatGPT Settings → Actions
-2. Create new action with these settings:
-   - **Name**: Zotero Library Access
-   - **Authentication**: API Key
-   - **API Key**: `0530bf0ab5c4749e3c867d9cb7e8a5822b7dbc4b74be68c5d1d0eea54f2ce80f`
-   - **Auth Type**: Bearer
+**✅ UPDATED FOR 2025 - Now uses MCP (Model Context Protocol)**
 
-3. Use this OpenAPI schema:
+1. Go to ChatGPT Settings → Connectors
+2. Click "Add custom connector" 
+3. Enter the MCP server URL: `https://seal-app-t4vff.ondigitalocean.app/chatgpt`
+4. Authentication: "No authentication" (personal use)
+5. The connector will auto-discover the required `search` and `fetch` tools
 
-```yaml
-openapi: 3.0.0
-info:
-  title: Zotero MCP API
-  version: 1.0.0
-  description: Access your Zotero library for research assistance
-servers:
-  - url: https://seal-app-t4vff.ondigitalocean.app
-paths:
-  /mcp/search:
-    post:
-      summary: Search Zotero library
-      description: Search across all items in your Zotero library
-      operationId: searchLibrary
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                query:
-                  type: string
-                  description: Search terms
-                limit:
-                  type: integer
-                  default: 25
-                  maximum: 50
-              required:
-                - query
-      responses:
-        '200':
-          description: Search results
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  query:
-                    type: string
-                  count:
-                    type: integer
-                  items:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        key:
-                          type: string
-                        type:
-                          type: string
-                        title:
-                          type: string
-                        creators:
-                          type: array
-                        date:
-                          type: string
-                        url:
-                          type: string
-                        abstract:
-                          type: string
-                        tags:
-                          type: array
-                        collections:
-                          type: array
-  /mcp/item/{key}:
-    get:
-      summary: Get item details
-      description: Get complete details of a specific item
-      operationId: getItem
-      parameters:
-        - name: key
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Item key from search results
-      responses:
-        '200':
-          description: Item details
-        '404':
-          description: Item not found
-  /mcp/items:
-    get:
-      summary: List items with pagination
-      description: Browse items in your library
-      operationId: listItems
-      parameters:
-        - name: limit
-          in: query
-          schema:
-            type: integer
-            default: 25
-            maximum: 50
-        - name: start
-          in: query
-          schema:
-            type: integer
-            default: 0
-        - name: collection
-          in: query
-          schema:
-            type: string
-          description: Filter by collection key
-        - name: sort
-          in: query
-          schema:
-            type: string
-            default: dateModified
-        - name: direction
-          in: query
-          schema:
-            type: string
-            default: desc
-            enum: [asc, desc]
-      responses:
-        '200':
-          description: List of items
-  /mcp/item:
-    post:
-      summary: Add new item
-      description: Add a new reference to your Zotero library
-      operationId: addItem
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                itemType:
-                  type: string
-                  enum: [webpage, journalArticle, book, bookSection, document]
-                title:
-                  type: string
-                url:
-                  type: string
-                tags:
-                  type: array
-                  items:
-                    type: string
-                collections:
-                  type: array
-                  items:
-                    type: string
-              required:
-                - itemType
-                - title
-      responses:
-        '200':
-          description: Item created successfully
-```
+**MCP Endpoints Available:**
+- **Metadata**: `/mcp/metadata` - Tool discovery
+- **Search Tool**: `/tools/search` - Search your library  
+- **Fetch Tool**: `/tools/fetch` - Get item details
+
+**No OpenAPI schema needed** - MCP handles tool discovery automatically.
 
 ### For Claude Desktop
 
