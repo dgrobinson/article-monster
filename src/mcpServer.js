@@ -296,9 +296,20 @@ mcpRouter.post('/item', async (req, res) => {
 
   } catch (error) {
     console.error('MCP add item error:', error.message);
+    
+    // Log more details for debugging
+    if (error.response) {
+      console.error('Zotero API Error Details:', {
+        status: error.response.status,
+        data: error.response.data,
+        headers: error.response.headers
+      });
+    }
+    
     res.status(500).json({ 
       error: 'Failed to add item', 
-      message: error.message 
+      message: error.message,
+      details: error.response?.data || 'No additional details'
     });
   }
 });
