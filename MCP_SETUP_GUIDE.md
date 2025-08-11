@@ -262,7 +262,10 @@ paths:
 ## Known Issues ⚠️
 
 - ❌ **Collections Endpoint**: Returns 400 error, needs debugging
-- ❌ **Add Item**: Not yet tested (use carefully when available)
+- ❌ **Add Item Endpoint**: Currently failing with "Item creation failed" 
+  - May be Zotero API key permissions issue
+  - Needs debugging of request format
+  - Read-only operations work perfectly
 
 ## Usage Examples
 
