@@ -300,12 +300,84 @@ mcpJsonRpcRouter.options('/', (req, res) => {
   res.sendStatus(200);
 });
 
+// SSE Transport Endpoint - Required by OpenAI MCP specification
+mcpJsonRpcRouter.get('/sse', async (req, res) => {
+  // Set SSE headers
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Cache-Control');
+
+  // Send initial connected event
+  res.write('event: connected\n');
+  res.write('data: {"type": "connected"}\n\n');
+
+  // Handle MCP protocol over SSE
+  req.on('close', () => {
+    console.log('SSE connection closed');
+  });
+
+  // Keep connection alive with periodic ping
+  const heartbeat = setInterval(() => {
+    res.write('event: ping\n');
+    res.write('data: {"type": "ping"}\n\n');
+  }, 30000);
+
+  req.on('close', () => {
+    clearInterval(heartbeat);
+  });
+});
+
+// SSE Endpoint for handling JSON-RPC messages via POST
+mcpJsonRpcRouter.post('/sse', async (req, res) => {
+  try {
+    // Set CORS headers for ChatGPT
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
+    
+    const request = req.body;
+    
+    // Handle single request or batch
+    if (Array.isArray(request)) {
+      // Batch request
+      const responses = await Promise.all(
+        request.map(handleJsonRpcRequest)
+      );
+      const validResponses = responses.filter(r => r !== null);
+      res.json(validResponses.length === 1 ? validResponses[0] : validResponses);
+    } else {
+      // Single request
+      const response = await handleJsonRpcRequest(request);
+      if (response) {
+        res.json(response);
+      } else {
+        // Notification - no response
+        res.status(204).send();
+      }
+    }
+  } catch (error) {
+    console.error('MCP SSE server error:', error);
+    res.json(createJsonRpcResponse(null, null, createJsonRpcError(JSONRPC_ERRORS.PARSE_ERROR, 'Parse error')));
+  }
+});
+
+// Handle OPTIONS for CORS on SSE endpoint
+mcpJsonRpcRouter.options('/sse', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
+  res.sendStatus(200);
+});
+
 // Health check
 mcpJsonRpcRouter.get('/health', (req, res) => {
   res.json({ 
     status: 'ok',
     service: 'MCP JSON-RPC Zotero Server',
     protocol: 'json-rpc-2.0',
+    transport: 'sse',
     version: '2024-11-05',
     timestamp: new Date().toISOString()
   });
