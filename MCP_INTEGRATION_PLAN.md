@@ -1,30 +1,53 @@
 # MCP Integration Plan for Zotero Access
 
-## Overview
-This document captures the complete plan for integrating MCP (Model Context Protocol) server functionality into the Article Bookmarklet Service, enabling ChatGPT and Claude to access your Zotero library from anywhere.
+## 🚨 CRITICAL UPDATE (August 2025): Official SDK Required for ChatGPT
 
-## Architecture Decision
-We're using **Option 1: Single DigitalOcean App** containing both:
-- Article Bookmarklet Service (existing)
-- Zotero MCP Server (new)
+**BREAKING DISCOVERY**: ChatGPT Connectors require servers built with official MCP frameworks, NOT custom JSON-RPC implementations.
 
-## Key Design Decisions (Important for Sonnet)
+## Current Status
+- ✅ **Custom MCP Server**: Implemented but rejected by ChatGPT ("doesn't implement our specification")
+- ✅ **REST API**: Working perfectly for direct API access
+- 🔄 **Official SDK Rewrite**: Required for ChatGPT compatibility
 
-### 1. Code Adaptation Strategy
-- **NOT cloning** the zotero-mcp repo directly
-- **Adapting** the core functionality into our Express server
-- **Reasoning**: Better integration, shared Zotero client, single deployment
+## Architecture Decision - UPDATED
+We're using **Option 1: Single DigitalOcean App** containing:
+- Article Bookmarklet Service (existing) ✅
+- Zotero MCP Server (custom implementation) ✅ - works for direct API access
+- **NEW**: Official MCP SDK Server (pending) - required for ChatGPT integration
 
-### 2. MCP Implementation Approach
-Based on https://github.com/54yyyu/zotero-mcp, we need to implement:
+## Key Design Decisions - REVISED
 
+### 1. Dual Implementation Strategy (Updated Aug 2025)
+- **Keep existing custom MCP server** at `/mcp/*` for direct API access
+- **Add official SDK MCP server** at `/mcp-official/*` for ChatGPT integration
+- **Reasoning**: Custom server works great for APIs, official SDK needed for ChatGPT
+
+### 2. MCP Implementation - Two Approaches
+
+#### A) Custom REST API (WORKING)
 ```javascript
-// MCP endpoints to implement
-POST /mcp/search         - Search Zotero library
-GET  /mcp/item/:key      - Get specific item details  
-GET  /mcp/collections    - List all collections
-POST /mcp/item           - Add new item (careful!)
-GET  /mcp/items          - List items with pagination
+// Current working endpoints
+POST /mcp/search         - Search Zotero library ✅
+GET  /mcp/item/:key      - Get specific item details ✅  
+GET  /mcp/collections    - List all collections ⚠️ (needs debugging)
+POST /mcp/item           - Add new item ⚠️ (needs debugging)
+GET  /mcp/items          - List items with pagination ✅
+```
+
+#### B) Official SDK (REQUIRED FOR CHATGPT)
+```typescript
+// Official MCP SDK approach - REQUIRED
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+
+server.registerTool("search", {
+  description: "Search Zotero library",
+  inputSchema: { query: string, limit?: number }
+}, async ({ query, limit }) => ({
+  content: [{ 
+    type: "text", 
+    text: JSON.stringify({ results: [...] }) // Must match OpenAI format
+  }]
+}));
 ```
 
 ### 3. Authentication Strategy
@@ -37,43 +60,72 @@ GET  /mcp/items          - List items with pagination
 - Same API key and User ID
 - Benefit: Single source of truth for Zotero access
 
-## Implementation Sequence (Critical for Sonnet)
+## Implementation Sequence - UPDATED (August 2025)
 
-### Phase 1: Documentation and Structure
-1. Create comprehensive docs (this file)
-2. Update README with MCP section
-3. Design unified API structure
+### Phase 1: COMPLETED ✅
+1. ✅ Create comprehensive docs (this file)
+2. ✅ Custom MCP server implementation (`src/mcpServer.js`)
+3. ✅ Custom JSON-RPC implementation (`src/mcpJsonRpc.js`) 
+4. ✅ Authentication middleware
+5. ✅ Search functionality (read-only, safe)
 
-### Phase 2: MCP Core Implementation
-1. Create `src/mcpServer.js` with MCP endpoints
-2. Add authentication middleware
-3. Implement search functionality first (read-only, safe)
-4. Test thoroughly before write operations
+### Phase 2: DISCOVERY & DEBUGGING ✅
+1. ✅ Tested with ChatGPT - discovered incompatibility
+2. ✅ Found custom implementations rejected by ChatGPT
+3. ✅ Researched official MCP SDK requirement
+4. ✅ Updated documentation with findings
 
-### Phase 3: Integration Points
-1. Modify `src/server.js` to include MCP routes
-2. Share Zotero client between bookmarklet and MCP
-3. Add MCP-specific error handling
+### Phase 3: OFFICIAL SDK IMPLEMENTATION (CURRENT)
+1. 🔄 Install `@modelcontextprotocol/sdk` (v1.17.2)
+2. 🔄 Create `src/mcpServerOfficial.js` with official SDK
+3. 🔄 Implement required `search` and `fetch` tools
+4. 🔄 Set up HTTP transport for ChatGPT compatibility
+5. 🔄 Test with ChatGPT Connectors
 
-### Phase 4: Testing Strategy
-1. Test search endpoint with various queries
-2. Verify authentication works correctly
-3. Test with actual ChatGPT/Claude connections
-4. Monitor rate limits and performance
+### Phase 4: PRODUCTION DEPLOYMENT
+1. 🔄 Deploy official SDK server alongside custom server
+2. 🔄 Update ChatGPT connector URL to official endpoint
+3. 🔄 Monitor performance and compatibility
+4. 🔄 Document final integration steps
 
-## Technical Details for Implementation
+## Technical Details - UPDATED
 
-### MCP Server Specifics
-The original zotero-mcp uses the official MCP SDK. For our cloud deployment:
-- Implement MCP protocol over HTTP/REST
-- Format responses to match MCP expectations
-- Handle streaming responses for large result sets
+### Official SDK Requirements (CRITICAL)
+Based on August 2025 research and testing:
 
-### Environment Variables to Add
+#### Required Dependencies
+```bash
+npm install @modelcontextprotocol/sdk
+# Requires Node.js 18+
 ```
-# MCP Configuration
-MCP_API_KEY=generated-secure-token-here
-MCP_RATE_LIMIT=100  # requests per minute
+
+#### Official SDK Server Structure
+```typescript
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+
+const server = new McpServer({
+  name: "zotero-mcp-server", 
+  version: "1.0.0"
+});
+
+// REQUIRED: ChatGPT expects exactly these tool names
+server.registerTool("search", {...});
+server.registerTool("fetch", {...});
+```
+
+#### Transport Options for ChatGPT
+1. **HTTP Transport** (recommended for cloud deployment)
+2. **SSE Transport** (legacy, being phased out)
+3. **Stdio Transport** (local only)
+
+### Environment Variables - CURRENT
+```
+# Existing (working for custom API)
+MCP_API_KEY=0530bf0ab5c4749e3c867d9cb7e8a5822b7dbc4b74be68c5d1d0eea54f2ce80f
+
+# Additional for official SDK
+MCP_RATE_LIMIT=100  # requests per minute  
 MCP_MAX_RESULTS=50  # max items per search
 ```
 
@@ -83,15 +135,17 @@ MCP_MAX_RESULTS=50  # max items per search
 3. **Query Validation**: Sanitize all search inputs
 4. **Audit Logging**: Log all MCP operations
 
-### ChatGPT Integration
-- ChatGPT will use "Actions" with our API
-- Provide OpenAPI schema for easy setup
-- Test with ChatGPT's new Projects feature
+### ChatGPT Integration - UPDATED
+**2025 Update: ChatGPT now uses "Connectors" (not "Actions")**
+- ❌ **Custom JSON-RPC**: Rejected with "doesn't implement our specification"
+- ✅ **Official SDK Required**: Must use `@modelcontextprotocol/sdk`
+- ✅ **Tool Names**: Must implement exactly `search` and `fetch` tools
+- ✅ **Response Format**: Must match OpenAI specification exactly
 
-### Claude Integration  
-- Claude Desktop uses standard MCP
-- May need slight response format adjustments
-- Test with both Claude.ai and Claude Desktop
+### Claude Integration - WORKING
+- ✅ **Custom API**: Works perfectly with existing `/mcp/*` endpoints
+- ✅ **Direct HTTP**: Claude can use REST API directly
+- 🔄 **Official SDK**: May also work with official SDK (untested)
 
 ## Testing Approach
 
@@ -116,20 +170,37 @@ MCP_MAX_RESULTS=50  # max items per search
 - Implement pagination for large libraries
 - Consider Redis for session management later
 
-## Important Notes for Sonnet
+## Important Notes for Future Development
 
-1. **Current State**: As of this writing, only the bookmarklet service exists
-2. **Dependencies**: The MCP implementation depends on the existing Zotero client
-3. **Testing Critical**: Each MCP endpoint must be tested thoroughly before enabling
-4. **Security First**: Start with read-only operations, add write operations carefully
+### Current State (August 2025)
+1. ✅ **Bookmarklet Service**: Fully operational
+2. ✅ **Custom MCP Server**: Working for direct API access
+3. ✅ **Custom JSON-RPC**: Implemented but incompatible with ChatGPT
+4. 🔄 **Official SDK Server**: Required for ChatGPT, implementation pending
 
-## Next Steps
-1. Implement basic MCP structure
-2. Add search endpoint
-3. Test with ChatGPT
-4. Add remaining endpoints incrementally
-5. Deploy to production
+### Critical Discoveries
+1. **ChatGPT Compatibility**: ONLY official MCP SDK works with ChatGPT Connectors
+2. **Dual Implementation**: Need both custom (for APIs) and official (for ChatGPT)
+3. **Tool Naming**: ChatGPT expects exactly `search` and `fetch` tools
+4. **Transport**: HTTP transport recommended for cloud deployment
+
+### Deployment URLs
+- **Custom API**: `https://seal-app-t4vff.ondigitalocean.app/mcp/*`
+- **Custom JSON-RPC**: `https://seal-app-t4vff.ondigitalocean.app/mcp-jsonrpc/sse`
+- **Official SDK** (pending): `https://seal-app-t4vff.ondigitalocean.app/mcp-official/*`
+
+## Next Steps - CURRENT PRIORITY
+1. 🔄 Install `@modelcontextprotocol/sdk` package
+2. 🔄 Implement official SDK server in `src/mcpServerOfficial.js`
+3. 🔄 Test with ChatGPT Connectors
+4. 🔄 Update production deployment
+
+## Files to Review
+- `src/mcpServer.js` - Custom REST API implementation (working)
+- `src/mcpJsonRpc.js` - Custom JSON-RPC implementation (ChatGPT incompatible)  
+- `MCP_SETUP_GUIDE.md` - Setup instructions and API documentation
 
 ---
-*This document created by Claude 3 Opus for Claude 3.5 Sonnet handoff*
-*Date: August 2025*
+*This document tracks the complete MCP integration journey*
+*Original: Claude 3 Opus | Updated: Claude 3.5 Sonnet 4*
+*Last Update: August 11, 2025*

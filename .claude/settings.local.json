@@ -54,7 +54,8 @@
       "Bash(openssl rand:*)",
       "WebFetch(domain:help.openai.com)",
       "Bash(mv:*)",
-      "WebFetch(domain:platform.openai.com)"
+      "WebFetch(domain:platform.openai.com)",
+      "WebFetch(domain:modelcontextprotocol.io)"
     ],
     "deny": []
   }

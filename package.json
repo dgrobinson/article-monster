@@ -13,6 +13,7 @@
     "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.17.2",
     "@mozilla/readability": "^0.4.4",
     "axios": "^1.6.2",
     "dotenv": "^17.2.1",

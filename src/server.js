@@ -49,6 +49,9 @@ app.use('/chatgpt', require('./mcpChatGPT'));
 // Mount JSON-RPC MCP server for ChatGPT connectors
 app.use('/mcp-jsonrpc', require('./mcpJsonRpc'));
 
+// Mount Official MCP SDK server for ChatGPT compatibility
+app.use('/mcp-official', require('./mcpServerOfficial'));
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ 

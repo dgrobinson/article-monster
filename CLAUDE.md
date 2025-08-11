@@ -168,14 +168,15 @@ Claude has access to these CLI tools for managing this project:
    - **Files Updated**: `public/bookmarklet.js`
    - **Next**: Phase 2 (base64 embedding for auth sites) if needed
 
-3. **MCP Server Implementation** (August 2025)
-   - **Status**: WORKING - MCP server is fully functional and tested
-   - **API Key**: `0530bf0ab5c4749e3c867d9cb7e8a5822b7dbc4b74be68c5d1d0eea54f2ce80f` (keep secret)
-   - **Tested Endpoints**: Health ✅, Search ✅, Item Details ✅
-   - **Known Issue**: Collections endpoint returns 400 error (needs debugging)
-   - **Files**: `src/mcpServer.js`, `MCP_SETUP_GUIDE.md`
-   - **URL**: https://seal-app-t4vff.ondigitalocean.app/mcp/*
-   - **Next**: Set up with ChatGPT/Claude AI assistants
+3. **MCP Server Implementation** (August 2025) - DUAL STATUS
+   - **Custom REST API**: WORKING ✅ - Fully functional for direct API access
+     - **API Key**: `0530bf0ab5c4749e3c867d9cb7e8a5822b7dbc4b74be68c5d1d0eea54f2ce80f` (keep secret)
+     - **URL**: https://seal-app-t4vff.ondigitalocean.app/mcp/*
+     - **Tested**: Health ✅, Search ✅, Item Details ✅
+   - **ChatGPT Integration**: REQUIRES OFFICIAL SDK ⚠️
+     - **Discovery**: ChatGPT Connectors reject custom implementations ("doesn't implement our specification")
+     - **Solution**: Must implement official `@modelcontextprotocol/sdk` alongside custom server
+     - **Files**: `src/mcpServer.js` (custom), `src/mcpJsonRpc.js` (failed attempt), `MCP_INTEGRATION_PLAN.md`
 
 ## Future Enhancement Roadmap
 
