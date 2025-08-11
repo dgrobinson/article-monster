@@ -74,30 +74,15 @@ async function handleSearchTool(params) {
     }
   });
 
-  const items = response.data.map(item => ({
-    key: item.key,
-    type: item.data.itemType,
+  // Format according to OpenAI MCP specification
+  const results = response.data.map(item => ({
+    id: item.key,
     title: item.data.title || 'Untitled',
-    creators: item.data.creators || [],
-    date: item.data.date,
-    url: item.data.url,
-    abstract: item.data.abstractNote,
-    tags: item.data.tags || [],
-    collections: item.data.collections || []
+    text: item.data.abstractNote || `${item.data.itemType}: ${item.data.title || 'Untitled'}`,
+    url: item.data.url || undefined
   }));
 
-  return {
-    content: [
-      {
-        type: 'text',
-        text: `Found ${items.length} items matching "${query}"`
-      },
-      {
-        type: 'text', 
-        text: JSON.stringify(items, null, 2)
-      }
-    ]
-  };
+  return { results };
 }
 
 // MCP Tool: Fetch Item Details
@@ -122,38 +107,48 @@ async function handleFetchTool(params) {
   const item = response.data;
   const children = childrenResponse.data;
 
-  const result = {
-    key: item.key,
-    version: item.version,
-    data: item.data,
-    attachments: children.filter(c => c.data.itemType === 'attachment').map(a => ({
-      key: a.key,
-      title: a.data.title,
-      contentType: a.data.contentType,
-      filename: a.data.filename
-    })),
-    notes: children.filter(c => c.data.itemType === 'note').map(n => ({
-      key: n.key,
-      note: n.data.note
-    })),
-    meta: {
-      created: item.data.dateAdded,
-      modified: item.data.dateModified,
-      library: item.library
-    }
-  };
+  // Build full text content from item data
+  const creators = item.data.creators || [];
+  const creatorsText = creators.map(c => 
+    c.firstName && c.lastName ? `${c.firstName} ${c.lastName}` : c.name || 'Unknown'
+  ).join(', ');
 
+  const attachments = children.filter(c => c.data.itemType === 'attachment');
+  const notes = children.filter(c => c.data.itemType === 'note');
+
+  let fullText = `Title: ${item.data.title || 'Untitled'}\n`;
+  if (creatorsText) fullText += `Authors: ${creatorsText}\n`;
+  if (item.data.date) fullText += `Date: ${item.data.date}\n`;
+  if (item.data.itemType) fullText += `Type: ${item.data.itemType}\n`;
+  if (item.data.url) fullText += `URL: ${item.data.url}\n`;
+  if (item.data.abstractNote) fullText += `\nAbstract:\n${item.data.abstractNote}\n`;
+  
+  if (attachments.length > 0) {
+    fullText += `\nAttachments:\n`;
+    attachments.forEach(att => {
+      fullText += `- ${att.data.title} (${att.data.contentType || 'unknown type'})\n`;
+    });
+  }
+
+  if (notes.length > 0) {
+    fullText += `\nNotes:\n`;
+    notes.forEach(note => {
+      fullText += `- ${note.data.note}\n`;
+    });
+  }
+
+  // Tags
+  if (item.data.tags && item.data.tags.length > 0) {
+    const tagList = item.data.tags.map(t => t.tag || t).join(', ');
+    fullText += `\nTags: ${tagList}\n`;
+  }
+
+  // Format according to OpenAI MCP specification
   return {
-    content: [
-      {
-        type: 'text',
-        text: `Item details for ${identifier}:`
-      },
-      {
-        type: 'text',
-        text: JSON.stringify(result, null, 2)
-      }
-    ]
+    id: identifier,
+    title: item.data.title || 'Untitled',
+    text: fullText,
+    url: item.data.url || undefined
   };
 }
 
@@ -179,19 +174,13 @@ function handleToolsList(params, id) {
     tools: [
       {
         name: 'search',
-        description: 'Search across all items in your Zotero library',
+        description: 'Search across all items in your Zotero library to find relevant research papers, articles, and documents.',
         inputSchema: {
           type: 'object',
           properties: {
             query: {
               type: 'string',
-              description: 'Search terms (title, author, keywords, etc.)'
-            },
-            limit: {
-              type: 'integer',
-              default: 25,
-              maximum: 50,
-              description: 'Maximum number of results'
+              description: 'Search query string. Natural language queries work best for finding relevant documents.'
             }
           },
           required: ['query']
@@ -199,13 +188,13 @@ function handleToolsList(params, id) {
       },
       {
         name: 'fetch',
-        description: 'Fetch detailed information about a specific library item',
+        description: 'Retrieve the complete details and content of a specific library item.',
         inputSchema: {
           type: 'object',
           properties: {
             identifier: {
               type: 'string', 
-              description: 'Item key/ID from search results'
+              description: 'Unique identifier (ID) from search results'
             }
           },
           required: ['identifier']

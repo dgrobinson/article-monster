@@ -52,7 +52,9 @@
       "WebFetch(domain:forum.fivefilters.org)",
       "WebFetch(domain:raw.githubusercontent.com)",
       "Bash(openssl rand:*)",
-      "WebFetch(domain:help.openai.com)"
+      "WebFetch(domain:help.openai.com)",
+      "Bash(mv:*)",
+      "WebFetch(domain:platform.openai.com)"
     ],
     "deny": []
   }
