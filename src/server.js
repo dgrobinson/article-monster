@@ -46,6 +46,9 @@ app.use('/mcp', mcpRouter);
 // Mount ChatGPT MCP-compliant routes (no auth required for personal use)
 app.use('/chatgpt', require('./mcpChatGPT'));
 
+// Mount JSON-RPC MCP server for ChatGPT connectors
+app.use('/mcp-jsonrpc', require('./mcpJsonRpc'));
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ 
