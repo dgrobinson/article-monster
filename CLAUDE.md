@@ -54,13 +54,23 @@ When launched in this repository, Claude should read these files to understand t
 
 ## Key Context Points
 
-### CRITICAL DESIGN PRINCIPLE
-**NEVER write publication-specific code!** 
-- This service must remain publication-agnostic
+### CRITICAL DESIGN PRINCIPLES
+
+#### Publication-Agnostic Content Extraction
+**NEVER write publication-specific code for content extraction!** 
+- This service must remain publication-agnostic for content
 - ALL site-specific extraction logic comes from FiveFilters configs
 - We maintain feature parity with FiveFilters Full-Text RSS
 - The fivefilters-config submodule provides all site-specific rules
 - If a site doesn't extract properly, the fix belongs in FiveFilters configs, NOT in our code
+
+#### Leverage Existing Tools for Metadata (Key Learning August 2025)
+**ALWAYS prefer proven, community-maintained solutions over custom implementations**
+- **For Content**: Use FiveFilters - they excel at site-specific content extraction
+- **For Metadata**: Use Zotero translators - they excel at bibliographic metadata extraction
+- **Strategic Insight**: Don't duplicate work - integrate strengths from existing tools
+- **Example**: Rather than building custom DOI extraction, port Zotero's Embedded Metadata translator
+- **Benefit**: Battle-tested extraction logic with community maintenance and constant improvement
 
 ### Security
 - This is a defensive tool for personal research management
@@ -86,6 +96,12 @@ When launched in this repository, Claude should read these files to understand t
 - No database - stateless service using external APIs
 - Browser-side extraction preserves user authentication
 - Local `npm run dev` exists but is not used in standard workflow
+
+### Bookmarklet Updates (Key Learning August 2025)
+- **Bookmarklet does NOT need to be deleted/recreated** when code changes
+- The bookmarklet is just a link that loads JavaScript from the server
+- Updates to `public/bookmarklet.js` take effect immediately on next click
+- User can keep existing bookmarklet indefinitely - it always gets latest code
 
 ## Available CLI Tools
 Claude has access to these CLI tools for managing this project:
@@ -152,21 +168,28 @@ Claude has access to these CLI tools for managing this project:
    - **Files Updated**: `public/bookmarklet.js`, `src/zoteroSender.js`
    - **Impact**: Better citation quality in Zotero with more complete metadata
 
+2. **EPUB Image URL Fixing** (August 2025)
+   - **Problem**: Images not appearing in EPUBs due to relative URLs and auth issues
+   - **Solution**: Added `fixImageUrls()` function to bookmarklet that converts relative URLs to absolute
+   - **Status**: Phase 1 complete - public site images now work
+   - **Files Updated**: `public/bookmarklet.js`
+   - **Next**: Phase 2 (base64 embedding for auth sites) if needed
+
 ## Future Enhancement Roadmap
 
 For detailed future improvement plans, see **[METADATA_ROADMAP.md](./METADATA_ROADMAP.md)**
 
 ### Upcoming Priorities:
-1. **Academic Metadata Enhancement** (Next Session):
-   - DOI detection and extraction
-   - Journal/publication metadata
-   - Page numbers and article identifiers
-   - Academic item type detection
+1. **Zotero Translator Integration** (Current Session):
+   - Port Zotero's Embedded Metadata.js translator logic
+   - Focus on DOI extraction, journal metadata, author parsing
+   - Leverage battle-tested, community-maintained extraction
+   - Immediate gains for academic and news articles
 
-2. **Site-Specific Extraction Rules** (Future):
-   - Extend FiveFilters configs for metadata
-   - Custom extraction for popular sites (NYTimes, WSJ, Medium, arXiv)
-   - Academic publisher support (Nature, Science, JSTOR)
+2. **EPUB Metadata Analysis** (Future Session):
+   - Use `epub-metadata-parser` npm package for validation
+   - Cross-reference Dublin Core metadata with extracted data
+   - Gap detection and quality improvement
 
 3. **Advanced Features** (Long-term):
    - ORCID identifier support
