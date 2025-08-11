@@ -51,7 +51,11 @@ app.get('/health', (req, res) => {
       bookmarklet: 'active',
       mcp: process.env.MCP_API_KEY ? 'active' : 'disabled'
     },
-    timestamp: new Date().toISOString() 
+    timestamp: new Date().toISOString(),
+    debug: {
+      mcpApiKeySet: !!process.env.MCP_API_KEY,
+      mcpApiKeyLength: process.env.MCP_API_KEY ? process.env.MCP_API_KEY.length : 0
+    }
   });
 });
 
