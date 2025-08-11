@@ -247,7 +247,7 @@ mcpRouter.get('/items', async (req, res) => {
 // Add new item (be careful!)
 mcpRouter.post('/item', async (req, res) => {
   try {
-    const { itemType, title, url, tags, collections } = req.body;
+    const { itemType, title, url, tags, collections, abstract, creators, date } = req.body;
     
     if (!itemType || !title) {
       return res.status(400).json({ 
@@ -258,14 +258,24 @@ mcpRouter.post('/item', async (req, res) => {
     console.log(`MCP Add Item: "${title}" (${itemType})`);
     const config = getZoteroConfig();
 
+    // Create Zotero-compatible item (similar to bookmarklet format)
     const newItem = {
       itemType,
       title,
-      url,
-      tags: tags || [],
+      url: url || '',
+      abstractNote: abstract || '',
+      date: date || '',
+      creators: creators || [],
+      tags: (tags || []).map(tag => typeof tag === 'string' ? { tag, type: 1 } : tag),
       collections: collections || [],
-      accessDate: new Date().toISOString().split('T')[0]
+      accessDate: new Date().toISOString().split('T')[0],
+      extra: `Added via MCP API\\nDate: ${new Date().toISOString()}`
     };
+
+    // Add itemType-specific fields
+    if (itemType === 'webpage') {
+      newItem.websiteTitle = title; // Use title as website title for webpages
+    }
 
     const response = await axios.post(
       `${config.baseUrl}/items`, 
