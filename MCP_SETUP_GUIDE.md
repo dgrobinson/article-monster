@@ -68,9 +68,8 @@ curl https://seal-app-t4vff.ondigitalocean.app/mcp/item/NTKVD7M7 \
 
 1. Go to ChatGPT Settings → Connectors
 2. Click "Add custom connector" 
-3. Enter the MCP server URL: `https://seal-app-t4vff.ondigitalocean.app/mcp-official/`
-4. Authentication: "Bearer Token"
-5. Token: `0530bf0ab5c4749e3c867d9cb7e8a5822b7dbc4b74be68c5d1d0eea54f2ce80f`
+3. Enter the MCP server URL: `https://seal-app-t4vff.ondigitalocean.app/mcp-chatgpt/`
+4. Authentication: "No authentication" (ChatGPT only supports OAuth or No Auth)
 
 **Official MCP Tools Available:**
 - **search** - Search the Zotero library for references and articles
