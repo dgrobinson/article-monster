@@ -71,12 +71,7 @@ async function generateEpub(article) {
           text-align: center;
         }
       `,
-      content: [
-        {
-          title: article.title,
-          data: createEpubContent(article)
-        }
-      ],
+      content: createEpubChapters(article),
       tempDir: '/tmp',
       verbose: false
     };
@@ -122,6 +117,72 @@ async function generateEpub(article) {
   }
 }
 
+function createEpubChapters(article) {
+  // Check if content has multiple sections
+  var hasMultipleSections = article.content && article.content.includes('content-section');
+  
+  if (hasMultipleSections) {
+    return createMultiChapterEpub(article);
+  } else {
+    return createSingleChapterEpub(article);
+  }
+}
+
+function createMultiChapterEpub(article) {
+  var chapters = [];
+  
+  // Add introduction chapter with metadata
+  chapters.push({
+    title: 'Article Information',
+    data: createMetadataChapter(article)
+  });
+  
+  // Simple regex-based section parsing (avoid JSDOM dependency)
+  var sectionRegex = /<section[^>]*class="content-section"[^>]*>(.*?)<\/section>/gs;
+  var sections = [];
+  var match;
+  
+  while ((match = sectionRegex.exec(article.content)) !== null) {
+    sections.push(match[1]);
+  }
+  
+  if (sections.length > 0) {
+    sections.forEach(function(sectionContent, index) {
+      // Extract title from first header in section
+      var headerMatch = sectionContent.match(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/i);
+      var title = headerMatch ? headerMatch[1].replace(/<[^>]*>/g, '').trim() : `Section ${index + 1}`;
+      
+      chapters.push({
+        title: title,
+        data: `<div class="content">${sectionContent}</div>`
+      });
+    });
+  } else {
+    // Fallback to single chapter
+    chapters.push({
+      title: article.title,
+      data: createMainContent(article)
+    });
+  }
+  
+  // Add source information as final chapter
+  chapters.push({
+    title: 'Source Information',
+    data: createSourceChapter(article)
+  });
+  
+  return chapters;
+}
+
+function createSingleChapterEpub(article) {
+  return [
+    {
+      title: article.title,
+      data: createEpubContent(article)
+    }
+  ];
+}
+
 function createEpubContent(article) {
   return `
     <h1>${escapeHtml(article.title)}</h1>
@@ -131,6 +192,7 @@ function createEpubContent(article) {
       <p><strong>Author:</strong> ${escapeHtml(article.byline)}</p>
       <p><strong>Published:</strong> ${formatDate(article.publishedTime)}</p>
       <p><strong>Reading time:</strong> ~${Math.ceil(article.length / 200)} minutes</p>
+      ${article.hasImages ? '<p><strong>Images:</strong> Included</p>' : ''}
     </div>
 
     <div class="content">
@@ -145,15 +207,67 @@ function createEpubContent(article) {
   `;
 }
 
+function createMetadataChapter(article) {
+  return `
+    <h1>Article Information</h1>
+    
+    <div class="meta">
+      <p><strong>Title:</strong> ${escapeHtml(article.title)}</p>
+      <p><strong>Source:</strong> ${escapeHtml(article.siteName)}</p>
+      <p><strong>Author:</strong> ${escapeHtml(article.byline)}</p>
+      <p><strong>Published:</strong> ${formatDate(article.publishedTime)}</p>
+      <p><strong>Reading time:</strong> ~${Math.ceil(article.length / 200)} minutes</p>
+      <p><strong>Language:</strong> ${article.lang || 'en'}</p>
+      ${article.hasImages ? '<p><strong>Images:</strong> Included in content</p>' : '<p><strong>Images:</strong> None detected</p>'}
+      <p><strong>Content Length:</strong> ${(article.length || 0).toLocaleString()} characters</p>
+    </div>
+    
+    ${article.excerpt ? `<div class="excerpt"><h2>Summary</h2><p>${escapeHtml(article.excerpt)}</p></div>` : ''}
+  `;
+}
+
+function createMainContent(article) {
+  return `
+    <div class="content">
+      ${article.content}
+    </div>
+  `;
+}
+
+function createSourceChapter(article) {
+  return `
+    <h1>Source Information</h1>
+    
+    <div class="source">
+      <p><strong>Original URL:</strong><br>
+      <a href="${article.url}">${article.url}</a></p>
+      
+      <p><strong>Extracted:</strong> ${new Date().toLocaleString()}</p>
+      
+      <p><strong>Service:</strong> Robinsonian Article Monster</p>
+      
+      <p><em>This article was automatically extracted and formatted for reading. 
+      For the most up-to-date version, please visit the original URL above.</em></p>
+    </div>
+  `;
+}
+
 function sanitizeFilename(filename) {
-  // Preserve proper capitalization and use hyphens for readability
-  return filename
+  // Preserve proper capitalization, special characters, and use hyphens for readability
+  var baseFilename = filename
     .trim()
-    .replace(/[^a-zA-Z0-9\s-]/g, '') // Keep letters, numbers, spaces, hyphens
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/[<>:"/\\|?*]/g, '') // Remove filesystem-unsafe characters only
+    .replace(/\s+/g, '-') // Replace spaces with hyphens  
     .replace(/-+/g, '-') // Collapse multiple hyphens
     .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
-    .substring(0, 100); // Limit length for filesystem compatibility
+    .substring(0, 80); // Leave room for unique suffix
+  
+  // Generate unique 8-character suffix like FiveFilters (timestamp + random)
+  var timestamp = Date.now().toString(36); // Base36 encoding
+  var random = Math.random().toString(36).substring(2, 5); // 3 random chars
+  var uniqueId = (timestamp + random).substring(0, 8).toUpperCase();
+  
+  return baseFilename + '_' + uniqueId;
 }
 
 function escapeHtml(text) {

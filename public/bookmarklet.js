@@ -46,15 +46,22 @@
         
         if (!article) return null;
 
+        // Fix image URLs and detect images before processing
+        var processedContent = this._fixImageUrls(article.innerHTML);
+        var hasImages = this._detectImages(processedContent);
+        var sectionedContent = this._addContentSections(processedContent);
+
         return {
           title: this._getArticleTitle(),
-          content: article.innerHTML,
+          content: sectionedContent,
           textContent: article.textContent || article.innerText || '',
           length: (article.textContent || article.innerText || '').length,
           excerpt: this._getExcerpt(article),
           byline: this._getArticleMetadata('author') || this._getArticleMetadata('byline'),
           siteName: this._getArticleMetadata('site_name') || document.title,
-          publishedTime: this._getArticleMetadata('published_time') || this._getArticleMetadata('date')
+          publishedTime: this._getArticleMetadata('published_time') || this._getArticleMetadata('date'),
+          hasImages: hasImages,
+          lang: this._doc.documentElement.lang || 'en'
         };
       } catch (e) {
         console.error('Readability parsing failed:', e);
@@ -320,15 +327,22 @@
                 // Convert plain text to basic HTML with paragraphs
                 var htmlContent = this._textToHtml(data.articleBody);
                 
+                // Process content for images and sections
+                var processedContent = this._fixImageUrls(htmlContent);
+                var hasImages = this._detectImages(processedContent);
+                var sectionedContent = this._addContentSections(processedContent);
+                
                 return {
                   title: data.headline || data.name || this._getArticleTitle(),
-                  content: htmlContent,
+                  content: sectionedContent,
                   textContent: data.articleBody,
                   length: data.articleBody.length,
                   excerpt: data.description || this._createExcerpt(data.articleBody),
                   byline: this._extractAuthor(data.author) || this._getArticleMetadata('author'),
                   siteName: data.publisher && data.publisher.name || this._getArticleMetadata('site_name') || document.title,
                   publishedTime: data.datePublished || this._getArticleMetadata('published_time'),
+                  hasImages: hasImages,
+                  lang: this._doc.documentElement.lang || 'en',
                   source: 'json-ld'
                 };
               }
@@ -693,6 +707,162 @@
       } catch (e) {
         // Ignore any errors in dynamic config fetching
       }
+    },
+
+    // Fix image URLs to be absolute and detect images
+    _fixImageUrls: function(html) {
+      if (!html) return html;
+      
+      var div = document.createElement('div');
+      div.innerHTML = html;
+      var baseUrl = window.location.origin;
+      var currentUrl = window.location.href;
+      
+      div.querySelectorAll('img').forEach(function(img) {
+        // Fix relative URLs to absolute
+        if (img.src && !img.src.startsWith('http') && !img.src.startsWith('data:')) {
+          try {
+            img.src = new URL(img.src, currentUrl).href;
+          } catch (e) {
+            // If URL construction fails, try with base URL
+            if (img.src.startsWith('/')) {
+              img.src = baseUrl + img.src;
+            }
+          }
+        }
+        
+        // Also fix srcset for responsive images
+        if (img.srcset) {
+          img.srcset = img.srcset.split(',').map(function(src) {
+            var parts = src.trim().split(' ');
+            var url = parts[0];
+            var descriptor = parts.slice(1).join(' ');
+            
+            if (!url.startsWith('http') && !url.startsWith('data:')) {
+              try {
+                url = new URL(url, currentUrl).href;
+              } catch (e) {
+                if (url.startsWith('/')) {
+                  url = baseUrl + url;
+                }
+              }
+            }
+            
+            return descriptor ? url + ' ' + descriptor : url;
+          }).join(', ');
+        }
+        
+        // Add loading attributes for better performance
+        if (!img.hasAttribute('loading')) {
+          img.setAttribute('loading', 'lazy');
+        }
+      });
+      
+      return div.innerHTML;
+    },
+
+    // Detect if content has images
+    _detectImages: function(html) {
+      if (!html) return false;
+      
+      // Check for img tags
+      var imgCount = (html.match(/<img[^>]*>/gi) || []).length;
+      
+      // Check for background images in style attributes
+      var bgImageCount = (html.match(/background-image\s*:\s*url\(/gi) || []).length;
+      
+      // Check for figure/picture elements
+      var figureCount = (html.match(/<figure[^>]*>|<picture[^>]*>/gi) || []).length;
+      
+      console.log('Image detection:', {
+        imgTags: imgCount,
+        backgroundImages: bgImageCount,
+        figures: figureCount,
+        total: imgCount + bgImageCount + figureCount
+      });
+      
+      return (imgCount + bgImageCount + figureCount) > 0;
+    },
+
+    // Add content sections for better navigation
+    _addContentSections: function(html) {
+      if (!html) return html;
+      
+      var div = document.createElement('div');
+      div.innerHTML = html;
+      
+      // Find all headers for sectioning
+      var headers = div.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      var sections = [];
+      var currentSection = null;
+      
+      if (headers.length > 1) {
+        // Group content into sections based on headers
+        var walker = document.createTreeWalker(
+          div,
+          NodeFilter.SHOW_ALL,
+          null,
+          false
+        );
+        
+        var node;
+        while (node = walker.nextNode()) {
+          if (node.nodeType === Node.ELEMENT_NODE) {
+            var tagName = node.tagName.toLowerCase();
+            
+            if (tagName.match(/^h[1-6]$/)) {
+              // Start new section
+              if (currentSection) {
+                sections.push(currentSection);
+              }
+              currentSection = {
+                header: node.cloneNode(true),
+                content: [],
+                level: parseInt(tagName.charAt(1))
+              };
+            } else if (currentSection && node.parentNode === div) {
+              // Add to current section
+              currentSection.content.push(node.cloneNode(true));
+            }
+          }
+        }
+        
+        if (currentSection) {
+          sections.push(currentSection);
+        }
+        
+        // Rebuild HTML with better section structure
+        if (sections.length > 1) {
+          var newDiv = document.createElement('div');
+          newDiv.className = 'article-content';
+          
+          sections.forEach(function(section, index) {
+            var sectionDiv = document.createElement('section');
+            sectionDiv.className = 'content-section';
+            sectionDiv.setAttribute('data-section', index + 1);
+            
+            // Add header with anchor
+            var headerId = 'section-' + (index + 1);
+            section.header.id = headerId;
+            sectionDiv.appendChild(section.header);
+            
+            // Add content
+            section.content.forEach(function(node) {
+              sectionDiv.appendChild(node);
+            });
+            
+            newDiv.appendChild(sectionDiv);
+          });
+          
+          return newDiv.innerHTML;
+        }
+      }
+      
+      // No significant sectioning needed, return original with wrapper
+      var wrapper = document.createElement('div');
+      wrapper.className = 'article-content single-section';
+      wrapper.innerHTML = html;
+      return wrapper.innerHTML;
     }
   };
 
@@ -751,8 +921,14 @@
         .catch(function(error) {
           // Config fetch failed, fall back to regular extraction
           console.log('Config fetch failed for', hostname, '- using fallback extraction');
-          updateIndicator(indicator, '📖 Extracting with general rules...');
+          updateIndicator(indicator, '📖 Using general extraction (no site-specific config available)...');
           var article = reader.parse();
+          
+          // Add note about fallback extraction
+          if (article) {
+            article.extractionNote = `Extracted using general rules. For ${hostname}, no site-specific configuration was available.`;
+          }
+          
           resolve(article);
         });
     });
@@ -816,7 +992,18 @@
       if (document.querySelector('#article-bookmarklet-indicator')) {
         document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
       }
-      showResult('❌ Error: ' + error.message + '\n\nPlease try again or check your internet connection.');
+      var hostname = window.location.hostname.replace(/^www\./, '');
+      var helpMessage = '';
+      
+      if (error.message.includes('fetch') || error.message.includes('network')) {
+        helpMessage = '\n\n💡 This might be due to:\n- Network connectivity issues\n- Site blocking automated access\n- CORS restrictions\n\nTry refreshing the page and using the bookmarklet again.';
+      } else if (error.message.includes('extract')) {
+        helpMessage = `\n\n💡 Extraction failed for ${hostname}:\n- This site may use unusual formatting\n- Content might be dynamically loaded\n- The page might not contain a standard article\n\nTry using the bookmarklet on the main article page.`;
+      } else {
+        helpMessage = '\n\n💡 Please try again or check your internet connection.';
+      }
+      
+      showResult('❌ Error: ' + error.message + helpMessage);
     })
     .finally(() => {
       window.articleBookmarkletProcessing = false;

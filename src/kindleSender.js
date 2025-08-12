@@ -136,14 +136,21 @@ function createKindleHTML(article) {
 }
 
 function sanitizeFilename(filename) {
-  // Preserve proper capitalization and use hyphens for readability
-  return filename
+  // Preserve proper capitalization, special characters, and use hyphens for readability
+  var baseFilename = filename
     .trim()
-    .replace(/[^a-zA-Z0-9\s-]/g, '') // Keep letters, numbers, spaces, hyphens
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/[<>:"/\\|?*]/g, '') // Remove filesystem-unsafe characters only
+    .replace(/\s+/g, '-') // Replace spaces with hyphens  
     .replace(/-+/g, '-') // Collapse multiple hyphens
     .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
-    .substring(0, 100); // Limit length for filesystem compatibility
+    .substring(0, 80); // Leave room for unique suffix
+  
+  // Generate unique 8-character suffix like FiveFilters (timestamp + random)
+  var timestamp = Date.now().toString(36); // Base36 encoding
+  var random = Math.random().toString(36).substring(2, 5); // 3 random chars
+  var uniqueId = (timestamp + random).substring(0, 8).toUpperCase();
+  
+  return baseFilename + '_' + uniqueId;
 }
 
 function escapeHtml(text) {
