@@ -16,6 +16,17 @@ const ZOTERO_USER_ID = process.env.ZOTERO_USER_ID;
 const router = express.Router();
 router.use(express.json());
 
+// Add CORS headers for ChatGPT
+router.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 /**
  * Helper function to search Zotero library
  */
@@ -116,6 +127,30 @@ async function fetchZoteroItem(key) {
     throw error;
   }
 }
+
+// Manifest endpoint for ChatGPT Connector discovery
+router.get('/manifest.json', (req, res) => {
+  res.json({
+    name: 'Zotero Research Library',
+    description: 'Access your personal Zotero research library for searching and retrieving academic papers, articles, and references',
+    version: '1.0.0',
+    protocol: 'mcp',
+    capabilities: {
+      tools: ['search', 'fetch']
+    },
+    authentication: {
+      type: 'none'
+    },
+    endpoints: {
+      mcp: 'https://seal-app-t4vff.ondigitalocean.app/mcp-chatgpt/',
+      health: 'https://seal-app-t4vff.ondigitalocean.app/mcp-chatgpt/health'
+    },
+    server_info: {
+      name: 'zotero-mcp-server',
+      version: '1.0.0'
+    }
+  });
+});
 
 // Health check for ChatGPT
 router.get('/health', (req, res) => {
