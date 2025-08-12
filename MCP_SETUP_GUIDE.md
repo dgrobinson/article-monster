@@ -63,22 +63,20 @@ curl https://seal-app-t4vff.ondigitalocean.app/mcp/item/NTKVD7M7 \
 
 ### For ChatGPT (Connectors - 2025)
 
-**✅ UPDATED FOR 2025 - Now uses MCP (Model Context Protocol)**
-**✅ COMPLIANT WITH OPENAI SPECIFICATION - Updated to match required response formats**
-**✅ SSE TRANSPORT SUPPORT - Now includes Server-Sent Events for ChatGPT compatibility**
+**🎉 OFFICIAL SDK IMPLEMENTATION - Compatible with ChatGPT Connectors**
+**✅ CHATGPT TESTED - Uses official @modelcontextprotocol/sdk**
 
 1. Go to ChatGPT Settings → Connectors
 2. Click "Add custom connector" 
-3. Enter the MCP server URL: `https://seal-app-t4vff.ondigitalocean.app/mcp-jsonrpc/sse`
-4. Authentication: "No authentication" (personal use)
-5. The connector will auto-discover the required `search` and `fetch` tools via JSON-RPC protocol
+3. Enter the MCP server URL: `https://seal-app-t4vff.ondigitalocean.app/mcp-official/`
+4. Authentication: "Bearer Token"
+5. Token: `0530bf0ab5c4749e3c867d9cb7e8a5822b7dbc4b74be68c5d1d0eea54f2ce80f`
 
-**JSON-RPC MCP Methods Available:**
-- **initialize** - Protocol handshake and server info
-- **tools/list** - Discover available tools (search, fetch)
-- **tools/call** - Execute search and fetch operations
+**Official MCP Tools Available:**
+- **search** - Search the Zotero library for references and articles
+- **fetch** - Fetch detailed information about a specific Zotero item
 
-**No OpenAPI schema needed** - MCP uses JSON-RPC 2.0 protocol with automatic tool discovery.
+**Built with official SDK** - Uses `@modelcontextprotocol/sdk` v1.17.2 for maximum ChatGPT compatibility.
 
 ### For Claude Desktop
 
