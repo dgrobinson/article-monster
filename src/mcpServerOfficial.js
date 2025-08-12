@@ -366,8 +366,138 @@ router.get('/sse', (req, res) => {
   });
 });
 
-// Export the router for use in main server
-module.exports = router;
+// Create a separate router for ChatGPT (no auth required)
+const chatgptRouter = express.Router();
+chatgptRouter.use(express.json());
+
+// Health check for ChatGPT
+chatgptRouter.get('/health', (req, res) => {
+  res.json({
+    status: 'active',
+    server: 'zotero-mcp-chatgpt',
+    version: '1.0.0',
+    sdk: '@modelcontextprotocol/sdk',
+    tools: ['search', 'fetch'],
+    auth: 'none'
+  });
+});
+
+// ChatGPT MCP endpoints (no authentication)
+chatgptRouter.post('/', async (req, res) => {
+  try {
+    const { method, params } = req.body;
+    
+    // Handle tool listing
+    if (method === 'tools/list') {
+      res.json({
+        tools: [
+          {
+            name: 'search',
+            description: 'Search the Zotero library for references and articles',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                query: {
+                  type: 'string',
+                  description: 'Search query for finding items in Zotero'
+                },
+                limit: {
+                  type: 'number',
+                  description: 'Maximum number of results to return',
+                  default: 25
+                }
+              },
+              required: ['query']
+            }
+          },
+          {
+            name: 'fetch',
+            description: 'Fetch detailed information about a specific Zotero item',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                identifier: {
+                  type: 'string',
+                  description: 'The Zotero item key/identifier'
+                }
+              },
+              required: ['identifier']
+            }
+          }
+        ]
+      });
+      return;
+    }
+    
+    // Handle tool calls
+    if (method === 'tools/call') {
+      const { name, arguments: args } = params;
+      
+      if (name === 'search') {
+        const results = await searchZotero(args.query, args.limit);
+        res.json({
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ results }, null, 2)
+            }
+          ]
+        });
+        return;
+      }
+      
+      if (name === 'fetch') {
+        const item = await fetchZoteroItem(args.identifier);
+        res.json({
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(item, null, 2)
+            }
+          ]
+        });
+        return;
+      }
+      
+      res.status(400).json({ error: `Unknown tool: ${name}` });
+      return;
+    }
+    
+    res.status(400).json({ error: `Unknown method: ${method}` });
+  } catch (error) {
+    console.error('MCP ChatGPT request error:', error);
+    res.status(500).json({ 
+      error: error.message,
+      details: 'Internal server error processing MCP request'
+    });
+  }
+});
+
+// SSE endpoint for ChatGPT (no auth)
+chatgptRouter.get('/sse', (req, res) => {
+  res.setHeader('Content-Type', 'text/event-stream');
+  res.setHeader('Cache-Control', 'no-cache');
+  res.setHeader('Connection', 'keep-alive');
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  
+  // Send initial connection message
+  res.write('data: {"type":"connection","status":"connected"}\n\n');
+  
+  // Keep connection alive
+  const heartbeat = setInterval(() => {
+    res.write('data: {"type":"heartbeat"}\n\n');
+  }, 30000);
+  
+  req.on('close', () => {
+    clearInterval(heartbeat);
+  });
+});
+
+// Export both routers
+module.exports = {
+  authenticated: router,
+  chatgpt: chatgptRouter
+};
 
 // If running standalone (for testing with stdio transport)
 if (require.main === module) {
