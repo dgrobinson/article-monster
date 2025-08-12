@@ -50,9 +50,8 @@ app.use('/chatgpt', require('./mcpChatGPT'));
 app.use('/mcp-jsonrpc', require('./mcpJsonRpc'));
 
 // Mount Official MCP SDK server for ChatGPT compatibility
-const mcpOfficial = require('./mcpServerOfficial');
-app.use('/mcp-official', mcpOfficial.authenticated);
-app.use('/mcp-chatgpt', mcpOfficial.chatgpt);
+app.use('/mcp-official', require('./mcpServerOfficial'));
+app.use('/mcp-chatgpt', require('./mcpServerOfficialChatGPT'));
 
 // Health check endpoint
 app.get('/health', (req, res) => {

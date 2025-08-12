@@ -385,46 +385,69 @@ chatgptRouter.get('/health', (req, res) => {
 // ChatGPT MCP endpoints (no authentication)
 chatgptRouter.post('/', async (req, res) => {
   try {
-    const { method, params } = req.body;
+    const { method, params, id } = req.body;
+    
+    // Handle MCP initialization
+    if (method === 'initialize') {
+      res.json({
+        jsonrpc: '2.0',
+        id: id,
+        result: {
+          protocolVersion: '2024-11-05',
+          capabilities: {
+            tools: {}
+          },
+          serverInfo: {
+            name: 'zotero-mcp-server',
+            version: '1.0.0'
+          }
+        }
+      });
+      return;
+    }
     
     // Handle tool listing
     if (method === 'tools/list') {
       res.json({
-        tools: [
-          {
-            name: 'search',
-            description: 'Search the Zotero library for references and articles',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                query: {
-                  type: 'string',
-                  description: 'Search query for finding items in Zotero'
+        jsonrpc: '2.0',
+        id: id,
+        result: {
+          tools: [
+            {
+              name: 'search',
+              description: 'Search the Zotero library for references and articles',
+              inputSchema: {
+                type: 'object',
+                properties: {
+                  query: {
+                    type: 'string',
+                    description: 'Search query for finding items in Zotero'
+                  },
+                  limit: {
+                    type: 'number',
+                    description: 'Maximum number of results to return',
+                    default: 25
+                  }
                 },
-                limit: {
-                  type: 'number',
-                  description: 'Maximum number of results to return',
-                  default: 25
-                }
-              },
-              required: ['query']
+                required: ['query']
+              }
+            },
+            {
+              name: 'fetch',
+              description: 'Fetch detailed information about a specific Zotero item',
+              inputSchema: {
+                type: 'object',
+                properties: {
+                  identifier: {
+                    type: 'string',
+                    description: 'The Zotero item key/identifier'
+                  }
+                },
+                required: ['identifier']
+              }
             }
-          },
-          {
-            name: 'fetch',
-            description: 'Fetch detailed information about a specific Zotero item',
-            inputSchema: {
-              type: 'object',
-              properties: {
-                identifier: {
-                  type: 'string',
-                  description: 'The Zotero item key/identifier'
-                }
-              },
-              required: ['identifier']
-            }
-          }
-        ]
+          ]
+        }
       });
       return;
     }
@@ -493,11 +516,8 @@ chatgptRouter.get('/sse', (req, res) => {
   });
 });
 
-// Export both routers
-module.exports = {
-  authenticated: router,
-  chatgpt: chatgptRouter
-};
+// Export the authenticated router for use in main server
+module.exports = router;
 
 // If running standalone (for testing with stdio transport)
 if (require.main === module) {
