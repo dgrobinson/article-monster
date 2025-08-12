@@ -3,6 +3,17 @@ const { createTransport } = require('nodemailer');
 async function sendToKindle(article) {
   try {
     console.log(`Sending to Kindle: "${article.title}"`);
+    
+    // Log detailed input for comparison with FiveFilters
+    console.log('Kindle Send - Article metadata:', JSON.stringify({
+      title: article.title,
+      byline: article.byline,
+      siteName: article.siteName,
+      url: article.url,
+      publishedTime: article.publishedTime,
+      contentLength: article.content?.length || 0,
+      hasImages: article.content?.includes('<img') || false
+    }, null, 2));
 
     // Create email transporter (will need to be configured with environment variables)
     const transporter = createTransport({
@@ -17,13 +28,17 @@ async function sendToKindle(article) {
     const htmlContent = createKindleHTML(article);
 
     // Email options
+    const sanitizedFilename = `${sanitizeFilename(article.title)}.html`;
+    console.log('Kindle Send - Filename:', sanitizedFilename);
+    console.log('Kindle Send - Content size:', (htmlContent.length / 1024).toFixed(2), 'KB');
+    
     const mailOptions = {
       from: process.env.EMAIL_USER,
       to: process.env.KINDLE_EMAIL, // User's @kindle.com email
       subject: article.title,
       html: htmlContent,
       attachments: [{
-        filename: `${sanitizeFilename(article.title)}.html`,
+        filename: sanitizedFilename,
         content: htmlContent,
         contentType: 'text/html'
       }]
@@ -32,6 +47,12 @@ async function sendToKindle(article) {
     // Send email
     const result = await transporter.sendMail(mailOptions);
     console.log(`Successfully sent to Kindle: ${result.messageId}`);
+    console.log('Kindle Send - Complete details:', {
+      messageId: result.messageId,
+      filename: sanitizedFilename,
+      subject: article.title,
+      sizekB: (htmlContent.length / 1024).toFixed(2)
+    });
     
     return { success: true, messageId: result.messageId };
 

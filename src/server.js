@@ -169,6 +169,59 @@ app.post('/test-extract', async (req, res) => {
   }
 });
 
+// Debug endpoint to generate and save EPUB locally for comparison
+app.post('/debug-epub', async (req, res) => {
+  try {
+    const { url, article } = req.body;
+    
+    if (!article) {
+      return res.status(400).json({ error: 'Article content is required' });
+    }
+    
+    console.log('='.repeat(80));
+    console.log('DEBUG EPUB GENERATION - START');
+    console.log('='.repeat(80));
+    
+    // Import EPUB generator
+    const { generateEpub } = require('./epubGenerator');
+    
+    // Generate EPUB
+    const epubResult = await generateEpub({
+      ...article,
+      url: url || article.url
+    });
+    
+    // Save debug copy
+    const fs = require('fs').promises;
+    const path = require('path');
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const debugFilename = `debug_${timestamp}_${epubResult.filename}`;
+    const debugPath = path.join('/tmp', debugFilename);
+    
+    await fs.writeFile(debugPath, epubResult.buffer);
+    
+    console.log('DEBUG EPUB saved to:', debugPath);
+    console.log('='.repeat(80));
+    console.log('DEBUG EPUB GENERATION - COMPLETE');
+    console.log('='.repeat(80));
+    
+    res.json({
+      success: true,
+      filename: epubResult.filename,
+      debugPath: debugPath,
+      sizeKB: (epubResult.size / 1024).toFixed(2),
+      message: `EPUB saved to ${debugPath} for comparison`
+    });
+    
+  } catch (error) {
+    console.error('Debug EPUB generation failed:', error);
+    res.status(500).json({ 
+      error: 'Failed to generate debug EPUB',
+      message: error.message 
+    });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Article bookmarklet service running on port ${PORT}`);
   console.log('Environment check:', {

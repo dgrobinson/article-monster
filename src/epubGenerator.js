@@ -5,9 +5,24 @@ const fs = require('fs').promises;
 async function generateEpub(article) {
   try {
     console.log(`Generating EPUB for: "${article.title}"`);
+    
+    // Log detailed article structure for comparison
+    console.log('EPUB Generation - Input Article:', JSON.stringify({
+      title: article.title,
+      byline: article.byline,
+      siteName: article.siteName,
+      url: article.url,
+      publishedTime: article.publishedTime,
+      contentLength: article.content?.length || 0,
+      hasImages: article.content?.includes('<img') || false,
+      lang: article.lang
+    }, null, 2));
 
     const filename = `${sanitizeFilename(article.title)}.epub`;
     const outputPath = path.join('/tmp', filename);
+    
+    console.log('EPUB Generation - Filename:', filename);
+    console.log('EPUB Generation - Output path:', outputPath);
     
     const options = {
       title: article.title,
@@ -82,6 +97,18 @@ async function generateEpub(article) {
     }
 
     console.log(`Successfully generated EPUB: "${article.title}"`);
+    console.log('EPUB Generation - Stats:', {
+      filename: filename,
+      sizeKB: (epubBuffer.length / 1024).toFixed(2),
+      sizeBytes: epubBuffer.length
+    });
+    
+    // Save a copy for debugging (only in development)
+    if (process.env.NODE_ENV !== 'production') {
+      const debugPath = path.join('/tmp', `debug_${Date.now()}_${filename}`);
+      await fs.writeFile(debugPath, epubBuffer);
+      console.log('EPUB Generation - Debug copy saved to:', debugPath);
+    }
     
     return {
       filename,
