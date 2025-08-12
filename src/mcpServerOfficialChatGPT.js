@@ -142,7 +142,7 @@ router.get('/manifest.json', (req, res) => {
       type: 'none'
     },
     endpoints: {
-      mcp: 'https://seal-app-t4vff.ondigitalocean.app/mcp-chatgpt/',
+      mcp: 'https://seal-app-t4vff.ondigitalocean.app/mcp-chatgpt/sse',
       health: 'https://seal-app-t4vff.ondigitalocean.app/mcp-chatgpt/health'
     },
     server_info: {
@@ -305,24 +305,190 @@ router.post('/', async (req, res) => {
   }
 });
 
-// SSE endpoint for ChatGPT (no auth)
+// SSE endpoint for ChatGPT MCP transport (no auth)
 router.get('/sse', (req, res) => {
   res.setHeader('Content-Type', 'text/event-stream');
   res.setHeader('Cache-Control', 'no-cache');
   res.setHeader('Connection', 'keep-alive');
   res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', 'Cache-Control');
   
   // Send initial connection message
-  res.write('data: {"type":"connection","status":"connected"}\n\n');
+  res.write('data: {"jsonrpc":"2.0","method":"notifications/initialized","params":{"protocolVersion":"2024-11-05","capabilities":{"tools":{}},"serverInfo":{"name":"zotero-mcp-server","version":"1.0.0"}}}\n\n');
   
-  // Keep connection alive
+  // Keep connection alive with proper MCP heartbeat
   const heartbeat = setInterval(() => {
-    res.write('data: {"type":"heartbeat"}\n\n');
+    res.write('data: {"jsonrpc":"2.0","method":"notifications/ping"}\n\n');
   }, 30000);
   
   req.on('close', () => {
     clearInterval(heartbeat);
   });
+  
+  req.on('error', () => {
+    clearInterval(heartbeat);
+  });
+});
+
+// SSE POST endpoint for ChatGPT MCP requests
+router.post('/sse', async (req, res) => {
+  try {
+    const { method, params, id } = req.body;
+    
+    // Set SSE headers
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    
+    // Handle MCP initialization
+    if (method === 'initialize') {
+      const response = {
+        jsonrpc: '2.0',
+        id: id,
+        result: {
+          protocolVersion: '2024-11-05',
+          capabilities: {
+            tools: {}
+          },
+          serverInfo: {
+            name: 'zotero-mcp-server',
+            version: '1.0.0'
+          }
+        }
+      };
+      res.write(`data: ${JSON.stringify(response)}\n\n`);
+      res.end();
+      return;
+    }
+    
+    // Handle tool listing
+    if (method === 'tools/list') {
+      const response = {
+        jsonrpc: '2.0',
+        id: id,
+        result: {
+          tools: [
+            {
+              name: 'search',
+              description: 'Search the Zotero library for references and articles',
+              inputSchema: {
+                type: 'object',
+                properties: {
+                  query: {
+                    type: 'string',
+                    description: 'Search query for finding items in Zotero'
+                  },
+                  limit: {
+                    type: 'number',
+                    description: 'Maximum number of results to return',
+                    default: 25
+                  }
+                },
+                required: ['query']
+              }
+            },
+            {
+              name: 'fetch',
+              description: 'Fetch detailed information about a specific Zotero item',
+              inputSchema: {
+                type: 'object',
+                properties: {
+                  identifier: {
+                    type: 'string',
+                    description: 'The Zotero item key/identifier'
+                  }
+                },
+                required: ['identifier']
+              }
+            }
+          ]
+        }
+      };
+      res.write(`data: ${JSON.stringify(response)}\n\n`);
+      res.end();
+      return;
+    }
+    
+    // Handle tool calls
+    if (method === 'tools/call') {
+      const { name, arguments: args } = params;
+      
+      if (name === 'search') {
+        const results = await searchZotero(args.query, args.limit);
+        const response = {
+          jsonrpc: '2.0',
+          id: id,
+          result: {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(results, null, 2)
+              }
+            ]
+          }
+        };
+        res.write(`data: ${JSON.stringify(response)}\n\n`);
+        res.end();
+        return;
+      }
+      
+      if (name === 'fetch') {
+        const item = await fetchZoteroItem(args.identifier);
+        const response = {
+          jsonrpc: '2.0',
+          id: id,
+          result: {
+            content: [
+              {
+                type: 'text',
+                text: JSON.stringify(item, null, 2)
+              }
+            ]
+          }
+        };
+        res.write(`data: ${JSON.stringify(response)}\n\n`);
+        res.end();
+        return;
+      }
+      
+      const errorResponse = {
+        jsonrpc: '2.0',
+        id: id,
+        error: { 
+          code: -32601,
+          message: `Unknown tool: ${name}` 
+        }
+      };
+      res.write(`data: ${JSON.stringify(errorResponse)}\n\n`);
+      res.end();
+      return;
+    }
+    
+    const errorResponse = {
+      jsonrpc: '2.0',
+      id: id,
+      error: { 
+        code: -32601,
+        message: `Unknown method: ${method}` 
+      }
+    };
+    res.write(`data: ${JSON.stringify(errorResponse)}\n\n`);
+    res.end();
+  } catch (error) {
+    console.error('MCP SSE error:', error);
+    const errorResponse = {
+      jsonrpc: '2.0',
+      id: req.body.id,
+      error: { 
+        code: -32603,
+        message: error.message,
+        data: 'Internal server error processing MCP SSE request'
+      }
+    };
+    res.write(`data: ${JSON.stringify(errorResponse)}\n\n`);
+    res.end();
+  }
 });
 
 module.exports = router;
