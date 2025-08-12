@@ -6,7 +6,7 @@
  * and "fetch" tools with OpenAI-compliant response formats.
  */
 
-const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
+const { McpServer } = require('@modelcontextprotocol/sdk/server/mcp.js');
 const { StdioServerTransport } = require('@modelcontextprotocol/sdk/server/stdio.js');
 const express = require('express');
 const axios = require('axios');
@@ -20,17 +20,10 @@ const MCP_API_KEY = process.env.MCP_API_KEY;
 const router = express.Router();
 
 // Initialize MCP server
-const server = new Server(
-  {
-    name: 'zotero-mcp-server',
-    version: '1.0.0'
-  },
-  {
-    capabilities: {
-      tools: {}
-    }
-  }
-);
+const mcpServer = new McpServer({
+  name: 'zotero-mcp-server',
+  version: '1.0.0'
+});
 
 /**
  * Helper function to search Zotero library
@@ -134,51 +127,29 @@ async function fetchZoteroItem(key) {
 }
 
 // Register the "search" tool (required by ChatGPT)
-server.setRequestHandler('tools/list', async () => ({
-  tools: [
-    {
-      name: 'search',
-      description: 'Search the Zotero library for references and articles',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          query: {
-            type: 'string',
-            description: 'Search query for finding items in Zotero'
-          },
-          limit: {
-            type: 'number',
-            description: 'Maximum number of results to return (default: 25)',
-            default: 25
-          }
+mcpServer.registerTool(
+  'search',
+  {
+    description: 'Search the Zotero library for references and articles',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        query: {
+          type: 'string',
+          description: 'Search query for finding items in Zotero'
         },
-        required: ['query']
-      }
-    },
-    {
-      name: 'fetch',
-      description: 'Fetch detailed information about a specific Zotero item',
-      inputSchema: {
-        type: 'object',
-        properties: {
-          identifier: {
-            type: 'string',
-            description: 'The Zotero item key/identifier'
-          }
-        },
-        required: ['identifier']
-      }
+        limit: {
+          type: 'number',
+          description: 'Maximum number of results to return',
+          default: 25
+        }
+      },
+      required: ['query']
     }
-  ]
-}));
-
-// Handle tool calls
-server.setRequestHandler('tools/call', async (request) => {
-  const { name, arguments: args } = request.params;
-
-  try {
-    if (name === 'search') {
-      const results = await searchZotero(args.query, args.limit);
+  },
+  async ({ query, limit }) => {
+    try {
+      const results = await searchZotero(query, limit || 25);
       return {
         content: [
           {
@@ -187,10 +158,42 @@ server.setRequestHandler('tools/call', async (request) => {
           }
         ]
       };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({ 
+              error: error.message,
+              details: 'Failed to search Zotero library'
+            })
+          }
+        ],
+        isError: true
+      };
     }
+  }
+);
 
-    if (name === 'fetch') {
-      const item = await fetchZoteroItem(args.identifier);
+// Register the "fetch" tool (required by ChatGPT)
+mcpServer.registerTool(
+  'fetch',
+  {
+    description: 'Fetch detailed information about a specific Zotero item',
+    inputSchema: {
+      type: 'object',
+      properties: {
+        identifier: {
+          type: 'string',
+          description: 'The Zotero item key/identifier'
+        }
+      },
+      required: ['identifier']
+    }
+  },
+  async ({ identifier }) => {
+    try {
+      const item = await fetchZoteroItem(identifier);
       return {
         content: [
           {
@@ -199,24 +202,22 @@ server.setRequestHandler('tools/call', async (request) => {
           }
         ]
       };
+    } catch (error) {
+      return {
+        content: [
+          {
+            type: 'text',
+            text: JSON.stringify({ 
+              error: error.message,
+              details: 'Failed to fetch Zotero item'
+            })
+          }
+        ],
+        isError: true
+      };
     }
-
-    throw new Error(`Unknown tool: ${name}`);
-  } catch (error) {
-    return {
-      content: [
-        {
-          type: 'text',
-          text: JSON.stringify({ 
-            error: error.message,
-            details: 'Failed to complete the requested operation'
-          })
-        }
-      ],
-      isError: true
-    };
   }
-});
+);
 
 // HTTP Transport for ChatGPT (Express middleware)
 router.use(express.json());
@@ -247,29 +248,95 @@ router.get('/health', (req, res) => {
     status: 'active',
     server: 'zotero-mcp-official',
     version: '1.0.0',
-    sdk: '@modelcontextprotocol/sdk'
+    sdk: '@modelcontextprotocol/sdk',
+    tools: ['search', 'fetch']
   });
 });
 
 // Main MCP endpoint for HTTP transport
+// This endpoint bridges HTTP requests to the MCP server
 router.post('/', async (req, res) => {
   try {
     const { method, params } = req.body;
     
-    // Route to appropriate handler based on method
-    let result;
-    
+    // Handle tool listing
     if (method === 'tools/list') {
-      result = await server.handleRequest({ method, params });
-    } else if (method === 'tools/call') {
-      result = await server.handleRequest({ method, params });
-    } else {
-      return res.status(400).json({ 
-        error: `Unknown method: ${method}` 
+      // Return the available tools
+      res.json({
+        tools: [
+          {
+            name: 'search',
+            description: 'Search the Zotero library for references and articles',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                query: {
+                  type: 'string',
+                  description: 'Search query for finding items in Zotero'
+                },
+                limit: {
+                  type: 'number',
+                  description: 'Maximum number of results to return',
+                  default: 25
+                }
+              },
+              required: ['query']
+            }
+          },
+          {
+            name: 'fetch',
+            description: 'Fetch detailed information about a specific Zotero item',
+            inputSchema: {
+              type: 'object',
+              properties: {
+                identifier: {
+                  type: 'string',
+                  description: 'The Zotero item key/identifier'
+                }
+              },
+              required: ['identifier']
+            }
+          }
+        ]
       });
+      return;
     }
     
-    res.json(result);
+    // Handle tool calls
+    if (method === 'tools/call') {
+      const { name, arguments: args } = params;
+      
+      if (name === 'search') {
+        const results = await searchZotero(args.query, args.limit);
+        res.json({
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify({ results }, null, 2)
+            }
+          ]
+        });
+        return;
+      }
+      
+      if (name === 'fetch') {
+        const item = await fetchZoteroItem(args.identifier);
+        res.json({
+          content: [
+            {
+              type: 'text',
+              text: JSON.stringify(item, null, 2)
+            }
+          ]
+        });
+        return;
+      }
+      
+      res.status(400).json({ error: `Unknown tool: ${name}` });
+      return;
+    }
+    
+    res.status(400).json({ error: `Unknown method: ${method}` });
   } catch (error) {
     console.error('MCP request error:', error);
     res.status(500).json({ 
@@ -302,14 +369,27 @@ router.get('/sse', (req, res) => {
 // Export the router for use in main server
 module.exports = router;
 
-// If running standalone (for testing)
+// If running standalone (for testing with stdio transport)
 if (require.main === module) {
-  const app = express();
-  app.use('/mcp-official', router);
+  // For standalone testing with stdio transport
+  const runStandalone = async () => {
+    const transport = new StdioServerTransport();
+    await mcpServer.connect(transport);
+    console.error('MCP server running on stdio transport');
+  };
   
-  const PORT = process.env.PORT || 3001;
-  app.listen(PORT, () => {
-    console.log(`MCP Official SDK Server running on port ${PORT}`);
-    console.log(`Health check: http://localhost:${PORT}/mcp-official/health`);
-  });
+  // Check if we should run stdio or HTTP mode
+  if (process.argv.includes('--stdio')) {
+    runStandalone().catch(console.error);
+  } else {
+    // HTTP mode
+    const app = express();
+    app.use('/mcp-official', router);
+    
+    const PORT = process.env.PORT || 3001;
+    app.listen(PORT, () => {
+      console.log(`MCP Official SDK Server running on port ${PORT}`);
+      console.log(`Health check: http://localhost:${PORT}/mcp-official/health`);
+    });
+  }
 }
