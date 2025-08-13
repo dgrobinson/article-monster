@@ -42,8 +42,10 @@ async function generateEpub(article) {
         h1 {
           color: #2c3e50;
           border-bottom: 2px solid #3498db;
-          padding-bottom: 0.5em;
-          margin-bottom: 1em;
+          padding-bottom: 1em;
+          margin-bottom: 1.5em;
+          margin-top: 1em;
+          line-height: 1.3;
         }
         .meta {
           color: #7f8c8d;
