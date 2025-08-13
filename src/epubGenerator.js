@@ -41,6 +41,31 @@ async function generateEpub(article) {
           font-feature-settings: "liga" 1, "kern" 1;
           text-rendering: optimizeLegibility;
         }
+        
+        /* Enhanced TOC hiding */
+        nav[epub\\:type="toc"], .toc, #toc, .table-of-contents,
+        nav.toc, .nav-toc, #nav-toc, .epub-toc {
+          display: none !important;
+          visibility: hidden !important;
+          height: 0 !important;
+          width: 0 !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          overflow: hidden !important;
+        }
+        
+        /* Hide TOC-related headings */
+        h1:contains("Table"), h1:contains("Contents"), 
+        h2:contains("Table"), h2:contains("Contents"),
+        h3:contains("Table"), h3:contains("Contents") {
+          display: none !important;
+        }
+        
+        /* Hide navigation elements that might be TOC */
+        nav:not([epub\\:type="landmarks"]), .navigation, .nav {
+          display: none !important;
+        }
+        
         h1 {
           color: #2c3e50;
           border-bottom: 2px solid #3498db;
