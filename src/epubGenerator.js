@@ -35,7 +35,7 @@ async function generateEpub(article) {
       css: `
         body {
           font-family: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
-          line-height: 1.7;
+          line-height: 1.6;
           color: #1a1a1a;
           margin: 2em;
           font-feature-settings: "liga" 1, "kern" 1;
