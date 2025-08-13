@@ -49,6 +49,14 @@
         // Fix image URLs and detect images before processing
         var processedContent = this._fixImageUrls(article.innerHTML);
         var hasImages = this._detectImages(processedContent);
+        
+        // If no images detected in content, check the whole page as fallback
+        if (!hasImages) {
+          var pageImages = document.querySelectorAll('article img, main img, .content img, figure img');
+          hasImages = pageImages.length > 0;
+          console.log('Fallback image check found', pageImages.length, 'images on page');
+        }
+        
         var sectionedContent = this._addContentSections(processedContent);
 
         return {
@@ -327,9 +335,31 @@
                 // Convert plain text to basic HTML with paragraphs
                 var htmlContent = this._textToHtml(data.articleBody);
                 
+                // For JSON-LD articles, check the actual page for images since articleBody is plain text
+                var pageImages = document.querySelectorAll('article img, main img, .article-content img, [role="main"] img');
+                var hasImages = pageImages.length > 0;
+                
+                // If we found images, try to include them in the content
+                if (hasImages && pageImages.length > 0) {
+                  console.log('Found', pageImages.length, 'images in page, attempting to include them');
+                  // Try to extract images from the actual article element
+                  var articleElement = document.querySelector('article, main, .article-content, [role="main"]');
+                  if (articleElement) {
+                    var imgElements = articleElement.querySelectorAll('img');
+                    var imageHtml = '';
+                    imgElements.forEach(function(img) {
+                      if (img.src) {
+                        imageHtml += '<figure><img src="' + img.src + '" alt="' + (img.alt || '') + '" /></figure>';
+                      }
+                    });
+                    if (imageHtml) {
+                      htmlContent = htmlContent.replace('</div>', imageHtml + '</div>');
+                    }
+                  }
+                }
+                
                 // Process content for images and sections
                 var processedContent = this._fixImageUrls(htmlContent);
-                var hasImages = this._detectImages(processedContent);
                 var sectionedContent = this._addContentSections(processedContent);
                 
                 return {
@@ -719,15 +749,37 @@
       var currentUrl = window.location.href;
       
       div.querySelectorAll('img').forEach(function(img) {
+        // Get the actual resolved src from the DOM element
+        var actualSrc = img.src || img.getAttribute('src');
+        
         // Fix relative URLs to absolute
-        if (img.src && !img.src.startsWith('http') && !img.src.startsWith('data:')) {
+        if (actualSrc && !actualSrc.startsWith('http') && !actualSrc.startsWith('data:')) {
           try {
-            img.src = new URL(img.src, currentUrl).href;
+            img.src = new URL(actualSrc, currentUrl).href;
           } catch (e) {
             // If URL construction fails, try with base URL
-            if (img.src.startsWith('/')) {
-              img.src = baseUrl + img.src;
+            if (actualSrc.startsWith('/')) {
+              img.src = baseUrl + actualSrc;
             }
+          }
+        } else if (actualSrc && actualSrc.startsWith('http')) {
+          // Ensure we're using the full URL
+          img.src = actualSrc;
+        }
+        
+        // Also fix data-src for lazy-loaded images
+        var dataSrc = img.getAttribute('data-src');
+        if (dataSrc && !img.src) {
+          if (!dataSrc.startsWith('http') && !dataSrc.startsWith('data:')) {
+            try {
+              img.src = new URL(dataSrc, currentUrl).href;
+            } catch (e) {
+              if (dataSrc.startsWith('/')) {
+                img.src = baseUrl + dataSrc;
+              }
+            }
+          } else {
+            img.src = dataSrc;
           }
         }
         
@@ -756,6 +808,16 @@
         if (!img.hasAttribute('loading')) {
           img.setAttribute('loading', 'lazy');
         }
+        
+        // Add a width/height if missing to prevent layout shifts
+        if (!img.hasAttribute('width') && img.naturalWidth) {
+          img.setAttribute('width', img.naturalWidth);
+        }
+        if (!img.hasAttribute('height') && img.naturalHeight) {
+          img.setAttribute('height', img.naturalHeight);
+        }
+        
+        console.log('Fixed image:', img.src);
       });
       
       return div.innerHTML;

@@ -31,6 +31,7 @@ async function generateEpub(article) {
       output: outputPath,
       cover: null, // We could add cover generation later
       appendChapterTitles: false, // Don't add automatic h1 titles
+      tocTitle: null, // Disable table of contents
       css: `
         body {
           font-family: Georgia, serif;
@@ -118,14 +119,8 @@ async function generateEpub(article) {
 }
 
 function createEpubChapters(article) {
-  // Check if content has multiple sections
-  var hasMultipleSections = article.content && article.content.includes('content-section');
-  
-  if (hasMultipleSections) {
-    return createMultiChapterEpub(article);
-  } else {
-    return createSingleChapterEpub(article);
-  }
+  // Always use single chapter for articles to avoid unnecessary TOC
+  return createSingleChapterEpub(article);
 }
 
 function createMultiChapterEpub(article) {
