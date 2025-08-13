@@ -31,37 +31,74 @@ async function generateEpub(article) {
       output: outputPath,
       cover: null, // We could add cover generation later
       appendChapterTitles: false, // Don't add automatic h1 titles
-      tocTitle: null, // Disable table of contents
+      tocTitle: ' ', // Use a space to effectively hide TOC
       css: `
         body {
           font-family: Georgia, serif;
-          line-height: 1.6;
+          line-height: 1.8;
           color: #333;
-          margin: 2em;
+          margin: 1.5em;
+          max-width: 100%;
         }
         h1 {
           color: #2c3e50;
           border-bottom: 2px solid #3498db;
-          padding-bottom: 0.5em;
-          margin-bottom: 1em;
+          padding-bottom: 1em;
+          margin-bottom: 1.5em;
+          margin-top: 1.5em;
+          line-height: 1.3;
+          font-size: 1.8em;
+          font-weight: 600;
+          letter-spacing: -0.01em;
         }
         .meta {
-          color: #7f8c8d;
-          font-size: 0.9em;
-          margin-bottom: 2em;
-          padding: 1em;
+          color: #5f6368;
+          font-size: 0.95em;
+          margin-bottom: 2.5em;
+          padding: 1.2em;
           background-color: #f8f9fa;
           border-left: 4px solid #3498db;
+          line-height: 1.6;
+        }
+        .meta p {
+          margin: 0.4em 0;
+        }
+        .content {
+          font-size: 1.05em;
         }
         .content p {
-          margin-bottom: 1em;
+          margin-bottom: 1.3em;
           text-align: justify;
+          line-height: 1.8;
+          text-indent: 0;
+        }
+        .content p:first-of-type {
+          text-indent: 0;
         }
         .content img {
           max-width: 100%;
           height: auto;
           display: block;
-          margin: 2em auto;
+          margin: 2.5em auto;
+        }
+        .content h2 {
+          margin-top: 2em;
+          margin-bottom: 1em;
+          font-size: 1.4em;
+          color: #2c3e50;
+        }
+        .content h3 {
+          margin-top: 1.5em;
+          margin-bottom: 0.8em;
+          font-size: 1.2em;
+          color: #34495e;
+        }
+        blockquote {
+          margin: 1.5em 0;
+          padding-left: 1.5em;
+          border-left: 3px solid #bdc3c7;
+          font-style: italic;
+          color: #555;
         }
         .source {
           margin-top: 3em;
@@ -172,8 +209,9 @@ function createMultiChapterEpub(article) {
 function createSingleChapterEpub(article) {
   return [
     {
-      title: article.title,
-      data: createEpubContent(article)
+      title: ' ', // Use space to prevent TOC generation
+      data: createEpubContent(article),
+      excludeFromToc: true // Try to exclude from TOC
     }
   ];
 }
