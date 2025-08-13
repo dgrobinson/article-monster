@@ -34,10 +34,12 @@ async function generateEpub(article) {
       tocTitle: null, // Disable table of contents
       css: `
         body {
-          font-family: Georgia, serif;
-          line-height: 1.6;
-          color: #333;
+          font-family: "Charter", "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+          line-height: 1.7;
+          color: #1a1a1a;
           margin: 2em;
+          font-feature-settings: "liga" 1, "kern" 1;
+          text-rendering: optimizeLegibility;
         }
         h1 {
           color: #2c3e50;
@@ -56,8 +58,30 @@ async function generateEpub(article) {
           border-left: 4px solid #3498db;
         }
         .content p {
-          margin-bottom: 1em;
+          margin-bottom: 1.2em;
           text-align: justify;
+          text-indent: 0;
+        }
+        blockquote {
+          font-style: italic;
+          margin: 1.5em 0;
+          padding-left: 1.5em;
+          border-left: 3px solid #3498db;
+          color: #444;
+        }
+        .content h2 {
+          color: #2c3e50;
+          font-size: 1.3em;
+          margin-top: 2em;
+          margin-bottom: 0.8em;
+          line-height: 1.3;
+        }
+        .content h3 {
+          color: #34495e;
+          font-size: 1.1em;
+          margin-top: 1.5em;
+          margin-bottom: 0.6em;
+          line-height: 1.3;
         }
         .content img {
           max-width: 100%;

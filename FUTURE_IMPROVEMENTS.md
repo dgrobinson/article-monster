@@ -131,10 +131,106 @@ const options = {
 - ✅ Cramped headline spacing fixed with CSS margins
 - ✅ Better line heights for readability
 
-### Remaining Improvements
-- Better paragraph spacing
-- Enhanced metadata section styling
-- Improved subheading hierarchy
+### Typography Enhancement Options
+
+**1. Font Improvements**
+```css
+/* Option A: System font stack with fallbacks */
+font-family: "Palatino", "Book Antiqua", "Times New Roman", Georgia, serif;
+
+/* Option B: Web font embedding */
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+font-family: "Crimson Text", Georgia, serif;
+
+/* Option C: Modern system fonts */
+font-family: "Charter", "Bitstream Charter", "Sitka Text", Cambria, serif;
+```
+
+**2. Advanced Typography Features**
+```css
+/* Enable ligatures and kerning */
+font-feature-settings: "liga" 1, "kern" 1;
+text-rendering: optimizeLegibility;
+
+/* Better number styling */
+font-variant-numeric: oldstyle-nums;
+
+/* Drop caps for first paragraph */
+.content p:first-of-type::first-letter {
+  float: left;
+  font-size: 3.5em;
+  line-height: 0.8;
+  margin: 0.1em 0.1em 0 0;
+  color: #3498db;
+}
+
+/* Better quote styling */
+blockquote {
+  font-family: "Palatino", Georgia, serif;
+  font-style: italic;
+  font-size: 1.1em;
+  border-left: 4px solid #3498db;
+  padding-left: 2em;
+  margin: 2em 0;
+  position: relative;
+}
+
+blockquote::before {
+  content: """;
+  font-size: 4em;
+  color: #3498db;
+  position: absolute;
+  left: 0.2em;
+  top: -0.5em;
+}
+```
+
+**3. Headline Typography**
+```css
+/* Sophisticated headline stack */
+h1 {
+  font-family: "Playfair Display", "Times New Roman", serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-wrap: balance; /* New CSS feature for better line breaks */
+}
+
+/* Subheading hierarchy */
+h2 {
+  font-family: "Source Sans Pro", "Helvetica Neue", sans-serif;
+  font-weight: 600;
+  color: #2c3e50;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.9em;
+}
+```
+
+**4. Responsive & Accessible Typography**
+```css
+/* Fluid typography that scales with device */
+body {
+  font-size: clamp(16px, 2.5vw, 20px);
+  line-height: calc(1.4 + 0.5vw);
+}
+
+/* Better contrast and spacing */
+.content {
+  max-width: 65ch; /* Optimal reading line length */
+  color: #1a1a1a; /* Better contrast than #333 */
+}
+```
+
+### Immediate Implementation Options
+1. **Safe upgrade**: Better system font stack (Palatino → Georgia fallback)
+2. **Medium upgrade**: Embed 1-2 Google Fonts for headlines and body
+3. **Advanced upgrade**: Full typographic system with drop caps, better quotes, etc.
+
+### Benefits
+- **Professional appearance** matching high-end publications
+- **Better readability** with fonts designed for long-form reading  
+- **Visual hierarchy** making articles easier to scan
+- **Brand consistency** with distinctive typography choices
 
 ---
 
