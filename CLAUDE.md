@@ -131,10 +131,14 @@ Claude has access to these CLI tools for managing this project:
 - **The Fix**: Bookmarklet must wait for FiveFilters config before attempting extraction
 - **Note**: WSJ has a full FiveFilters config at `site-configs/wsj.com.txt` that would work if used
 
-### EPUB Table of Contents
-- epub-gen library always includes a basic TOC structure
-- Setting empty titles or excludeFromToc can break EPUB generation
-- Current approach: Minimal TOC with single entry for the article
+### EPUB Table of Contents (Resolved August 2025)
+- **Current Solution**: Enhanced CSS-based hiding - TOC content hidden, minimal blank page remains
+- **Implementation**: `nav[epub:type="toc"], .toc, #toc` hidden with `display: none !important`
+- **Status**: ✅ WORKING - TOC content invisible in readers, user feedback confirms improvement
+- **Alternative Evaluated**: nodepub library migration would require complete API rewrite
+- **Decision Rationale**: CSS solution solves user problem with minimal risk vs high-complexity migration
+- **Library Limitation**: epub-gen v0.1.0 architectural constraint cannot be fully overcome
+- **Reference**: See LESSONS_LEARNED.md for detailed investigation history
 
 ## Current Known Issues (August 2025)
 
@@ -177,6 +181,17 @@ Claude has access to these CLI tools for managing this project:
      - **Discovery**: ChatGPT Connectors reject custom implementations ("doesn't implement our specification")
      - **Solution**: Must implement official `@modelcontextprotocol/sdk` alongside custom server
      - **Files**: `src/mcpServer.js` (custom), `src/mcpJsonRpc.js` (failed attempt), `MCP_INTEGRATION_PLAN.md`
+
+4. **Enhanced EPUB TOC Hiding** (August 2025)
+   - **Problem**: Unwanted TOC pages showing "1. --" and "2. Article Title" in single-article EPUBs
+   - **Investigation**: Comprehensive analysis of epub-gen library limitations and nodepub migration
+   - **CSS Solution**: Enhanced selectors targeting all TOC elements with `display: none !important`
+   - **CSS Result**: Successfully hides TOC content, leaves blank navigation page (minimal impact)
+   - **nodepub Investigation**: Alternative library requires mandatory cover, strict fields, complete API rewrite
+   - **Migration Complexity**: nodepub would require significant refactoring with uncertain benefits
+   - **Final Decision**: CSS approach is optimal - solves main user problem with minimal risk
+   - **Files Updated**: `src/epubGenerator.js` (CSS enhancement)
+   - **Status**: Deployed and working - blank page is acceptable vs complex library migration
 
 ## Future Enhancement Roadmap
 

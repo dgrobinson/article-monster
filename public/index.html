@@ -146,6 +146,27 @@
     </div>
 
     <div class="section">
+        <h2>📱 Copy Bookmarklet Code</h2>
+        <p>For mobile devices or work systems where dragging isn't possible, copy this code and manually create a bookmark:</p>
+        
+        <div style="position: relative;">
+            <textarea id="bookmarklet-code" readonly style="width: 100%; height: 120px; font-family: 'Monaco', 'Consolas', monospace; font-size: 11px; padding: 10px; border: 1px solid #ddd; border-radius: 6px; background: #f8f9fa; resize: vertical;" placeholder="Loading bookmarklet code..."></textarea>
+            <button id="copy-button" onclick="copyBookmarkletCode()" style="position: absolute; top: 10px; right: 10px; background: #28a745; color: white; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-size: 12px;">Copy</button>
+        </div>
+        
+        <div style="margin-top: 15px; padding: 15px; background: #e7f3ff; border-radius: 6px; border-left: 4px solid #007bff;">
+            <strong>📱 Mobile/Work System Instructions:</strong>
+            <ol style="margin: 10px 0; padding-left: 20px;">
+                <li>Copy the code above using the Copy button</li>
+                <li>Create a new bookmark in your browser</li>
+                <li>Set the name to "Article Monster" (or your preferred name)</li>
+                <li>Paste the copied code as the URL/location</li>
+                <li>Save the bookmark</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="section">
         <h2>📝 Setup Instructions</h2>
         
         <div class="step">
@@ -218,9 +239,13 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
                     
                     // Update the link
                     document.getElementById('bookmarklet-link').href = bookmarkletHref;
+                    
+                    // Also populate the textarea with the full bookmarklet code
+                    document.getElementById('bookmarklet-code').value = bookmarkletHref;
                 })
                 .catch(error => {
                     console.error('Failed to load bookmarklet code:', error);
+                    document.getElementById('bookmarklet-code').value = 'Error loading bookmarklet code. Please refresh the page.';
                 });
             
             // Load the debug bookmarklet code
@@ -252,6 +277,38 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
                     statusDiv.className = 'status offline';
                     statusDiv.innerHTML = '<p>❌ Service is offline. Please check your deployment.</p>';
                 });
+        }
+        
+        // Copy bookmarklet code to clipboard
+        function copyBookmarkletCode() {
+            const textarea = document.getElementById('bookmarklet-code');
+            const button = document.getElementById('copy-button');
+            
+            // Select and copy the text
+            textarea.select();
+            textarea.setSelectionRange(0, 99999); // For mobile devices
+            
+            try {
+                document.execCommand('copy');
+                
+                // Provide visual feedback
+                const originalText = button.textContent;
+                button.textContent = '✓ Copied!';
+                button.style.background = '#28a745';
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.style.background = '#28a745';
+                }, 2000);
+                
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy. Please manually select and copy the text.');
+            }
+            
+            // Deselect the text
+            textarea.setSelectionRange(0, 0);
+            textarea.blur();
         }
         
         // Initialize
