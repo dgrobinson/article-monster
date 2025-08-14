@@ -57,7 +57,9 @@
       "WebFetch(domain:platform.openai.com)",
       "WebFetch(domain:modelcontextprotocol.io)",
       "WebFetch(domain:www.npmjs.com)",
-      "WebSearch"
+      "WebSearch",
+      "WebFetch(domain:community.openai.com)",
+      "WebFetch(domain:gofastmcp.com)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

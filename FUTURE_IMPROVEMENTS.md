@@ -1,4 +1,13 @@
-# Future Improvements for Article Monster
+# Broad directions to explore
+
+- Pipeline to make a podcast from an arbitrary article
+- Apply a prompt over a group of articles to summarize their joint contents
+  - e.g. here are the articles by a colleague, summarize the arc of their thinking and scholarly interests
+- Take the most recent k articles and produce a "teaser" compendium with clickable links to the underlying Zotero items in the style of Arts and Letters Daily
+- Accept input via email; summarize a long article or newsletter
+- Some kind of agentic flow that looks around for new articles and automatically adds them — e.g., something that has time to read all the output of the Syllabus and a bunch of other outlets and highlight the picks most likely to appeal to me
+
+# More specific future Improvements for Article Monster
 
 ## 🖼️ Cover Image Generation for Kindle Display
 

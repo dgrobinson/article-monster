@@ -313,12 +313,12 @@ wss.on('connection', (ws, req) => {
                 inputSchema: {
                   type: 'object',
                   properties: {
-                    identifier: {
+                    id: {
                       type: 'string',
                       description: 'Item key/ID from search results'
                     }
                   },
-                  required: ['identifier']
+                  required: ['id']
                 }
               }
             ]
@@ -361,7 +361,7 @@ wss.on('connection', (ws, req) => {
             }));
             
           } else if (request.params.name === 'fetch') {
-            const { identifier } = request.params.arguments;
+            const { id: identifier } = request.params.arguments;
             const config = getZoteroConfig();
             
             const [itemResponse, childrenResponse] = await Promise.all([

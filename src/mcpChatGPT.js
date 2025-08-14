@@ -90,12 +90,12 @@ mcpChatGPTRouter.post('/tools/fetch', async (req, res) => {
     console.log('Body:', JSON.stringify(req.body, null, 2));
     console.log('IP:', req.ip || req.connection.remoteAddress);
     
-    const { identifier } = req.body;
+    const { id: identifier } = req.body;
     
     if (!identifier) {
-      console.log('ERROR: Missing identifier parameter');
+      console.log('ERROR: Missing id parameter');
       return res.status(400).json({ 
-        error: 'Resource identifier required',
+        error: 'Resource id required',
         tool: 'fetch'
       });
     }
@@ -236,17 +236,12 @@ mcpChatGPTRouter.get('/mcp/metadata', (req, res) => {
           inputSchema: {
             type: 'object',
             properties: {
-              identifier: {
+              id: {
                 type: 'string',
                 description: 'Item key/ID from search results'
-              },
-              type: {
-                type: 'string',
-                description: 'Resource type (optional)',
-                default: 'zotero_item'
               }
             },
-            required: ['identifier']
+            required: ['id']
           }
         }
       ]
@@ -264,7 +259,7 @@ mcpChatGPTRouter.get('/mcp/metadata', (req, res) => {
   });
 });
 
-// SSE endpoint for ChatGPT Connectors - MCP over SSE
+// SSE endpoint for ChatGPT Connectors - MCP over SSE (FastMCP pattern)
 mcpChatGPTRouter.get('/sse', (req, res) => {
   console.log('=== ChatGPT SSE CONNECTION ATTEMPT ===');
   console.log('Headers:', JSON.stringify(req.headers, null, 2));
@@ -272,21 +267,28 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
   console.log('User-Agent:', req.get('User-Agent'));
   console.log('Query params:', JSON.stringify(req.query, null, 2));
   
+  // FastMCP-style SSE headers
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
     'Connection': 'keep-alive',
     'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Headers': 'Cache-Control'
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+    'Pragma': 'no-cache',
+    'Expires': '0'
   });
   
   console.log('SSE headers sent, connection established');
   
-  // Send MCP initialization response
+  // Send immediate connection confirmation (FastMCP pattern)
+  res.write(': connected\n\n');
+  
+  // Send MCP initialization (matching FastMCP format)
   const initResponse = {
     jsonrpc: '2.0',
-    id: 1,
-    result: {
+    method: 'initialize',
+    params: {
       protocolVersion: '2024-11-05',
       capabilities: {
         tools: {}
@@ -298,14 +300,14 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
     }
   };
   
-  console.log('Sending MCP init response:', JSON.stringify(initResponse, null, 2));
+  console.log('Sending MCP init (FastMCP style):', JSON.stringify(initResponse, null, 2));
   res.write(`data: ${JSON.stringify(initResponse)}\n\n`);
   
-  // Send tools list
+  // Send tools list notification (FastMCP pattern)
   const toolsResponse = {
     jsonrpc: '2.0',
-    id: 2,
-    result: {
+    method: 'tools/list_changed',
+    params: {
       tools: [
         {
           name: 'search',
@@ -316,12 +318,6 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
               query: {
                 type: 'string',
                 description: 'Search terms (title, author, keywords, etc.)'
-              },
-              limit: {
-                type: 'integer',
-                default: 25,
-                maximum: 50,
-                description: 'Maximum number of results'
               }
             },
             required: ['query']
@@ -333,12 +329,12 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
           inputSchema: {
             type: 'object',
             properties: {
-              identifier: {
+              id: {
                 type: 'string',
                 description: 'Item key/ID from search results'
               }
             },
-            required: ['identifier']
+            required: ['id']
           }
         }
       ]
@@ -346,23 +342,44 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
   };
   
   setTimeout(() => {
-    console.log('Sending tools response:', JSON.stringify(toolsResponse, null, 2));
+    console.log('Sending tools notification (FastMCP style):', JSON.stringify(toolsResponse, null, 2));
     res.write(`data: ${JSON.stringify(toolsResponse)}\n\n`);
-  }, 1000);
+  }, 100);
   
-  // Keep connection alive with ping
-  const keepAlive = setInterval(() => {
+  // Send ready notification
+  setTimeout(() => {
+    const readyResponse = {
+      jsonrpc: '2.0',
+      method: 'server/ready',
+      params: {
+        serverInfo: {
+          name: 'zotero-mcp-server',
+          version: '1.0.0'
+        }
+      }
+    };
+    console.log('Sending ready notification');
+    res.write(`data: ${JSON.stringify(readyResponse)}\n\n`);
+  }, 200);
+  
+  // Keep connection alive with heartbeat (FastMCP pattern)
+  const heartbeat = setInterval(() => {
     const ping = {
       jsonrpc: '2.0',
-      method: 'notifications/ping',
-      params: { timestamp: new Date().toISOString() }
+      method: 'ping',
+      params: { timestamp: Date.now() }
     };
     res.write(`data: ${JSON.stringify(ping)}\n\n`);
   }, 30000);
   
   req.on('close', () => {
     console.log('ChatGPT SSE connection closed');
-    clearInterval(keepAlive);
+    clearInterval(heartbeat);
+  });
+  
+  req.on('error', (error) => {
+    console.error('SSE connection error:', error);
+    clearInterval(heartbeat);
   });
 });
 
@@ -406,12 +423,12 @@ mcpChatGPTRouter.get('/', (req, res) => {
           inputSchema: {
             type: 'object',
             properties: {
-              identifier: {
+              id: {
                 type: 'string',
                 description: 'Item key/ID from search results'
               }
             },
-            required: ['identifier']
+            required: ['id']
           }
         }
       ]
