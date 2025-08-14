@@ -61,7 +61,7 @@ app.use('/mcp-chatgpt', require('./mcpServerOfficialChatGPT'));
 
 // FastMCP proxy routes for ChatGPT integration
 app.use('/chatgpt/fastmcp', async (req, res, next) => {
-  if (!fastmcpLauncher.isHealthy()) {
+  if (!fastmcpLauncher || !fastmcpLauncher.isHealthy()) {
     return res.status(503).json({
       error: 'FastMCP server not available',
       message: 'FastMCP subprocess is not running'
@@ -70,7 +70,9 @@ app.use('/chatgpt/fastmcp', async (req, res, next) => {
   
   // Proxy request to FastMCP server
   try {
-    const fastmcpUrl = `${fastmcpLauncher.getBaseUrl()}${req.path}`;
+    const fastmcpUrl = isUnderRouter 
+      ? `http://localhost:${process.env.FASTMCP_PORT}${req.path}`
+      : `${fastmcpLauncher.getBaseUrl()}${req.path}`;
     console.log(`[FastMCP Proxy] ${req.method} ${fastmcpUrl}`);
     
     // Forward all headers except host, and add MCP-specific headers
@@ -116,14 +118,14 @@ app.get('/health', (req, res) => {
     services: {
       bookmarklet: 'active',
       mcp: process.env.MCP_API_KEY ? 'active' : 'disabled',
-      fastmcp: fastmcpLauncher.isHealthy() ? 'active' : 'inactive'
+      fastmcp: (fastmcpLauncher && fastmcpLauncher.isHealthy()) || isUnderRouter ? 'active' : 'inactive'
     },
     timestamp: new Date().toISOString(),
     debug: {
       mcpApiKeySet: !!process.env.MCP_API_KEY,
       mcpApiKeyLength: process.env.MCP_API_KEY ? process.env.MCP_API_KEY.length : 0,
-      fastmcpPort: fastmcpLauncher.getPort(),
-      fastmcpUrl: fastmcpLauncher.getBaseUrl()
+      fastmcpPort: fastmcpLauncher ? fastmcpLauncher.getPort() : (process.env.FASTMCP_PORT || 'N/A'),
+      fastmcpUrl: fastmcpLauncher ? fastmcpLauncher.getBaseUrl() : (isUnderRouter ? `http://localhost:${process.env.FASTMCP_PORT}` : 'N/A')
     }
   });
 });
