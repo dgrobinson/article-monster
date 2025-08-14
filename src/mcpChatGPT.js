@@ -82,7 +82,7 @@ mcpChatGPTRouter.post('/tools/fetch', async (req, res) => {
       });
     }
 
-    console.log(`MCP ChatGPT Fetch: ${identifier} (type: ${type || 'auto'})`);
+    console.log(`MCP ChatGPT Fetch: ${identifier}`);
     const config = getZoteroConfig();
     
     // Fetch specific Zotero item
