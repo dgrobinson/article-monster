@@ -234,7 +234,7 @@ mcpChatGPTRouter.get('/mcp/metadata', (req, res) => {
   });
 });
 
-// SSE endpoint for ChatGPT Connectors (as shown in OpenAI docs)
+// SSE endpoint for ChatGPT Connectors - MCP over SSE
 mcpChatGPTRouter.get('/sse', (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
@@ -244,34 +244,86 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
     'Access-Control-Allow-Headers': 'Cache-Control'
   });
   
-  // Send initial server info
-  const serverInfo = {
-    name: 'Personal Zotero Library Access',
-    version: '1.0.0',
-    description: 'MCP-compliant access to your personal Zotero research library',
-    protocol: 'mcp',
-    capabilities: {
+  console.log('ChatGPT SSE connection established');
+  
+  // Send MCP initialization response
+  const initResponse = {
+    jsonrpc: '2.0',
+    id: 1,
+    result: {
+      protocolVersion: '2024-11-05',
+      capabilities: {
+        tools: {}
+      },
+      serverInfo: {
+        name: 'zotero-mcp-server',
+        version: '1.0.0'
+      }
+    }
+  };
+  
+  res.write(`data: ${JSON.stringify(initResponse)}\n\n`);
+  
+  // Send tools list
+  const toolsResponse = {
+    jsonrpc: '2.0',
+    id: 2,
+    result: {
       tools: [
         {
           name: 'search',
-          description: 'Search across all items in your Zotero library'
+          description: 'Search across all items in your Zotero library',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              query: {
+                type: 'string',
+                description: 'Search terms (title, author, keywords, etc.)'
+              },
+              limit: {
+                type: 'integer',
+                default: 25,
+                maximum: 50,
+                description: 'Maximum number of results'
+              }
+            },
+            required: ['query']
+          }
         },
         {
-          name: 'fetch', 
-          description: 'Fetch detailed information about a specific library item'
+          name: 'fetch',
+          description: 'Fetch detailed information about a specific library item',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              identifier: {
+                type: 'string',
+                description: 'Item key/ID from search results'
+              }
+            },
+            required: ['identifier']
+          }
         }
       ]
     }
   };
   
-  res.write(`data: ${JSON.stringify(serverInfo)}\n\n`);
+  setTimeout(() => {
+    res.write(`data: ${JSON.stringify(toolsResponse)}\n\n`);
+  }, 1000);
   
-  // Keep connection alive
+  // Keep connection alive with ping
   const keepAlive = setInterval(() => {
-    res.write(`data: {"type": "ping", "timestamp": "${new Date().toISOString()}"}\n\n`);
+    const ping = {
+      jsonrpc: '2.0',
+      method: 'notifications/ping',
+      params: { timestamp: new Date().toISOString() }
+    };
+    res.write(`data: ${JSON.stringify(ping)}\n\n`);
   }, 30000);
   
   req.on('close', () => {
+    console.log('ChatGPT SSE connection closed');
     clearInterval(keepAlive);
   });
 });
