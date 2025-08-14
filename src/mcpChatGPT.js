@@ -49,29 +49,16 @@ mcpChatGPTRouter.post('/tools/search', async (req, res) => {
       }
     });
 
-    // Format for MCP response
-    const items = response.data.map(item => ({
-      key: item.key,
-      type: item.data.itemType,
+    // Format for ChatGPT Connectors - exact specification
+    const results = response.data.map(item => ({
+      id: item.key,
       title: item.data.title || 'Untitled',
-      creators: item.data.creators || [],
-      date: item.data.date,
-      url: item.data.url,
-      abstract: item.data.abstractNote,
-      tags: item.data.tags || [],
-      collections: item.data.collections || [],
-      // MCP-specific metadata
-      _mcpId: item.key,
-      _mcpType: 'zotero_item'
+      text: item.data.abstractNote || `${item.data.itemType} by ${item.data.creators?.map(c => `${c.firstName} ${c.lastName}`).join(', ') || 'Unknown'} (${item.data.date || 'No date'})`,
+      url: item.data.url || `https://www.zotero.org/dgrobinson/items/${item.key}`
     }));
 
-    res.json({
-      tool: 'search',
-      query,
-      results: items,
-      count: items.length,
-      timestamp: new Date().toISOString()
-    });
+    // Return array as per ChatGPT Connectors specification
+    res.json(results);
 
   } catch (error) {
     console.error('MCP search error:', error.message);
@@ -86,7 +73,7 @@ mcpChatGPTRouter.post('/tools/search', async (req, res) => {
 // Required Tool 2: fetch
 mcpChatGPTRouter.post('/tools/fetch', async (req, res) => {
   try {
-    const { identifier, type } = req.body;
+    const { identifier } = req.body;
     
     if (!identifier) {
       return res.status(400).json({ 
@@ -111,34 +98,58 @@ mcpChatGPTRouter.post('/tools/fetch', async (req, res) => {
     const item = response.data;
     const children = childrenResponse.data;
 
-    // Format detailed MCP response
+    // Format for ChatGPT Connectors - exact specification
+    const attachments = children.filter(c => c.data.itemType === 'attachment');
+    const notes = children.filter(c => c.data.itemType === 'note');
+    
+    // Build comprehensive text content
+    let fullText = `Title: ${item.data.title || 'Untitled'}\n\n`;
+    
+    if (item.data.creators?.length) {
+      fullText += `Authors: ${item.data.creators.map(c => `${c.firstName} ${c.lastName}`).join(', ')}\n\n`;
+    }
+    
+    if (item.data.date) {
+      fullText += `Date: ${item.data.date}\n\n`;
+    }
+    
+    if (item.data.abstractNote) {
+      fullText += `Abstract: ${item.data.abstractNote}\n\n`;
+    }
+    
+    if (item.data.DOI) {
+      fullText += `DOI: ${item.data.DOI}\n\n`;
+    }
+    
+    if (item.data.tags?.length) {
+      fullText += `Tags: ${item.data.tags.map(t => t.tag).join(', ')}\n\n`;
+    }
+    
+    if (attachments.length) {
+      fullText += `Attachments: ${attachments.map(a => a.data.title).join(', ')}\n\n`;
+    }
+    
+    if (notes.length) {
+      fullText += `Notes:\n${notes.map(n => n.data.note).join('\n\n')}\n\n`;
+    }
+
+    // Return single object as per ChatGPT Connectors specification
     res.json({
-      tool: 'fetch',
-      identifier,
-      resource: {
-        key: item.key,
-        version: item.version,
-        data: item.data,
-        attachments: children.filter(c => c.data.itemType === 'attachment').map(a => ({
-          key: a.key,
-          title: a.data.title,
-          contentType: a.data.contentType,
-          filename: a.data.filename,
-          url: a.data.url
-        })),
-        notes: children.filter(c => c.data.itemType === 'note').map(n => ({
-          key: n.key,
-          note: n.data.note
-        })),
-        meta: {
-          created: item.data.dateAdded,
-          modified: item.data.dateModified,
-          library: item.library,
-          _mcpId: item.key,
-          _mcpType: 'zotero_item_detailed'
-        }
-      },
-      timestamp: new Date().toISOString()
+      id: item.key,
+      title: item.data.title || 'Untitled',
+      text: fullText.trim(),
+      url: item.data.url || `https://www.zotero.org/dgrobinson/items/${item.key}`,
+      metadata: {
+        itemType: item.data.itemType,
+        creators: item.data.creators || [],
+        date: item.data.date,
+        DOI: item.data.DOI,
+        tags: item.data.tags || [],
+        attachmentCount: attachments.length,
+        noteCount: notes.length,
+        dateAdded: item.data.dateAdded,
+        dateModified: item.data.dateModified
+      }
     });
 
   } catch (error) {
