@@ -72,13 +72,20 @@ app.use('/chatgpt/fastmcp', async (req, res, next) => {
     const fastmcpUrl = `${fastmcpLauncher.getBaseUrl()}${req.path}`;
     console.log(`[FastMCP Proxy] ${req.method} ${fastmcpUrl}`);
     
+    // Forward all headers except host, and add MCP-specific headers
+    const forwardHeaders = {
+      ...req.headers,
+      host: undefined, // Remove host header to avoid conflicts
+      'content-type': req.headers['content-type'] || 'application/json',
+      'accept': req.headers['accept'] || 'application/json'
+    };
+    
+    console.log(`[FastMCP Proxy] Headers:`, JSON.stringify(forwardHeaders, null, 2));
+    
     const response = await axios({
       method: req.method,
       url: fastmcpUrl,
-      headers: {
-        ...req.headers,
-        host: undefined // Remove host header to avoid conflicts
-      },
+      headers: forwardHeaders,
       data: req.body,
       params: req.query,
       responseType: 'stream'
