@@ -11,7 +11,7 @@
     "generate:mcp-key": "node scripts/generate-mcp-key.js",
     "build": "npm run setup:submodules && npm run setup:python",
     "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'",
-    "setup:python": "python3 -m pip install --user -r requirements.txt || echo 'Python setup skipped in deployment'"
+    "setup:python": "which python3 && python3 --version && python3 -m pip install --user -r requirements.txt || echo 'Python/FastMCP setup skipped - will run in Node.js-only mode'"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.2",
