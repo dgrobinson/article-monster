@@ -18,6 +18,7 @@ const { sendToKindle } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
 const mcpRouter = require('./mcpServer');
 const ConfigFetcher = require('./configFetcher');
+const FastMCPLauncher = require('./fastmcpLauncher');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -25,6 +26,9 @@ const PORT = process.env.PORT || 3000;
 // Initialize config fetcher and preload popular sites
 const configFetcher = new ConfigFetcher();
 configFetcher.preloadConfigs();
+
+// Initialize FastMCP launcher
+const fastmcpLauncher = new FastMCPLauncher();
 
 // Middleware
 app.use(express.json());
@@ -54,18 +58,64 @@ app.use('/mcp-jsonrpc', require('./mcpJsonRpc'));
 app.use('/mcp-official', require('./mcpServerOfficial'));
 app.use('/mcp-chatgpt', require('./mcpServerOfficialChatGPT'));
 
+// FastMCP proxy routes for ChatGPT integration
+app.use('/chatgpt/fastmcp', async (req, res, next) => {
+  if (!fastmcpLauncher.isHealthy()) {
+    return res.status(503).json({
+      error: 'FastMCP server not available',
+      message: 'FastMCP subprocess is not running'
+    });
+  }
+  
+  // Proxy request to FastMCP server
+  try {
+    const fastmcpUrl = `${fastmcpLauncher.getBaseUrl()}${req.path}`;
+    console.log(`[FastMCP Proxy] ${req.method} ${fastmcpUrl}`);
+    
+    const response = await axios({
+      method: req.method,
+      url: fastmcpUrl,
+      headers: {
+        ...req.headers,
+        host: undefined // Remove host header to avoid conflicts
+      },
+      data: req.body,
+      params: req.query,
+      responseType: 'stream'
+    });
+    
+    // Forward response headers
+    Object.keys(response.headers).forEach(key => {
+      res.set(key, response.headers[key]);
+    });
+    
+    res.status(response.status);
+    response.data.pipe(res);
+    
+  } catch (error) {
+    console.error('[FastMCP Proxy Error]:', error.message);
+    res.status(500).json({
+      error: 'FastMCP proxy failed',
+      message: error.message
+    });
+  }
+});
+
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ 
     status: 'ok', 
     services: {
       bookmarklet: 'active',
-      mcp: process.env.MCP_API_KEY ? 'active' : 'disabled'
+      mcp: process.env.MCP_API_KEY ? 'active' : 'disabled',
+      fastmcp: fastmcpLauncher.isHealthy() ? 'active' : 'inactive'
     },
     timestamp: new Date().toISOString(),
     debug: {
       mcpApiKeySet: !!process.env.MCP_API_KEY,
-      mcpApiKeyLength: process.env.MCP_API_KEY ? process.env.MCP_API_KEY.length : 0
+      mcpApiKeyLength: process.env.MCP_API_KEY ? process.env.MCP_API_KEY.length : 0,
+      fastmcpPort: fastmcpLauncher.getPort(),
+      fastmcpUrl: fastmcpLauncher.getBaseUrl()
     }
   });
 });
@@ -223,7 +273,7 @@ app.post('/debug-epub', async (req, res) => {
   }
 });
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   console.log(`Article bookmarklet service running on port ${PORT}`);
   console.log('Environment check:', {
     EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'NOT SET',
@@ -231,6 +281,15 @@ const server = app.listen(PORT, () => {
     ZOTERO_USER_ID: process.env.ZOTERO_USER_ID ? 'SET' : 'NOT SET',
     NODE_ENV: process.env.NODE_ENV || 'not set'
   });
+  
+  // Start FastMCP server
+  try {
+    await fastmcpLauncher.start();
+    console.log(`FastMCP integration ready at: https://yourapp.ondigitalocean.app/chatgpt/fastmcp/sse`);
+  } catch (error) {
+    console.error('FastMCP startup failed:', error.message);
+    console.log('Continuing without FastMCP - custom MCP endpoints still available');
+  }
 });
 
 // Add WebSocket support for ChatGPT MCP bidirectional communication
@@ -473,3 +532,40 @@ wss.on('connection', (ws, req) => {
 });
 
 console.log('WebSocket server listening on /chatgpt/ws');
+
+// Graceful shutdown handling
+process.on('SIGTERM', async () => {
+  console.log('Received SIGTERM, shutting down gracefully...');
+  
+  // Stop FastMCP server
+  try {
+    await fastmcpLauncher.stop();
+    console.log('FastMCP server stopped');
+  } catch (error) {
+    console.error('Error stopping FastMCP:', error.message);
+  }
+  
+  // Close main server
+  server.close(() => {
+    console.log('HTTP server closed');
+    process.exit(0);
+  });
+});
+
+process.on('SIGINT', async () => {
+  console.log('Received SIGINT, shutting down gracefully...');
+  
+  // Stop FastMCP server
+  try {
+    await fastmcpLauncher.stop();
+    console.log('FastMCP server stopped');
+  } catch (error) {
+    console.error('Error stopping FastMCP:', error.message);
+  }
+  
+  // Close main server
+  server.close(() => {
+    console.log('HTTP server closed');
+    process.exit(0);
+  });
+});

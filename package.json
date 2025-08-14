@@ -9,8 +9,9 @@
     "test": "node src/test.js",
     "test:mcp": "node src/test-mcp.js",
     "generate:mcp-key": "node scripts/generate-mcp-key.js",
-    "build": "npm run setup:submodules",
-    "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'"
+    "build": "npm run setup:submodules && npm run setup:python",
+    "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'",
+    "setup:python": "python3 -m pip install --user -r requirements.txt || echo 'Python setup skipped in deployment'"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.17.2",
