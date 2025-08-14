@@ -383,74 +383,17 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
   });
 });
 
-// Root discovery endpoint for ChatGPT Connectors - Hybrid FastMCP + Custom
+// Root discovery endpoint for ChatGPT Connectors - Redirect to SSE
 mcpChatGPTRouter.get('/', (req, res) => {
   console.log('=== ChatGPT ROOT DISCOVERY REQUEST ===');
   console.log('Headers:', JSON.stringify(req.headers, null, 2));
   console.log('IP:', req.ip || req.connection.remoteAddress);
   console.log('User-Agent:', req.get('User-Agent'));
   
-  const response = {
-    name: 'Personal Zotero Library Access (Hybrid FastMCP)',
-    version: '1.0.0',
-    description: 'FastMCP-powered SSE with custom tool endpoints for ChatGPT compatibility',
-    protocol: 'mcp',
-    capabilities: {
-      tools: [
-        {
-          name: 'search',
-          description: 'Search across all items in your Zotero library',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              query: {
-                type: 'string',
-                description: 'Search terms (title, author, keywords, etc.)'
-              },
-              limit: {
-                type: 'integer',
-                default: 25,
-                maximum: 50,
-                description: 'Maximum number of results'
-              }
-            },
-            required: ['query']
-          }
-        },
-        {
-          name: 'fetch',
-          description: 'Fetch detailed information about a specific library item',
-          inputSchema: {
-            type: 'object',
-            properties: {
-              id: {
-                type: 'string',
-                description: 'Item key/ID from search results'
-              }
-            },
-            required: ['id']
-          }
-        }
-      ]
-    },
-    authentication: 'none',
-    endpoints: {
-      search: '/tools/search',
-      fetch: '/tools/fetch',
-      sse: '/fastmcp/sse',
-      websocket: '/ws'
-    },
-    server: {
-      name: 'Article Monster Zotero MCP (FastMCP Hybrid)',
-      version: '1.0.0',
-      url: 'https://seal-app-t4vff.ondigitalocean.app/chatgpt',
-      sseUrl: 'https://seal-app-t4vff.ondigitalocean.app/chatgpt/fastmcp/sse',
-      websocketUrl: 'wss://seal-app-t4vff.ondigitalocean.app/chatgpt/ws'
-    }
-  };
-  
-  console.log('Sending hybrid discovery response:', JSON.stringify(response, null, 2));
-  res.json(response);
+  // ChatGPT expects direct SSE endpoints, not discovery JSON
+  // Redirect to our enhanced SSE endpoint instead of FastMCP
+  console.log('Redirecting to enhanced SSE endpoint for ChatGPT compatibility');
+  res.redirect(301, '/chatgpt/sse');
 });
 
 // Health check for MCP ChatGPT
