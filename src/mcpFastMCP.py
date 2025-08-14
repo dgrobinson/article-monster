@@ -208,13 +208,14 @@ if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8080))  # Production port
     
     print(f"Starting PURE FastMCP Zotero server on port {port}")
-    print(f"HTTP endpoint will be available at: http://0.0.0.0:{port}/")
-    print("This is a pure FastMCP deployment with HTTP transport (SSE was hanging)")
+    print(f"SSE endpoint will be available at: http://0.0.0.0:{port}/sse")
+    print("This is a pure FastMCP deployment with zero custom code")
     
-    # Run the server with HTTP transport (SSE was hanging)
+    # Run the server with SSE transport
     mcp = create_server()
     mcp.run(
-        transport="http",
+        transport="sse",
         host="0.0.0.0", 
-        port=port
+        port=port,
+        path="/sse"
     )
