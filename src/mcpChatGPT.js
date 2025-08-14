@@ -26,16 +26,23 @@ function getZoteroConfig() {
 // Required Tool 1: search
 mcpChatGPTRouter.post('/tools/search', async (req, res) => {
   try {
+    console.log('=== ChatGPT SEARCH REQUEST ===');
+    console.log('Headers:', JSON.stringify(req.headers, null, 2));
+    console.log('Body:', JSON.stringify(req.body, null, 2));
+    console.log('IP:', req.ip || req.connection.remoteAddress);
+    console.log('User-Agent:', req.get('User-Agent'));
+    
     const { query, limit = 25 } = req.body;
     
     if (!query) {
+      console.log('ERROR: Missing query parameter');
       return res.status(400).json({ 
         error: 'Search query required',
         tool: 'search'
       });
     }
 
-    console.log(`MCP ChatGPT Search: "${query}"`);
+    console.log(`MCP ChatGPT Search: "${query}" (limit: ${limit})`);
     const config = getZoteroConfig();
 
     // Search Zotero library
@@ -58,10 +65,14 @@ mcpChatGPTRouter.post('/tools/search', async (req, res) => {
     }));
 
     // Return array as per ChatGPT Connectors specification
+    console.log(`Search complete: returning ${results.length} results`);
+    console.log('Response:', JSON.stringify(results.slice(0, 2), null, 2)); // Log first 2 results
     res.json(results);
 
   } catch (error) {
-    console.error('MCP search error:', error.message);
+    console.error('=== ChatGPT SEARCH ERROR ===');
+    console.error('Error:', error.message);
+    console.error('Stack:', error.stack);
     res.status(500).json({ 
       error: 'Search failed',
       tool: 'search',
@@ -73,9 +84,15 @@ mcpChatGPTRouter.post('/tools/search', async (req, res) => {
 // Required Tool 2: fetch
 mcpChatGPTRouter.post('/tools/fetch', async (req, res) => {
   try {
+    console.log('=== ChatGPT FETCH REQUEST ===');
+    console.log('Headers:', JSON.stringify(req.headers, null, 2));
+    console.log('Body:', JSON.stringify(req.body, null, 2));
+    console.log('IP:', req.ip || req.connection.remoteAddress);
+    
     const { identifier } = req.body;
     
     if (!identifier) {
+      console.log('ERROR: Missing identifier parameter');
       return res.status(400).json({ 
         error: 'Resource identifier required',
         tool: 'fetch'
@@ -134,7 +151,7 @@ mcpChatGPTRouter.post('/tools/fetch', async (req, res) => {
     }
 
     // Return single object as per ChatGPT Connectors specification
-    res.json({
+    const result = {
       id: item.key,
       title: item.data.title || 'Untitled',
       text: fullText.trim(),
@@ -150,10 +167,22 @@ mcpChatGPTRouter.post('/tools/fetch', async (req, res) => {
         dateAdded: item.data.dateAdded,
         dateModified: item.data.dateModified
       }
-    });
+    };
+    
+    console.log('Fetch complete: returning item details');
+    console.log('Result preview:', JSON.stringify({
+      id: result.id,
+      title: result.title,
+      textLength: result.text.length,
+      url: result.url
+    }, null, 2));
+    
+    res.json(result);
 
   } catch (error) {
-    console.error('MCP fetch error:', error.message);
+    console.error('=== ChatGPT FETCH ERROR ===');
+    console.error('Error:', error.message);
+    console.error('Stack:', error.stack);
     
     if (error.response?.status === 404) {
       return res.status(404).json({ 
@@ -236,6 +265,12 @@ mcpChatGPTRouter.get('/mcp/metadata', (req, res) => {
 
 // SSE endpoint for ChatGPT Connectors - MCP over SSE
 mcpChatGPTRouter.get('/sse', (req, res) => {
+  console.log('=== ChatGPT SSE CONNECTION ATTEMPT ===');
+  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  console.log('IP:', req.ip || req.connection.remoteAddress);
+  console.log('User-Agent:', req.get('User-Agent'));
+  console.log('Query params:', JSON.stringify(req.query, null, 2));
+  
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
@@ -244,7 +279,7 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
     'Access-Control-Allow-Headers': 'Cache-Control'
   });
   
-  console.log('ChatGPT SSE connection established');
+  console.log('SSE headers sent, connection established');
   
   // Send MCP initialization response
   const initResponse = {
@@ -262,6 +297,7 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
     }
   };
   
+  console.log('Sending MCP init response:', JSON.stringify(initResponse, null, 2));
   res.write(`data: ${JSON.stringify(initResponse)}\n\n`);
   
   // Send tools list
@@ -309,6 +345,7 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
   };
   
   setTimeout(() => {
+    console.log('Sending tools response:', JSON.stringify(toolsResponse, null, 2));
     res.write(`data: ${JSON.stringify(toolsResponse)}\n\n`);
   }, 1000);
   
@@ -330,7 +367,12 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
 
 // Root discovery endpoint for ChatGPT Connectors
 mcpChatGPTRouter.get('/', (req, res) => {
-  res.json({
+  console.log('=== ChatGPT ROOT DISCOVERY REQUEST ===');
+  console.log('Headers:', JSON.stringify(req.headers, null, 2));
+  console.log('IP:', req.ip || req.connection.remoteAddress);
+  console.log('User-Agent:', req.get('User-Agent'));
+  
+  const response = {
     name: 'Personal Zotero Library Access',
     version: '1.0.0',
     description: 'MCP-compliant access to your personal Zotero research library',
@@ -383,7 +425,10 @@ mcpChatGPTRouter.get('/', (req, res) => {
       version: '1.0.0',
       url: 'https://seal-app-t4vff.ondigitalocean.app/chatgpt'
     }
-  });
+  };
+  
+  console.log('Sending discovery response:', JSON.stringify(response, null, 2));
+  res.json(response);
 });
 
 // Health check for MCP ChatGPT
