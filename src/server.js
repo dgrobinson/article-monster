@@ -27,8 +27,9 @@ const PORT = process.env.PORT || 3000;
 const configFetcher = new ConfigFetcher();
 configFetcher.preloadConfigs();
 
-// Initialize FastMCP launcher
-const fastmcpLauncher = new FastMCPLauncher();
+// Initialize FastMCP launcher (only if not running under router)
+const isUnderRouter = process.env.FASTMCP_PORT ? true : false;
+const fastmcpLauncher = isUnderRouter ? null : new FastMCPLauncher();
 
 // Middleware
 app.use(express.json());
@@ -289,15 +290,19 @@ const server = app.listen(PORT, async () => {
     NODE_ENV: process.env.NODE_ENV || 'not set'
   });
   
-  // Start FastMCP server
-  try {
-    await fastmcpLauncher.start();
-    console.log(`FastMCP integration ready at:`);
-    console.log(`  SSE: https://yourapp.ondigitalocean.app/chatgpt/fastmcp/sse`);
-    console.log(`  Tools: https://yourapp.ondigitalocean.app/chatgpt/tools/`);  
-  } catch (error) {
-    console.error('FastMCP startup failed:', error.message);
-    console.log('Continuing without FastMCP - custom MCP endpoints still available');
+  // Start FastMCP server (unless running under router)
+  if (!isUnderRouter && fastmcpLauncher) {
+    try {
+      await fastmcpLauncher.start();
+      console.log(`FastMCP integration ready at:`);
+      console.log(`  SSE: https://yourapp.ondigitalocean.app/chatgpt/fastmcp/sse`);
+      console.log(`  Tools: https://yourapp.ondigitalocean.app/chatgpt/tools/`);  
+    } catch (error) {
+      console.error('FastMCP startup failed:', error.message);
+      console.log('Continuing without FastMCP - custom MCP endpoints still available');
+    }
+  } else if (isUnderRouter) {
+    console.log('Running under router - FastMCP managed externally on port', process.env.FASTMCP_PORT);
   }
 });
 
