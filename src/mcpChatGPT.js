@@ -383,7 +383,7 @@ mcpChatGPTRouter.get('/sse', (req, res) => {
   });
 });
 
-// Root discovery endpoint for ChatGPT Connectors
+// Root discovery endpoint for ChatGPT Connectors - Hybrid FastMCP + Custom
 mcpChatGPTRouter.get('/', (req, res) => {
   console.log('=== ChatGPT ROOT DISCOVERY REQUEST ===');
   console.log('Headers:', JSON.stringify(req.headers, null, 2));
@@ -391,9 +391,9 @@ mcpChatGPTRouter.get('/', (req, res) => {
   console.log('User-Agent:', req.get('User-Agent'));
   
   const response = {
-    name: 'Personal Zotero Library Access',
+    name: 'Personal Zotero Library Access (Hybrid FastMCP)',
     version: '1.0.0',
-    description: 'MCP-compliant access to your personal Zotero research library',
+    description: 'FastMCP-powered SSE with custom tool endpoints for ChatGPT compatibility',
     protocol: 'mcp',
     capabilities: {
       tools: [
@@ -437,17 +437,19 @@ mcpChatGPTRouter.get('/', (req, res) => {
     endpoints: {
       search: '/tools/search',
       fetch: '/tools/fetch',
+      sse: '/fastmcp/sse',
       websocket: '/ws'
     },
     server: {
-      name: 'Article Monster Zotero MCP',
+      name: 'Article Monster Zotero MCP (FastMCP Hybrid)',
       version: '1.0.0',
       url: 'https://seal-app-t4vff.ondigitalocean.app/chatgpt',
+      sseUrl: 'https://seal-app-t4vff.ondigitalocean.app/chatgpt/fastmcp/sse',
       websocketUrl: 'wss://seal-app-t4vff.ondigitalocean.app/chatgpt/ws'
     }
   };
   
-  console.log('Sending discovery response:', JSON.stringify(response, null, 2));
+  console.log('Sending hybrid discovery response:', JSON.stringify(response, null, 2));
   res.json(response);
 });
 
