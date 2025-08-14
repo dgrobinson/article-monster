@@ -1,7 +1,9 @@
 #!/bin/bash
 
-echo "=== STARTING MAIN NODE.JS SERVER ==="
-echo "Running primary bookmarklet service with web interface..."
+echo "=== STARTING SMART ROUTER ==="
+echo "This will run both FastMCP (for ChatGPT) and Node.js (for website)..."
+echo "- /sse → Pure FastMCP for ChatGPT MCP"
+echo "- Everything else → Node.js for website/bookmarklet"
 
-# Start the main Node.js server (includes MCP endpoints and website)
-exec node src/server.js
+# Start the smart router that manages both services
+exec node src/router.js
