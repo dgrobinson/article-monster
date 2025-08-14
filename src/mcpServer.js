@@ -160,8 +160,10 @@ mcpRouter.get('/collections', async (req, res) => {
     const config = getZoteroConfig();
     
     const response = await axios.get(`${config.baseUrl}/collections`, {
-      headers: config.headers
-      // Note: collections API doesn't support sorting
+      headers: config.headers,
+      params: {
+        sort: 'name'
+      }
     });
 
     const collections = response.data.map(col => ({

@@ -284,8 +284,8 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       case 'list_zotero_collections': {
         try {
           const response = await axios.get(`${config.baseUrl}/collections`, {
-            headers: config.headers
-            // Note: collections API doesn't support sorting
+            headers: config.headers,
+            params: { sort: 'name' }
           });
 
           const collections = response.data.map(col => ({
