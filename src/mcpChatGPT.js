@@ -234,6 +234,106 @@ mcpChatGPTRouter.get('/mcp/metadata', (req, res) => {
   });
 });
 
+// SSE endpoint for ChatGPT Connectors (as shown in OpenAI docs)
+mcpChatGPTRouter.get('/sse', (req, res) => {
+  res.writeHead(200, {
+    'Content-Type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+    'Connection': 'keep-alive',
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': 'Cache-Control'
+  });
+  
+  // Send initial server info
+  const serverInfo = {
+    name: 'Personal Zotero Library Access',
+    version: '1.0.0',
+    description: 'MCP-compliant access to your personal Zotero research library',
+    protocol: 'mcp',
+    capabilities: {
+      tools: [
+        {
+          name: 'search',
+          description: 'Search across all items in your Zotero library'
+        },
+        {
+          name: 'fetch', 
+          description: 'Fetch detailed information about a specific library item'
+        }
+      ]
+    }
+  };
+  
+  res.write(`data: ${JSON.stringify(serverInfo)}\n\n`);
+  
+  // Keep connection alive
+  const keepAlive = setInterval(() => {
+    res.write(`data: {"type": "ping", "timestamp": "${new Date().toISOString()}"}\n\n`);
+  }, 30000);
+  
+  req.on('close', () => {
+    clearInterval(keepAlive);
+  });
+});
+
+// Root discovery endpoint for ChatGPT Connectors
+mcpChatGPTRouter.get('/', (req, res) => {
+  res.json({
+    name: 'Personal Zotero Library Access',
+    version: '1.0.0',
+    description: 'MCP-compliant access to your personal Zotero research library',
+    protocol: 'mcp',
+    capabilities: {
+      tools: [
+        {
+          name: 'search',
+          description: 'Search across all items in your Zotero library',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              query: {
+                type: 'string',
+                description: 'Search terms (title, author, keywords, etc.)'
+              },
+              limit: {
+                type: 'integer',
+                default: 25,
+                maximum: 50,
+                description: 'Maximum number of results'
+              }
+            },
+            required: ['query']
+          }
+        },
+        {
+          name: 'fetch',
+          description: 'Fetch detailed information about a specific library item',
+          inputSchema: {
+            type: 'object',
+            properties: {
+              identifier: {
+                type: 'string',
+                description: 'Item key/ID from search results'
+              }
+            },
+            required: ['identifier']
+          }
+        }
+      ]
+    },
+    authentication: 'none',
+    endpoints: {
+      search: '/tools/search',
+      fetch: '/tools/fetch'
+    },
+    server: {
+      name: 'Article Monster Zotero MCP',
+      version: '1.0.0',
+      url: 'https://seal-app-t4vff.ondigitalocean.app/chatgpt'
+    }
+  });
+});
+
 // Health check for MCP ChatGPT
 mcpChatGPTRouter.get('/health', (req, res) => {
   res.json({ 
