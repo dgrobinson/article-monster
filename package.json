@@ -8,7 +8,6 @@
     "dev": "node --watch src/server.js",
     "test": "node src/test.js",
     "test:mcp": "node src/test-mcp.js",
-    "mcp": "node src/mcpSdkServer.mjs",
     "generate:mcp-key": "node scripts/generate-mcp-key.js",
     "build": "npm run setup:submodules",
     "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'"
