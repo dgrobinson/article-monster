@@ -10,11 +10,24 @@ class FastMCPLauncher {
 
   async start() {
     if (this.isRunning) {
-      console.log('FastMCP server already running');
-      return;
+      console.log('FastMCP server already running - stopping for restart');
+      await this.stop();
     }
 
     console.log('Starting FastMCP server...');
+    
+    // Force cleanup any existing processes on our port
+    try {
+      const { spawnSync } = require('child_process');
+      const killResult = spawnSync('pkill', ['-f', `python3.*mcpFastMCP.py`], { stdio: 'pipe' });
+      if (killResult.stdout.length > 0) {
+        console.log('Killed existing FastMCP processes');
+      }
+      // Wait a moment for cleanup
+      await new Promise(resolve => setTimeout(resolve, 1000));
+    } catch (error) {
+      // Ignore cleanup errors
+    }
     
     // Check if Python is available
     try {
