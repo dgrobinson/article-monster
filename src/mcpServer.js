@@ -180,9 +180,21 @@ mcpRouter.get('/collections', async (req, res) => {
 
   } catch (error) {
     console.error('MCP list collections error:', error.message);
+    
+    // Log more details for debugging
+    if (error.response) {
+      console.error('Zotero API Error Details:', {
+        status: error.response.status,
+        statusText: error.response.statusText,
+        data: error.response.data,
+        url: error.config?.url
+      });
+    }
+    
     res.status(500).json({ 
       error: 'Failed to list collections', 
-      message: error.message 
+      message: error.message,
+      details: error.response?.data || 'No additional details'
     });
   }
 });
