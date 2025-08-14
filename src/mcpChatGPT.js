@@ -1,5 +1,6 @@
 const express = require('express');
 const axios = require('axios');
+const WebSocket = require('ws');
 
 const mcpChatGPTRouter = express.Router();
 
@@ -418,12 +419,14 @@ mcpChatGPTRouter.get('/', (req, res) => {
     authentication: 'none',
     endpoints: {
       search: '/tools/search',
-      fetch: '/tools/fetch'
+      fetch: '/tools/fetch',
+      websocket: '/ws'
     },
     server: {
       name: 'Article Monster Zotero MCP',
       version: '1.0.0',
-      url: 'https://seal-app-t4vff.ondigitalocean.app/chatgpt'
+      url: 'https://seal-app-t4vff.ondigitalocean.app/chatgpt',
+      websocketUrl: 'wss://seal-app-t4vff.ondigitalocean.app/chatgpt/ws'
     }
   };
   
@@ -443,4 +446,7 @@ mcpChatGPTRouter.get('/health', (req, res) => {
   });
 });
 
-module.exports = mcpChatGPTRouter;
+module.exports = { 
+  router: mcpChatGPTRouter,
+  getZoteroConfig 
+};

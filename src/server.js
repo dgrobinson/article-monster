@@ -12,6 +12,7 @@ console.log('Environment variables loaded:', {
   NODE_ENV: process.env.NODE_ENV || 'development'
 });
 const express = require('express');
+const axios = require('axios');
 const { extractArticle } = require('./articleExtractor');
 const { sendToKindle } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
@@ -44,7 +45,7 @@ app.use((req, res, next) => {
 app.use('/mcp', mcpRouter);
 
 // Mount ChatGPT MCP-compliant routes (no auth required for personal use)
-app.use('/chatgpt', require('./mcpChatGPT'));
+app.use('/chatgpt', require('./mcpChatGPT').router);
 
 // Mount JSON-RPC MCP server for ChatGPT connectors
 app.use('/mcp-jsonrpc', require('./mcpJsonRpc'));
@@ -222,7 +223,7 @@ app.post('/debug-epub', async (req, res) => {
   }
 });
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log(`Article bookmarklet service running on port ${PORT}`);
   console.log('Environment check:', {
     EMAIL_USER: process.env.EMAIL_USER ? 'SET' : 'NOT SET',
@@ -231,3 +232,244 @@ app.listen(PORT, () => {
     NODE_ENV: process.env.NODE_ENV || 'not set'
   });
 });
+
+// Add WebSocket support for ChatGPT MCP bidirectional communication
+const WebSocket = require('ws');
+const wss = new WebSocket.Server({ 
+  server, 
+  path: '/chatgpt/ws',
+  verifyClient: (info) => {
+    console.log('=== WebSocket Connection Attempt ===');
+    console.log('Origin:', info.origin);
+    console.log('Headers:', JSON.stringify(info.req.headers, null, 2));
+    return true; // Allow all connections for now
+  }
+});
+
+// WebSocket MCP handler
+wss.on('connection', (ws, req) => {
+  console.log('=== ChatGPT WebSocket Connected ===');
+  console.log('IP:', req.socket.remoteAddress);
+  console.log('User-Agent:', req.headers['user-agent']);
+  
+  // Send MCP initialization
+  const initResponse = {
+    jsonrpc: '2.0',
+    id: 'init',
+    result: {
+      protocolVersion: '2024-11-05',
+      capabilities: {
+        tools: {}
+      },
+      serverInfo: {
+        name: 'zotero-mcp-server',
+        version: '1.0.0'
+      }
+    }
+  };
+  
+  console.log('Sending WebSocket MCP init');
+  ws.send(JSON.stringify(initResponse));
+  
+  // Handle incoming messages (tool calls from ChatGPT)
+  ws.on('message', async (message) => {
+    try {
+      console.log('=== WebSocket Message Received ===');
+      console.log('Raw message:', message.toString());
+      
+      const request = JSON.parse(message.toString());
+      console.log('Parsed request:', JSON.stringify(request, null, 2));
+      
+      // Handle different MCP request types
+      if (request.method === 'tools/list') {
+        const toolsResponse = {
+          jsonrpc: '2.0',
+          id: request.id,
+          result: {
+            tools: [
+              {
+                name: 'search',
+                description: 'Search across all items in your Zotero library',
+                inputSchema: {
+                  type: 'object',
+                  properties: {
+                    query: {
+                      type: 'string',
+                      description: 'Search terms (title, author, keywords, etc.)'
+                    },
+                    limit: {
+                      type: 'integer',
+                      default: 25,
+                      maximum: 50,
+                      description: 'Maximum number of results'
+                    }
+                  },
+                  required: ['query']
+                }
+              },
+              {
+                name: 'fetch',
+                description: 'Fetch detailed information about a specific library item',
+                inputSchema: {
+                  type: 'object',
+                  properties: {
+                    identifier: {
+                      type: 'string',
+                      description: 'Item key/ID from search results'
+                    }
+                  },
+                  required: ['identifier']
+                }
+              }
+            ]
+          }
+        };
+        
+        console.log('Sending tools list response');
+        ws.send(JSON.stringify(toolsResponse));
+        
+      } else if (request.method === 'tools/call') {
+        console.log('=== Tool Call Request ===');
+        console.log('Tool:', request.params.name);
+        console.log('Arguments:', JSON.stringify(request.params.arguments, null, 2));
+        
+        // Import the functions we need
+        const { getZoteroConfig } = require('./mcpChatGPT');
+        
+        // Handle tool execution
+        let result;
+        try {
+          if (request.params.name === 'search') {
+            const { query, limit = 25 } = request.params.arguments;
+            const config = getZoteroConfig();
+            
+            const response = await axios.get(`${config.baseUrl}/items`, {
+              headers: config.headers,
+              params: {
+                q: query,
+                limit: Math.min(limit, 50),
+                sort: 'dateModified',
+                direction: 'desc'
+              }
+            });
+            
+            result = response.data.map(item => ({
+              id: item.key,
+              title: item.data.title || 'Untitled',
+              text: item.data.abstractNote || `${item.data.itemType} by ${item.data.creators?.map(c => `${c.firstName} ${c.lastName}`).join(', ') || 'Unknown'} (${item.data.date || 'No date'})`,
+              url: item.data.url || `https://www.zotero.org/dgrobinson/items/${item.key}`
+            }));
+            
+          } else if (request.params.name === 'fetch') {
+            const { identifier } = request.params.arguments;
+            const config = getZoteroConfig();
+            
+            const [itemResponse, childrenResponse] = await Promise.all([
+              axios.get(`${config.baseUrl}/items/${identifier}`, { headers: config.headers }),
+              axios.get(`${config.baseUrl}/items/${identifier}/children`, { headers: config.headers })
+            ]);
+            
+            const item = itemResponse.data;
+            const children = childrenResponse.data;
+            const attachments = children.filter(c => c.data.itemType === 'attachment');
+            const notes = children.filter(c => c.data.itemType === 'note');
+            
+            let fullText = `Title: ${item.data.title || 'Untitled'}\n\n`;
+            
+            if (item.data.creators?.length) {
+              fullText += `Authors: ${item.data.creators.map(c => `${c.firstName} ${c.lastName}`).join(', ')}\n\n`;
+            }
+            
+            if (item.data.date) {
+              fullText += `Date: ${item.data.date}\n\n`;
+            }
+            
+            if (item.data.abstractNote) {
+              fullText += `Abstract: ${item.data.abstractNote}\n\n`;
+            }
+            
+            if (item.data.DOI) {
+              fullText += `DOI: ${item.data.DOI}\n\n`;
+            }
+            
+            if (item.data.tags?.length) {
+              fullText += `Tags: ${item.data.tags.map(t => t.tag).join(', ')}\n\n`;
+            }
+            
+            if (attachments.length) {
+              fullText += `Attachments: ${attachments.map(a => a.data.title).join(', ')}\n\n`;
+            }
+            
+            if (notes.length) {
+              fullText += `Notes:\n${notes.map(n => n.data.note).join('\n\n')}\n\n`;
+            }
+            
+            result = {
+              id: item.key,
+              title: item.data.title || 'Untitled',
+              text: fullText.trim(),
+              url: item.data.url || `https://www.zotero.org/dgrobinson/items/${item.key}`,
+              metadata: {
+                itemType: item.data.itemType,
+                creators: item.data.creators || [],
+                date: item.data.date,
+                DOI: item.data.DOI,
+                tags: item.data.tags || [],
+                attachmentCount: attachments.length,
+                noteCount: notes.length,
+                dateAdded: item.data.dateAdded,
+                dateModified: item.data.dateModified
+              }
+            };
+          }
+          
+          const toolResponse = {
+            jsonrpc: '2.0',
+            id: request.id,
+            result: {
+              content: [{
+                type: 'text',
+                text: JSON.stringify(result, null, 2)
+              }]
+            }
+          };
+          
+          console.log('Sending tool response');
+          ws.send(JSON.stringify(toolResponse));
+          
+        } catch (error) {
+          console.error('Tool execution error:', error.message);
+          
+          const errorResponse = {
+            jsonrpc: '2.0',
+            id: request.id,
+            error: {
+              code: -32603,
+              message: 'Tool execution failed',
+              data: error.message
+            }
+          };
+          
+          ws.send(JSON.stringify(errorResponse));
+        }
+      }
+      
+    } catch (error) {
+      console.error('WebSocket message handling error:', error.message);
+      console.error('Raw message was:', message.toString());
+    }
+  });
+  
+  ws.on('close', (code, reason) => {
+    console.log('=== ChatGPT WebSocket Disconnected ===');
+    console.log('Code:', code);
+    console.log('Reason:', reason.toString());
+  });
+  
+  ws.on('error', (error) => {
+    console.error('=== WebSocket Error ===');
+    console.error(error);
+  });
+});
+
+console.log('WebSocket server listening on /chatgpt/ws');
