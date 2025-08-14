@@ -194,4 +194,4 @@ paths:
 - Keep your MCP_API_KEY secret
 - Only share with trusted AI assistants
 - Regenerate if compromised
-- Monitor usage in logs
+- Monitor usage in logs# Trigger deployment Thu Aug 14 17:16:26 EDT 2025
