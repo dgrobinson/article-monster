@@ -171,11 +171,68 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 - Custom API: `/mcp/*` (existing, working)
 - Official SDK: `/mcp-official/*` (new, for ChatGPT)
 
-### **Current Verdict: DEFER**
-- Custom API works perfectly for all current needs
-- Official SDK implementation requires significant development time
-- ChatGPT integration is nice-to-have, not essential
-- Focus on core bookmarklet improvements instead
+### **BREAKTHROUGH: ChatGPT Connectors 2025 Specification** ✅
+
+#### 5. Documentation Discovery (August 2025) ✅ WORKING
+- **Discovery**: Found official OpenAI docs for ChatGPT Connectors 2025
+- **Key insight**: Not "Actions" - it's the new "Connectors" system
+- **Location**: `tmp/2025-08-11-chat-gpt-mcp-documentation.md`
+- **Result**: Successful implementation with exact specification compliance
+
+#### ✅ **What Actually Works for ChatGPT (2025)**
+1. **Cloud-based MCP server** - Must run on DigitalOcean, not locally
+2. **Exact tool specification** - `search` and `fetch` tools with precise schema
+3. **Response format compliance** - Arrays for search, objects for fetch
+4. **HTTP endpoints** - Standard REST API, not JSON-RPC
+
+#### 🎯 **Correct ChatGPT Integration Pattern**
+```javascript
+// Search tool: POST /chatgpt/tools/search
+// Returns: [{ id, title, text, url }, ...]
+const results = zoteroItems.map(item => ({
+  id: item.key,
+  title: item.data.title || 'Untitled', 
+  text: item.data.abstractNote || fallbackDescription,
+  url: item.data.url || zoteroUrl
+}));
+res.json(results); // Return array directly
+
+// Fetch tool: POST /chatgpt/tools/fetch  
+// Returns: { id, title, text, url, metadata }
+res.json({
+  id: item.key,
+  title: item.data.title,
+  text: fullTextWithAllMetadata, // Comprehensive content
+  url: item.data.url,
+  metadata: { creators, date, DOI, tags, attachments... }
+});
+```
+
+#### 🚨 **Critical Architecture Lesson**
+- **WRONG**: Local MCP server (what I initially implemented)
+- **RIGHT**: Cloud endpoints on DigitalOcean (what we have)
+- **Implementation**: `/chatgpt/tools/search` and `/chatgpt/tools/fetch`
+- **Status**: Production ready at `https://seal-app-t4vff.ondigitalocean.app/chatgpt/`
+
+### **Current Status: WORKING** ✅
+- Cloud-based ChatGPT Connectors implementation complete
+- Exact 2025 specification compliance
+- Ready for ChatGPT Custom GPT integration
+- No local server needed
+
+#### 📋 **ChatGPT Setup Instructions (2025)**
+1. **Base URL**: `https://seal-app-t4vff.ondigitalocean.app/chatgpt/`
+2. **Method**: ChatGPT → Settings → Connectors → Add Server
+3. **Tools**: `search` and `fetch` auto-detected
+4. **Auth**: None required (personal use endpoints)
+5. **Usage**: "Search my Zotero library for AI papers"
+
+#### 🔍 **Debugging Lessons**
+- **Parameter format**: JSON objects, not raw strings
+- **Response validation**: ChatGPT expects exact schema compliance
+- **Error handling**: Return proper HTTP status codes
+- **Deployment**: Always test after DigitalOcean deployment completes
+- **Architecture**: Cloud-first, never local for ChatGPT integration
 
 ---
 
