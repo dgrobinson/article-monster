@@ -175,6 +175,20 @@ app.post('/process-article', async (req, res) => {
     }
 
     console.log(`Processing article: ${article.title || url}`);
+    
+    // Log article size for debugging
+    console.log('Article extraction stats:', {
+      title: article.title,
+      contentLength: article.content?.length || 0,
+      textContentLength: article.textContent?.length || 0,
+      hasContent: !!article.content
+    });
+    
+    // Log content preview to check for truncation
+    if (article.content && article.content.length > 1000) {
+      const plainEnd = article.content.substring(Math.max(0, article.content.length - 500)).replace(/<[^>]*>/g, '').trim();
+      console.log('Content ends with:', plainEnd.substring(plainEnd.length - 200));
+    }
 
     // Article content is already extracted by the bookmarklet
     const processedArticle = {
