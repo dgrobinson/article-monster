@@ -285,7 +285,7 @@ const server = app.listen(PORT, async () => {
   // Start FastMCP server
   try {
     await fastmcpLauncher.start();
-    console.log(`FastMCP integration ready at: https://yourapp.ondigitalocean.app/chatgpt/fastmcp/sse`);
+    console.log(`FastMCP integration ready at: https://yourapp.ondigitalocean.app/chatgpt/fastmcp/mcp`);
   } catch (error) {
     console.error('FastMCP startup failed:', error.message);
     console.log('Continuing without FastMCP - custom MCP endpoints still available');

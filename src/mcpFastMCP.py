@@ -208,13 +208,13 @@ if __name__ == "__main__":
     port = int(os.environ.get('PORT', 8001))
     
     print(f"Starting FastMCP Zotero server on port {port}")
-    print(f"SSE endpoint will be available at: http://0.0.0.0:{port}/sse")
+    print(f"HTTP MCP endpoint will be available at: http://0.0.0.0:{port}/mcp")
     
-    # Run the server
+    # Run the server with HTTP transport (not SSE) for ChatGPT compatibility
     mcp = create_server()
     mcp.run(
-        transport="sse",
+        transport="http",
         host="0.0.0.0", 
         port=port,
-        path="/sse"
+        path="/mcp"
     )
