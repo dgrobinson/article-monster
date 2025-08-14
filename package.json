@@ -4,7 +4,7 @@
   "description": "Cloud service that sends articles to both Kindle and Zotero via bookmarklet",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
+    "start": "./start.sh",
     "dev": "node --watch src/server.js",
     "test": "node src/test.js",
     "test:mcp": "node src/test-mcp.js",

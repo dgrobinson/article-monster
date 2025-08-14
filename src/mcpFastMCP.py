@@ -204,13 +204,14 @@ def create_server():
     return server.mcp
 
 if __name__ == "__main__":
-    # Get port from environment or default
-    port = int(os.environ.get('PORT', 8001))
+    # Use main port for pure FastMCP deployment
+    port = int(os.environ.get('PORT', 8080))  # Production port
     
-    print(f"Starting FastMCP Zotero server on port {port}")
+    print(f"Starting PURE FastMCP Zotero server on port {port}")
     print(f"SSE endpoint will be available at: http://0.0.0.0:{port}/sse")
+    print("This is a pure FastMCP deployment with zero custom code")
     
-    # Run the server with SSE transport - ChatGPT needs both SSE + REST API
+    # Run the server with SSE transport
     mcp = create_server()
     mcp.run(
         transport="sse",
