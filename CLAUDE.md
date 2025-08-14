@@ -72,6 +72,15 @@ When launched in this repository, Claude should read these files to understand t
 - **Example**: Rather than building custom DOI extraction, port Zotero's Embedded Metadata translator
 - **Benefit**: Battle-tested extraction logic with community maintenance and constant improvement
 
+#### Cloud-First MCP Architecture (Critical Learning August 2025)
+**NEVER implement local MCP servers - always use cloud-hosted endpoints**
+- **Architecture Rule**: MCP servers must run on DigitalOcean, not locally
+- **ChatGPT Requirement**: Connectors only work with publicly accessible cloud endpoints
+- **Implementation Pattern**: HTTP REST + SSE for bidirectional communication
+- **Discovery Process**: ChatGPT connects, validates server, then attempts tool execution
+- **Bidirectional Challenge**: SSE is unidirectional but MCP protocol requires two-way communication
+- **Current Solution**: Hybrid approach with SSE for server-to-client and HTTP POST for client-to-server
+
 ### Security
 - This is a defensive tool for personal research management
 - Extracts content from authenticated sites user already has access to
@@ -140,6 +149,33 @@ Claude has access to these CLI tools for managing this project:
 - **Library Limitation**: epub-gen v0.1.0 architectural constraint cannot be fully overcome
 - **Reference**: See LESSONS_LEARNED.md for detailed investigation history
 
+## ChatGPT Connectors Status (August 2025)
+
+### Current Implementation Status
+- **Base URL**: `https://seal-app-t4vff.ondigitalocean.app/chatgpt/`
+- **SSE Endpoint**: `/sse/` - Server-Sent Events for real-time communication
+- **Tool Endpoints**: `/tools/search` and `/tools/fetch` - HTTP POST for tool execution
+- **Discovery**: Root endpoint provides server capabilities
+- **Logging**: Comprehensive request/response tracking active
+
+### Connection Verification ✅
+- **ChatGPT Successfully Connects**: User-Agent `openai-mcp/1.0.0` confirmed in logs
+- **SSE Established**: Real-time connection working
+- **MCP Protocol**: Initialization and tool registration sent correctly
+- **Data Format**: Compliant with 2025 ChatGPT Connectors specification
+
+### Remaining Challenge ⚠️
+- **Issue**: "Error creating connector" despite successful connection
+- **Root Cause**: Bidirectional communication requirement not fully satisfied
+- **Technical Detail**: SSE provides server→client, but ChatGPT needs client→server for tool calls
+- **Investigation**: Enhanced logging shows connection success but validation failure
+
+### Next Steps for Resolution
+1. **Add WebSocket support** for true bidirectional communication
+2. **Implement proper MCP JSON-RPC** over bidirectional transport
+3. **Test tool execution flow** end-to-end
+4. **Reference**: See LESSONS_LEARNED.md for complete investigation history
+
 ## Current Known Issues (August 2025)
 
 ### 🔴 High Priority
@@ -172,15 +208,19 @@ Claude has access to these CLI tools for managing this project:
    - **Files Updated**: `public/bookmarklet.js`
    - **Next**: Phase 2 (base64 embedding for auth sites) if needed
 
-3. **MCP Server Implementation** (August 2025) - DUAL STATUS
+3. **ChatGPT Connectors Integration** (August 2025) - CRITICAL ARCHITECTURE INSIGHTS
    - **Custom REST API**: WORKING ✅ - Fully functional for direct API access
      - **API Key**: `0530bf0ab5c4749e3c867d9cb7e8a5822b7dbc4b74be68c5d1d0eea54f2ce80f` (keep secret)
      - **URL**: https://seal-app-t4vff.ondigitalocean.app/mcp/*
-     - **Tested**: Health ✅, Search ✅, Item Details ✅
-   - **ChatGPT Integration**: REQUIRES OFFICIAL SDK ⚠️
-     - **Discovery**: ChatGPT Connectors reject custom implementations ("doesn't implement our specification")
-     - **Solution**: Must implement official `@modelcontextprotocol/sdk` alongside custom server
-     - **Files**: `src/mcpServer.js` (custom), `src/mcpJsonRpc.js` (failed attempt), `MCP_INTEGRATION_PLAN.md`
+     - **Tested**: Health ✅, Search ✅, Item Details ✅, Collections ✅
+   - **ChatGPT Connectors (2025 Specification)**: PARTIALLY WORKING ⚠️
+     - **Major Discovery**: ChatGPT DOES connect and receive our data (User-Agent: `openai-mcp/1.0.0`)
+     - **Implementation**: Cloud-based SSE + HTTP endpoints at `/chatgpt/*`
+     - **Connection Success**: SSE established, MCP init sent, tools registered
+     - **Remaining Issue**: Bidirectional communication - ChatGPT expects to send tool calls back
+     - **Architecture Problem**: SSE is unidirectional, MCP protocol needs bidirectional communication
+     - **Current Status**: Connection established but tool execution fails
+     - **Files**: `src/mcpChatGPT.js` (working SSE + HTTP), enhanced logging active
 
 4. **Enhanced EPUB TOC Hiding** (August 2025)
    - **Problem**: Unwanted TOC pages showing "1. --" and "2. Article Title" in single-article EPUBs
