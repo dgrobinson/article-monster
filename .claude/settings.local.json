@@ -61,7 +61,10 @@
       "WebFetch(domain:community.openai.com)",
       "WebFetch(domain:gofastmcp.com)",
       "Bash(./deploy-and-test.sh)",
-      "Bash(cp:*)"
+      "Bash(cp:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(npm run lint:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

@@ -8,6 +8,8 @@
     "dev": "node --watch src/server.js",
     "test": "node src/test.js",
     "test:mcp": "node src/test-mcp.js",
+    "lint": "npx eslint src/**/*.js public/**/*.js test-*.js --ignore-pattern node_modules/",
+    "lint:fix": "npx eslint src/**/*.js public/**/*.js test-*.js --fix --ignore-pattern node_modules/",
     "generate:mcp-key": "node scripts/generate-mcp-key.js",
     "build": "npm run setup:submodules && npm run setup:python",
     "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'",

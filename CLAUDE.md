@@ -227,6 +227,12 @@ Claude has access to these CLI tools for managing this project:
    - Impact: EPUBs lack visual content
    - **Status**: Phase 1 completed - relative URLs now converted to absolute
 
+3. **Submodule Sync Workflow** - PR #3 pending review
+   - **Issue**: Workflow wants to enable automatic submodule updates with Slack notifications
+   - **Concern**: No Slack integration exists in current workflow
+   - **Status**: On hold - needs clarification on notification strategy
+   - **PR Link**: https://github.com/dgrobinson/article-monster/pull/3
+
 ### 🟢 Recently Fixed & Improvements
 1. **Enhanced Bibliographic Metadata Extraction** (August 2025)
    - **Improvements Made**:
