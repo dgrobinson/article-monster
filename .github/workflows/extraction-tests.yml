@@ -34,44 +34,29 @@ jobs:
       run: npm ci
     
     - name: Run basic extraction tests
-      run: node test-extraction.js
-      continue-on-error: true  # Don't fail workflow on test failures initially
-    
+      run: |
+        node test-extraction.js 2>&1 | tee basic-tests.log
+
     - name: Run FiveFilters extraction tests
-      run: node test-extraction-with-fivefilters.js
-      continue-on-error: true  # Don't fail workflow on test failures initially
-    
-    - name: Generate test report
+      run: |
+        node test-extraction-with-fivefilters.js 2>&1 | tee fivefilters-tests.log
+
+    - name: Check for newly passing tests
       if: always()
       run: |
-        echo "## 📊 Extraction Test Results" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Basic Extraction" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        node test-extraction.js 2>&1 | tail -20 >> $GITHUB_STEP_SUMMARY || true
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### FiveFilters Extraction" >> $GITHUB_STEP_SUMMARY
-        echo '```' >> $GITHUB_STEP_SUMMARY
-        node test-extraction-with-fivefilters.js 2>&1 | tail -20 >> $GITHUB_STEP_SUMMARY || true
-        echo '```' >> $GITHUB_STEP_SUMMARY
-    
-    - name: Check for newly passing tests
-      run: |
-        # Run tests and check for newly passing unsolved cases
-        node test-extraction.js > test-output.txt 2>&1 || true
-        if grep -q "UNSOLVED CASES NOW PASSING" test-output.txt; then
+        if [ -f basic-tests.log ] && grep -q "UNSOLVED CASES NOW PASSING" basic-tests.log; then
           echo "🎉 Some unsolved test cases are now passing!" >> $GITHUB_STEP_SUMMARY
           echo "Consider moving them to test-cases/solved/ folder" >> $GITHUB_STEP_SUMMARY
         fi
-    
+
     - name: Upload test artifacts
       if: failure()
       uses: actions/upload-artifact@v4
       with:
         name: test-results
         path: |
-          test-output.txt
+          basic-tests.log
+          fivefilters-tests.log
           test-cases/unsolved/
         retention-days: 7
 
