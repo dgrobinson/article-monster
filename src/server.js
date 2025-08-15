@@ -32,7 +32,7 @@ const isUnderRouter = process.env.FASTMCP_PORT ? true : false;
 const fastmcpLauncher = isUnderRouter ? null : new FastMCPLauncher();
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Increase limit for large articles (was default 100kb)
 app.use(express.static('public'));
 
 // CORS middleware - allow requests from any origin

@@ -27,7 +27,7 @@ const configFetcher = new ConfigFetcher();
 configFetcher.preloadConfigs();
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '10mb' })); // Increase limit for large articles (was default 100kb)
 app.use(express.static('public'));
 
 // CORS middleware - allow requests from any origin
