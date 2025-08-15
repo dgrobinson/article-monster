@@ -118,6 +118,22 @@ function testExtraction(testCase) {
     } else {
       console.log(`❌ Missing: "${phrase}"`);
       allPhrasesFound = false;
+      
+      // Provide helpful context about where to look for the missing content
+      const plainText = article.content.replace(/<[^>]*>/g, '').trim();
+      const words = phrase.split(' ');
+      if (words.length > 2) {
+        // Check if any part of the phrase exists
+        const firstWords = words.slice(0, 2).join(' ');
+        const lastWords = words.slice(-2).join(' ');
+        if (plainText.includes(firstWords)) {
+          console.log(`   ℹ️  Found beginning "${firstWords}" but not complete phrase`);
+        } else if (plainText.includes(lastWords)) {
+          console.log(`   ℹ️  Found ending "${lastWords}" but not complete phrase`);
+        } else {
+          console.log(`   ℹ️  Phrase not found at all in extracted content`);
+        }
+      }
     }
   }
   

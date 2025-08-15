@@ -1,0 +1,112 @@
+name: Article Extraction Tests
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'public/readability.min.js'
+      - 'public/bookmarklet.js'
+      - 'test-cases/**'
+      - 'site-configs/**'
+      - 'test-extraction*.js'
+      - '.github/workflows/extraction-tests.yml'
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allow manual triggering
+
+jobs:
+  test-extraction:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: true  # Include site-configs submodule
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Run basic extraction tests
+      run: node test-extraction.js
+      continue-on-error: true  # Don't fail workflow on test failures initially
+    
+    - name: Run FiveFilters extraction tests
+      run: node test-extraction-with-fivefilters.js
+      continue-on-error: true  # Don't fail workflow on test failures initially
+    
+    - name: Generate test report
+      if: always()
+      run: |
+        echo "## 📊 Extraction Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### Basic Extraction" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        node test-extraction.js 2>&1 | tail -20 >> $GITHUB_STEP_SUMMARY || true
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### FiveFilters Extraction" >> $GITHUB_STEP_SUMMARY
+        echo '```' >> $GITHUB_STEP_SUMMARY
+        node test-extraction-with-fivefilters.js 2>&1 | tail -20 >> $GITHUB_STEP_SUMMARY || true
+        echo '```' >> $GITHUB_STEP_SUMMARY
+    
+    - name: Check for newly passing tests
+      run: |
+        # Run tests and check for newly passing unsolved cases
+        node test-extraction.js > test-output.txt 2>&1 || true
+        if grep -q "UNSOLVED CASES NOW PASSING" test-output.txt; then
+          echo "🎉 Some unsolved test cases are now passing!" >> $GITHUB_STEP_SUMMARY
+          echo "Consider moving them to test-cases/solved/ folder" >> $GITHUB_STEP_SUMMARY
+        fi
+    
+    - name: Upload test artifacts
+      if: failure()
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-results
+        path: |
+          test-output.txt
+          test-cases/unsolved/
+        retention-days: 7
+
+  validate-fivefilters-configs:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        submodules: true
+    
+    - name: Validate FiveFilters configs
+      run: |
+        echo "## 🔍 FiveFilters Config Validation" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Count and list available configs
+        config_count=$(ls -1 site-configs/*.txt 2>/dev/null | wc -l)
+        echo "Found $config_count site configurations" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        # Check for configs referenced in tests
+        echo "### Configs Used in Tests:" >> $GITHUB_STEP_SUMMARY
+        for test_file in test-cases/*/*.json; do
+          if [ -f "$test_file" ]; then
+            url=$(grep -o '"url":[^,]*' "$test_file" | cut -d'"' -f4)
+            if [ ! -z "$url" ]; then
+              hostname=$(echo "$url" | sed -E 's|https?://([^/]+).*|\1|' | sed 's/^www\.//')
+              config_file="site-configs/${hostname}.txt"
+              if [ -f "$config_file" ]; then
+                echo "✅ $hostname - config exists" >> $GITHUB_STEP_SUMMARY
+              else
+                echo "❌ $hostname - no config found" >> $GITHUB_STEP_SUMMARY
+              fi
+            fi
+          fi
+        done
