@@ -7,6 +7,8 @@ on:
     branches: [ main ]
   release:
     types: [ published ]
+  schedule:
+    - cron: '0 2 * * *'
 
 env:
   REGISTRY: ghcr.io
@@ -35,7 +37,7 @@ jobs:
       run: npx --yes nyc --reporter=lcov npm test
 
     - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
         files: ./coverage/lcov.info
         flags: unittests
@@ -240,8 +242,6 @@ jobs:
   backup:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
-    schedule:
-      - cron: '0 2 * * *'  # Daily at 2 AM UTC
     steps:
     - name: Checkout code
       uses: actions/checkout@v4
