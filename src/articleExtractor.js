@@ -1,6 +1,12 @@
 const { Readability } = require('@mozilla/readability');
 const { JSDOM } = require('jsdom');
 const axios = require('axios');
+const { HttpsProxyAgent } = require('https-proxy-agent');
+
+// Configure proxy agent if environment specifies one
+const proxyUrl = process.env.HTTPS_PROXY || process.env.https_proxy ||
+                 process.env.HTTP_PROXY || process.env.http_proxy;
+const proxyAgent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined;
 
 async function extractArticle(url) {
   try {
@@ -11,7 +17,9 @@ async function extractArticle(url) {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       },
-      timeout: 30000
+      timeout: 30000,
+      httpsAgent: proxyAgent,
+      proxy: false
     });
 
     // Parse with JSDOM
