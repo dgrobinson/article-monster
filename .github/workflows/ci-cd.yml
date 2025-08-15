@@ -40,7 +40,7 @@ jobs:
 
     - name: Upload test log
       if: always() && matrix.node-version == '20.x'
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: test-log
         path: test.log
@@ -74,7 +74,7 @@ jobs:
 
     - name: Upload lint log
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: lint-log
         path: lint.log
@@ -90,13 +90,13 @@ jobs:
         fetch-depth: 0
 
     - name: Download test log
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: test-log
         path: logs
 
     - name: Download lint log
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: lint-log
         path: logs
@@ -206,7 +206,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
 
     - name: Update kubeconfig
       run: |
@@ -258,7 +258,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
 
     - name: Update kubeconfig
       run: |
@@ -314,7 +314,7 @@ jobs:
       with:
         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        aws-region: ${{ secrets.AWS_REGION }}
+        aws-region: ${{ secrets.AWS_REGION || 'us-east-1' }}
 
     - name: Set up kubectl
       uses: azure/setup-kubectl@v3
