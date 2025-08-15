@@ -34,7 +34,16 @@ jobs:
       run: npm ci
 
     - name: Run tests with coverage
-      run: npx --yes nyc --reporter=lcov npm test
+      run: |
+        set -o pipefail
+        npx --yes nyc --reporter=lcov npm test 2>&1 | tee test.log
+
+    - name: Upload test log
+      if: always() && matrix.node-version == '20.x'
+      uses: actions/upload-artifact@v3
+      with:
+        name: test-log
+        path: test.log
 
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v4
@@ -59,7 +68,61 @@ jobs:
       run: npm ci
 
     - name: Run lint
-      run: npm run lint
+      run: |
+        set -o pipefail
+        npm run lint 2>&1 | tee lint.log
+
+    - name: Upload lint log
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: lint-log
+        path: lint.log
+
+  store-ci-log:
+    needs: [test, lint]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download test log
+      uses: actions/download-artifact@v3
+      with:
+        name: test-log
+        path: logs
+
+    - name: Download lint log
+      uses: actions/download-artifact@v3
+      with:
+        name: lint-log
+        path: logs
+
+    - name: Create combined CI log
+      run: |
+        mkdir -p ci_logs
+        timestamp=$(date -u +"%Y%m%d_%H%M%S")
+        logfile="ci_logs/${timestamp}_${GITHUB_SHA}.log"
+        {
+          echo '=== Test Log ==='
+          cat logs/test.log
+          echo
+          echo '=== Lint Log ==='
+          cat logs/lint.log
+        } > "$logfile"
+        echo "LOG_FILE=$logfile" >> $GITHUB_ENV
+
+    - name: Commit CI log
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git add "$LOG_FILE"
+        git commit -m "ci: add log for ${GITHUB_SHA} [skip ci]" || echo "No changes to commit"
+        git push
+      if: always()
 
   build:
     needs: [test, lint]
