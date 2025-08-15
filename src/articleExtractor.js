@@ -4,6 +4,7 @@ const axios = require('axios');
 
 function extractFromLdJson(doc) {
   const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
+  let best = null;
   for (const script of scripts) {
     try {
       const data = JSON.parse(script.textContent.trim());
@@ -12,14 +13,16 @@ function extractFromLdJson(doc) {
         : (Array.isArray(data['@graph']) ? data['@graph'] : [data]);
       for (const item of candidates) {
         if (item && item.articleBody) {
-          return item;
+          if (!best || item.articleBody.length > best.articleBody.length) {
+            best = item;
+          }
         }
       }
     } catch (e) {
       // Skip invalid JSON
     }
   }
-  return null;
+  return best;
 }
 
 async function extractArticle(url) {
