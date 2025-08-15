@@ -180,12 +180,25 @@ app.post('/process-article', async (req, res) => {
       try {
         const decodedContent = Buffer.from(article.content_b64, 'base64').toString('utf8');
         console.log(`Decoded content length: ${decodedContent.length} (was ${article.content?.length || 0})`);
+        
+        // Debug: Check for line breaks and br tags
+        const brCount = (decodedContent.match(/<br>/gi) || []).length;
+        const newlineCount = (decodedContent.match(/\n/g) || []).length;
+        console.log(`Decoded content has ${brCount} <br> tags and ${newlineCount} newlines`);
+        
         article.content = decodedContent;
       } catch (e) {
         console.warn('Failed to decode content_b64:', e.message);
       }
     } else {
       console.log('No content_b64 received, using raw content');
+      
+      // Debug: Check raw content for comparison
+      if (article.content) {
+        const brCount = (article.content.match(/<br>/gi) || []).length;
+        const newlineCount = (article.content.match(/\n/g) || []).length;
+        console.log(`Raw content has ${brCount} <br> tags and ${newlineCount} newlines`);
+      }
     }
 
     console.log(`Processing article: ${article.title || url}`);
