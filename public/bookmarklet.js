@@ -1026,6 +1026,16 @@
         userAgent: navigator.userAgent.substring(0, 100)
       };
       
+      // Safely base64-encode HTML to avoid any transport/proxy truncation
+      let contentB64 = null;
+      try {
+        if (enhancedArticle.content) {
+          contentB64 = btoa(unescape(encodeURIComponent(enhancedArticle.content)));
+        }
+      } catch (e) {
+        console.warn('Failed to base64-encode content:', e);
+      }
+      
       // Send to service
       updateIndicator(indicator, 'Sending to Kindle and Zotero...');
       
@@ -1036,7 +1046,10 @@
         },
         body: JSON.stringify({
           url: window.location.href,
-          article: enhancedArticle
+          article: {
+            ...enhancedArticle,
+            content_b64: contentB64
+          }
         })
       });
     })

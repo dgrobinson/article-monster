@@ -174,6 +174,15 @@ app.post('/process-article', async (req, res) => {
       return res.status(400).json({ error: 'Extracted article content is required' });
     }
 
+    // Prefer base64 content if present (robust against proxy/UTF-8 issues)
+    if (article.content_b64) {
+      try {
+        article.content = Buffer.from(article.content_b64, 'base64').toString('utf8');
+      } catch (e) {
+        console.warn('Failed to decode content_b64:', e.message);
+      }
+    }
+
     console.log(`Processing article: ${article.title || url}`);
     
     // Log article size for debugging
