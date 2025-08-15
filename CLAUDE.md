@@ -111,12 +111,16 @@ When launched in this repository, Claude should read these files to understand t
 - Local `npm run dev` exists but is not used in standard workflow
 
 ### Testing Framework (Added August 2025)
-- **Test Script**: `test-extraction.js` - runs Readability.js locally against test cases
+- **Test Scripts**: 
+  - `test-extraction.js` - Basic Readability.js testing
+  - `test-extraction-with-fivefilters.js` - Tests with FiveFilters config loading
+  - `test-epub-generation.js` - Tests full EPUB generation pipeline
 - **Test Folders**: 
   - `test-cases/unsolved/` - articles with known extraction issues
   - `test-cases/solved/` - regression tests for previously fixed articles
 - **Test Format**: HTML file + JSON metadata with expected phrases and minimum length
 - **Workflow**: Fix extraction → move test case from unsolved/ to solved/ folder
+- **CI/CD**: GitHub Actions runs tests automatically on every push
 - **Automated Deployment**: `deploy-and-test.sh` - commits, pushes, monitors deployment
 
 ### Bookmarklet Updates (Key Learning August 2025)
@@ -131,8 +135,16 @@ Claude has access to these CLI tools for managing this project:
 ### GitHub CLI (`gh`)
 - Check workflow status: `gh workflow list`
 - View workflow runs: `gh run list`
+- Check test results: `gh run view <run-id> --log`
 - Trigger deployments via GitHub Actions if needed
 - Manage pull requests and issues
+
+### GitHub Actions CI/CD (Added August 2025)
+- **Extraction Tests**: `.github/workflows/extraction-tests.yml`
+- **Runs automatically** on every push to main
+- **Tests both** basic extraction and FiveFilters extraction
+- **Validates** site configs exist for test cases
+- **Reports** results in GitHub UI with summary
 
 ### DigitalOcean CLI (`doctl`)
 - Check app status: `doctl apps list`
@@ -143,15 +155,11 @@ Claude has access to these CLI tools for managing this project:
 
 ## Known Issues & Solutions
 
-### WSJ Content Extraction
-- **Root Cause**: Bookmarklet fetches FiveFilters config asynchronously but doesn't wait for it
-- **What Happens**:
-  1. Bookmarklet checks for cached site config (not found)
-  2. Fetches config from server but continues immediately (async)
-  3. Falls back to simplified extraction which fails on WSJ
-  4. Config gets stored for "next time" but current extraction already failed
-- **The Fix**: Bookmarklet must wait for FiveFilters config before attempting extraction
-- **Note**: WSJ has a full FiveFilters config at `site-configs/wsj.com.txt` that would work if used
+### Zero-Hardcoding Principle (Fixed August 2025)
+- **Issue**: Bookmarklet had hardcoded configs for sites, violating zero-hardcoding principle
+- **Solution**: Removed all hardcoded configs, everything now fetched from server/site-configs
+- **Fix**: Bookmarklet now waits for FiveFilters config before extraction
+- **Status**: ✅ RESOLVED - Dynamic config loading working correctly
 
 ### EPUB Table of Contents (Resolved August 2025)
 - **Current Solution**: Enhanced CSS-based hiding - TOC content hidden, minimal blank page remains
@@ -200,13 +208,17 @@ Claude has access to these CLI tools for managing this project:
 ## Current Known Issues (August 2025)
 
 ### 🔴 High Priority
-1. **New Yorker Multi-Section Articles** - Articles truncating at section boundaries
-   - **Root Cause**: Readability.js simplified extraction not combining multiple article body containers
-   - **Example**: Baldwin article ends at "Farrar, Straus & Giroux" instead of "There's not a lot of love out there"
-   - **Current Status**: Extraction gets 206KB from 8 containers but missing final content
-   - **Investigation**: Ending text appears in HTML but extraction capturing related articles instead
-   - Location: `public/readability.min.js`
-   - Test case: `test-cases/unsolved/newyorker-baldwin.html`
+1. **EPUB Truncation Issue** - Long articles truncating in production EPUBs
+   - **Symptoms**: Baldwin article truncates at "Farrar, Straus & Giroux" in production EPUB
+   - **Investigation Progress**:
+     - Extraction works: Gets full 206KB including ending ✅
+     - Test EPUB works: 50KB EPUB with full content ✅
+     - Production fails: Only 11KB EPUB generated ❌
+   - **Attempted Fixes**:
+     - Increased Express body parser limit to 10MB (didn't solve issue)
+     - Added detailed logging to track content through pipeline
+   - **Current Theory**: Truncation happening between bookmarklet and server transmission
+   - **Next Steps**: Check logs to see actual content length received by server
 
 2. **EPUB Images Not Working** - Images are not appearing in generated EPUBs despite epub-gen supporting them
    - **Root Cause**: Authentication mismatch - bookmarklet extracts HTML with image URLs from authenticated sites client-side, but server-side epub-gen cannot access auth-protected images
@@ -290,6 +302,13 @@ For detailed future improvement plans, see **[METADATA_ROADMAP.md](./METADATA_RO
 - **[EPUB Image Fix Implementation Plan](./docs/EPUB_IMAGE_FIX.md)** - Detailed phased approach for fixing EPUB image authentication issues
 
 ## Critical Lessons Learned (August 2025)
+
+### EPUB Debugging Methodology
+- **Test locally first**: Use `test-epub-generation.js` to verify EPUB generation
+- **Compare file sizes**: Production EPUB (11KB) vs Test EPUB (50KB) revealed issue
+- **Trace content flow**: Bookmarklet → Server → EPUB generation
+- **Check transmission limits**: Express default JSON limit is 100KB
+- **Use debug EPUBs**: Save and inspect EPUB contents with AdmZip
 
 ### Deployment Must Be Verified
 - **Always check deployment logs** after pushing changes

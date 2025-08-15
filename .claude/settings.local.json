@@ -60,7 +60,8 @@
       "WebSearch",
       "WebFetch(domain:community.openai.com)",
       "WebFetch(domain:gofastmcp.com)",
-      "Bash(./deploy-and-test.sh)"
+      "Bash(./deploy-and-test.sh)",
+      "Bash(cp:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"
