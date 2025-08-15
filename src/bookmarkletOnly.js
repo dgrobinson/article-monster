@@ -93,11 +93,16 @@ app.post('/process-article', async (req, res) => {
     
     // Prefer base64 content if present (robust against proxy/UTF-8 issues)
     if (article?.content_b64) {
+      console.log('Received content_b64, decoding...');
       try {
-        article.content = Buffer.from(article.content_b64, 'base64').toString('utf8');
+        const decodedContent = Buffer.from(article.content_b64, 'base64').toString('utf8');
+        console.log(`Decoded content length: ${decodedContent.length} (was ${article.content?.length || 0})`);
+        article.content = decodedContent;
       } catch (e) {
         console.warn('Failed to decode content_b64:', e.message);
       }
+    } else {
+      console.log('No content_b64 received, using raw content');
     }
     
     // Log incoming content size for debugging truncation issues
