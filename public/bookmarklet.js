@@ -1026,14 +1026,26 @@
         userAgent: navigator.userAgent.substring(0, 100)
       };
       
-      // Safely base64-encode HTML to avoid any transport/proxy truncation
+      // Base64 encode to prevent truncation but preserve structure
       let contentB64 = null;
       try {
         if (enhancedArticle.content) {
+          // Debug: Check what we're encoding
+          const brCount = (enhancedArticle.content.match(/<br>/gi) || []).length;
+          const newlineCount = (enhancedArticle.content.match(/\n/g) || []).length;
+          const pCount = (enhancedArticle.content.match(/<p>/gi) || []).length;
+          console.log(`Encoding content with: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+          
+          // Check first paragraph
+          const firstChars = enhancedArticle.content.substring(0, 200).replace(/<[^>]*>/g, '').trim();
+          console.log('Content to encode starts with:', firstChars.substring(0, 100));
+          
+          // Use the standard base64 encoding that should preserve everything
           contentB64 = btoa(unescape(encodeURIComponent(enhancedArticle.content)));
+          console.log('Successfully encoded', enhancedArticle.content.length, 'chars to base64');
         }
       } catch (e) {
-        console.warn('Failed to base64-encode content:', e);
+        console.error('Failed to base64-encode content:', e);
       }
       
       // Send to service

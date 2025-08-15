@@ -178,27 +178,31 @@ app.post('/process-article', async (req, res) => {
     if (article.content_b64) {
       console.log('Received content_b64, decoding...');
       try {
+        // Use proper UTF-8 decoding
         const decodedContent = Buffer.from(article.content_b64, 'base64').toString('utf8');
-        console.log(`Decoded content length: ${decodedContent.length} (was ${article.content?.length || 0})`);
+        console.log(`Decoded content length: ${decodedContent.length} (base64 was ${article.content_b64.length})`);
         
-        // Debug: Check for line breaks and br tags
+        // Check decoded content structure
         const brCount = (decodedContent.match(/<br>/gi) || []).length;
         const newlineCount = (decodedContent.match(/\n/g) || []).length;
-        console.log(`Decoded content has ${brCount} <br> tags and ${newlineCount} newlines`);
+        const pCount = (decodedContent.match(/<p>/gi) || []).length;
+        console.log(`Decoded content has: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+        
+        // Check if first paragraph is present
+        const firstChars = decodedContent.substring(0, 200).replace(/<[^>]*>/g, '').trim();
+        console.log('Decoded content starts with:', firstChars.substring(0, 100));
         
         article.content = decodedContent;
       } catch (e) {
         console.warn('Failed to decode content_b64:', e.message);
+        // Fall back to raw content if decoding fails
       }
-    } else {
-      console.log('No content_b64 received, using raw content');
-      
-      // Debug: Check raw content for comparison
-      if (article.content) {
-        const brCount = (article.content.match(/<br>/gi) || []).length;
-        const newlineCount = (article.content.match(/\n/g) || []).length;
-        console.log(`Raw content has ${brCount} <br> tags and ${newlineCount} newlines`);
-      }
+    } else if (article.content) {
+      // Log raw content details if no base64
+      const brCount = (article.content.match(/<br>/gi) || []).length;
+      const newlineCount = (article.content.match(/\n/g) || []).length;
+      const pCount = (article.content.match(/<p>/gi) || []).length;
+      console.log(`Raw content has: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
     }
 
     console.log(`Processing article: ${article.title || url}`);
