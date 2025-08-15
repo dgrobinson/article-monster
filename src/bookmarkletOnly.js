@@ -91,12 +91,35 @@ app.post('/process-article', async (req, res) => {
   try {
     const { url, article } = req.body;
     
-    // Check content format and log details  
-    if (article?.content) {
+    // Prefer base64 content if present (robust against proxy/UTF-8 issues)
+    if (article.content_b64) {
+      console.log('Received content_b64, decoding...');
+      try {
+        // Use proper UTF-8 decoding
+        const decodedContent = Buffer.from(article.content_b64, 'base64').toString('utf8');
+        console.log(`Decoded content length: ${decodedContent.length} (base64 was ${article.content_b64.length})`);
+        
+        // Check decoded content structure
+        const brCount = (decodedContent.match(/<br>/gi) || []).length;
+        const newlineCount = (decodedContent.match(/\n/g) || []).length;
+        const pCount = (decodedContent.match(/<p>/gi) || []).length;
+        console.log(`Decoded content has: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+        
+        // Check if first paragraph is present
+        const firstChars = decodedContent.substring(0, 200).replace(/<[^>]*>/g, '').trim();
+        console.log('Decoded content starts with:', firstChars.substring(0, 100));
+        
+        article.content = decodedContent;
+      } catch (e) {
+        console.warn('Failed to decode content_b64:', e.message);
+        // Fall back to raw content if decoding fails
+      }
+    } else if (article?.content) {
+      // Check content format and log details  
       const brCount = (article.content.match(/<br>/gi) || []).length;
       const newlineCount = (article.content.match(/\n/g) || []).length;
       const pCount = (article.content.match(/<p>/gi) || []).length;
-      console.log(`Received content: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+      console.log(`Raw content has: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
     }
     
     // Log incoming content size for debugging truncation issues
