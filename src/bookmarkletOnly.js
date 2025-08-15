@@ -91,6 +91,13 @@ app.post('/process-article', async (req, res) => {
   try {
     const { url, article } = req.body;
     
+    // Log incoming content size for debugging truncation issues
+    console.log(`Received article: "${article?.title || 'Unknown'}" - Content length: ${article?.content?.length || 0} bytes`);
+    if (article?.content) {
+      const plainEnd = article.content.substring(Math.max(0, article.content.length - 200)).replace(/<[^>]*>/g, '').trim();
+      console.log('Content ends with:', plainEnd.substring(Math.max(0, plainEnd.length - 100)));
+    }
+    
     if (!url) {
       return res.status(400).json({ error: 'URL is required' });
     }
