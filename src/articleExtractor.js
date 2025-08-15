@@ -2,26 +2,6 @@ const { Readability } = require('@mozilla/readability');
 const { JSDOM } = require('jsdom');
 const axios = require('axios');
 
-function extractFromLdJson(doc) {
-  const scripts = doc.querySelectorAll('script[type="application/ld+json"]');
-  for (const script of scripts) {
-    try {
-      const data = JSON.parse(script.textContent.trim());
-      const candidates = Array.isArray(data)
-        ? data
-        : (Array.isArray(data['@graph']) ? data['@graph'] : [data]);
-      for (const item of candidates) {
-        if (item && item.articleBody) {
-          return item;
-        }
-      }
-    } catch (e) {
-      // Skip invalid JSON
-    }
-  }
-  return null;
-}
-
 async function extractArticle(url) {
   try {
     console.log(`Fetching article from: ${url}`);
@@ -38,31 +18,7 @@ async function extractArticle(url) {
     const dom = new JSDOM(response.data, { url });
     const doc = dom.window.document;
 
-    // Prefer JSON-LD articleBody if available to avoid truncated content
-    const ld = extractFromLdJson(doc);
-    if (ld && ld.articleBody) {
-      const paragraphs = ld.articleBody
-        .split(/\n{2,}/)
-        .map(p => p.trim())
-        .filter(Boolean)
-        .map(p => `<p>${p}</p>`)
-        .join('\n');
-
-      return {
-        title: ld.headline || extractTitleFromUrl(url),
-        content: paragraphs,
-        textContent: ld.articleBody,
-        length: ld.articleBody.length,
-        excerpt: ld.description || ld.articleBody.substring(0, 300) + '...',
-        byline: Array.isArray(ld.author) ? ld.author[0]?.name : ld.author?.name || 'Unknown',
-        siteName: ld.publisher?.name || extractSiteFromUrl(url),
-        url: url,
-        publishedTime: ld.datePublished || extractPublishedTime(doc) || new Date().toISOString(),
-        lang: ld.inLanguage || 'en'
-      };
-    }
-
-    // Fallback to Readability
+    // Extract with Readability
     const reader = new Readability(doc);
     const article = reader.parse();
 
