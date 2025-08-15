@@ -2,23 +2,56 @@ const { Readability } = require('@mozilla/readability');
 const { JSDOM } = require('jsdom');
 const axios = require('axios');
 const { HttpsProxyAgent } = require('https-proxy-agent');
+const { HttpProxyAgent } = require('http-proxy-agent');
 
-// Configure proxy agent if environment specifies one
+// Configure proxy agents if environment specifies one, with NO_PROXY support
 const proxyUrl = process.env.HTTPS_PROXY || process.env.https_proxy ||
                  process.env.HTTP_PROXY || process.env.http_proxy;
-const proxyAgent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined;
+const noProxyEnv = process.env.NO_PROXY || process.env.no_proxy;
+
+const httpsProxyAgent = proxyUrl ? new HttpsProxyAgent(proxyUrl) : undefined;
+const httpProxyAgent = proxyUrl ? new HttpProxyAgent(proxyUrl) : undefined;
+
+function hostMatchesNoProxy(hostname, noProxyList) {
+  if (!noProxyList) return false;
+  const entries = noProxyList.split(',').map(s => s.trim()).filter(Boolean);
+  if (entries.length === 0) return false;
+
+  // If wildcard present, bypass proxy for all
+  if (entries.includes('*')) return true;
+
+  // Normalize hostname (strip port if present)
+  const hostOnly = hostname.split(':')[0].toLowerCase();
+
+  return entries.some(entryRaw => {
+    const entry = entryRaw.toLowerCase();
+    // Exact match
+    if (hostOnly === entry) return true;
+    // Leading dot means domain suffix match (e.g., .example.com matches a.example.com)
+    if (entry.startsWith('.')) {
+      return hostOnly.endsWith(entry);
+    }
+    // Suffix match without leading dot (common practice)
+    if (hostOnly === entry || hostOnly.endsWith(`.${entry}`)) return true;
+    return false;
+  });
+}
 
 async function extractArticle(url) {
   try {
     console.log(`Fetching article from: ${url}`);
     
     // Fetch the webpage
+    const { hostname } = new URL(url);
+    const useProxy = Boolean(proxyUrl) && !hostMatchesNoProxy(hostname, noProxyEnv);
+
     const response = await axios.get(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
       },
       timeout: 30000,
-      httpsAgent: proxyAgent,
+      httpAgent: useProxy ? httpProxyAgent : undefined,
+      httpsAgent: useProxy ? httpsProxyAgent : undefined,
       proxy: false
     });
 
