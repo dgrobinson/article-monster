@@ -626,6 +626,9 @@
     },
 
     _getSiteConfig: function(hostname) {
+      // No hardcoded configs - all configs should be fetched from server
+      return null;
+      /* REMOVED HARDCODED CONFIGS - violates zero-hardcoding principle
       var configs = {
         'theatlantic.com': {
           title: [
@@ -702,6 +705,7 @@
       };
       
       return configs[hostname];
+      */
     },
 
     _fetchDynamicConfig: function(hostname) {
@@ -934,8 +938,8 @@
       var hostname = window.location.hostname.replace(/^www\./, '');
       var reader = new Readability(document);
       
-      // Check if we have a config already (built-in or cached)
-      var config = reader._getSiteConfig(hostname) || reader._getCachedConfig(hostname);
+      // Check if we have a cached config from a previous fetch
+      var config = reader._getCachedConfig(hostname);
       
       if (config) {
         // We have config, extract immediately
@@ -970,7 +974,8 @@
             
             updateIndicator(indicator, '📖 Extracting with site-specific rules...');
             
-            // Now extract with the config available
+            // Create a new reader instance that will have access to the cached config
+            reader = new Readability(document);
             var article = reader.parse();
             resolve(article);
           } else {

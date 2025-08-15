@@ -59,7 +59,8 @@
       "WebFetch(domain:www.npmjs.com)",
       "WebSearch",
       "WebFetch(domain:community.openai.com)",
-      "WebFetch(domain:gofastmcp.com)"
+      "WebFetch(domain:gofastmcp.com)",
+      "Bash(./deploy-and-test.sh)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits"

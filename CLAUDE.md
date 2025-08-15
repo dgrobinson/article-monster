@@ -110,6 +110,15 @@ When launched in this repository, Claude should read these files to understand t
 - Browser-side extraction preserves user authentication
 - Local `npm run dev` exists but is not used in standard workflow
 
+### Testing Framework (Added August 2025)
+- **Test Script**: `test-extraction.js` - runs Readability.js locally against test cases
+- **Test Folders**: 
+  - `test-cases/unsolved/` - articles with known extraction issues
+  - `test-cases/solved/` - regression tests for previously fixed articles
+- **Test Format**: HTML file + JSON metadata with expected phrases and minimum length
+- **Workflow**: Fix extraction → move test case from unsolved/ to solved/ folder
+- **Automated Deployment**: `deploy-and-test.sh` - commits, pushes, monitors deployment
+
 ### Bookmarklet Updates (Key Learning August 2025)
 - **Bookmarklet does NOT need to be deleted/recreated** when code changes
 - The bookmarklet is just a link that loads JavaScript from the server
@@ -191,19 +200,22 @@ Claude has access to these CLI tools for managing this project:
 ## Current Known Issues (August 2025)
 
 ### 🔴 High Priority
-1. **EPUB Images Not Working** - Images are not appearing in generated EPUBs despite epub-gen supporting them
+1. **New Yorker Multi-Section Articles** - Articles truncating at section boundaries
+   - **Root Cause**: Readability.js simplified extraction not combining multiple article body containers
+   - **Example**: Baldwin article ends at "Farrar, Straus & Giroux" instead of "There's not a lot of love out there"
+   - **Current Status**: Extraction gets 206KB from 8 containers but missing final content
+   - **Investigation**: Ending text appears in HTML but extraction capturing related articles instead
+   - Location: `public/readability.min.js`
+   - Test case: `test-cases/unsolved/newyorker-baldwin.html`
+
+2. **EPUB Images Not Working** - Images are not appearing in generated EPUBs despite epub-gen supporting them
    - **Root Cause**: Authentication mismatch - bookmarklet extracts HTML with image URLs from authenticated sites client-side, but server-side epub-gen cannot access auth-protected images
    - **Secondary Issues**: Relative URLs not converted to absolute, hotlink protection on some sites
    - Location: `src/epubGenerator.js`, `public/bookmarklet.js`
    - Impact: EPUBs lack visual content
-   - **Fix Plan**: See "EPUB Image Fix Implementation Plan" below
    - **Status**: Phase 1 completed - relative URLs now converted to absolute
 
-2. **Kindle Filename Formatting** - ~~Article titles appear as "ALL_CAPS_WITH_UNDERSCORES" instead of clean formatting~~
-   - **FIXED**: Now uses proper capitalization with hyphens (e.g., "The-Atlantic-Article-Title.epub")
-   - Location: `src/kindleSender.js`, `src/epubGenerator.js`
-
-### 🟢 Recently Fixed
+### 🟢 Recently Fixed & Improvements
 1. **Enhanced Bibliographic Metadata Extraction** (August 2025)
    - **Improvements Made**:
      - Extended metadata selectors to include Twitter Cards, Dublin Core, Schema.org
@@ -233,7 +245,13 @@ Claude has access to these CLI tools for managing this project:
      - **Implementation**: FastMCP v2.11.3 with zero custom code, running on main port (8080)
      - **Files**: `src/mcpFastMCP.py` (pure FastMCP), `start.sh` (startup script)
 
-4. **Enhanced EPUB TOC Hiding** (August 2025)
+4. **Deployment Recovery** (August 2025)
+   - **Problem**: Deployment failures after attempted re-architecture changes
+   - **Solution**: Reset to last known good commit (3d10c9a) using git reset --hard
+   - **Lesson**: Always verify deployment success before continuing development
+   - **Recovery Command**: `git reset --hard 3d10c9a && git push --force origin main`
+
+5. **Enhanced EPUB TOC Hiding** (August 2025)
    - **Problem**: Unwanted TOC pages showing "1. --" and "2. Article Title" in single-article EPUBs
    - **Investigation**: Comprehensive analysis of epub-gen library limitations and nodepub migration
    - **CSS Solution**: Enhanced selectors targeting all TOC elements with `display: none !important`
@@ -270,6 +288,23 @@ For detailed future improvement plans, see **[METADATA_ROADMAP.md](./METADATA_RO
 
 ### Additional Technical Documentation
 - **[EPUB Image Fix Implementation Plan](./docs/EPUB_IMAGE_FIX.md)** - Detailed phased approach for fixing EPUB image authentication issues
+
+## Critical Lessons Learned (August 2025)
+
+### Deployment Must Be Verified
+- **Always check deployment logs** after pushing changes
+- **If deployment fails**, immediately reset to last known good commit
+- **Never continue development** with broken deployments
+
+### Test-Driven Development for Extraction
+- **Create test cases first** for problematic articles
+- **Use local testing** (`test-extraction.js`) before deploying
+- **Move tests to solved/** once extraction is fixed for regression testing
+
+### Extraction Complexity
+- **Multi-section articles** require combining multiple containers
+- **Related articles** can pollute extraction if selectors are too broad
+- **Ending detection** is critical for validating complete extraction
 
 ## Auto-Context Reading Instruction
 
