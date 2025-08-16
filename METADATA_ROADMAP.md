@@ -225,7 +225,6 @@ This document outlines potential future improvements for bibliographic metadata 
 
 ### Tech/Blog Sites
 - medium.com (Mixed content)
-- substack.com (Newsletter platform)
 - dev.to (Developer articles)
 - hackernews (ycombinator.com)
 - arstechnica.com (Tech journalism)

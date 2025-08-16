@@ -346,7 +346,7 @@ For detailed future improvement plans, see **[METADATA_ROADMAP.md](./METADATA_RO
 - **Track extraction method**: Always log which extraction method was used (site-config, JSON-LD, DOM)
 - **Order matters**: Extraction tries site-config → JSON-LD → DOM fallback
 - **JSON-LD limitations**: Often missing lead paragraphs or formatting - site configs preferred
-- **FiveFilters configs are authoritative**: Never hardcode site-specific logic in our code (including Substack)
+- **FiveFilters configs are authoritative**: Never hardcode site-specific logic in our code
 - **Embedded diagnostics**: EPUBs now contain hidden metadata (git commit, extraction method, content stats)
 - **Test with actual data**: JSON-LD may use single newlines vs double, affecting paragraph splitting
 

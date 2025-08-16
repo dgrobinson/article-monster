@@ -26,6 +26,8 @@
         var siteConfig = this._extractWithSiteConfig();
         if (siteConfig) {
           siteConfig.extractionMethod = 'site-config';
+          siteConfig.configSource = window.location.hostname.replace(/^www\./, '');
+          console.log('Extraction successful using FiveFilters config for:', siteConfig.configSource);
           return siteConfig;
         }
         
@@ -33,9 +35,11 @@
         var jsonLdContent = this._extractFromJsonLd();
         if (jsonLdContent) {
           jsonLdContent.extractionMethod = 'json-ld';
+          console.log('Extraction successful using JSON-LD structured data');
           return jsonLdContent;
         }
         
+        console.log('No site config or JSON-LD found, falling back to DOM extraction');
         // Fall back to DOM-based extraction
         var documentClone = this._doc.cloneNode(true);
         var article = this._grabArticle(documentClone);

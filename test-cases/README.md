@@ -19,10 +19,6 @@ This directory contains saved articles for testing and improving extraction meth
 - **Extraction Method**: Falls back to DOM extraction
 - **Status**: ⚠️ Partial - JSON-LD has metadata but no article content
 
-### Substack (window._preloads)
-- **File**: `examples/substack-example.html`
-- **Extraction Method**: JavaScript preload data extraction
-- **Status**: ✅ Working - extracts from `window._preloads.feedData`
 
 ## Adding New Test Cases
 
