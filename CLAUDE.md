@@ -158,8 +158,9 @@ Claude has access to these CLI tools for managing this project:
 ### Zero-Hardcoding Principle (Fixed August 2025)
 - **Issue**: Bookmarklet had hardcoded configs for sites, violating zero-hardcoding principle
 - **Solution**: Removed all hardcoded configs, everything now fetched from server/site-configs
-- **Fix**: Bookmarklet now waits for FiveFilters config before extraction
+- **Fix**: Bookmarklet now synchronously fetches FiveFilters config before extraction
 - **Status**: ✅ RESOLVED - Dynamic config loading working correctly
+- **Key Learning**: Site configs MUST come from FiveFilters, never hardcoded in our codebase
 
 ### EPUB Table of Contents (Resolved August 2025)
 - **Current Solution**: Enhanced CSS-based hiding - TOC content hidden, minimal blank page remains
@@ -208,17 +209,10 @@ Claude has access to these CLI tools for managing this project:
 ## Current Known Issues (August 2025)
 
 ### 🔴 High Priority
-1. **EPUB Truncation Issue** - Long articles truncating in production EPUBs
-   - **Symptoms**: Baldwin article truncates at "Farrar, Straus & Giroux" in production EPUB
-   - **Investigation Progress**:
-     - Extraction works: Gets full 206KB including ending ✅
-     - Test EPUB works: 50KB EPUB with full content ✅
-     - Production fails: Only 11KB EPUB generated ❌
-   - **Attempted Fixes**:
-     - Increased Express body parser limit to 10MB (didn't solve issue)
-     - Added detailed logging to track content through pipeline
-   - **Current Theory**: Truncation happening between bookmarklet and server transmission
-   - **Next Steps**: Check logs to see actual content length received by server
+1. **EPUB Truncation Issue** - RESOLVED via base64 encoding
+   - **Root Cause**: Proxy/transport layer was truncating UTF-8 content
+   - **Solution**: Base64 encode content in bookmarklet before transmission
+   - **Status**: ✅ FIXED - Articles now transmit completely without truncation
 
 2. **EPUB Images Not Working** - Images are not appearing in generated EPUBs despite epub-gen supporting them
    - **Root Cause**: Authentication mismatch - bookmarklet extracts HTML with image URLs from authenticated sites client-side, but server-side epub-gen cannot access auth-protected images
@@ -269,7 +263,23 @@ Claude has access to these CLI tools for managing this project:
    - **Lesson**: Always verify deployment success before continuing development
    - **Recovery Command**: `git reset --hard 3d10c9a && git push --force origin main`
 
-5. **Enhanced EPUB TOC Hiding** (August 2025)
+5. **Paragraph Structure Fix** (August 2025)
+   - **Problem**: Articles from JSON-LD extraction had paragraphs merged into single blocks
+   - **Root Cause**: JSON-LD uses single newlines, but `_textToHtml` was splitting on double newlines
+   - **Investigation**: Initially blamed on base64, but was actually JSON-LD extraction issue
+   - **Solution**: Modified `_textToHtml` to split on any newline(s) and filter empty results
+   - **Files Updated**: `public/bookmarklet.js` (_textToHtml function)
+   - **Status**: ✅ FIXED - Proper paragraph separation for all content types
+
+6. **Site-Config Loading Fix** (August 2025)
+   - **Problem**: FiveFilters configs weren't being used, JSON-LD took precedence
+   - **Root Cause**: Hardcoded configs were commented out, async fetch wasn't blocking
+   - **Solution**: Made config fetching synchronous so it actually gets used
+   - **Impact**: New Yorker now uses FiveFilters config, includes lead paragraph
+   - **Files Updated**: `public/bookmarklet.js` (_extractWithSiteConfig function)
+   - **Status**: ✅ FIXED - FiveFilters configs properly loaded and used
+
+7. **Enhanced EPUB TOC Hiding** (August 2025)
    - **Problem**: Unwanted TOC pages showing "1. --" and "2. Article Title" in single-article EPUBs
    - **Investigation**: Comprehensive analysis of epub-gen library limitations and nodepub migration
    - **CSS Solution**: Enhanced selectors targeting all TOC elements with `display: none !important`
@@ -330,6 +340,15 @@ For detailed future improvement plans, see **[METADATA_ROADMAP.md](./METADATA_RO
 - **Multi-section articles** require combining multiple containers
 - **Related articles** can pollute extraction if selectors are too broad
 - **Ending detection** is critical for validating complete extraction
+
+### Critical Debugging Lessons (August 2025)
+- **Correlation ≠ Causation**: Base64 implementation coincided with paragraph issues but didn't cause them
+- **Track extraction method**: Always log which extraction method was used (site-config, JSON-LD, DOM)
+- **Order matters**: Extraction tries site-config → JSON-LD → DOM fallback
+- **JSON-LD limitations**: Often missing lead paragraphs or formatting - site configs preferred
+- **FiveFilters configs are authoritative**: Never hardcode site-specific logic in our code (including Substack)
+- **Embedded diagnostics**: EPUBs now contain hidden metadata (git commit, extraction method, content stats)
+- **Test with actual data**: JSON-LD may use single newlines vs double, affecting paragraph splitting
 
 ## Auto-Context Reading Instruction
 

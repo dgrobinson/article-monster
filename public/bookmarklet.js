@@ -36,13 +36,6 @@
           return jsonLdContent;
         }
         
-        // Try Substack data format 
-        var substackContent = this._extractFromSubstack();
-        if (substackContent) {
-          substackContent.extractionMethod = 'substack';
-          return substackContent;
-        }
-        
         // Fall back to DOM-based extraction
         var documentClone = this._doc.cloneNode(true);
         var article = this._grabArticle(documentClone);
@@ -427,65 +420,8 @@
       return text.substring(0, 300).trim() + (text.length > 300 ? '...' : '');
     },
 
-    _extractFromSubstack: function() {
-      try {
-        // Look for Substack's window._preloads object
-        if (!window._preloads) return null;
-        
-        var preloads = typeof window._preloads === 'string' ? JSON.parse(window._preloads) : window._preloads;
-        
-        // Navigate through the data structure to find post content
-        if (preloads.feedData && preloads.feedData.readingQueue && preloads.feedData.readingQueue.posts) {
-          var posts = preloads.feedData.readingQueue.posts;
-          
-          // Find the current post by checking URL slug or ID
-          var currentSlug = this._getCurrentSlug();
-          
-          for (var i = 0; i < posts.length; i++) {
-            var post = posts[i];
-            
-            // Match by slug or if it's the only/first post
-            if (posts.length === 1 || (post.slug && currentSlug && currentSlug.includes(post.slug))) {
-              if (post.body_html && post.body_html.length > 500) {
-                var author = '';
-                if (post.publishedBylines && post.publishedBylines.length > 0) {
-                  author = post.publishedBylines.map(function(byline) {
-                    return byline.name;
-                  }).join(', ');
-                }
-                
-                return {
-                  title: post.title || this._getArticleTitle(),
-                  content: post.body_html,
-                  textContent: this._htmlToText(post.body_html),
-                  length: post.wordcount || this._htmlToText(post.body_html).length,
-                  excerpt: post.description || this._createExcerpt(this._htmlToText(post.body_html)),
-                  byline: author || this._getArticleMetadata('author'),
-                  siteName: 'Substack',
-                  publishedTime: post.post_date || this._getArticleMetadata('published_time'),
-                  source: 'substack-preloads'
-                };
-              }
-            }
-          }
-        }
-        
-        return null;
-      } catch (e) {
-        console.error('Substack extraction failed:', e);
-        return null;
-      }
-    },
-
-    _getCurrentSlug: function() {
-      try {
-        var pathname = window.location.pathname;
-        var parts = pathname.split('/');
-        return parts[parts.length - 1] || parts[parts.length - 2];
-      } catch (e) {
-        return '';
-      }
-    },
+    // REMOVED - Custom Substack extraction violates zero-hardcoding principle
+    // FiveFilters has a Substack config that works in browser context
 
     _htmlToText: function(html) {
       try {
