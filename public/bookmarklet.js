@@ -389,12 +389,23 @@
 
     _textToHtml: function(text) {
       // Convert plain text to basic HTML with paragraph breaks
-      return '<div>' + text
-        .split(/\n\s*\n/)  // Split on double line breaks
+      // First try splitting on double line breaks (standard markdown style)
+      var paragraphs = text.split(/\n\s*\n/);
+      
+      // If we only get one paragraph, try splitting on single newlines
+      // (some JSON-LD uses single newlines between paragraphs)
+      if (paragraphs.length === 1) {
+        paragraphs = text.split(/\n/);
+      }
+      
+      // Filter out empty paragraphs and convert to HTML
+      return '<div>' + paragraphs
         .map(function(paragraph) {
-          return '<p>' + paragraph.replace(/\n/g, ' ').trim() + '</p>';
+          var trimmed = paragraph.trim();
+          return trimmed ? '<p>' + trimmed + '</p>' : '';
         })
-        .join('') + '</div>';
+        .filter(Boolean)
+        .join('\n') + '</div>';
     },
 
     _extractAuthor: function(authorData) {

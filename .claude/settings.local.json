@@ -64,9 +64,13 @@
       "Bash(cp:*)",
       "Bash(git fetch:*)",
       "Bash(git pull:*)",
-      "Bash(npm run lint:*)"
+      "Bash(npm run lint:*)",
+      "Bash(open /tmp/test-innerhtml.html)"
     ],
     "deny": [],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "acceptEdits",
+    "additionalDirectories": [
+      "/private/tmp/epub-compare"
+    ]
   }
 }
