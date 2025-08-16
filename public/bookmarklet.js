@@ -31,7 +31,7 @@
           return siteConfig;
         }
         
-        // Then try JSON-LD structured data (New Yorker, Atlantic, etc.)
+        // Then try JSON-LD structured data if available
         var jsonLdContent = this._extractFromJsonLd();
         if (jsonLdContent) {
           jsonLdContent.extractionMethod = 'json-ld';
@@ -424,8 +424,8 @@
       return text.substring(0, 300).trim() + (text.length > 300 ? '...' : '');
     },
 
-    // REMOVED - Custom Substack extraction violates zero-hardcoding principle
-    // FiveFilters has a Substack config that works in browser context
+    // REMOVED - Custom site-specific extraction violates zero-hardcoding principle
+    // Site config files handle all domain tweaks via FiveFilters format
 
     _htmlToText: function(html) {
       try {

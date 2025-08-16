@@ -22,6 +22,12 @@ A cloud service that:
 - 📁 **Browse collections** - Navigate your organized research
 - ➕ **Add new items** - Save references directly from AI conversations
 
+## Site-Specific Extraction
+All site-specific extraction rules live in the `site-configs/` directory using the FiveFilters format.
+The application codebase contains no domain-specific hacks—adding support for a new site means
+creating a config file, not modifying code. The directory is a git submodule tracking the
+official FiveFilters configuration repository.
+
 ## Quick Start
 
 ### 1. Prerequisites

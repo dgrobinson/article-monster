@@ -2,6 +2,8 @@
 
 As good open source citizens using FiveFilters' extensive site configuration work, we should contribute back to help maintain and improve their 2000+ site configs.
 
+All domain-specific extraction rules live in our `site-configs/` directory. Any tweaks for particular sites should be made there and, whenever possible, shared upstream with the FiveFilters project.
+
 ## Current Ways We Can Help
 
 ### 1. Test and Fix Site Configurations

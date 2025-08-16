@@ -12,16 +12,10 @@
   Readability.prototype = {
     parse: function() {
       try {
-        // First try JSON-LD structured data (New Yorker, Atlantic, etc.)
+        // First try JSON-LD structured data if available
         var jsonLdContent = this._extractFromJsonLd();
         if (jsonLdContent) {
           return jsonLdContent;
-        }
-        
-        // Try Substack data format 
-        var substackContent = this._extractFromSubstack();
-        if (substackContent) {
-          return substackContent;
         }
         
         // Fall back to DOM-based extraction
