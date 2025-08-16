@@ -335,6 +335,9 @@ For detailed future improvement plans, see **[METADATA_ROADMAP.md](./METADATA_RO
 - **Create test cases first** for problematic articles
 - **Use local testing** (`test-extraction.js`) before deploying
 - **Move tests to solved/** once extraction is fixed for regression testing
+- **Priority validation sites**: Substack and Medium.com are critical platforms to validate
+  - Must work through FiveFilters configs, not custom code
+  - Test both content extraction and metadata quality
 
 ### Extraction Complexity
 - **Multi-section articles** require combining multiple containers

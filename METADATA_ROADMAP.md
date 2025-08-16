@@ -223,8 +223,9 @@ This document outlines potential future improvements for bibliographic metadata 
 - washingtonpost.com (Washington Post)
 - economist.com (The Economist)
 
-### Tech/Blog Sites
-- medium.com (Mixed content)
+### Tech/Blog Sites (Priority Validation)
+- substack.com (Newsletter platform - critical for validation)
+- medium.com (Mixed content - critical for validation)
 - dev.to (Developer articles)
 - hackernews (ycombinator.com)
 - arstechnica.com (Tech journalism)
