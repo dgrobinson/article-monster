@@ -25,18 +25,21 @@
         // First try site-specific configuration
         var siteConfig = this._extractWithSiteConfig();
         if (siteConfig) {
+          siteConfig.extractionMethod = 'site-config';
           return siteConfig;
         }
         
         // Then try JSON-LD structured data (New Yorker, Atlantic, etc.)
         var jsonLdContent = this._extractFromJsonLd();
         if (jsonLdContent) {
+          jsonLdContent.extractionMethod = 'json-ld';
           return jsonLdContent;
         }
         
         // Try Substack data format 
         var substackContent = this._extractFromSubstack();
         if (substackContent) {
+          substackContent.extractionMethod = 'substack';
           return substackContent;
         }
         
@@ -69,7 +72,8 @@
           siteName: this._getArticleMetadata('site_name') || document.title,
           publishedTime: this._getArticleMetadata('published_time') || this._getArticleMetadata('date'),
           hasImages: hasImages,
-          lang: this._doc.documentElement.lang || 'en'
+          lang: this._doc.documentElement.lang || 'en',
+          extractionMethod: 'dom-fallback'
         };
       } catch (e) {
         console.error('Readability parsing failed:', e);
