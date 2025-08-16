@@ -174,35 +174,54 @@ app.post('/process-article', async (req, res) => {
       return res.status(400).json({ error: 'Extracted article content is required' });
     }
 
-    // Prefer base64 content if present (robust against proxy/UTF-8 issues)
+    // Compare raw content with base64 decoded content to debug paragraph issue
+    const rawContent = article.content;
+    let decodedContent = null;
+    
     if (article.content_b64) {
-      console.log('Received content_b64, decoding...');
+      console.log('Received both raw and base64 content, comparing...');
       try {
-        // Use proper UTF-8 decoding
-        const decodedContent = Buffer.from(article.content_b64, 'base64').toString('utf8');
-        console.log(`Decoded content length: ${decodedContent.length} (base64 was ${article.content_b64.length})`);
+        // Decode base64
+        decodedContent = Buffer.from(article.content_b64, 'base64').toString('utf8');
         
-        // Check decoded content structure
-        const brCount = (decodedContent.match(/<br>/gi) || []).length;
-        const newlineCount = (decodedContent.match(/\n/g) || []).length;
-        const pCount = (decodedContent.match(/<p>/gi) || []).length;
-        console.log(`Decoded content has: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+        // Compare structures
+        const rawBrCount = (rawContent.match(/<br>/gi) || []).length;
+        const rawNewlineCount = (rawContent.match(/\n/g) || []).length;
+        const rawPCount = (rawContent.match(/<p>/gi) || []).length;
         
-        // Check if first paragraph is present
-        const firstChars = decodedContent.substring(0, 200).replace(/<[^>]*>/g, '').trim();
-        console.log('Decoded content starts with:', firstChars.substring(0, 100));
+        const decodedBrCount = (decodedContent.match(/<br>/gi) || []).length;
+        const decodedNewlineCount = (decodedContent.match(/\n/g) || []).length;
+        const decodedPCount = (decodedContent.match(/<p>/gi) || []).length;
         
-        article.content = decodedContent;
+        console.log(`RAW content: ${rawPCount} <p> tags, ${rawBrCount} <br> tags, ${rawNewlineCount} newlines, ${rawContent.length} chars`);
+        console.log(`B64 decoded: ${decodedPCount} <p> tags, ${decodedBrCount} <br> tags, ${decodedNewlineCount} newlines, ${decodedContent.length} chars`);
+        
+        if (rawContent.length !== decodedContent.length) {
+          console.warn(`Content length mismatch! Raw: ${rawContent.length}, Decoded: ${decodedContent.length}`);
+        }
+        
+        if (rawNewlineCount !== decodedNewlineCount) {
+          console.warn(`Newline count mismatch! Raw: ${rawNewlineCount}, Decoded: ${decodedNewlineCount}`);
+        }
+        
+        // Use decoded content if it's complete (longer than raw, indicating raw was truncated)
+        if (decodedContent.length > rawContent.length) {
+          console.log('Using base64 decoded content (longer, likely complete)');
+          article.content = decodedContent;
+        } else {
+          console.log('Using raw content (same or longer than decoded)');
+          article.content = rawContent;
+        }
       } catch (e) {
         console.warn('Failed to decode content_b64:', e.message);
-        // Fall back to raw content if decoding fails
+        article.content = rawContent;
       }
-    } else if (article.content) {
-      // Log raw content details if no base64
-      const brCount = (article.content.match(/<br>/gi) || []).length;
-      const newlineCount = (article.content.match(/\n/g) || []).length;
-      const pCount = (article.content.match(/<p>/gi) || []).length;
-      console.log(`Raw content has: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+    } else if (rawContent) {
+      // Only raw content available
+      const brCount = (rawContent.match(/<br>/gi) || []).length;
+      const newlineCount = (rawContent.match(/\n/g) || []).length;
+      const pCount = (rawContent.match(/<p>/gi) || []).length;
+      console.log(`Raw content only: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
     }
 
     console.log(`Processing article: ${article.title || url}`);

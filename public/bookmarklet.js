@@ -944,6 +944,15 @@
       if (config) {
         // We have config, extract immediately
         var article = reader.parse();
+        
+        // Debug: Check what Readability returns
+        if (article && article.content) {
+          const readabilityBrCount = (article.content.match(/<br>/gi) || []).length;
+          const readabilityNewlineCount = (article.content.match(/\n/g) || []).length;
+          const readabilityPCount = (article.content.match(/<p>/gi) || []).length;
+          console.log(`Readability.js returned: ${readabilityPCount} <p> tags, ${readabilityBrCount} <br> tags, ${readabilityNewlineCount} newlines`);
+        }
+        
         resolve(article);
         return;
       }
@@ -1012,9 +1021,25 @@
         throw new Error('Could not extract article content from this page');
       }
 
-      // Fix image URLs to ensure they're absolute
+      // Debug: Check content structure before fixImageUrls
       if (article.content) {
+        const beforeBrCount = (article.content.match(/<br>/gi) || []).length;
+        const beforeNewlineCount = (article.content.match(/\n/g) || []).length;
+        const beforePCount = (article.content.match(/<p>/gi) || []).length;
+        console.log(`Before fixImageUrls: ${beforePCount} <p> tags, ${beforeBrCount} <br> tags, ${beforeNewlineCount} newlines`);
+        
+        // Fix image URLs to ensure they're absolute
         article.content = fixImageUrls(article.content);
+        
+        // Debug: Check content structure after fixImageUrls
+        const afterBrCount = (article.content.match(/<br>/gi) || []).length;
+        const afterNewlineCount = (article.content.match(/\n/g) || []).length;
+        const afterPCount = (article.content.match(/<p>/gi) || []).length;
+        console.log(`After fixImageUrls: ${afterPCount} <p> tags, ${afterBrCount} <br> tags, ${afterNewlineCount} newlines`);
+        
+        if (beforeNewlineCount !== afterNewlineCount) {
+          console.warn(`fixImageUrls changed newline count from ${beforeNewlineCount} to ${afterNewlineCount}`);
+        }
       }
 
       // Enhance article data
@@ -1040,7 +1065,9 @@
           const firstChars = enhancedArticle.content.substring(0, 200).replace(/<[^>]*>/g, '').trim();
           console.log('Content to encode starts with:', firstChars.substring(0, 100));
           
-          // Use the standard base64 encoding that should preserve everything
+          // Use base64 encoding that preserves Unicode properly
+          // The unescape(encodeURIComponent()) pattern converts to Latin-1 for btoa
+          // But this might be altering whitespace characters
           contentB64 = btoa(unescape(encodeURIComponent(enhancedArticle.content)));
           console.log('Successfully encoded', enhancedArticle.content.length, 'chars to base64');
         }
@@ -1060,7 +1087,9 @@
           url: window.location.href,
           article: {
             ...enhancedArticle,
-            content_b64: contentB64
+            content_b64: contentB64,
+            // Also send raw content to compare
+            content: enhancedArticle.content
           }
         })
       });
@@ -1112,6 +1141,10 @@
   // Fix relative image URLs to absolute URLs
   function fixImageUrls(html) {
     try {
+      // IMPORTANT: When we set innerHTML, the browser normalizes the HTML
+      // This can strip newlines and merge paragraphs
+      // Let's try to preserve the original structure as much as possible
+      
       var div = document.createElement('div');
       div.innerHTML = html;
       var baseUrl = window.location.origin;
