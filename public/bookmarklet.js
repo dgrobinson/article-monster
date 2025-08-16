@@ -393,20 +393,16 @@
 
     _textToHtml: function(text) {
       // Convert plain text to basic HTML with paragraph breaks
-      // First try splitting on double line breaks (standard markdown style)
-      var paragraphs = text.split(/\n\s*\n/);
-      
-      // If we only get one paragraph, try splitting on single newlines
-      // (some JSON-LD uses single newlines between paragraphs)
-      if (paragraphs.length === 1) {
-        paragraphs = text.split(/\n/);
-      }
+      // Many JSON-LD sources use single newlines between paragraphs
+      // So we'll split on any newline and filter out empty results
+      var paragraphs = text.split(/\n+/);  // Split on one or more newlines
       
       // Filter out empty paragraphs and convert to HTML
       return '<div>' + paragraphs
         .map(function(paragraph) {
           var trimmed = paragraph.trim();
-          return trimmed ? '<p>' + trimmed + '</p>' : '';
+          // Only create paragraph if it has substantial content (not just punctuation)
+          return trimmed && trimmed.length > 1 ? '<p>' + trimmed + '</p>' : '';
         })
         .filter(Boolean)
         .join('\n') + '</div>';
