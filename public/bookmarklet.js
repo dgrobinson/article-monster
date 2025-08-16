@@ -500,14 +500,43 @@
     _extractWithSiteConfig: function() {
       try {
         var hostname = window.location.hostname.replace(/^www\./, '');
-        var config = this._getSiteConfig(hostname);
+        
+        // First check cache
+        var config = this._getCachedConfig(hostname);
+        
         if (!config) {
-          // Check session storage for previously fetched config
-          config = this._getCachedConfig(hostname);
+          // Synchronously fetch config if not cached
+          console.log('No cached config for', hostname, '- fetching from server...');
+          var serviceUrl = SERVICE_URL.replace('/process-article', '');
+          var xhr = new XMLHttpRequest();
+          xhr.open('GET', serviceUrl + '/site-config/' + hostname, false); // Synchronous
+          xhr.send();
+          
+          if (xhr.status === 200) {
+            try {
+              var data = JSON.parse(xhr.responseText);
+              if (data.success && data.config) {
+                config = data.config;
+                // Cache for future use
+                try {
+                  sessionStorage.setItem('siteConfig_' + hostname, JSON.stringify({
+                    config: config,
+                    timestamp: Date.now()
+                  }));
+                  console.log('Fetched and cached site config for', hostname);
+                } catch (e) {
+                  // Session storage not available
+                }
+              }
+            } catch (e) {
+              console.log('Failed to parse site config:', e);
+            }
+          } else {
+            console.log('No site config available for', hostname);
+          }
         }
+        
         if (!config) {
-          // Config not available - will be fetched for next time
-          this._fetchDynamicConfig(hostname);
           return null;
         }
 
@@ -637,86 +666,9 @@
     },
 
     _getSiteConfig: function(hostname) {
-      // No hardcoded configs - all configs should be fetched from server
+      // All configs should be fetched from server (FiveFilters)
+      // This function is deprecated - configs come from cache or server
       return null;
-      /* REMOVED HARDCODED CONFIGS - violates zero-hardcoding principle
-      var configs = {
-        'theatlantic.com': {
-          title: [
-            "//meta[@property='og:title']/@content",
-            "//h1[@class='ArticleHeader_headline__B8PsX']",
-            "//h1"
-          ],
-          body: [
-            "//article[@id='main-article']",
-            "//div[@id='main-article']", 
-            "//div[@class='ArticleBody_root__2jqPc']",
-            "//div[contains(@class, 'ArticleBody')]//div[@class='markup']",
-            "//div[@itemprop='articleBody']",
-            "//div[@class='articleText']"
-          ],
-          author: [
-            "//meta[@name='author']/@content",
-            "//div[@class='AttributionDetails_author__1uPE-']//a"
-          ],
-          strip: [
-            "//nav",
-            "//header[contains(@class, 'SiteHeader')]", 
-            "//div[contains(@class, 'Advertisement')]",
-            "//div[contains(@class, 'Share')]",
-            "//div[contains(@class, 'Newsletter')]"
-          ]
-        },
-        
-        'substack.com': {
-          title: [
-            "//meta[@property='og:title']/@content",
-            "//h1[@class='post-title']"
-          ],
-          body: [
-            "//div[@class='available-content']",
-            "//div[@class='body markup']//div[1]"
-          ],
-          author: [
-            "//meta[@name='author']/@content",
-            "//a[@class='publication-logo']"
-          ],
-          strip: [
-            "//div[contains(@class, 'subscription')]",
-            "//div[contains(@class, 'paywall')]",
-            "//button",
-            "//svg"
-          ]
-        },
-
-        'newyorker.com': {
-          title: [
-            "//meta[@property='og:title']/@content",
-            "//h1"
-          ],
-          body: [
-            "//em[@data-testid='SplitScreenContentHeaderWrapper']",
-            "//div[@class='body__inner-container']"
-          ],
-          author: [
-            "//meta[@property='article:author']/@content",
-            "//span[@class='byline-name']//a"
-          ],
-          strip: [
-            "//button[@id='bookmark']",
-            "//div[@data-testid='ResponsiveClipVideoContainer']",
-            "//div[@data-testid='ContentHeaderRubric']",
-            "//div[@data-testid='BylinesWrapper']",
-            "//ul[@data-testid='socialIconslist']",
-            "//div[@data-testid='GenericCallout']",
-            "//figure[@data-testid='IframeEmbed']",
-            "//div[contains(@class, 'responsive-cartoon')]"
-          ]
-        }
-      };
-      
-      return configs[hostname];
-      */
     },
 
     _fetchDynamicConfig: function(hostname) {
