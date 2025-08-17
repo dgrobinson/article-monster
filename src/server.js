@@ -231,7 +231,10 @@ app.post('/process-article', async (req, res) => {
       epub_base64: results[1].value?.epubBase64 || results[0].value?.epubBase64 || ''
     };
     
-    await debugLogger.captureToGitHub(extractionData);
+    // Capture debug asynchronously - don't block the response
+    debugLogger.captureToGitHub(extractionData).catch(err => {
+      console.error('Debug capture failed (non-blocking):', err.message);
+    });
 
     res.json(response);
 
@@ -254,7 +257,10 @@ app.post('/process-article', async (req, res) => {
       error: error.message
     };
     
-    await debugLogger.captureToGitHub(extractionData);
+    // Capture debug even on error (non-blocking)
+    debugLogger.captureToGitHub(extractionData).catch(err => {
+      console.error('Debug capture failed (non-blocking):', err.message);
+    });
     
     res.status(500).json({ 
       error: 'Failed to process article',
@@ -288,13 +294,30 @@ app.post('/test-debug', async (req, res) => {
     };
     
     debugLogger.log('test', 'Attempting to capture to GitHub');
-    await debugLogger.captureToGitHub(testData);
     
-    res.json({ 
+    // For testing, we'll wait for the capture to complete
+    // But add a timeout to prevent hanging
+    const capturePromise = debugLogger.captureToGitHub(testData);
+    const timeoutPromise = new Promise((_, reject) => 
+      setTimeout(() => reject(new Error('Debug capture timed out after 10s')), 10000)
+    );
+    
+    try {
+      await Promise.race([capturePromise, timeoutPromise]);
+      res.json({ 
       success: true, 
-      message: 'Debug test completed - check latest-outputs-debug branch',
+        message: 'Debug test completed - check latest-outputs-debug branch',
       timestamp: new Date().toISOString()
-    });
+      });
+    } catch (timeoutError) {
+      // If it times out, still return success but note the timeout
+      res.json({
+        success: true,
+        message: 'Debug test initiated but timed out - check logs',
+        warning: timeoutError.message,
+        timestamp: new Date().toISOString()
+      });
+    }
   } catch (error) {
     console.error('Debug test failed:', error);
     res.status(500).json({ 

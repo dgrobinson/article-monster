@@ -7,7 +7,8 @@
       "Bash(git push:*)",
       "Bash(git fetch:*)",
       "Bash(gh pr list:*)",
-      "Bash(npm install)"
+      "Bash(npm install)",
+      "Bash(doctl apps:*)"
     ],
     "additionalDirectories": [
       "/private/tmp"

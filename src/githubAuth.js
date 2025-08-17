@@ -97,9 +97,12 @@ class GitHubAuth {
     const tmpDir = path.join('/tmp', `debug-output-${Date.now()}`);
     const sshKeyPath = path.join(tmpDir, 'deploy_key');
     
+    console.log(`[GitHubAuth] Starting SSH push to ${process.env.GITHUB_REPOSITORY}`);
+    
     try {
       // Create temp directory
       await fs.mkdir(tmpDir, { recursive: true });
+      console.log(`[GitHubAuth] Created temp dir: ${tmpDir}`);
       
       // Write SSH key to temp file - handle potential formatting issues
       let sshKey = process.env.GITHUB_SSH_KEY;
@@ -116,13 +119,23 @@ class GitHubAuth {
       }
       
       await fs.writeFile(sshKeyPath, sshKey, { mode: 0o600 });
+      console.log(`[GitHubAuth] SSH key written to ${sshKeyPath}`);
       
       // Configure git to use the SSH key
       const gitSSHCommand = `ssh -i ${sshKeyPath} -o StrictHostKeyChecking=no`;
       
       // Clone the repository (just the branch we need)
       const repoUrl = `git@github.com:${process.env.GITHUB_REPOSITORY}.git`;
-      await execAsync(`GIT_SSH_COMMAND="${gitSSHCommand}" git clone --branch latest-outputs-debug --single-branch ${repoUrl} ${tmpDir}/repo`);
+      console.log(`[GitHubAuth] Cloning ${repoUrl} (branch: latest-outputs-debug)`);
+      
+      try {
+        await execAsync(`GIT_SSH_COMMAND="${gitSSHCommand}" git clone --branch latest-outputs-debug --single-branch ${repoUrl} ${tmpDir}/repo`);
+      } catch (cloneError) {
+        // If branch doesn't exist, clone main and create the branch
+        console.log(`[GitHubAuth] Branch doesn't exist, creating it...`);
+        await execAsync(`GIT_SSH_COMMAND="${gitSSHCommand}" git clone ${repoUrl} ${tmpDir}/repo`);
+        await execAsync(`cd ${tmpDir}/repo && git checkout -b latest-outputs-debug`);
+      }
       
       const repoDir = path.join(tmpDir, 'repo');
       
