@@ -101,8 +101,21 @@ class GitHubAuth {
       // Create temp directory
       await fs.mkdir(tmpDir, { recursive: true });
       
-      // Write SSH key to temp file
-      await fs.writeFile(sshKeyPath, process.env.GITHUB_SSH_KEY, { mode: 0o600 });
+      // Write SSH key to temp file - handle potential formatting issues
+      let sshKey = process.env.GITHUB_SSH_KEY;
+      
+      // If the key appears to be on a single line with \n literals, fix it
+      if (sshKey && !sshKey.includes('\n') && sshKey.includes('\\n')) {
+        console.log('SSH key appears to be escaped, converting \\n to actual newlines');
+        sshKey = sshKey.replace(/\\n/g, '\n');
+      }
+      
+      // Ensure the key ends with a newline
+      if (sshKey && !sshKey.endsWith('\n')) {
+        sshKey += '\n';
+      }
+      
+      await fs.writeFile(sshKeyPath, sshKey, { mode: 0o600 });
       
       // Configure git to use the SSH key
       const gitSSHCommand = `ssh -i ${sshKeyPath} -o StrictHostKeyChecking=no`;
