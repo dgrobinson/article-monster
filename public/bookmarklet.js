@@ -445,35 +445,12 @@
         var config = this._getCachedConfig(hostname);
         
         if (!config) {
-          // Synchronously fetch config if not cached
-          console.log('No cached config for', hostname, '- fetching from server...');
-          var serviceUrl = SERVICE_URL.replace('/process-article', '');
-          var xhr = new XMLHttpRequest();
-          xhr.open('GET', serviceUrl + '/site-config/' + hostname, false); // Synchronous
-          xhr.send();
-          
-          if (xhr.status === 200) {
-            try {
-              var data = JSON.parse(xhr.responseText);
-              if (data.success && data.config) {
-                config = data.config;
-                // Cache for future use
-                try {
-                  sessionStorage.setItem('siteConfig_' + hostname, JSON.stringify({
-                    config: config,
-                    timestamp: Date.now()
-                  }));
-                  console.log('Fetched and cached site config for', hostname);
-                } catch (e) {
-                  // Session storage not available
-                }
-              }
-            } catch (e) {
-              console.log('Failed to parse site config:', e);
-            }
-          } else {
-            console.log('No site config available for', hostname);
-          }
+          // Try to fetch config asynchronously and cache for next time
+          console.log('No cached config for', hostname, '- will fetch async for next time');
+          this._fetchDynamicConfig(hostname);
+          // For now, return null and let other extraction methods try
+          // Next time the user clicks, the config will be cached
+          return null;
         }
         
         if (!config) {
@@ -919,10 +896,18 @@
     document.body.appendChild(indicator);
     
     // Extract article content - first try to get site config if needed
+    logDebug('extraction', 'Starting article extraction');
     extractArticleWithConfig(indicator).then(function(article) {
       if (!article) {
+        logDebug('error', 'Article extraction returned null');
         throw new Error('Could not extract article content from this page');
       }
+      
+      logDebug('extraction', 'Article extracted', {
+        title: article.title,
+        contentLength: article.content?.length || 0,
+        method: article.extractionMethod || 'unknown'
+      });
 
       // Debug: Check content structure before fixImageUrls
       if (article.content) {

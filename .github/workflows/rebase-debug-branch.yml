@@ -1,0 +1,77 @@
+name: Rebase Debug Branch on Main Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  rebase-debug-branch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Configure Git
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+      - name: Create or rebase debug branch
+        run: |
+          # Check if latest-outputs-debug branch exists
+          if git show-ref --verify --quiet refs/remotes/origin/latest-outputs-debug; then
+            echo "Debug branch exists, rebasing..."
+            
+            # Fetch and checkout the debug branch
+            git fetch origin latest-outputs-debug
+            git checkout latest-outputs-debug
+            
+            # Rebase onto main
+            # Since outputs/ folder only exists on debug branch, no conflicts expected
+            git rebase main || {
+              echo "Rebase failed, attempting to recreate branch"
+              git rebase --abort
+              git checkout main
+              git branch -D latest-outputs-debug || true
+              git checkout -b latest-outputs-debug
+              git push origin latest-outputs-debug --force
+              exit 0
+            }
+            
+            # Force push the rebased branch
+            git push origin latest-outputs-debug --force
+            echo "Successfully rebased latest-outputs-debug onto main"
+          else
+            echo "Debug branch doesn't exist, creating..."
+            git checkout -b latest-outputs-debug
+            
+            # Create initial outputs directory with README
+            mkdir -p outputs
+            cat > outputs/README.md << 'EOF'
+# Debug Outputs
+
+This branch contains debug outputs from article extractions.
+
+Each extraction creates a timestamped folder with:
+- bookmarklet-log.json - Client-side extraction logs
+- payload.json - Full payload sent to server
+- server-logs.json - Server processing logs
+- config-used.json - Site-specific config applied (if any)
+- article.epub - Generated EPUB file
+- email-content.html - Email sent to Kindle
+- summary.md - Quick overview of the extraction
+
+These outputs are automatically captured when ENABLE_DEBUG_CAPTURE=true is set.
+EOF
+            
+            git add outputs/
+            git commit -m "Initialize debug outputs branch"
+            git push origin latest-outputs-debug
+            echo "Created new latest-outputs-debug branch"
+          fi

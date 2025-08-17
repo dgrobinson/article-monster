@@ -16,6 +16,7 @@ const { extractArticle } = require('./articleExtractor');
 const { sendToKindle } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
 const ConfigFetcher = require('./configFetcher');
+const DebugLogger = require('./debugLogger');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -84,8 +85,13 @@ app.get('/site-config/:hostname', async (req, res) => {
 
 // Main bookmarklet endpoint
 app.post('/process-article', async (req, res) => {
+  const debugLogger = new DebugLogger();
+  
   try {
-    const { url, article } = req.body;
+    const { url, article, debugInfo } = req.body;
+    
+    // Store bookmarklet debug info if provided
+    const bookmarkletLog = debugInfo || [];
     
     if (!url) {
       return res.status(400).json({ error: 'URL is required' });
@@ -94,6 +100,13 @@ app.post('/process-article', async (req, res) => {
     if (!article) {
       return res.status(400).json({ error: 'Extracted article content is required' });
     }
+    
+    debugLogger.log('request', 'Article processing started', {
+      url,
+      title: article.title,
+      hasContent: !!article.content,
+      hasBase64: !!article.content_b64
+    });
 
     // Compare raw content with base64 decoded content to debug paragraph issue
     const rawContent = article.content;
@@ -145,10 +158,10 @@ app.post('/process-article', async (req, res) => {
       console.log(`Raw content only: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
     }
 
-    console.log(`Processing article: ${article.title || url}`);
+    debugLogger.log('processing', `Processing article: ${article.title || url}`);
     
     // Log article size for debugging
-    console.log('Article extraction stats:', {
+    debugLogger.log('extraction', 'Article extraction stats', {
       title: article.title,
       contentLength: article.content?.length || 0,
       textContentLength: article.textContent?.length || 0,
@@ -168,10 +181,21 @@ app.post('/process-article', async (req, res) => {
       processedAt: new Date().toISOString()
     };
     
+    // Store config used (if any)
+    let configUsed = null;
+    const hostname = new URL(url).hostname;
+    try {
+      configUsed = await configFetcher.getConfigForSite(hostname);
+    } catch (e) {
+      debugLogger.log('config', 'No site config found', { hostname });
+    }
+    
+    debugLogger.log('sending', 'Sending to platforms', { kindle: true, zotero: true });
+    
     // Send to both platforms (in parallel for speed)
     const results = await Promise.allSettled([
-      sendToKindle(processedArticle),
-      sendToZotero(processedArticle)
+      sendToKindle(processedArticle, debugLogger),
+      sendToZotero(processedArticle, debugLogger)
     ]);
 
     const response = {
@@ -188,17 +212,95 @@ app.post('/process-article', async (req, res) => {
     results.forEach((result, index) => {
       if (result.status === 'rejected') {
         const platform = index === 0 ? 'Kindle' : 'Zotero';
-        console.error(`${platform} failed:`, result.reason);
+        debugLogger.log('error', `${platform} failed`, { error: result.reason.message });
       }
     });
+    
+    // Capture debug output to GitHub if enabled
+    const extractionData = {
+      url,
+      title: article.title,
+      success: response.kindle === 'sent' || response.zotero === 'sent',
+      extraction_status: 'success',
+      kindle_status: response.kindle,
+      zotero_status: response.zotero,
+      bookmarklet_log: bookmarkletLog,
+      payload: req.body,
+      config_used: configUsed,
+      email_content: results[0].value?.emailContent || '',
+      epub_base64: results[1].value?.epubBase64 || results[0].value?.epubBase64 || ''
+    };
+    
+    await debugLogger.captureToGitHub(extractionData);
 
     res.json(response);
 
   } catch (error) {
-    console.error('Error processing article:', error);
+    debugLogger.log('error', 'Error processing article', { error: error.message, stack: error.stack });
+    
+    // Still try to capture debug on error
+    const extractionData = {
+      url: req.body.url,
+      title: req.body.article?.title || 'Unknown',
+      success: false,
+      extraction_status: 'error',
+      kindle_status: 'error',
+      zotero_status: 'error',
+      bookmarklet_log: bookmarkletLog,
+      payload: req.body,
+      config_used: null,
+      email_content: '',
+      epub_base64: '',
+      error: error.message
+    };
+    
+    await debugLogger.captureToGitHub(extractionData);
+    
     res.status(500).json({ 
       error: 'Failed to process article',
       message: error.message 
+    });
+  }
+});
+
+// Test endpoint for debug system
+app.post('/test-debug', async (req, res) => {
+  const debugLogger = new DebugLogger();
+  
+  try {
+    debugLogger.log('test', 'Debug system test initiated');
+    
+    // Create test data
+    const testData = {
+      url: 'https://example.com/test-article',
+      title: 'Test Debug Capture',
+      success: true,
+      extraction_status: 'test',
+      kindle_status: 'test',
+      zotero_status: 'test',
+      bookmarklet_log: [
+        { timestamp: Date.now(), category: 'test', message: 'Test log entry' }
+      ],
+      payload: { test: true, timestamp: new Date().toISOString() },
+      config_used: null,
+      email_content: '<h1>Test Email Content</h1>',
+      epub_base64: Buffer.from('Test EPUB content').toString('base64')
+    };
+    
+    debugLogger.log('test', 'Attempting to capture to GitHub');
+    await debugLogger.captureToGitHub(testData);
+    
+    res.json({ 
+      success: true, 
+      message: 'Debug test completed - check latest-outputs-debug branch',
+      timestamp: new Date().toISOString()
+    });
+  } catch (error) {
+    console.error('Debug test failed:', error);
+    res.status(500).json({ 
+      success: false, 
+      error: error.message,
+      stack: error.stack
     });
   }
 });

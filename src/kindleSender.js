@@ -1,11 +1,16 @@
 const { createTransport } = require('nodemailer');
 
-async function sendToKindle(article) {
+async function sendToKindle(article, debugLogger = null) {
   try {
-    console.log(`Sending to Kindle: "${article.title}"`);
+    const log = (category, message, data) => {
+      if (debugLogger) debugLogger.log(category, message, data);
+      else console.log(`[${category}] ${message}`, data);
+    };
+    
+    log('kindle', `Sending to Kindle: "${article.title}"`);
     
     // Log detailed input for comparison with FiveFilters
-    console.log('Kindle Send - Article metadata:', JSON.stringify({
+    log('kindle', 'Article metadata', {
       title: article.title,
       byline: article.byline,
       siteName: article.siteName,
@@ -13,7 +18,7 @@ async function sendToKindle(article) {
       publishedTime: article.publishedTime,
       contentLength: article.content?.length || 0,
       hasImages: article.content?.includes('<img') || false
-    }, null, 2));
+    });
 
     // Create email transporter (will need to be configured with environment variables)
     const transporter = createTransport({
@@ -29,8 +34,10 @@ async function sendToKindle(article) {
 
     // Email options
     const sanitizedFilename = `${sanitizeFilename(article.title)}.html`;
-    console.log('Kindle Send - Filename:', sanitizedFilename);
-    console.log('Kindle Send - Content size:', (htmlContent.length / 1024).toFixed(2), 'KB');
+    log('kindle', 'Email preparation', {
+      filename: sanitizedFilename,
+      contentSizeKB: (htmlContent.length / 1024).toFixed(2)
+    });
     
     const mailOptions = {
       from: process.env.EMAIL_USER,
@@ -46,15 +53,18 @@ async function sendToKindle(article) {
 
     // Send email
     const result = await transporter.sendMail(mailOptions);
-    console.log(`Successfully sent to Kindle: ${result.messageId}`);
-    console.log('Kindle Send - Complete details:', {
+    log('kindle', 'Successfully sent to Kindle', {
       messageId: result.messageId,
       filename: sanitizedFilename,
       subject: article.title,
       sizekB: (htmlContent.length / 1024).toFixed(2)
     });
     
-    return { success: true, messageId: result.messageId };
+    return { 
+      success: true, 
+      messageId: result.messageId,
+      emailContent: htmlContent
+    };
 
   } catch (error) {
     console.error('Failed to send to Kindle:', error.message);

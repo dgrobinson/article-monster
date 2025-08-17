@@ -1,9 +1,14 @@
 const axios = require('axios');
 const { generateEpub } = require('./epubGenerator');
 
-async function sendToZotero(article) {
+async function sendToZotero(article, debugLogger = null) {
   try {
-    console.log(`Sending to Zotero: "${article.title}"`);
+    const log = (category, message, data) => {
+      if (debugLogger) debugLogger.log(category, message, data);
+      else console.log(`[${category}] ${message}`, data);
+    };
+    
+    log('zotero', `Sending to Zotero: "${article.title}"`);
 
     // Get environment variables for Zotero API
     const userId = process.env.ZOTERO_USER_ID;
@@ -65,7 +70,8 @@ async function sendToZotero(article) {
       success: true,
       itemKey: itemKey,
       attachmentKey: attachmentKey,
-      url: `https://www.zotero.org/groups/library/items/${itemKey}`
+      url: `https://www.zotero.org/groups/library/items/${itemKey}`,
+      epubBase64
     };
 
   } catch (error) {

@@ -110,6 +110,7 @@ The bookmarklet runs Mozilla Readability.js in your browser to extract clean art
 
 - **Future Enhancements**: See [METADATA_ROADMAP.md](./METADATA_ROADMAP.md) for planned metadata improvements
 - **Contributing**: See [CONTRIBUTING_TO_FIVEFILTERS.md](./CONTRIBUTING_TO_FIVEFILTERS.md) for site extraction rules
+- **Debug System**: See [DEBUG_SYSTEM.md](./DEBUG_SYSTEM.md) for comprehensive debugging capabilities
 
 ## Troubleshooting
 

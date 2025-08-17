@@ -1,0 +1,128 @@
+const axios = require('axios');
+const fs = require('fs').promises;
+const path = require('path');
+const GitHubAuth = require('./githubAuth');
+
+class DebugLogger {
+  constructor() {
+    this.logs = [];
+    this.startTime = Date.now();
+    this.enabled = process.env.ENABLE_DEBUG_CAPTURE === 'true';
+  }
+
+  log(category, message, data = {}) {
+    const entry = {
+      timestamp: Date.now() - this.startTime,
+      category,
+      message,
+      data,
+      time: new Date().toISOString()
+    };
+    this.logs.push(entry);
+    
+    // Also log to console for local debugging
+    console.log(`[${category}] ${message}`, data);
+  }
+
+  async captureToGitHub(extractionData) {
+    if (!this.enabled) {
+      console.log('Debug capture disabled (set ENABLE_DEBUG_CAPTURE=true to enable)');
+      return;
+    }
+
+    const githubAuth = new GitHubAuth();
+    
+    if (!githubAuth.authMethod) {
+      console.warn('No GitHub authentication configured, skipping debug capture');
+      return;
+    }
+
+    try {
+      // If using SSH deploy key, use direct git operations
+      if (await githubAuth.canUseSSH()) {
+        await githubAuth.pushWithSSH({
+          ...extractionData,
+          server_logs: this.logs
+        });
+        this.log('debug', 'Pushed debug output via SSH deploy key');
+        return;
+      }
+      // Prepare the payload
+      const payload = {
+        commit_sha: process.env.GITHUB_SHA || 'local',
+        url: extractionData.url,
+        title: extractionData.title || 'Unknown',
+        success: extractionData.success,
+        extraction_status: extractionData.extraction_status,
+        kindle_status: extractionData.kindle_status,
+        zotero_status: extractionData.zotero_status,
+        bookmarklet_log: extractionData.bookmarklet_log || [],
+        payload: extractionData.payload,
+        server_logs: this.logs,
+        config_used: extractionData.config_used || null,
+        email_content: extractionData.email_content || '',
+        epub_base64: extractionData.epub_base64 || ''
+      };
+
+      // Get auth headers for API call
+      const headers = await githubAuth.getAuthHeaders();
+      
+      // Trigger GitHub Action via repository dispatch
+      const response = await axios.post(
+        `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/dispatches`,
+        {
+          event_type: 'extraction-debug',
+          client_payload: payload
+        },
+        {
+          headers
+        }
+      );
+
+      this.log('debug', 'Triggered GitHub Action for debug capture', {
+        status: response.status,
+        repository: process.env.GITHUB_REPOSITORY
+      });
+    } catch (error) {
+      console.error('Failed to trigger debug capture:', error.message);
+      
+      // Fallback: save locally if in development
+      if (process.env.NODE_ENV !== 'production') {
+        await this.saveLocally(extractionData);
+      }
+    }
+  }
+
+  async saveLocally(extractionData) {
+    try {
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const debugDir = path.join(__dirname, '..', 'debug-outputs', timestamp);
+      
+      await fs.mkdir(debugDir, { recursive: true });
+      
+      // Save all debug data
+      await fs.writeFile(
+        path.join(debugDir, 'server-logs.json'),
+        JSON.stringify(this.logs, null, 2)
+      );
+      
+      await fs.writeFile(
+        path.join(debugDir, 'extraction-data.json'),
+        JSON.stringify(extractionData, null, 2)
+      );
+      
+      this.log('debug', 'Saved debug output locally', { dir: debugDir });
+    } catch (error) {
+      console.error('Failed to save debug output locally:', error);
+    }
+  }
+
+  getFormattedLogs() {
+    return this.logs.map(log => {
+      const time = new Date(this.startTime + log.timestamp).toISOString();
+      return `[${time}] [${log.category}] ${log.message}`;
+    }).join('\n');
+  }
+}
+
+module.exports = DebugLogger;

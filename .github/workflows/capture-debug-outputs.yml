@@ -1,0 +1,84 @@
+name: Capture Debug Outputs
+
+on:
+  repository_dispatch:
+    types: [extraction-debug]
+
+jobs:
+  capture-outputs:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      
+    steps:
+      - name: Checkout latest-outputs-debug branch
+        uses: actions/checkout@v4
+        with:
+          ref: latest-outputs-debug
+          fetch-depth: 0
+          
+      - name: Create or ensure branch exists
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+          # Ensure we're on latest-outputs-debug, create if doesn't exist
+          if ! git show-ref --verify --quiet refs/heads/latest-outputs-debug; then
+            git checkout -b latest-outputs-debug
+          fi
+          
+      - name: Generate output directory name
+        id: dirname
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          SHORT_SHA=$(echo "${{ github.event.client_payload.commit_sha }}" | cut -c1-7)
+          DIR_NAME="outputs/${TIMESTAMP}-${SHORT_SHA}"
+          echo "dir_name=${DIR_NAME}" >> $GITHUB_OUTPUT
+          
+      - name: Save debug outputs
+        run: |
+          mkdir -p "${{ steps.dirname.outputs.dir_name }}"
+          
+          # Save all payloads and logs
+          echo '${{ toJson(github.event.client_payload.bookmarklet_log) }}' | jq '.' > "${{ steps.dirname.outputs.dir_name }}/bookmarklet-log.json"
+          echo '${{ toJson(github.event.client_payload.payload) }}' | jq '.' > "${{ steps.dirname.outputs.dir_name }}/payload.json"
+          echo '${{ toJson(github.event.client_payload.server_logs) }}' | jq '.' > "${{ steps.dirname.outputs.dir_name }}/server-logs.json"
+          echo '${{ toJson(github.event.client_payload.config_used) }}' | jq '.' > "${{ steps.dirname.outputs.dir_name }}/config-used.json"
+          
+          # Save the EPUB if provided (base64 encoded)
+          if [ ! -z "${{ github.event.client_payload.epub_base64 }}" ]; then
+            echo "${{ github.event.client_payload.epub_base64 }}" | base64 -d > "${{ steps.dirname.outputs.dir_name }}/article.epub"
+          fi
+          
+          # Save email content
+          echo '${{ toJson(github.event.client_payload.email_content) }}' | jq -r '.' > "${{ steps.dirname.outputs.dir_name }}/email-content.html"
+          
+          # Create summary
+          cat > "${{ steps.dirname.outputs.dir_name }}/summary.md" << EOF
+          # Extraction Debug Output
+          
+          **Timestamp**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")
+          **Trigger Commit**: ${{ github.event.client_payload.commit_sha }}
+          **Article URL**: ${{ github.event.client_payload.url }}
+          **Title**: ${{ github.event.client_payload.title }}
+          **Success**: ${{ github.event.client_payload.success }}
+          
+          ## Files
+          - bookmarklet-log.json - Client-side extraction logs
+          - payload.json - Full payload sent to server
+          - server-logs.json - Server processing logs
+          - config-used.json - Site-specific config applied (if any)
+          - article.epub - Generated EPUB file
+          - email-content.html - Email sent to Kindle
+          
+          ## Quick Status
+          - Extraction: ${{ github.event.client_payload.extraction_status }}
+          - Kindle Send: ${{ github.event.client_payload.kindle_status }}
+          - Zotero Send: ${{ github.event.client_payload.zotero_status }}
+          EOF
+          
+      - name: Commit and push
+        run: |
+          git add outputs/
+          git commit -m "Debug output: ${{ github.event.client_payload.title }} [$(date +%Y%m%d-%H%M%S)]"
+          git push origin latest-outputs-debug
