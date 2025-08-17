@@ -7,16 +7,12 @@
     "start": "./start-simple.sh",
     "dev": "node --watch src/server.js",
     "test": "node src/test.js",
-    "test:mcp": "node src/test-mcp.js",
     "lint": "npx eslint src/**/*.js public/**/*.js test-*.js --ignore-pattern node_modules/",
     "lint:fix": "npx eslint src/**/*.js public/**/*.js test-*.js --fix --ignore-pattern node_modules/",
-    "generate:mcp-key": "node scripts/generate-mcp-key.js",
-    "build": "npm run setup:submodules && npm run setup:python",
-    "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'",
-    "setup:python": "which python3 && python3 --version && python3 -m pip install --user -r requirements.txt || echo 'Python/FastMCP setup skipped - will run in Node.js-only mode'"
+    "build": "npm run setup:submodules",
+    "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.17.2",
     "@mozilla/readability": "^0.4.4",
     "adm-zip": "^0.5.16",
     "axios": "^1.6.2",
@@ -24,12 +20,10 @@
     "epub-gen": "^0.1.0",
     "express": "^4.18.2",
     "form-data": "^4.0.0",
-    "http-proxy-middleware": "^3.0.5",
     "jsdom": "^23.0.1",
     "jszip": "^3.10.1",
     "nodemailer": "^6.9.7",
-    "nodepub": "^3.2.1",
-    "ws": "^8.18.3"
+    "nodepub": "^3.2.1"
   },
   "engines": {
     "node": ">=18"
