@@ -1,15 +1,19 @@
 const Epub = require('epub-gen');
 const path = require('path');
 const fs = require('fs').promises;
+const { execSync } = require('child_process');
 
 async function generateEpub(article) {
   try {
     console.log(`Generating EPUB for: "${article.title}"`);
     
+    // Determine current commit hash
+    const commitHash = getCommitHash();
+
     // Create extraction diagnostics metadata
     const extractionDiagnostics = {
       generatedAt: new Date().toISOString(),
-      gitCommit: process.env.GIT_COMMIT || process.env.RENDER_GIT_COMMIT || 'unknown',
+      gitCommit: commitHash,
       deploymentId: process.env.RENDER_DEPLOY_ID || process.env.DEPLOYMENT_ID || 'unknown',
       extractionMethod: article.extractionMethod || 'unknown',
       contentStats: {
@@ -36,8 +40,8 @@ async function generateEpub(article) {
 
     // Pass diagnostics through to the EPUB content
     article.extractionDiagnostics = extractionDiagnostics;
-    
-    const filename = `${sanitizeFilename(article.title)}.epub`;
+
+    const filename = `${sanitizeFilename(article.title)}_${commitHash}.epub`;
     const outputPath = path.join('/tmp', filename);
     
     console.log('EPUB Generation - Filename:', filename);
@@ -342,6 +346,18 @@ function sanitizeFilename(filename) {
   var uniqueId = (timestamp + random).substring(0, 8).toUpperCase();
   
   return baseFilename + '_' + uniqueId;
+}
+
+function getCommitHash() {
+  const envCommit = process.env.GIT_COMMIT || process.env.RENDER_GIT_COMMIT;
+  if (envCommit) {
+    return envCommit.slice(0, 7);
+  }
+  try {
+    return execSync('git rev-parse --short HEAD').toString().trim();
+  } catch (e) {
+    return 'unknown';
+  }
 }
 
 function escapeHtml(text) {
