@@ -1,6 +1,7 @@
 const Epub = require('epub-gen');
 const path = require('path');
 const fs = require('fs').promises;
+const { execSync } = require('child_process');
 
 async function generateEpub(article) {
   try {
@@ -37,7 +38,14 @@ async function generateEpub(article) {
     // Pass diagnostics through to the EPUB content
     article.extractionDiagnostics = extractionDiagnostics;
     
-    const filename = `${sanitizeFilename(article.title)}.epub`;
+    let commitHash = 'unknown';
+    try {
+      commitHash = execSync('git rev-parse --short HEAD').toString().trim();
+    } catch (e) {
+      console.warn('Could not determine git commit hash:', e.message);
+    }
+
+    const filename = `${sanitizeFilename(article.title)}_${commitHash}.epub`;
     const outputPath = path.join('/tmp', filename);
     
     console.log('EPUB Generation - Filename:', filename);
