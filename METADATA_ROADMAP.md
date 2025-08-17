@@ -191,14 +191,7 @@ This document outlines potential future improvements for bibliographic metadata 
    - Cross-validate metadata between sources
    - Flag inconsistencies for manual review
 
-### Phase 3: MCP Server Enhancements (Next Priority)
-1. **Fix MCP Add Item Functionality**:
-   - Currently fails with "Item creation failed"
-   - May need Zotero API key write permissions check
-   - Debug Zotero API response format requirements
-   - Test with different item types (webpage, journalArticle, etc.)
-
-### Phase 4: Refinement and Advanced Features (Long-term)
+### Phase 3: Refinement and Advanced Features (Long-term)
 1. Metadata confidence scoring
 2. ORCID support
 3. Advanced author role detection
