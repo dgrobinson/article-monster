@@ -16,12 +16,13 @@ class GitHubAuth {
   }
 
   detectAuthMethod() {
-    if (process.env.GITHUB_SSH_KEY) {
-      return 'ssh-deploy-key';
+    // Prefer token over SSH since SSH isn't working in DigitalOcean
+    if (process.env.GITHUB_TOKEN) {
+      return 'personal-token';
     } else if (process.env.GITHUB_APP_ID && process.env.GITHUB_APP_PRIVATE_KEY) {
       return 'github-app';
-    } else if (process.env.GITHUB_TOKEN) {
-      return 'personal-token';
+    } else if (process.env.GITHUB_SSH_KEY) {
+      return 'ssh-deploy-key';
     }
     return null;
   }
