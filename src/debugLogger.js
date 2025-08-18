@@ -48,7 +48,16 @@ class DebugLogger {
       //   this.log('debug', 'Pushed debug output via SSH deploy key');
       //   return;
       // }
-      // Prepare the payload
+      // Prepare the payload - GitHub limits to 65535 bytes
+      // Truncate large fields if necessary
+      const truncateField = (field, maxLength = 10000) => {
+        if (!field) return '';
+        if (typeof field === 'string' && field.length > maxLength) {
+          return field.substring(0, maxLength) + '... [truncated]';
+        }
+        return field;
+      };
+      
       const payload = {
         commit_sha: process.env.GITHUB_SHA || 'local',
         url: extractionData.url,
@@ -57,12 +66,12 @@ class DebugLogger {
         extraction_status: extractionData.extraction_status,
         kindle_status: extractionData.kindle_status,
         zotero_status: extractionData.zotero_status,
-        bookmarklet_log: extractionData.bookmarklet_log || [],
-        payload: extractionData.payload,
-        server_logs: this.logs,
-        config_used: extractionData.config_used || null,
-        email_content: extractionData.email_content || '',
-        epub_base64: extractionData.epub_base64 || ''
+        bookmarklet_log: (extractionData.bookmarklet_log || []).slice(0, 50), // Limit logs
+        payload_size: JSON.stringify(extractionData.payload || {}).length,
+        server_logs: this.logs.slice(-50), // Last 50 logs only
+        config_used: extractionData.config_used ? 'yes' : 'no',
+        email_content: truncateField(extractionData.email_content, 5000),
+        epub_size: extractionData.epub_base64 ? extractionData.epub_base64.length : 0
       };
 
       // Get auth headers for API call
@@ -86,6 +95,9 @@ class DebugLogger {
       });
     } catch (error) {
       console.error('Failed to trigger debug capture:', error.message);
+      if (error.response) {
+        console.error('GitHub API error:', error.response.status, error.response.data);
+      }
       
       // Fallback: save locally if in development
       if (process.env.NODE_ENV !== 'production') {
