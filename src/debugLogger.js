@@ -39,14 +39,15 @@ class DebugLogger {
 
     try {
       // If using SSH deploy key, use direct git operations
-      if (await githubAuth.canUseSSH()) {
-        await githubAuth.pushWithSSH({
-          ...extractionData,
-          server_logs: this.logs
-        });
-        this.log('debug', 'Pushed debug output via SSH deploy key');
-        return;
-      }
+      // Disabled for now due to SSH issues in DigitalOcean environment
+      // if (await githubAuth.canUseSSH()) {
+      //   await githubAuth.pushWithSSH({
+      //     ...extractionData,
+      //     server_logs: this.logs
+      //   });
+      //   this.log('debug', 'Pushed debug output via SSH deploy key');
+      //   return;
+      // }
       // Prepare the payload
       const payload = {
         commit_sha: process.env.GITHUB_SHA || 'local',
