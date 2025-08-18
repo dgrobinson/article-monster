@@ -31,7 +31,7 @@ async function sendToZotero(article, debugLogger = null) {
     // Step 1: Create the main item (webpage)
     const mainItem = createZoteroItem(article);
     
-    console.log('Creating Zotero item...');
+    log('zotero', 'Creating Zotero item');
     const itemResponse = await axios.post(`${baseUrl}/items`, [mainItem], { headers });
     
     if (!itemResponse.data.successful || itemResponse.data.successful.length === 0) {
@@ -39,32 +39,34 @@ async function sendToZotero(article, debugLogger = null) {
     }
 
     const itemKey = itemResponse.data.successful[0].key;
-    console.log(`Successfully created Zotero item with key: ${itemKey}`);
+    log('zotero', 'Successfully created Zotero item', { itemKey });
 
     // Step 2: Generate and attach EPUB (non-fatal if fails)
     let attachmentKey = null;
+    let epubBase64 = null;
     try {
-      console.log('Generating EPUB for Zotero attachment...');
+      log('zotero', 'Generating EPUB for Zotero attachment');
       const epub = await generateEpub(article);
+      epubBase64 = epub.toString('base64');
       
       // Step 3: Upload EPUB as attachment
-      console.log('Uploading EPUB attachment to Zotero...');
-      attachmentKey = await uploadAttachment(baseUrl, headers, itemKey, epub, article);
+      log('zotero', 'Uploading EPUB attachment to Zotero');
+      attachmentKey = await uploadAttachment(baseUrl, headers, itemKey, epub, article, log);
     } catch (attachmentError) {
-      console.warn('EPUB attachment failed (item still created):', attachmentError.message);
+      log('zotero', 'EPUB attachment failed (item still created)', { error: attachmentError.message });
       // Don't throw - the main item was successfully created
     }
     
     // Step 4: Optionally add to test collection
     if (testCollection) {
-      console.log(`Adding item to collection: ${testCollection}`);
+      log('zotero', 'Adding item to collection', { collection: testCollection });
       await addToCollection(baseUrl, headers, itemKey, testCollection);
     }
 
     const message = attachmentKey 
       ? `item ${itemKey}, attachment ${attachmentKey}`
       : `item ${itemKey} (attachment failed)`;
-    console.log(`Successfully sent to Zotero: ${message}`);
+    log('zotero', 'Successfully sent to Zotero', { itemKey, attachmentKey });
     
     return {
       success: true,
@@ -147,7 +149,7 @@ function parseAuthors(bylineString) {
   });
 }
 
-async function uploadAttachment(baseUrl, headers, parentKey, epub, article) {
+async function uploadAttachment(baseUrl, headers, parentKey, epub, article, log = console.log) {
   try {
     // Step 1: Register the attachment
     const attachmentItem = {
@@ -236,7 +238,7 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article) {
   }
 }
 
-async function addToCollection(baseUrl, headers, itemKey, collectionKey) {
+async function addToCollection(baseUrl, headers, itemKey, collectionKey, log = console.log) {
   try {
     console.log(`Adding item to collection: ${collectionKey}`);
     
