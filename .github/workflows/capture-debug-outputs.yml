@@ -17,14 +17,18 @@ jobs:
           ref: latest-outputs-debug
           fetch-depth: 0
           
-      - name: Create or ensure branch exists
+      - name: Configure git
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           
-          # Ensure we're on latest-outputs-debug, create if doesn't exist
+          # Fail if branch doesn't exist - it should be created manually
           if ! git show-ref --verify --quiet refs/heads/latest-outputs-debug; then
-            git checkout -b latest-outputs-debug
+            echo "ERROR: latest-outputs-debug branch does not exist!"
+            echo "Please create it manually first with:"
+            echo "  git checkout -b latest-outputs-debug"
+            echo "  git push origin latest-outputs-debug"
+            exit 1
           fi
           
       - name: Generate output directory name

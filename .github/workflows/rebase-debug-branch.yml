@@ -22,7 +22,7 @@ jobs:
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           
-      - name: Create or rebase debug branch
+      - name: Rebase debug branch
         run: |
           # Check if latest-outputs-debug branch exists
           if git show-ref --verify --quiet refs/remotes/origin/latest-outputs-debug; then
@@ -35,43 +35,20 @@ jobs:
             # Rebase onto main
             # Since outputs/ folder only exists on debug branch, no conflicts expected
             git rebase main || {
-              echo "Rebase failed, attempting to recreate branch"
-              git rebase --abort
-              git checkout main
-              git branch -D latest-outputs-debug || true
-              git checkout -b latest-outputs-debug
-              git push origin latest-outputs-debug --force
-              exit 0
+              echo "Rebase failed - manual intervention required"
+              echo "The latest-outputs-debug branch could not be automatically rebased."
+              echo "Please manually rebase or reset the branch."
+              exit 1
             }
             
             # Force push the rebased branch
             git push origin latest-outputs-debug --force
             echo "Successfully rebased latest-outputs-debug onto main"
           else
-            echo "Debug branch doesn't exist, creating..."
-            git checkout -b latest-outputs-debug
-            
-            # Create initial outputs directory with README
-            mkdir -p outputs
-            cat > outputs/README.md << 'EOF'
-# Debug Outputs
-
-This branch contains debug outputs from article extractions.
-
-Each extraction creates a timestamped folder with:
-- bookmarklet-log.json - Client-side extraction logs
-- payload.json - Full payload sent to server
-- server-logs.json - Server processing logs
-- config-used.json - Site-specific config applied (if any)
-- article.epub - Generated EPUB file
-- email-content.html - Email sent to Kindle
-- summary.md - Quick overview of the extraction
-
-These outputs are automatically captured when ENABLE_DEBUG_CAPTURE=true is set.
-EOF
-            
-            git add outputs/
-            git commit -m "Initialize debug outputs branch"
-            git push origin latest-outputs-debug
-            echo "Created new latest-outputs-debug branch"
+            echo "WARNING: latest-outputs-debug branch does not exist!"
+            echo "The debug system requires this branch to be created manually."
+            echo "To create it, run:"
+            echo "  git checkout -b latest-outputs-debug"
+            echo "  git push origin latest-outputs-debug"
+            echo "Skipping rebase - no debug branch to rebase."
           fi
