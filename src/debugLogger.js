@@ -58,20 +58,24 @@ class DebugLogger {
         return field;
       };
       
+      // GitHub limits to 10 properties in client_payload
       const payload = {
-        commit_sha: process.env.GITHUB_SHA || 'local',
         url: extractionData.url,
         title: extractionData.title || 'Unknown',
         success: extractionData.success,
-        extraction_status: extractionData.extraction_status,
-        kindle_status: extractionData.kindle_status,
-        zotero_status: extractionData.zotero_status,
-        bookmarklet_log: (extractionData.bookmarklet_log || []).slice(0, 50), // Limit logs
-        payload_size: JSON.stringify(extractionData.payload || {}).length,
-        server_logs: this.logs.slice(-50), // Last 50 logs only
-        config_used: extractionData.config_used ? 'yes' : 'no',
-        email_content: truncateField(extractionData.email_content, 5000),
-        epub_size: extractionData.epub_base64 ? extractionData.epub_base64.length : 0
+        status: `${extractionData.kindle_status}/${extractionData.zotero_status}`,
+        timestamp: new Date().toISOString(),
+        // Combine all debug data into a single JSON string
+        debug_data: JSON.stringify({
+          commit_sha: process.env.GITHUB_SHA || 'local',
+          extraction_status: extractionData.extraction_status,
+          bookmarklet_log: (extractionData.bookmarklet_log || []).slice(0, 20),
+          server_logs: this.logs.slice(-30),
+          config_used: extractionData.config_used ? 'yes' : 'no',
+          payload: extractionData.payload,
+          email_content: truncateField(extractionData.email_content, 5000),
+          epub_base64: extractionData.epub_base64 || ''
+        })
       };
 
       // Get auth headers for API call
