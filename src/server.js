@@ -9,7 +9,10 @@ console.log('Environment variables loaded:', {
   EMAIL_PASS: process.env.EMAIL_PASS ? 'YES (hidden)' : 'NO',
   KINDLE_EMAIL: process.env.KINDLE_EMAIL || 'NOT SET',
   ZOTERO_USER_ID: process.env.ZOTERO_USER_ID || 'NOT SET',
-  NODE_ENV: process.env.NODE_ENV || 'development'
+  NODE_ENV: process.env.NODE_ENV || 'development',
+  GITHUB_TOKEN: process.env.GITHUB_TOKEN ? 'YES (hidden)' : 'NO',
+  GITHUB_REPOSITORY: process.env.GITHUB_REPOSITORY || 'NOT SET',
+  ENABLE_DEBUG_CAPTURE: process.env.ENABLE_DEBUG_CAPTURE || 'NOT SET'
 });
 const express = require('express');
 const { extractArticle } = require('./articleExtractor');
