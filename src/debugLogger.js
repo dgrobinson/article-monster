@@ -2,6 +2,7 @@ const axios = require('axios');
 const fs = require('fs').promises;
 const path = require('path');
 const GitHubAuth = require('./githubAuth');
+const GitHubDirectCommit = require('./githubDirectCommit');
 
 class DebugLogger {
   constructor() {
@@ -38,70 +39,20 @@ class DebugLogger {
     }
 
     try {
-      // If using SSH deploy key, use direct git operations
-      // Disabled for now due to SSH issues in DigitalOcean environment
-      // if (await githubAuth.canUseSSH()) {
-      //   await githubAuth.pushWithSSH({
-      //     ...extractionData,
-      //     server_logs: this.logs
-      //   });
-      //   this.log('debug', 'Pushed debug output via SSH deploy key');
-      //   return;
-      // }
-      // Prepare the payload - GitHub limits to 65535 bytes
-      // Truncate large fields if necessary
-      const truncateField = (field, maxLength = 10000) => {
-        if (!field) return '';
-        if (typeof field === 'string' && field.length > maxLength) {
-          return field.substring(0, maxLength) + '... [truncated]';
-        }
-        return field;
-      };
+      // Use direct commit approach instead of repository dispatch
+      const directCommit = new GitHubDirectCommit();
+      const result = await directCommit.commitDebugOutput(extractionData, this.logs);
       
-      // GitHub limits to 10 properties in client_payload
-      const payload = {
-        url: extractionData.url,
-        title: extractionData.title || 'Unknown',
-        success: extractionData.success,
-        status: `${extractionData.kindle_status}/${extractionData.zotero_status}`,
-        timestamp: new Date().toISOString(),
-        // Combine all debug data into a single JSON string
-        debug_data: JSON.stringify({
-          commit_sha: process.env.GITHUB_SHA || 'local',
-          extraction_status: extractionData.extraction_status,
-          bookmarklet_log: (extractionData.bookmarklet_log || []).slice(0, 10),
-          server_logs: this.logs.slice(-20),
-          config_used: extractionData.config_used ? 'yes' : 'no',
-          // Don't include full payload or EPUB - too large
-          payload_truncated: JSON.stringify(extractionData.payload || {}).substring(0, 1000),
-          email_content: truncateField(extractionData.email_content, 2000),
-          epub_available: !!extractionData.epub_base64
-        })
-      };
-
-      // Get auth headers for API call
-      const headers = await githubAuth.getAuthHeaders();
-      
-      // Trigger GitHub Action via repository dispatch
-      const response = await axios.post(
-        `https://api.github.com/repos/${process.env.GITHUB_REPOSITORY}/dispatches`,
-        {
-          event_type: 'extraction-debug',
-          client_payload: payload
-        },
-        {
-          headers
-        }
-      );
-
-      this.log('debug', 'Triggered GitHub Action for debug capture', {
-        status: response.status,
-        repository: process.env.GITHUB_REPOSITORY
+      this.log('debug', 'Successfully committed debug output to GitHub', {
+        commit: result.commit,
+        path: result.path
       });
+      
+      return result;
     } catch (error) {
-      console.error('Failed to trigger debug capture:', error.message);
+      console.error('Failed to capture debug output:', error.message);
       if (error.response) {
-        console.error('GitHub API error:', error.response.status, error.response.data);
+        console.error('GitHub API error:', error.response?.status, error.response?.data);
       }
       
       // Fallback: save locally if in development
