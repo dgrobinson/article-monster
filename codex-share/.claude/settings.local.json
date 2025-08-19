@@ -9,7 +9,8 @@
       "Bash(gh pr list:*)",
       "Bash(npm install)",
       "Bash(doctl apps:*)",
-      "Bash(gh run list:*)"
+      "Bash(gh run list:*)",
+      "Bash(ssh:*)"
     ],
     "additionalDirectories": [
       "/private/tmp"

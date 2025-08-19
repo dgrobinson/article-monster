@@ -48,17 +48,14 @@ jobs:
           
           # Extract individual components from debug_data
           cat "${{ steps.dirname.outputs.dir_name }}/debug_data_raw.json" | jq -r '.' | jq '.bookmarklet_log' > "${{ steps.dirname.outputs.dir_name }}/bookmarklet-log.json"
-          cat "${{ steps.dirname.outputs.dir_name }}/debug_data_raw.json" | jq -r '.' | jq '.payload' > "${{ steps.dirname.outputs.dir_name }}/payload.json"
+          cat "${{ steps.dirname.outputs.dir_name }}/debug_data_raw.json" | jq -r '.' | jq '.payload_truncated' > "${{ steps.dirname.outputs.dir_name }}/payload-truncated.txt"
           cat "${{ steps.dirname.outputs.dir_name }}/debug_data_raw.json" | jq -r '.' | jq '.server_logs' > "${{ steps.dirname.outputs.dir_name }}/server-logs.json"
           
           # Save email content
           cat "${{ steps.dirname.outputs.dir_name }}/debug_data_raw.json" | jq -r '.' | jq -r '.email_content' > "${{ steps.dirname.outputs.dir_name }}/email-content.html"
           
-          # Save the EPUB if provided (base64 encoded)
-          EPUB_BASE64=$(cat "${{ steps.dirname.outputs.dir_name }}/debug_data_raw.json" | jq -r '.' | jq -r '.epub_base64')
-          if [ ! -z "$EPUB_BASE64" ] && [ "$EPUB_BASE64" != "null" ] && [ "$EPUB_BASE64" != "" ]; then
-            echo "$EPUB_BASE64" | base64 -d > "${{ steps.dirname.outputs.dir_name }}/article.epub"
-          fi
+          # Note if EPUB was available but not included
+          echo "EPUB available: $(cat "${{ steps.dirname.outputs.dir_name }}/debug_data_raw.json" | jq -r '.' | jq -r '.epub_available')" > "${{ steps.dirname.outputs.dir_name }}/epub-status.txt"
           
           # Create summary
           cat > "${{ steps.dirname.outputs.dir_name }}/summary.md" << EOF

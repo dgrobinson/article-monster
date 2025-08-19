@@ -69,12 +69,13 @@ class DebugLogger {
         debug_data: JSON.stringify({
           commit_sha: process.env.GITHUB_SHA || 'local',
           extraction_status: extractionData.extraction_status,
-          bookmarklet_log: (extractionData.bookmarklet_log || []).slice(0, 20),
-          server_logs: this.logs.slice(-30),
+          bookmarklet_log: (extractionData.bookmarklet_log || []).slice(0, 10),
+          server_logs: this.logs.slice(-20),
           config_used: extractionData.config_used ? 'yes' : 'no',
-          payload: extractionData.payload,
-          email_content: truncateField(extractionData.email_content, 5000),
-          epub_base64: extractionData.epub_base64 || ''
+          // Don't include full payload or EPUB - too large
+          payload_truncated: JSON.stringify(extractionData.payload || {}).substring(0, 1000),
+          email_content: truncateField(extractionData.email_content, 2000),
+          epub_available: !!extractionData.epub_base64
         })
       };
 
