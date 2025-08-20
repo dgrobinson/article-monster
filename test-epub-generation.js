@@ -10,6 +10,7 @@ const path = require('path');
 const { JSDOM } = require('jsdom');
 const AdmZip = require('adm-zip');
 const { generateEpub } = require('./src/epubGenerator');
+const { execSync } = require('child_process');
 
 // Test that EPUB contains expected content
 async function testEpubGeneration() {
@@ -75,9 +76,16 @@ async function testEpubGeneration() {
   };
   
   try {
+    const commitHash = execSync('git rev-parse --short HEAD').toString().trim();
     const epubResult = await generateEpub(epubArticle);
     console.log(`✅ EPUB generated: ${epubResult.filename}`);
     console.log(`📦 EPUB size: ${(epubResult.size / 1024).toFixed(2)} KB`);
+    console.log(`🔖 Expected commit hash: ${commitHash}`);
+    console.log(`🔖 Filename contains commit hash: ${epubResult.filename.includes(commitHash)}`);
+    if (!epubResult.filename.includes(commitHash)) {
+      console.log('❌ Commit hash missing from filename');
+      return false;
+    }
     
     // Step 3: Verify EPUB contents
     console.log('\n🔍 Step 3: Verifying EPUB contents...');
