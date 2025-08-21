@@ -11,7 +11,10 @@
       "Bash(doctl apps:*)",
       "Bash(gh run list:*)",
       "Bash(ssh:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(git checkout:*)",
+      "Bash(mkdir:*)",
+      "Bash(mv:*)"
     ],
     "additionalDirectories": [
       "/private/tmp"

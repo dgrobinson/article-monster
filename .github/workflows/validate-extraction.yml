@@ -1,0 +1,113 @@
+name: Validate Article Extraction
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      test_specific:
+        description: 'Specific test case ID to run (optional)'
+        required: false
+        type: string
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+      
+      - name: Install dependencies
+        run: npm ci
+      
+      - name: Check for test cases
+        run: |
+          # PDF test cases live in main branch under test-cases/pdf-references
+          if [ -f test-cases/pdf-references/manifest.json ]; then
+            echo "Found PDF test cases in main branch"
+            ls -la test-cases/pdf-references/ 2>/dev/null || echo "No test cases directory"
+          else
+            echo "No PDF test cases found"
+            mkdir -p test-cases/pdf-references
+            echo '{"testCases": []}' > test-cases/pdf-references/manifest.json
+          fi
+      
+      - name: Run extraction validation
+        run: |
+          if [ -n "${{ github.event.inputs.test_specific }}" ]; then
+            echo "Running specific test: ${{ github.event.inputs.test_specific }}"
+            node test/validate-extraction.js test-cases/pdf-references "${{ github.event.inputs.test_specific }}"
+          else
+            echo "Running all extraction validation tests"
+            node test/validate-extraction.js test-cases/pdf-references
+          fi
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: validation-results
+          path: |
+            test-cases/pdf-references/validation-results.json
+            test-cases/pdf-references/validation-report.md
+      
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const fs = require('fs');
+            let report = '## 📊 Extraction Validation Results\n\n';
+            
+            try {
+              // Read validation report if it exists
+              const reportPath = 'test-cases/pdf-references/validation-report.md';
+              if (fs.existsSync(reportPath)) {
+                report += fs.readFileSync(reportPath, 'utf8');
+              } else {
+                report += 'No test cases found or validation did not run.';
+              }
+            } catch (error) {
+              report += `Error reading validation report: ${error.message}`;
+            }
+            
+            // Find existing comment
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('## 📊 Extraction Validation Results')
+            );
+            
+            if (botComment) {
+              // Update existing comment
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: report
+              });
+            } else {
+              // Create new comment
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: report
+              });
+            }
