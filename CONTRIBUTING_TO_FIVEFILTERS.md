@@ -55,7 +55,7 @@ Our `test-cases/examples/` directory provides:
 
 ## Next Steps
 
-1. ✅ Set up submodule integration
+1. ✅ Vendor FiveFilters configs via git subtree
 2. Test our archived examples against FiveFilters configs  
 3. Submit fixes for broken configs we encounter
 4. Share successful extraction patterns from our bookmarklet

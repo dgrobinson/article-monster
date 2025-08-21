@@ -9,8 +9,7 @@
     "test": "node src/test.js",
     "lint": "npx eslint src/**/*.js public/**/*.js test-*.js --ignore-pattern node_modules/",
     "lint:fix": "npx eslint src/**/*.js public/**/*.js test-*.js --fix --ignore-pattern node_modules/",
-    "build": "npm run setup:submodules",
-    "setup:submodules": "git submodule update --init --recursive || echo 'Submodule setup skipped in deployment'"
+    "build": "echo 'No build step'"
   },
   "dependencies": {
     "@mozilla/readability": "^0.4.4",

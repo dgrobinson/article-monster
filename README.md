@@ -16,8 +16,7 @@ A cloud service that sends web articles to both Kindle and Zotero with a single 
 ## Site-Specific Extraction
 All site-specific extraction rules live in the `site-configs/` directory using the FiveFilters format.
 The application codebase contains no domain-specific hacks—adding support for a new site means
-creating a config file, not modifying code. The directory is a git submodule tracking the
-official FiveFilters configuration repository.
+creating a config file, not modifying code. The directory vendors the official FiveFilters configuration repository via git subtree.
 
 ## Quick Start
 
