@@ -12,7 +12,7 @@
     "update:site-configs": "git subtree pull --prefix=site-configs https://github.com/fivefilters/ftr-site-config master --squash"
   },
   "dependencies": {
-    "@mozilla/readability": "^0.4.4",
+    "@mozilla/readability": "^0.6.0",
     "adm-zip": "^0.5.16",
     "axios": "^1.6.2",
     "dotenv": "^17.2.1",
