@@ -470,7 +470,7 @@
           for (var i = 0; i < config.title.length; i++) {
             var element = this._evaluateXPath(config.title[i]);
             if (element) {
-              result.title = config.title[i].endsWith('/@content') ? 
+              result.title = config.title[i].endsWith('/@content') ?
                 element.value : element.textContent;
               if (result.title) {
                 result.title = result.title.trim();
@@ -478,6 +478,11 @@
               }
             }
           }
+        }
+
+        // Fall back to default title extraction if no rule matched
+        if (!result.title) {
+          result.title = this._getArticleTitle();
         }
 
         // Extract body
