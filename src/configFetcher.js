@@ -77,8 +77,8 @@ class ConfigFetcher {
       }
     }
 
-    // Only require a body rule; title extraction can fall back to defaults
-    return config.body.length > 0 ? config : null;
+    // Only return if we have at least title and body rules
+    return (config.title.length > 0 && config.body.length > 0) ? config : null;
   }
 
   // Preload all configs present in the directory
