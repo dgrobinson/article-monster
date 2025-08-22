@@ -1,0 +1,129 @@
+[
+  {
+    "timestamp": 1,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/magazine/2025/08/18/baldwin-a-love-story-nicholas-boggs-book-review",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-22T19:32:50.321Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "processing",
+    "message": "Processing article: https://www.newyorker.com/magazine/2025/08/18/baldwin-a-love-story-nicholas-boggs-book-review",
+    "data": {},
+    "time": "2025-08-22T19:32:50.324Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "contentLength": 22830,
+      "textContentLength": 9428,
+      "hasContent": true
+    },
+    "time": "2025-08-22T19:32:50.325Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-22T19:32:50.326Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"undefined\"",
+    "data": {},
+    "time": "2025-08-22T19:32:50.327Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "byline": "Louis Menand",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/magazine/2025/08/18/baldwin-a-love-story-nicholas-boggs-book-review",
+      "publishedTime": "2025-08-11T10:00:00.000Z",
+      "contentLength": 22830,
+      "hasImages": false
+    },
+    "time": "2025-08-22T19:32:50.327Z"
+  },
+  {
+    "timestamp": 60,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"undefined\"",
+    "data": {},
+    "time": "2025-08-22T19:32:50.380Z"
+  },
+  {
+    "timestamp": 61,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-22T19:32:50.381Z"
+  },
+  {
+    "timestamp": 566,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "XCK35H9X"
+    },
+    "time": "2025-08-22T19:32:50.886Z"
+  },
+  {
+    "timestamp": 566,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-22T19:32:50.886Z"
+  },
+  {
+    "timestamp": 567,
+    "category": "zotero",
+    "message": "EPUB attachment failed (item still created)",
+    "data": {
+      "error": "EPUB generation failed: Cannot read properties of undefined (reading 'trim')"
+    },
+    "time": "2025-08-22T19:32:50.887Z"
+  },
+  {
+    "timestamp": 568,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-22T19:32:50.888Z"
+  },
+  {
+    "timestamp": 763,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "XCK35H9X",
+      "attachmentKey": null
+    },
+    "time": "2025-08-22T19:32:51.083Z"
+  },
+  {
+    "timestamp": 764,
+    "category": "error",
+    "message": "Kindle failed",
+    "data": {
+      "error": "Kindle sending failed: Cannot read properties of undefined (reading 'trim')"
+    },
+    "time": "2025-08-22T19:32:51.084Z"
+  }
+]
