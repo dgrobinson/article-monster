@@ -460,6 +460,11 @@
         // If site prefers JSON-LD, let that handler take over
         if (config.preferJsonLd) return null;
 
+        // Apply HTML preprocessing if configured
+        if (config.htmlPreprocessing && config.htmlPreprocessing.length > 0) {
+          this._applyHtmlPreprocessing(config.htmlPreprocessing);
+        }
+
         var result = {
           source: 'site-config',
           hostname: hostname
@@ -568,6 +573,27 @@
       }
 
       return clone;
+    },
+
+    _applyHtmlPreprocessing: function(preprocessingRules) {
+      for (var i = 0; i < preprocessingRules.length; i++) {
+        var rule = preprocessingRules[i];
+        if (rule.find && rule.replace !== undefined) {
+          // Apply find/replace to the document HTML
+          var htmlContent = this._doc.documentElement.innerHTML;
+          var regex = new RegExp(this._escapeRegex(rule.find), 'g');
+          var modifiedContent = htmlContent.replace(regex, rule.replace);
+          
+          if (modifiedContent !== htmlContent) {
+            this._doc.documentElement.innerHTML = modifiedContent;
+            console.log('Applied HTML preprocessing:', rule.find, '->', rule.replace);
+          }
+        }
+      }
+    },
+
+    _escapeRegex: function(string) {
+      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     },
 
     _getCachedConfig: function(hostname) {

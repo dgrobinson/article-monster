@@ -50,8 +50,11 @@ class ConfigFetcher {
       author: [],
       strip: [],
       date: [],
-      preferJsonLd: false
+      preferJsonLd: false,
+      htmlPreprocessing: []
     };
+
+    let currentFindString = null;
 
     for (const line of lines) {
       const trimmed = line.trim();
@@ -74,6 +77,17 @@ class ConfigFetcher {
       } else if (trimmed.startsWith('prefer_jsonld:')) {
         const value = trimmed.substring(14).trim().toLowerCase();
         config.preferJsonLd = value === 'true' || value === '1';
+      } else if (trimmed.startsWith('find_string:')) {
+        currentFindString = trimmed.substring(12).trim();
+      } else if (trimmed.startsWith('replace_string:')) {
+        const replaceString = trimmed.substring(15).trim();
+        if (currentFindString !== null) {
+          config.htmlPreprocessing.push({
+            find: currentFindString,
+            replace: replaceString
+          });
+          currentFindString = null;
+        }
       }
     }
 
