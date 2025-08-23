@@ -1,0 +1,34 @@
+{
+  "title": [],
+  "body": [
+    "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+  ],
+  "author": [
+    "//meta[@property=\"article:author\"]/@content"
+  ],
+  "strip": [
+    "//*[contains(@class, 'full-bleed-ad') or contains(@id, 'full-bleed-ad')]",
+    "//button[@id=\"bookmark\"]",
+    "//div[@data-testid=\"ResponsiveClipVideoContainer\"]",
+    "//div[@data-testid=\"ContentHeaderRubric\"]",
+    "//h1",
+    "//div[@data-testid=\"BylinesWrapper\"]",
+    "//time",
+    "//ul[@data-testid=\"socialIconslist\"]",
+    "//div[contains(concat(' ', normalize-space(@class), ' '), ' caption ')]",
+    "//div[@data-testid=\"GenericCallout\"]",
+    "//figure[@data-testid=\"IframeEmbed\"]",
+    "//div[contains(concat(' ', normalize-space(@class), ' '), ' responsive-cartoon ')]"
+  ],
+  "date": [
+    "//meta[@property=\"article:published_time\"]/@content",
+    "//article//time[contains(@class, 'content-header__publish-date')]"
+  ],
+  "preferJsonLd": false,
+  "htmlPreprocessing": [
+    {
+      "find": "<header",
+      "replace": "<em"
+    }
+  ]
+}
