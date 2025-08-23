@@ -24,13 +24,11 @@
       try {
         // First try site-specific configuration
         var siteConfig = this._extractWithSiteConfig();
-        if (siteConfig && siteConfig.content && siteConfig.content.length > 100) {
+        if (siteConfig) {
           siteConfig.extractionMethod = 'site-config';
           siteConfig.configSource = window.location.hostname.replace(/^www\./, '');
           console.log('Extraction successful using FiveFilters config for:', siteConfig.configSource);
           return siteConfig;
-        } else if (siteConfig && !siteConfig.content) {
-          console.log('Site config found but no content extracted, falling back to other methods');
         }
 
         // Then try JSON-LD structured data if available
@@ -522,9 +520,8 @@
         result.siteName = hostname;
         result.publishedTime = this._getArticleMetadata('published_time') || this._getArticleMetadata('date');
 
-        // Return result even if content extraction failed - let parent handle fallback
-        // This ensures title extraction always works and prevents null cascade failures
-        return result;
+        // Only return if we successfully extracted content
+        return result.content ? result : null;
 
       } catch (e) {
         console.error('Site config extraction failed:', e);
