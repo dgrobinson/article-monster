@@ -3,86 +3,214 @@
 ## Overview
 Build a comprehensive JavaScript/Node.js implementation of the FiveFilters config parser since no existing JS library exists (FiveFilters is PHP-based).
 
+## Critical Discovery: Baldwin Article Root Cause Analysis
+
+### The Real Issue
+After 12+ failed attempts to fix the Baldwin article extraction, we discovered the root cause:
+
+**The New Yorker FiveFilters config includes HTML preprocessing directives that our implementation doesn't support:**
+```
+find_string: <header
+replace_string: <em
+```
+
+This transforms all `<header` tags to `<em` tags BEFORE XPath processing, which is why the body selector works:
+```
+body: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']
+```
+
+**Key insight:** FiveFilters' own save-to-Kindle works perfectly for the Baldwin article, proving:
+1. The config is correct and current
+2. Our JavaScript implementation is missing critical preprocessing steps
+3. All previous attempts failed because they addressed symptoms, not the root cause
+
+### Failed Attempts History
+- **Attempts 1-6:** Infrastructure and timing fixes
+- **Attempts 7, 9, 11, 12:** Body-only config support + title fallbacks
+- **All failed because:** We never implemented `find_string`/`replace_string` preprocessing
+
+This validates the need for complete FiveFilters implementation rather than piecemeal fixes.
+
 ## Phase 1: Enhanced Config Parser (configFetcher.js)
 
-### 1.1 Core Extraction Directives
-```javascript
-{
-  // Existing (keep)
-  title: [],      // XPath selectors for title
-  body: [],       // XPath selectors for body  
-  author: [],     // XPath selectors for author
-  date: [],       // XPath selectors for date
-  strip: [],      // XPath selectors to remove
-  
-  // Add new directives
-  find_string: [],     // Strings to find for replacement
-  replace_string: [],  // Replacement strings
-  strip_attr: [],      // Attributes to strip
-  strip_id_or_class: [], // IDs/classes to remove
-  strip_image_src: [], // Image sources to remove
-  dissolve: [],        // Elements to unwrap (keep content)
-  wrap_in: [],         // Wrap matching elements  
-  move_into: [],       // Move elements into others
-}
-```
+### 1.1 Complete Directive Inventory (from 4000+ site configs)
 
-### 1.2 Processing Directives
-```javascript
-{
-  tidy: 'yes',          // Clean HTML before processing
-  prune: 'yes',         // Remove non-content elements
-  autodetect_on_failure: 'yes', // Fallback to Readability
-  parser: 'html5',      // Parser to use
-  skip_json_ld: false,  // Skip JSON-LD extraction
-  prefer_jsonld: false, // Prefer JSON-LD over DOM
-  convert_double_br_tags: 'yes', // Convert <br><br> to <p>
-}
-```
+**Core Content Extraction:**
+- `title: XPath` (867 uses) - Title selectors
+- `body: XPath` (1973 uses) - Content selectors  
+- `author: XPath` (934 uses) - Author selectors
+- `date: XPath` (758 uses) - Date selectors
 
-### 1.3 Multi-page Support
-```javascript
-{
-  single_page_link: [],      // XPath to single-page version
-  single_page_link_in_feed: [], // For feed processing
-  next_page_link: [],        // XPath to next page
-  autodetect_next_page: true, // Auto-detect pagination
-}
-```
+**HTML Preprocessing (CRITICAL - Baldwin article fails without this):**
+- `find_string: string` (442 uses) - String to find for replacement
+- `replace_string: string` (442 uses) - Replacement string
+- Must be applied BEFORE XPath processing
 
-### 1.4 HTTP Configuration
-```javascript
-{
-  http_headers: {},     // Custom headers (User-Agent, Cookie, etc.)
-  requires_login: false, // Site requires authentication
-  login_uri: '',        // Login endpoint
-  login_username_field: '', // Username field name
-  login_password_field: '', // Password field name
-  not_logged_in_xpath: '',  // Detect if not logged in
-}
-```
+**Content Cleaning:**
+- `strip: XPath` (3302 uses) - Elements to remove completely
+- `strip_id_or_class: selector` (4863 uses) - Remove by ID/class
+- `strip_attr: attribute` (56 uses) - Strip attributes
+- `strip_image_src: pattern` (24 uses) - Remove images by source
+- `strip_comments: yes/no` (10 uses) - Remove HTML comments
+- `dissolve: XPath` (13 uses) - Unwrap elements (keep content)
 
-### 1.5 Advanced Features
-```javascript
-{
-  native_ad_clue: [],   // Detect native ads
-  if_page_contains: [], // Conditional processing
-  test_url: [],         // Test URLs for validation
-  test_contains: [],    // Expected content in tests
-  src_lazy_load_attr: [], // Lazy load attributes
-  insert_detected_image: true, // Insert lead images
-}
-```
+**Multi-page Support:**
+- `single_page_link: XPath` (107 uses) - Link to full article
+- `next_page_link: XPath` (91 uses) - Pagination links
+- `autodetect_next_page: yes/no` (8 uses) - Auto-detect pagination
 
-## Phase 2: Processing Pipeline (bookmarklet.js)
+**Authentication:**
+- `requires_login: yes/no` (50 uses) - Login required
+- `login_uri: URL` (51 uses) - Login page URL
+- `login_username_field: name` (51 uses) - Username field
+- `login_password_field: name` (51 uses) - Password field
+- `login_extra_fields: data` (102 uses) - Additional login fields
+- `not_logged_in_xpath: XPath` (50 uses) - Detect login requirement
 
-### 2.1 Pre-processing Stage
-1. **String Replacement** (find_string/replace_string)
-   - Apply before DOM parsing
-   - Handle special cases like `<noscript>` tags
-   - Fix lazy-loaded images
+**Processing Controls:**
+- `prune: yes/no` (824 uses) - Remove non-content elements
+- `tidy: yes/no` (399 uses) - Clean HTML
+- `parser: html5/libxml` (11 uses) - HTML parser to use
+- `convert_double_br_tags: yes/no` (32 uses) - Convert BR to P tags
+- `autodetect_on_failure: yes/no` (5 uses) - Fallback to Readability
+- `skip_json_ld: yes/no` (12 uses) - Skip structured data
+- `skip_id_or_class: selector` (5 uses) - Skip elements in extraction
 
-2. **HTML Cleaning** (tidy)
+**Testing & Validation:**
+- `test_url: URL` (2740 uses) - Test URLs for validation
+- `test_contains: text` (197 uses) - Expected content
+- `if_page_contains: text` (9 uses) - Conditional processing
+
+**Advanced Features:**
+- `footnotes: XPath` (12 uses) - Footnote handling
+- `native_ad_clue: pattern` (15 uses) - Native ad detection
+- `insert_detected_image: yes/no` (28 uses) - Add detected images
+- `src_lazy_load_attr: attribute` (2 uses) - Lazy loading support
+
+## Phase 1: Critical HTML Preprocessing (Fixes Baldwin Article)
+**Priority: HIGH - Required for 442 site configs**
+
+### 1.1 Implement find_string/replace_string Processing
+- Add preprocessing step before XPath evaluation
+- Support multiple find/replace pairs per config
+- Apply transformations to raw HTML before DOM parsing
+- **Immediate impact:** Fixes New Yorker and 441 other sites
+
+### 1.2 Enhanced Config Parser
+- Update configFetcher.js to parse all preprocessing directives
+- Maintain backward compatibility with existing basic parsing
+- Add validation for directive combinations
+
+## Phase 2: Core Content Extraction Enhancement
+**Priority: HIGH - Foundation for all extractions**
+
+### 2.1 Advanced XPath Processing
+- Improve XPath evaluation robustness
+- Add support for complex XPath expressions
+- Handle namespace issues in XML/HTML parsing
+
+### 2.2 Content Cleaning Pipeline
+- Implement `strip_id_or_class` (4863 uses - most common directive)
+- Add `strip_attr` and `strip_image_src` support
+- Implement `dissolve` for element unwrapping
+
+## Phase 3: Multi-page Article Support
+**Priority: MEDIUM - Affects 198+ sites with pagination**
+
+### 3.1 Single Page Detection
+- Implement `single_page_link` following
+- Add automatic single-page URL detection
+- Handle redirects and URL validation
+
+### 3.2 Pagination Handling
+- Implement `next_page_link` following
+- Add `autodetect_next_page` logic
+- Combine multiple pages into single article
+
+## Phase 4: Authentication & Paywall Bypass
+**Priority: LOW - Affects 50 sites but complex legal/technical issues**
+
+### 4.1 Login Support
+- Implement login flow handling
+- Add session management
+- Handle 2FA and complex auth flows
+
+### 4.2 Paywall Detection
+- Implement `not_logged_in_xpath` detection
+- Add paywall bypass strategies
+- Handle subscription content appropriately
+
+## Phase 5: Advanced Processing Controls
+**Priority: LOW-MEDIUM - Quality improvements**
+
+### 5.1 Processing Optimizations
+- `prune: yes/no` (824 uses) - Intelligent content pruning
+- `tidy: yes/no` (399 uses) - HTML cleanup and normalization
+- `convert_double_br_tags: yes/no` (32 uses) - Paragraph conversion
+- `parser: html5/libxml` (11 uses) - Parser selection
+
+### 5.2 Testing & Validation Framework
+- `test_url: URL` (2740 uses) - Automated config validation
+- `test_contains: text` (197 uses) - Content verification
+- `if_page_contains: text` (9 uses) - Conditional processing
+
+### 5.3 Image & Media Handling
+- `insert_detected_image: yes/no` (28 uses) - Lead image detection
+- `src_lazy_load_attr: attribute` (2 uses) - Lazy loading support
+- `native_ad_clue: pattern` (15 uses) - Native ad filtering
+
+## Implementation Roadmap
+
+### Quick Win: Baldwin Article Fix (Phase 1)
+**Estimated Time: 2-4 hours**
+1. Add `find_string`/`replace_string` preprocessing to configFetcher.js
+2. Update bookmarklet.js to apply HTML transformations before XPath
+3. Test specifically with New Yorker Baldwin article
+4. **Expected Result:** Baldwin article extracts perfectly
+
+### Foundation: Core Enhancement (Phase 2) 
+**Estimated Time: 1-2 days**
+1. Implement `strip_id_or_class` (most used directive - 4863 configs)
+2. Add advanced XPath processing improvements
+3. Enhanced error handling and fallback logic
+4. **Expected Result:** Dramatically improved extraction success rate
+
+### Scale: Multi-page Support (Phase 3)
+**Estimated Time: 2-3 days** 
+1. `single_page_link` following (107 configs benefit)
+2. `next_page_link` pagination (91 configs benefit)
+3. Content aggregation from multiple pages
+4. **Expected Result:** Full articles from paginated sites
+
+### Polish: Advanced Features (Phase 4-5)
+**Estimated Time: 3-5 days**
+1. Authentication/paywall handling (50 configs)
+2. Processing optimizations and quality improvements  
+3. Comprehensive testing framework
+4. **Expected Result:** Production-ready FiveFilters implementation
+
+## Technical Implementation Details
+
+### Critical Processing Pipeline
+1. **HTML Preprocessing** (BEFORE XPath evaluation)
+   - Apply `find_string`/`replace_string` transformations
+   - Handle lazy-loaded images and dynamic content
+   - Clean malformed HTML if `tidy: yes`
+
+2. **Content Extraction**
+   - Execute XPath selectors in priority order
+   - Apply `strip_id_or_class` removal (most critical)
+   - Handle multi-page article assembly
+
+3. **Post-processing**
+   - Content cleaning and validation
+   - Image URL fixing and lazy-load handling
+   - Final HTML normalization
+
+### Expected Impact
+- **Immediate:** Baldwin article and 441 other find_string/replace_string configs work
+- **Short-term:** 4863 configs using strip_id_or_class improve significantly  
+- **Long-term:** Complete FiveFilters ecosystem compatibility
    - Use DOMPurify or similar
    - Fix malformed HTML
    - Normalize encoding
