@@ -1,0 +1,143 @@
+[
+  {
+    "timestamp": 0,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.nytimes.com/2025/08/22/technology/trump-intel-stake.html",
+      "title": "Intel Agrees to Sell U.S. a 10% Stake in Its Business",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-23T08:05:26.704Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "processing",
+    "message": "Processing article: Intel Agrees to Sell U.S. a 10% Stake in Its Business",
+    "data": {},
+    "time": "2025-08-23T08:05:26.709Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Intel Agrees to Sell U.S. a 10% Stake in Its Business",
+      "contentLength": 37726,
+      "textContentLength": 9068,
+      "hasContent": true
+    },
+    "time": "2025-08-23T08:05:26.710Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-23T08:05:26.717Z"
+  },
+  {
+    "timestamp": 14,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Intel Agrees to Sell U.S. a 10% Stake in Its Business\"",
+    "data": {},
+    "time": "2025-08-23T08:05:26.718Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Intel Agrees to Sell U.S. a 10% Stake in Its Business",
+      "byline": "By Tripp Mickle, Lauren Hirsch and Ana Swanson",
+      "siteName": "nytimes.com",
+      "url": "https://www.nytimes.com/2025/08/22/technology/trump-intel-stake.html",
+      "publishedTime": "2025-08-22T18:26:37.000Z",
+      "contentLength": 37726,
+      "hasImages": true
+    },
+    "time": "2025-08-23T08:05:26.719Z"
+  },
+  {
+    "timestamp": 83,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Intel-Agrees-to-Sell-U.S.-a-10%-Stake-in-Its-Business_MENZ5H1E.html",
+      "contentSizeKB": "38.77"
+    },
+    "time": "2025-08-23T08:05:26.787Z"
+  },
+  {
+    "timestamp": 94,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Intel Agrees to Sell U.S. a 10% Stake in Its Business\"",
+    "data": {},
+    "time": "2025-08-23T08:05:26.798Z"
+  },
+  {
+    "timestamp": 95,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-23T08:05:26.799Z"
+  },
+  {
+    "timestamp": 624,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "QSQFI8KW"
+    },
+    "time": "2025-08-23T08:05:27.328Z"
+  },
+  {
+    "timestamp": 624,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-23T08:05:27.328Z"
+  },
+  {
+    "timestamp": 990,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-23T08:05:27.694Z"
+  },
+  {
+    "timestamp": 1571,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-23T08:05:28.275Z"
+  },
+  {
+    "timestamp": 1620,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "QSQFI8KW",
+      "attachmentKey": "VBCGIMS8"
+    },
+    "time": "2025-08-23T08:05:28.324Z"
+  },
+  {
+    "timestamp": 2229,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<fccacd71-1a5c-d36e-f3ec-fad16790502c@gmail.com>",
+      "filename": "Intel-Agrees-to-Sell-U.S.-a-10%-Stake-in-Its-Business_MENZ5H1E.html",
+      "subject": "Intel Agrees to Sell U.S. a 10% Stake in Its Business",
+      "sizekB": "38.77"
+    },
+    "time": "2025-08-23T08:05:28.933Z"
+  }
+]
