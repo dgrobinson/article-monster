@@ -51,45 +51,71 @@ class ConfigFetcher {
       strip: [],
       date: [],
       preferJsonLd: false,
-      htmlPreprocessing: []
+      // PHP-matching directive arrays
+      find_string: [],
+      replace_string: [],
+      strip_id_or_class: [],
+      strip_image_src: [],
+      single_page_link: [],
+      next_page_link: [],
+      test_url: [],
+      // PHP-matching boolean/string directives
+      prune: null,
+      tidy: null,
+      autodetect_on_failure: null,
+      parser: null
     };
-
-    let currentFindString = null;
 
     for (const line of lines) {
       const trimmed = line.trim();
-      if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('//')) continue;
+      // Skip comments and empty lines (PHP: $line == '' || $line[0] == '#')
+      if (!trimmed || trimmed[0] === '#') continue;
 
-      if (trimmed.startsWith('title:')) {
-        config.title.push(trimmed.substring(6).trim());
-      } else if (trimmed.startsWith('body:')) {
-        config.body.push(trimmed.substring(5).trim());
-      } else if (trimmed.startsWith('author:')) {
-        config.author.push(trimmed.substring(7).trim());
-      } else if (trimmed.startsWith('date:')) {
-        config.date.push(trimmed.substring(5).trim());
-      } else if (trimmed.startsWith('strip:')) {
-        config.strip.push(trimmed.substring(6).trim());
-      } else if (trimmed.startsWith('strip_id_or_class:')) {
-        // Convert class-based strips to XPath
-        const className = trimmed.substring(18).trim();
-        config.strip.push(`//*[contains(@class, '${className}') or contains(@id, '${className}')]`);
-      } else if (trimmed.startsWith('prefer_jsonld:')) {
-        const value = trimmed.substring(14).trim().toLowerCase();
-        config.preferJsonLd = value === 'true' || value === '1';
-      } else if (trimmed.startsWith('find_string:')) {
-        currentFindString = trimmed.substring(12).trim();
-      } else if (trimmed.startsWith('replace_string:')) {
-        const replaceString = trimmed.substring(15).trim();
-        if (currentFindString !== null) {
-          config.htmlPreprocessing.push({
-            find: currentFindString,
-            replace: replaceString
-          });
-          currentFindString = null;
+      // Split command and value (PHP: explode(':', $line, 2))
+      const commandParts = trimmed.split(':', 2);
+      if (commandParts.length !== 2) continue;
+
+      const command = commandParts[0].trim();
+      const val = commandParts[1].trim();
+      
+      if (!command || !val) continue;
+
+      // Multi-statement commands (PHP: in_array check for arrays)
+      if (['title', 'body', 'author', 'date', 'strip', 'strip_id_or_class', 'strip_image_src', 
+           'single_page_link', 'next_page_link', 'test_url', 'find_string', 'replace_string'].includes(command)) {
+        config[command].push(val);
+      }
+      // Boolean commands (PHP: $config->$command = ($val == 'yes' || $val == 'true'))
+      else if (['tidy', 'prune', 'autodetect_on_failure'].includes(command)) {
+        config[command] = (val === 'yes' || val === 'true');
+      }
+      // String commands  
+      else if (['parser'].includes(command)) {
+        config[command] = val;
+      }
+      // Parameterized commands: replace_string(find_text): replace_text
+      else if (command.endsWith(')')) {
+        const match = command.match(/^([a-z0-9_]+)\((.*?)\)$/i);
+        if (match && match[1] === 'replace_string') {
+          config.find_string.push(match[2]);
+          config.replace_string.push(val);
         }
       }
+      // Legacy preference
+      else if (command === 'prefer_jsonld') {
+        config.preferJsonLd = (val === 'true' || val === '1');
+      }
     }
+
+    // Convert find_string/replace_string pairs to preprocessing format for bookmarklet
+    const htmlPreprocessing = [];
+    for (let i = 0; i < Math.min(config.find_string.length, config.replace_string.length); i++) {
+      htmlPreprocessing.push({
+        find: config.find_string[i],
+        replace: config.replace_string[i]
+      });
+    }
+    config.htmlPreprocessing = htmlPreprocessing;
 
     // Only require body rules; title extraction can fall back to defaults
     return config.body.length > 0 ? config : null;
