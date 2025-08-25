@@ -487,6 +487,15 @@
           result.title = this._getArticleTitle();
         }
 
+        // Check for single page link before extracting body (PHP: makefulltextfeed.php)
+        var singlePageUrl = this._findSinglePageLink(config);
+        if (singlePageUrl && singlePageUrl !== window.location.href) {
+          // Found a single page link - navigate to full article
+          console.log('Found single page link, navigating to full article:', singlePageUrl);
+          window.location.href = singlePageUrl;
+          return null; // Don't process current page
+        }
+
         // Extract body
         if (config.body) {
           for (var i = 0; i < config.body.length; i++) {
@@ -738,6 +747,109 @@
           }
         }
       }
+    },
+
+    // Find single page link (matches PHP makefulltextfeed.php logic)
+    _findSinglePageLink: function(config) {
+      if (!config.single_page_link || config.single_page_link.length === 0) {
+        return null;
+      }
+
+      // Loop through single_page_link xpath expressions (PHP: foreach ($splink as $pattern))
+      for (var i = 0; i < config.single_page_link.length; i++) {
+        var pattern = config.single_page_link[i];
+        try {
+          // Try to evaluate as XPath returning a string (PHP: is_string($elems))
+          var result = this._doc.evaluate(
+            pattern,
+            this._doc,
+            null,
+            XPathResult.STRING_TYPE,
+            null
+          );
+          
+          if (result.stringValue && result.stringValue.trim()) {
+            var url = this._makeAbsoluteUrl(result.stringValue.trim());
+            if (url) return url;
+          }
+        } catch (e) {
+          // XPath failed, try as node selector
+        }
+
+        try {
+          // Try to evaluate as XPath returning nodes (PHP: $elems instanceof DOMNodeList)
+          var nodes = this._evaluateXPathAll(pattern);
+          if (nodes && nodes.length > 0) {
+            for (var j = 0; j < nodes.length; j++) {
+              var node = nodes[j];
+              // Check if it's an element with href attribute (PHP: hasAttribute('href'))
+              if (node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('href')) {
+                var url = this._makeAbsoluteUrl(node.getAttribute('href'));
+                if (url) return url;
+              }
+              // Also check if the text content looks like a URL
+              else if (node.textContent) {
+                var text = node.textContent.trim();
+                if (text.match(/^https?:\/\//)) {
+                  var url = this._makeAbsoluteUrl(text);
+                  if (url) return url;
+                }
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('Single page link XPath evaluation failed:', pattern, e);
+        }
+      }
+      
+      return null;
+    },
+
+    // Helper to evaluate XPath returning all matching nodes
+    _evaluateXPathAll: function(xpath, contextNode) {
+      try {
+        contextNode = contextNode || this._doc;
+        var result = this._doc.evaluate(
+          xpath,
+          contextNode,
+          null,
+          XPathResult.ORDERED_NODE_ITERATOR_TYPE,
+          null
+        );
+        
+        var nodes = [];
+        var node;
+        while (node = result.iterateNext()) {
+          nodes.push(node);
+        }
+        return nodes;
+      } catch (e) {
+        console.warn('XPath evaluation failed:', xpath, e);
+        return [];
+      }
+    },
+
+    // Make URL absolute (basic implementation)
+    _makeAbsoluteUrl: function(url) {
+      if (!url) return null;
+      
+      // Already absolute
+      if (url.match(/^https?:\/\//)) {
+        return url;
+      }
+      
+      // Protocol-relative
+      if (url.startsWith('//')) {
+        return window.location.protocol + url;
+      }
+      
+      // Absolute path
+      if (url.startsWith('/')) {
+        return window.location.protocol + '//' + window.location.host + url;
+      }
+      
+      // Relative path - more complex, skip for now
+      return null;
     },
 
     // Note: HTML preprocessing now handled by standalone applyHtmlPreprocessing() function
