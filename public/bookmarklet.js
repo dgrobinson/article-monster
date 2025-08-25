@@ -460,10 +460,7 @@
         // If site prefers JSON-LD, let that handler take over
         if (config.preferJsonLd) return null;
 
-        // Apply HTML preprocessing if configured
-        if (config.htmlPreprocessing && config.htmlPreprocessing.length > 0) {
-          this._applyHtmlPreprocessing(config.htmlPreprocessing);
-        }
+        // Note: HTML preprocessing now handled before Readability parsing
 
         var result = {
           source: 'site-config',
@@ -495,8 +492,8 @@
           for (var i = 0; i < config.body.length; i++) {
             var element = this._evaluateXPath(config.body[i]);
             if (element && element.textContent && element.textContent.length > 500) {
-              // Clone and clean the element
-              var cleanElement = this._cleanElementWithConfig(element, config.strip || []);
+              // Clone and clean the element with full config
+              var cleanElement = this._cleanElementWithConfig(element, config);
               result.content = cleanElement.innerHTML;
               result.textContent = cleanElement.textContent || cleanElement.innerText || '';
               result.length = result.textContent.length;
@@ -551,23 +548,45 @@
       }
     },
 
-    _cleanElementWithConfig: function(element, stripXPaths) {
+    _cleanElementWithConfig: function(element, config) {
       var clone = element.cloneNode(true);
 
-      // Remove elements specified in strip rules
-      for (var i = 0; i < stripXPaths.length; i++) {
-        var elementsToRemove = this._doc.evaluate(
-          stripXPaths[i],
-          clone,
-          null,
-          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
-          null
-        );
+      // Apply XPath-based strip rules (PHP: strip array)
+      if (config.strip && config.strip.length > 0) {
+        for (var i = 0; i < config.strip.length; i++) {
+          var elementsToRemove = this._doc.evaluate(
+            config.strip[i],
+            clone,
+            null,
+            XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+            null
+          );
 
-        for (var j = elementsToRemove.snapshotLength - 1; j >= 0; j--) {
-          var elementToRemove = elementsToRemove.snapshotItem(j);
-          if (elementToRemove && elementToRemove.remove) {
-            elementToRemove.remove();
+          for (var j = elementsToRemove.snapshotLength - 1; j >= 0; j--) {
+            var elementToRemove = elementsToRemove.snapshotItem(j);
+            if (elementToRemove && elementToRemove.remove) {
+              elementToRemove.remove();
+            }
+          }
+        }
+      }
+
+      // Apply strip_id_or_class rules (PHP: strip_id_or_class array)
+      if (config.strip_id_or_class && config.strip_id_or_class.length > 0) {
+        for (var i = 0; i < config.strip_id_or_class.length; i++) {
+          var selector = config.strip_id_or_class[i];
+          // Remove quotes (PHP: strtr($string, array("'"=>'', '"'=>'')))
+          selector = selector.replace(/['"]/g, '');
+          
+          // Find elements by class or id containing this string
+          var elementsToRemove = clone.querySelectorAll(
+            '[class*="' + selector + '"], [id*="' + selector + '"]'
+          );
+          
+          for (var j = elementsToRemove.length - 1; j >= 0; j--) {
+            if (elementsToRemove[j] && elementsToRemove[j].remove) {
+              elementsToRemove[j].remove();
+            }
           }
         }
       }
@@ -575,26 +594,7 @@
       return clone;
     },
 
-    _applyHtmlPreprocessing: function(preprocessingRules) {
-      for (var i = 0; i < preprocessingRules.length; i++) {
-        var rule = preprocessingRules[i];
-        if (rule.find && rule.replace !== undefined) {
-          // Apply find/replace to the document HTML
-          var htmlContent = this._doc.documentElement.innerHTML;
-          var regex = new RegExp(this._escapeRegex(rule.find), 'g');
-          var modifiedContent = htmlContent.replace(regex, rule.replace);
-          
-          if (modifiedContent !== htmlContent) {
-            this._doc.documentElement.innerHTML = modifiedContent;
-            console.log('Applied HTML preprocessing:', rule.find, '->', rule.replace);
-          }
-        }
-      }
-    },
-
-    _escapeRegex: function(string) {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    },
+    // Note: HTML preprocessing now handled by standalone applyHtmlPreprocessing() function
 
     _getCachedConfig: function(hostname) {
       try {
@@ -843,17 +843,46 @@
     }
   };
 
+  // Standalone HTML preprocessing function (matches PHP str_replace logic)
+  function applyHtmlPreprocessing(html, preprocessingRules) {
+    var modifiedHtml = html;
+    for (var i = 0; i < preprocessingRules.length; i++) {
+      var rule = preprocessingRules[i];
+      if (rule.find && rule.replace !== undefined) {
+        // PHP uses str_replace (literal), not regex
+        var findString = rule.find;
+        var replaceString = rule.replace;
+        modifiedHtml = modifiedHtml.split(findString).join(replaceString);
+        console.log('Applied HTML preprocessing:', findString, '->', replaceString);
+      }
+    }
+    return modifiedHtml;
+  }
+
   // Async function to extract article, waiting for site config if needed
   function extractArticleWithConfig(indicator) {
     return new Promise(function(resolve, reject) {
       var hostname = window.location.hostname.replace(/^www\./, '');
-      var reader = new Readability(document);
-
+      
       // Check if we have a cached config from a previous fetch
-      var config = reader._getCachedConfig(hostname);
+      var tempReader = new Readability(document);
+      var config = tempReader._getCachedConfig(hostname);
 
-      if (config) {
-        // We have config, extract immediately
+      if (config && config.htmlPreprocessing && config.htmlPreprocessing.length > 0) {
+        // Apply HTML preprocessing before DOM parsing (like PHP implementation)
+        var rawHtml = document.documentElement.outerHTML;
+        var preprocessedHtml = applyHtmlPreprocessing(rawHtml, config.htmlPreprocessing);
+        
+        // Create new document from preprocessed HTML
+        var parser = new DOMParser();
+        var preprocessedDoc = parser.parseFromString(preprocessedHtml, 'text/html');
+        var reader = new Readability(preprocessedDoc);
+        var article = reader.parse();
+        resolve(article);
+        return;
+      } else if (config) {
+        // We have config but no preprocessing needed, extract immediately
+        var reader = new Readability(document);
         var article = reader.parse();
 
         // Debug: Check what Readability returns
@@ -894,9 +923,19 @@
 
             updateIndicator(indicator, '📖 Extracting with site-specific rules...');
 
-            // Create a new reader instance that will have access to the cached config
-            reader = new Readability(document);
-            var article = reader.parse();
+            // Apply preprocessing if needed, then extract
+            if (data.config.htmlPreprocessing && data.config.htmlPreprocessing.length > 0) {
+              var rawHtml = document.documentElement.outerHTML;
+              var preprocessedHtml = applyHtmlPreprocessing(rawHtml, data.config.htmlPreprocessing);
+              var parser = new DOMParser();
+              var preprocessedDoc = parser.parseFromString(preprocessedHtml, 'text/html');
+              var reader = new Readability(preprocessedDoc);
+              var article = reader.parse();
+            } else {
+              // No preprocessing needed
+              var reader = new Readability(document);
+              var article = reader.parse();
+            }
             resolve(article);
           } else {
             // No config available, fall back to regular extraction
