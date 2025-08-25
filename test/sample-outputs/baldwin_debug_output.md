@@ -2,7 +2,44 @@ ARTICLE EXTRACTION DEBUG REPORT
 URL: https://www.newyorker.com/magazine/2025/08/18/baldwin-a-love-story-nicholas-boggs-book-review
 Title: The Lives and Loves of James Baldwin
 Date: 2025-08-15T14:44:53.544Z
-Extraction Status: SUCCESS
+Extraction Status: SUCCESS (Previous test - before architectural fix)
+
+========================================
+CIRCULAR PATTERN DISCOVERY (2025-08-25)
+========================================
+After 12+ failed attempts, identified root cause was NOT just preprocessing timing,
+but a complete disconnect between preprocessing and XPath extraction.
+
+THE CIRCULAR PATTERN:
+1. Attempt 1-12: "Baldwin article fails with undefined title"
+2. Fix: "Apply preprocessing to raw HTML before DOM parsing"
+3. Result: "Still fails with undefined title"
+4. Analysis: "Must be preprocessing timing issue"
+5. Fix: "Better preprocessing timing"
+6. Result: "Still fails with undefined title"
+7. Repeat...
+
+THE ACTUAL PROBLEM:
+- Preprocessing WAS working correctly (`<header` → `<em`)
+- BUT preprocessed document was passed to Readability.parse(), not XPath extraction
+- New Yorker config has: `body: //em[@data-testid='SplitScreenContentHeaderWrapper']`
+- We never ran these XPath rules! Just ran standard Readability on preprocessed DOM
+- Readability returned undefined title because it couldn't find standard title elements
+
+THE SOLUTION:
+Match PHP FiveFilters flow exactly:
+1. Preprocess HTML string (str_replace)
+2. Parse to DOM (Readability constructor)  
+3. Try XPath extraction on preprocessed DOM (ContentExtractor::process)
+4. Only if XPath fails, fall back to Readability auto-detection (autodetect_on_failure)
+
+ARCHITECTURAL FIX IMPLEMENTED:
+- Modified extractArticleWithConfig() to follow PHP flow
+- XPath extraction now operates on preprocessed document
+- Added proper fallback chain: XPath → Readability
+- Both cached and dynamic config paths fixed
+
+Next test should show successful extraction using XPath rules.
 
 
 ========================================

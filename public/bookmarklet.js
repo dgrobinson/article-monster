@@ -1126,31 +1126,37 @@
       var tempReader = new Readability(document);
       var config = tempReader._getCachedConfig(hostname);
 
-      if (config && config.htmlPreprocessing && config.htmlPreprocessing.length > 0) {
-        // Apply HTML preprocessing before DOM parsing (like PHP implementation)
+      if (config) {
+        // We have config - follow PHP FiveFilters flow exactly
         var rawHtml = document.documentElement.outerHTML;
-        var preprocessedHtml = applyHtmlPreprocessing(rawHtml, config.htmlPreprocessing);
+        var finalHtml = rawHtml;
         
-        // Create new document from preprocessed HTML
-        var parser = new DOMParser();
-        var preprocessedDoc = parser.parseFromString(preprocessedHtml, 'text/html');
-        var reader = new Readability(preprocessedDoc);
-        var article = reader.parse();
-        resolve(article);
-        return;
-      } else if (config) {
-        // We have config but no preprocessing needed, extract immediately
-        var reader = new Readability(document);
-        var article = reader.parse();
-
-        // Debug: Check what Readability returns
-        if (article && article.content) {
-          const readabilityBrCount = (article.content.match(/<br>/gi) || []).length;
-          const readabilityNewlineCount = (article.content.match(/\n/g) || []).length;
-          const readabilityPCount = (article.content.match(/<p>/gi) || []).length;
-          console.log(`Readability.js returned: ${readabilityPCount} <p> tags, ${readabilityBrCount} <br> tags, ${readabilityNewlineCount} newlines`);
+        // Step 1: Apply HTML preprocessing if needed (matches PHP str_replace)
+        if (config.htmlPreprocessing && config.htmlPreprocessing.length > 0) {
+          finalHtml = applyHtmlPreprocessing(rawHtml, config.htmlPreprocessing);
+          console.log('Applied', config.htmlPreprocessing.length, 'preprocessing rules');
         }
-
+        
+        // Step 2: Parse HTML to DOM (matches PHP Readability constructor)
+        var parser = new DOMParser();
+        var processedDoc = parser.parseFromString(finalHtml, 'text/html');
+        
+        // Step 3: Try XPath extraction first (matches PHP ContentExtractor::process)
+        var reader = new Readability(processedDoc);
+        var siteConfigResult = reader._extractWithSiteConfig();
+        
+        if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
+          console.log('Extraction successful using FiveFilters XPath rules');
+          resolve(siteConfigResult);
+          return;
+        }
+        
+        // Step 4: XPath failed, fall back to Readability auto-detection (matches PHP autodetect_on_failure)
+        console.log('XPath extraction failed, falling back to Readability auto-detection');
+        var article = reader.parse();
+        if (article) {
+          article.extractionNote = 'XPath rules failed, used Readability fallback';
+        }
         resolve(article);
         return;
       }
@@ -1181,18 +1187,35 @@
 
             updateIndicator(indicator, '📖 Extracting with site-specific rules...');
 
-            // Apply preprocessing if needed, then extract
+            // Follow PHP FiveFilters flow exactly (same logic as cached config path)
+            var rawHtml = document.documentElement.outerHTML;
+            var finalHtml = rawHtml;
+            
+            // Step 1: Apply HTML preprocessing if needed
             if (data.config.htmlPreprocessing && data.config.htmlPreprocessing.length > 0) {
-              var rawHtml = document.documentElement.outerHTML;
-              var preprocessedHtml = applyHtmlPreprocessing(rawHtml, data.config.htmlPreprocessing);
-              var parser = new DOMParser();
-              var preprocessedDoc = parser.parseFromString(preprocessedHtml, 'text/html');
-              var reader = new Readability(preprocessedDoc);
-              var article = reader.parse();
+              finalHtml = applyHtmlPreprocessing(rawHtml, data.config.htmlPreprocessing);
+              console.log('Applied', data.config.htmlPreprocessing.length, 'preprocessing rules');
+            }
+            
+            // Step 2: Parse HTML to DOM
+            var parser = new DOMParser();
+            var processedDoc = parser.parseFromString(finalHtml, 'text/html');
+            
+            // Step 3: Try XPath extraction first
+            var reader = new Readability(processedDoc);
+            var siteConfigResult = reader._extractWithSiteConfig();
+            
+            var article;
+            if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
+              console.log('Extraction successful using FiveFilters XPath rules');
+              article = siteConfigResult;
             } else {
-              // No preprocessing needed
-              var reader = new Readability(document);
-              var article = reader.parse();
+              // Step 4: XPath failed, fall back to Readability
+              console.log('XPath extraction failed, falling back to Readability auto-detection');
+              article = reader.parse();
+              if (article) {
+                article.extractionNote = 'XPath rules failed, used Readability fallback';
+              }
             }
             resolve(article);
           } else {

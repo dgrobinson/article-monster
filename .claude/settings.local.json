@@ -65,7 +65,8 @@
       "Bash(git fetch:*)",
       "Bash(git pull:*)",
       "Bash(npm run lint:*)",
-      "Bash(open /tmp/test-innerhtml.html)"
+      "Bash(open /tmp/test-innerhtml.html)",
+      "Bash(git clone:*)"
     ],
     "deny": [],
     "defaultMode": "acceptEdits",
