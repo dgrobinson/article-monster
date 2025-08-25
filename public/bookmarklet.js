@@ -591,7 +591,153 @@
         }
       }
 
+      // Apply strip_image_src rules (PHP: strip_image_src array) 
+      if (config.strip_image_src && config.strip_image_src.length > 0) {
+        for (var i = 0; i < config.strip_image_src.length; i++) {
+          var srcPattern = config.strip_image_src[i];
+          // Remove quotes (PHP: strtr($string, array("'"=>'', '"'=>'')))
+          srcPattern = srcPattern.replace(/['"]/g, '');
+          
+          // Find img elements with src containing this string
+          var imagesToRemove = clone.querySelectorAll('img[src*="' + srcPattern + '"]');
+          
+          for (var j = imagesToRemove.length - 1; j >= 0; j--) {
+            if (imagesToRemove[j] && imagesToRemove[j].remove) {
+              imagesToRemove[j].remove();
+            }
+          }
+        }
+      }
+
+      // Apply prune directive (PHP: $this->readability->prepArticle($this->body))
+      if (config.prune === true) {
+        this._pruneContent(clone);
+      }
+
+      // Apply tidy directive (clean up HTML structure)
+      if (config.tidy === true) {
+        this._tidyContent(clone);
+      }
+
       return clone;
+    },
+
+    // Content pruning (matches PHP Readability::prepArticle)
+    _pruneContent: function(element) {
+      // Remove service data attributes
+      var serviceData = element.querySelectorAll('[data-candidate]');
+      for (var i = 0; i < serviceData.length; i++) {
+        serviceData[i].removeAttribute('data-candidate');
+      }
+      
+      // Remove unrelated links and other elements
+      var nofollowLinks = element.querySelectorAll('a[rel="nofollow"]');
+      for (var i = nofollowLinks.length - 1; i >= 0; i--) {
+        if (nofollowLinks[i] && nofollowLinks[i].remove) {
+          nofollowLinks[i].remove();
+        }
+      }
+      
+      // Clean out junk from the article content (matches PHP clean() calls)
+      var junkSelectors = ['input', 'button', 'nav', 'object', 'iframe', 'canvas'];
+      for (var i = 0; i < junkSelectors.length; i++) {
+        var elements = element.querySelectorAll(junkSelectors[i]);
+        for (var j = elements.length - 1; j >= 0; j--) {
+          if (elements[j] && elements[j].remove) {
+            elements[j].remove();
+          }
+        }
+      }
+      
+      // Remove h1 elements (already have title)
+      var h1Elements = element.querySelectorAll('h1');
+      for (var i = h1Elements.length - 1; i >= 0; i--) {
+        if (h1Elements[i] && h1Elements[i].remove) {
+          h1Elements[i].remove();
+        }
+      }
+      
+      // Clean up empty elements and normalize whitespace
+      this._cleanEmptyElements(element);
+    },
+    
+    _cleanEmptyElements: function(element) {
+      // Remove elements that are empty or contain only whitespace
+      var emptyElements = element.querySelectorAll('p:empty, div:empty, span:empty');
+      for (var i = 0; i < emptyElements.length; i++) {
+        if (emptyElements[i] && emptyElements[i].remove) {
+          emptyElements[i].remove();
+        }
+      }
+      
+      // Clean up elements that only contain whitespace
+      var textNodes = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+      );
+      
+      var node;
+      while (node = textNodes.nextNode()) {
+        if (node.nodeValue && /^\s*$/.test(node.nodeValue)) {
+          // Node contains only whitespace
+          var parent = node.parentNode;
+          if (parent && parent.childNodes.length === 1) {
+            // Parent only contains this whitespace node, remove parent
+            if (parent.remove) {
+              parent.remove();
+            }
+          }
+        }
+      }
+    },
+    
+    // HTML tidy functionality (basic cleanup)
+    _tidyContent: function(element) {
+      // Fix common HTML structure issues
+      // Convert multiple BR tags to paragraphs
+      var brGroups = element.querySelectorAll('br + br');
+      for (var i = 0; i < brGroups.length; i++) {
+        var br = brGroups[i];
+        if (br.previousElementSibling && br.previousElementSibling.tagName === 'BR') {
+          // Replace double BRs with paragraph breaks
+          var p = document.createElement('p');
+          br.parentNode.insertBefore(p, br);
+          br.remove();
+          if (br.previousElementSibling) {
+            br.previousElementSibling.remove();
+          }
+        }
+      }
+      
+      // Clean up excessive whitespace
+      var walker = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+      );
+      
+      var textNode;
+      while (textNode = walker.nextNode()) {
+        if (textNode.nodeValue) {
+          // Normalize whitespace but preserve intentional line breaks
+          textNode.nodeValue = textNode.nodeValue.replace(/[ \t]+/g, ' ');
+        }
+      }
+      
+      // Remove empty attributes
+      var allElements = element.querySelectorAll('*');
+      for (var i = 0; i < allElements.length; i++) {
+        var el = allElements[i];
+        for (var j = el.attributes.length - 1; j >= 0; j--) {
+          var attr = el.attributes[j];
+          if (!attr.value || attr.value.trim() === '') {
+            el.removeAttribute(attr.name);
+          }
+        }
+      }
     },
 
     // Note: HTML preprocessing now handled by standalone applyHtmlPreprocessing() function
