@@ -496,17 +496,37 @@
           return null; // Don't process current page
         }
 
-        // Extract body
+        // Extract body (matches PHP: no minimum length, handles multiple elements)
         if (config.body) {
           for (var i = 0; i < config.body.length; i++) {
-            var element = this._evaluateXPath(config.body[i]);
-            if (element && element.textContent && element.textContent.length > 500) {
+            var elements = this._evaluateXPathAll(config.body[i]);
+            if (elements && elements.length > 0) {
+              console.log('Body matched:', elements.length, 'element(s) for XPath:', config.body[i]);
+              
+              var bodyElement;
+              if (elements.length === 1) {
+                // Single element (matches PHP: $this->body = $elems->item(0))
+                bodyElement = elements[0];
+              } else {
+                // Multiple elements - combine them (matches PHP logic)
+                bodyElement = this._doc.createElement('div');
+                for (var j = 0; j < elements.length; j++) {
+                  var clonedNode = elements[j].cloneNode(true);
+                  bodyElement.appendChild(clonedNode);
+                }
+                console.log('Combined', elements.length, 'body elements into single container');
+              }
+              
               // Clone and clean the element with full config
-              var cleanElement = this._cleanElementWithConfig(element, config);
+              var cleanElement = this._cleanElementWithConfig(bodyElement, config);
               result.content = cleanElement.innerHTML;
               result.textContent = cleanElement.textContent || cleanElement.innerText || '';
               result.length = result.textContent.length;
-              break;
+              
+              // Only accept if we have some content (basic sanity check)
+              if (result.textContent && result.textContent.trim().length > 0) {
+                break;
+              }
             }
           }
         }
