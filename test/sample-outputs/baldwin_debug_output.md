@@ -41,6 +41,64 @@ ARCHITECTURAL FIX IMPLEMENTED:
 
 Next test should show successful extraction using XPath rules.
 
+========================================
+REAL ROOT CAUSE DISCOVERED (2025-08-26)
+========================================
+The architectural fix was CORRECT, but we had implementation differences from PHP:
+
+**PHP FiveFilters behavior:**
+- No minimum character requirement for body elements  
+- Handles multiple XPath matches by combining them into one div
+- Processes OR expressions fully: `//em[@data-testid='...'] | //div[@class='...']`
+
+**Our JavaScript (before fix):**
+- Required 500+ characters (rejected short header elements)
+- Only used single XPath match (_evaluateXPath)  
+- Skipped remaining OR selectors after first failure
+
+**New Yorker config explained:**
+- `find_string: <header` → `replace_string: <em`  
+- `body: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']`
+- PHP finds BOTH the transformed header (now <em>) AND body container
+- Combines them into single content block
+- Our old code rejected the <em> for being "too short"
+
+**Latest fix attempt (2025-08-26):**
+1. Removed 500 character minimum requirement
+2. Use `_evaluateXPathAll` to get multiple matching elements
+3. Combine multiple matches like PHP does  
+4. Process all XPath selectors in OR expressions
+
+**Status:** UNTESTED - needs verification in production
+
+This SHOULD now extract Baldwin article successfully using the unmodified FiveFilters config, but we need to test it to confirm the fix actually works.
+
+========================================  
+TAG MISMATCH ROOT CAUSE (2025-08-26)
+========================================
+Discovered the actual issue: **mismatched HTML tags after preprocessing**
+
+**The Problem:**
+- FiveFilters config: `find_string: <header` → `replace_string: <em`
+- This creates: `<em data-testid="...">content</header>` (mismatched tags!)
+- **PHP's DOMDocument**: Uses LIBXML_NOERROR, silently auto-corrects mismatched tags
+- **JavaScript's DOMParser**: Stricter, handles mismatches unpredictably, may break element
+
+**Investigation showed:**
+- Many FiveFilters sites use partial tag replacement (intentional pattern)
+- `<noscript>` → `<div>`, `<header` → `<em`, etc.
+- PHP auto-fixes these, JavaScript doesn't
+
+**Final fix applied:**
+Auto-generate closing tag replacements to ensure valid HTML:
+- Detect pattern: `<tagname` → `<newtag`  
+- Auto-add: `</tagname>` → `</newtag>`
+- For New Yorker: `<header` → `<em` also generates `</header>` → `</em>`
+
+**Expected result:** Valid HTML with proper `<em>` elements that XPath can find.
+
+**Status:** IMPLEMENTED - ready for testing
+
 
 ========================================
 EXTRACTION METADATA

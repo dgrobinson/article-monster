@@ -1124,6 +1124,8 @@
   // Standalone HTML preprocessing function (matches PHP str_replace logic)
   function applyHtmlPreprocessing(html, preprocessingRules) {
     var modifiedHtml = html;
+    var extraRules = [];
+    
     for (var i = 0; i < preprocessingRules.length; i++) {
       var rule = preprocessingRules[i];
       if (rule.find && rule.replace !== undefined) {
@@ -1132,8 +1134,41 @@
         var replaceString = rule.replace;
         modifiedHtml = modifiedHtml.split(findString).join(replaceString);
         console.log('Applied HTML preprocessing:', findString, '->', replaceString);
+        
+        // Auto-generate closing tag replacement for opening tags
+        // Pattern: <tagname -> <newtag should also create </tagname -> </newtag
+        var openingTagMatch = findString.match(/^<([a-zA-Z][a-zA-Z0-9-]*)$/);
+        var replaceTagMatch = replaceString.match(/^<([a-zA-Z][a-zA-Z0-9-]*)$/);
+        
+        if (openingTagMatch && replaceTagMatch) {
+          var originalTag = openingTagMatch[1];
+          var newTag = replaceTagMatch[1];
+          var closingFind = '</' + originalTag + '>';
+          var closingReplace = '</' + newTag + '>';
+          
+          // Only add if not already explicitly defined
+          var alreadyDefined = preprocessingRules.some(function(r) {
+            return r.find === closingFind;
+          });
+          
+          if (!alreadyDefined) {
+            extraRules.push({
+              find: closingFind,
+              replace: closingReplace
+            });
+            console.log('Auto-generated closing tag rule:', closingFind, '->', closingReplace);
+          }
+        }
       }
     }
+    
+    // Apply auto-generated closing tag rules
+    for (var j = 0; j < extraRules.length; j++) {
+      var extraRule = extraRules[j];
+      modifiedHtml = modifiedHtml.split(extraRule.find).join(extraRule.replace);
+      console.log('Applied auto-generated rule:', extraRule.find, '->', extraRule.replace);
+    }
+    
     return modifiedHtml;
   }
 
