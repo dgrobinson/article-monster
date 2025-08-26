@@ -1,0 +1,143 @@
+[
+  {
+    "timestamp": 0,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/magazine/2025/08/18/baldwin-a-love-story-nicholas-boggs-book-review",
+      "title": "The Lives and Loves of James Baldwin",
+      "hasContent": true,
+      "hasBase64": false
+    },
+    "time": "2025-08-26T21:08:36.444Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "processing",
+    "message": "Processing article: The Lives and Loves of James Baldwin",
+    "data": {},
+    "time": "2025-08-26T21:08:36.445Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "The Lives and Loves of James Baldwin",
+      "contentLength": 23192,
+      "textContentLength": 9428,
+      "hasContent": true
+    },
+    "time": "2025-08-26T21:08:36.445Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-26T21:08:36.446Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"The Lives and Loves of James Baldwin\"",
+    "data": {},
+    "time": "2025-08-26T21:08:36.446Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "The Lives and Loves of James Baldwin",
+      "byline": "Louis Menand",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/magazine/2025/08/18/baldwin-a-love-story-nicholas-boggs-book-review",
+      "publishedTime": "2025-08-11T10:00:00.000Z",
+      "contentLength": 23192,
+      "hasImages": false
+    },
+    "time": "2025-08-26T21:08:36.446Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "The-Lives-and-Loves-of-James-Baldwin_MET1G6HR.html",
+      "contentSizeKB": "24.56"
+    },
+    "time": "2025-08-26T21:08:36.447Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"The Lives and Loves of James Baldwin\"",
+    "data": {},
+    "time": "2025-08-26T21:08:36.450Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-26T21:08:36.451Z"
+  },
+  {
+    "timestamp": 337,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "ES7JWR3R"
+    },
+    "time": "2025-08-26T21:08:36.781Z"
+  },
+  {
+    "timestamp": 337,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-26T21:08:36.781Z"
+  },
+  {
+    "timestamp": 507,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-26T21:08:36.951Z"
+  },
+  {
+    "timestamp": 1115,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-26T21:08:37.559Z"
+  },
+  {
+    "timestamp": 1169,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "ES7JWR3R",
+      "attachmentKey": "S5KVRI3T"
+    },
+    "time": "2025-08-26T21:08:37.613Z"
+  },
+  {
+    "timestamp": 1522,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<c129b165-56a4-45c8-0bf9-99a2d1018e71@gmail.com>",
+      "filename": "The-Lives-and-Loves-of-James-Baldwin_MET1G6HR.html",
+      "subject": "The Lives and Loves of James Baldwin",
+      "sizekB": "24.56"
+    },
+    "time": "2025-08-26T21:08:37.966Z"
+  }
+]
