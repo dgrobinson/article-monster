@@ -7,8 +7,8 @@
     "start": "./start-simple.sh",
     "dev": "node --watch src/server.js",
     "test": "node src/test.js",
-    "lint": "npx eslint src/**/*.js public/**/*.js test-*.js --ignore-pattern node_modules/",
-    "lint:fix": "npx eslint src/**/*.js public/**/*.js test-*.js --fix --ignore-pattern node_modules/",
+    "lint": "npx eslint src/**/*.js public/**/*.js --ignore-pattern node_modules/",
+    "lint:fix": "npx eslint src/**/*.js public/**/*.js --fix --ignore-pattern node_modules/",
     "update:site-configs": "git subtree pull --prefix=site-configs https://github.com/fivefilters/ftr-site-config master --squash"
   },
   "dependencies": {

@@ -5,7 +5,7 @@ const fs = require('fs').promises;
 async function generateEpub(article) {
   try {
     console.log(`Generating EPUB for: "${article.title}"`);
-    
+
     // Create extraction diagnostics metadata
     const extractionDiagnostics = {
       generatedAt: new Date().toISOString(),
@@ -21,7 +21,7 @@ async function generateEpub(article) {
       },
       debugInfo: article.debugInfo || null
     };
-    
+
     // Log detailed article structure for comparison
     console.log('EPUB Generation - Input Article:', JSON.stringify({
       title: article.title,
@@ -36,13 +36,13 @@ async function generateEpub(article) {
 
     // Pass diagnostics through to the EPUB content
     article.extractionDiagnostics = extractionDiagnostics;
-    
+
     const filename = `${sanitizeFilename(article.title)}.epub`;
     const outputPath = path.join('/tmp', filename);
-    
+
     console.log('EPUB Generation - Filename:', filename);
     console.log('EPUB Generation - Output path:', outputPath);
-    
+
     const options = {
       title: article.title,
       author: article.byline || 'Unknown Author',
@@ -149,12 +149,12 @@ async function generateEpub(article) {
 
     // Generate EPUB
     const epub = new Epub(options);
-    
+
     await epub.promise;
-    
+
     // Read the generated file
     const epubBuffer = await fs.readFile(outputPath);
-    
+
     // Clean up temp file
     try {
       await fs.unlink(outputPath);
@@ -168,14 +168,14 @@ async function generateEpub(article) {
       sizeKB: (epubBuffer.length / 1024).toFixed(2),
       sizeBytes: epubBuffer.length
     });
-    
+
     // Save a copy for debugging (only in development)
     if (process.env.NODE_ENV !== 'production') {
       const debugPath = path.join('/tmp', `debug_${Date.now()}_${filename}`);
       await fs.writeFile(debugPath, epubBuffer);
       console.log('EPUB Generation - Debug copy saved to:', debugPath);
     }
-    
+
     return {
       filename,
       buffer: epubBuffer,
@@ -195,28 +195,28 @@ function createEpubChapters(article) {
 
 function createMultiChapterEpub(article) {
   var chapters = [];
-  
+
   // Add introduction chapter with metadata
   chapters.push({
     title: 'Article Information',
     data: createMetadataChapter(article)
   });
-  
+
   // Simple regex-based section parsing (avoid JSDOM dependency)
   var sectionRegex = /<section[^>]*class="content-section"[^>]*>(.*?)<\/section>/gs;
   var sections = [];
   var match;
-  
+
   while ((match = sectionRegex.exec(article.content)) !== null) {
     sections.push(match[1]);
   }
-  
+
   if (sections.length > 0) {
     sections.forEach(function(sectionContent, index) {
       // Extract title from first header in section
       var headerMatch = sectionContent.match(/<h[1-6][^>]*>(.*?)<\/h[1-6]>/i);
       var title = headerMatch ? headerMatch[1].replace(/<[^>]*>/g, '').trim() : `Section ${index + 1}`;
-      
+
       chapters.push({
         title: title,
         data: `<div class="content">${sectionContent}</div>`
@@ -229,13 +229,13 @@ function createMultiChapterEpub(article) {
       data: createMainContent(article)
     });
   }
-  
+
   // Add source information as final chapter
   chapters.push({
     title: 'Source Information',
     data: createSourceChapter(article)
   });
-  
+
   return chapters;
 }
 
@@ -251,7 +251,7 @@ function createSingleChapterEpub(article) {
 function createEpubContent(article) {
   // Get extraction diagnostics if available
   const diagnostics = article.extractionDiagnostics || {};
-  
+
   return `
     <h1>${escapeHtml(article.title)}</h1>
     
@@ -331,16 +331,16 @@ function sanitizeFilename(filename) {
   var baseFilename = filename
     .trim()
     .replace(/[<>:"/\\|?*]/g, '') // Remove filesystem-unsafe characters only
-    .replace(/\s+/g, '-') // Replace spaces with hyphens  
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
     .replace(/-+/g, '-') // Collapse multiple hyphens
     .replace(/^-|-$/g, '') // Remove leading/trailing hyphens
     .substring(0, 80); // Leave room for unique suffix
-  
+
   // Generate unique 8-character suffix like FiveFilters (timestamp + random)
   var timestamp = Date.now().toString(36); // Base36 encoding
   var random = Math.random().toString(36).substring(2, 5); // 3 random chars
   var uniqueId = (timestamp + random).substring(0, 8).toUpperCase();
-  
+
   return baseFilename + '_' + uniqueId;
 }
 

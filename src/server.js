@@ -60,7 +60,7 @@ app.get('/site-config/:hostname', async (req, res) => {
   try {
     const hostname = req.params.hostname;
     const config = await configFetcher.getConfigForSite(hostname);
-    
+
     if (config) {
       res.json({
         success: true,
@@ -89,13 +89,13 @@ app.get('/site-config/:hostname', async (req, res) => {
 // Main bookmarklet endpoint
 app.post('/process-article', async (req, res) => {
   const debugLogger = new DebugLogger();
-  
+
   try {
     const { url, article, debugInfo } = req.body;
-    
+
     // Store bookmarklet debug info if provided
     const bookmarkletLog = debugInfo || [];
-    
+
     if (!url) {
       return res.status(400).json({ error: 'URL is required' });
     }
@@ -103,7 +103,7 @@ app.post('/process-article', async (req, res) => {
     if (!article) {
       return res.status(400).json({ error: 'Extracted article content is required' });
     }
-    
+
     debugLogger.log('request', 'Article processing started', {
       url,
       title: article.title,
@@ -114,33 +114,33 @@ app.post('/process-article', async (req, res) => {
     // Compare raw content with base64 decoded content to debug paragraph issue
     const rawContent = article.content;
     let decodedContent = null;
-    
+
     if (article.content_b64) {
       console.log('Received both raw and base64 content, comparing...');
       try {
         // Decode base64
         decodedContent = Buffer.from(article.content_b64, 'base64').toString('utf8');
-        
+
         // Compare structures
         const rawBrCount = (rawContent.match(/<br>/gi) || []).length;
         const rawNewlineCount = (rawContent.match(/\n/g) || []).length;
         const rawPCount = (rawContent.match(/<p>/gi) || []).length;
-        
+
         const decodedBrCount = (decodedContent.match(/<br>/gi) || []).length;
         const decodedNewlineCount = (decodedContent.match(/\n/g) || []).length;
         const decodedPCount = (decodedContent.match(/<p>/gi) || []).length;
-        
+
         console.log(`RAW content: ${rawPCount} <p> tags, ${rawBrCount} <br> tags, ${rawNewlineCount} newlines, ${rawContent.length} chars`);
         console.log(`B64 decoded: ${decodedPCount} <p> tags, ${decodedBrCount} <br> tags, ${decodedNewlineCount} newlines, ${decodedContent.length} chars`);
-        
+
         if (rawContent.length !== decodedContent.length) {
           console.warn(`Content length mismatch! Raw: ${rawContent.length}, Decoded: ${decodedContent.length}`);
         }
-        
+
         if (rawNewlineCount !== decodedNewlineCount) {
           console.warn(`Newline count mismatch! Raw: ${rawNewlineCount}, Decoded: ${decodedNewlineCount}`);
         }
-        
+
         // Use decoded content if it's complete (longer than raw, indicating raw was truncated)
         if (decodedContent.length > rawContent.length) {
           console.log('Using base64 decoded content (longer, likely complete)');
@@ -162,7 +162,7 @@ app.post('/process-article', async (req, res) => {
     }
 
     debugLogger.log('processing', `Processing article: ${article.title || url}`);
-    
+
     // Log article size for debugging
     debugLogger.log('extraction', 'Article extraction stats', {
       title: article.title,
@@ -170,7 +170,7 @@ app.post('/process-article', async (req, res) => {
       textContentLength: article.textContent?.length || 0,
       hasContent: !!article.content
     });
-    
+
     // Log content preview to check for truncation
     if (article.content && article.content.length > 1000) {
       const plainEnd = article.content.substring(Math.max(0, article.content.length - 500)).replace(/<[^>]*>/g, '').trim();
@@ -183,7 +183,7 @@ app.post('/process-article', async (req, res) => {
       url: url,
       processedAt: new Date().toISOString()
     };
-    
+
     // Store config used (if any)
     let configUsed = null;
     const hostname = new URL(url).hostname;
@@ -192,9 +192,9 @@ app.post('/process-article', async (req, res) => {
     } catch (e) {
       debugLogger.log('config', 'No site config found', { hostname });
     }
-    
+
     debugLogger.log('sending', 'Sending to platforms', { kindle: true, zotero: true });
-    
+
     // Send to both platforms (in parallel for speed)
     const results = await Promise.allSettled([
       sendToKindle(processedArticle, debugLogger),
@@ -218,7 +218,7 @@ app.post('/process-article', async (req, res) => {
         debugLogger.log('error', `${platform} failed`, { error: result.reason.message });
       }
     });
-    
+
     // Capture debug output to GitHub if enabled
     const extractionData = {
       url,
@@ -233,7 +233,7 @@ app.post('/process-article', async (req, res) => {
       email_content: results[0].value?.emailContent || '',
       epub_base64: results[1].value?.epubBase64 || results[0].value?.epubBase64 || ''
     };
-    
+
     // Capture debug asynchronously - don't block the response
     debugLogger.captureToGitHub(extractionData).catch(err => {
       console.error('Debug capture failed (non-blocking):', err.message);
@@ -243,7 +243,7 @@ app.post('/process-article', async (req, res) => {
 
   } catch (error) {
     debugLogger.log('error', 'Error processing article', { error: error.message, stack: error.stack });
-    
+
     // Still try to capture debug on error
     const extractionData = {
       url: req.body.url,
@@ -259,15 +259,15 @@ app.post('/process-article', async (req, res) => {
       epub_base64: '',
       error: error.message
     };
-    
+
     // Capture debug even on error (non-blocking)
     debugLogger.captureToGitHub(extractionData).catch(err => {
       console.error('Debug capture failed (non-blocking):', err.message);
     });
-    
-    res.status(500).json({ 
+
+    res.status(500).json({
       error: 'Failed to process article',
-      message: error.message 
+      message: error.message
     });
   }
 });
@@ -275,10 +275,10 @@ app.post('/process-article', async (req, res) => {
 // Test endpoint for debug system
 app.post('/test-debug', async (req, res) => {
   const debugLogger = new DebugLogger();
-  
+
   try {
     debugLogger.log('test', 'Debug system test initiated');
-    
+
     // Create test data
     const testData = {
       url: 'https://example.com/test-article',
@@ -295,22 +295,22 @@ app.post('/test-debug', async (req, res) => {
       email_content: '<h1>Test Email Content</h1>',
       epub_base64: Buffer.from('Test EPUB content').toString('base64')
     };
-    
+
     debugLogger.log('test', 'Attempting to capture to GitHub');
-    
+
     // For testing, we'll wait for the capture to complete
     // But add a timeout to prevent hanging
     const capturePromise = debugLogger.captureToGitHub(testData);
-    const timeoutPromise = new Promise((_, reject) => 
+    const timeoutPromise = new Promise((_, reject) =>
       setTimeout(() => reject(new Error('Debug capture timed out after 10s')), 10000)
     );
-    
+
     try {
       await Promise.race([capturePromise, timeoutPromise]);
-      res.json({ 
-      success: true, 
+      res.json({
+        success: true,
         message: 'Debug test completed - check latest-outputs-debug branch',
-      timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString()
       });
     } catch (timeoutError) {
       // If it times out, still return success but note the timeout
@@ -323,8 +323,8 @@ app.post('/test-debug', async (req, res) => {
     }
   } catch (error) {
     console.error('Debug test failed:', error);
-    res.status(500).json({ 
-      success: false, 
+    res.status(500).json({
+      success: false,
       error: error.message,
       stack: error.stack
     });
@@ -347,38 +347,38 @@ app.post('/test-extract', async (req, res) => {
 app.post('/debug-epub', async (req, res) => {
   try {
     const { url, article } = req.body;
-    
+
     if (!article) {
       return res.status(400).json({ error: 'Article content is required' });
     }
-    
+
     console.log('='.repeat(80));
     console.log('DEBUG EPUB GENERATION - START');
     console.log('='.repeat(80));
-    
+
     // Import EPUB generator
     const { generateEpub } = require('./epubGenerator');
-    
+
     // Generate EPUB
     const epubResult = await generateEpub({
       ...article,
       url: url || article.url
     });
-    
+
     // Save debug copy
     const fs = require('fs').promises;
     const path = require('path');
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const debugFilename = `debug_${timestamp}_${epubResult.filename}`;
     const debugPath = path.join('/tmp', debugFilename);
-    
+
     await fs.writeFile(debugPath, epubResult.buffer);
-    
+
     console.log('DEBUG EPUB saved to:', debugPath);
     console.log('='.repeat(80));
     console.log('DEBUG EPUB GENERATION - COMPLETE');
     console.log('='.repeat(80));
-    
+
     res.json({
       success: true,
       filename: epubResult.filename,
@@ -386,12 +386,12 @@ app.post('/debug-epub', async (req, res) => {
       sizeKB: (epubResult.size / 1024).toFixed(2),
       message: `EPUB saved to ${debugPath} for comparison`
     });
-    
+
   } catch (error) {
     console.error('Debug EPUB generation failed:', error);
-    res.status(500).json({ 
+    res.status(500).json({
       error: 'Failed to generate debug EPUB',
-      message: error.message 
+      message: error.message
     });
   }
 });

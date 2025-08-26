@@ -14,27 +14,27 @@ class GitHubDirectCommit {
   async commitDebugOutput(extractionData, serverLogs) {
     try {
       const headers = await this.auth.getAuthHeaders();
-      
+
       // Generate folder name
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').substring(0, 19);
       const folderPath = `outputs/${timestamp}`;
-      
+
       console.log(`[GitHubDirectCommit] Creating debug output at ${folderPath}`);
-      
+
       // Get the latest commit SHA of the debug branch
       const branchResponse = await axios.get(
         `${this.baseUrl}/git/ref/heads/latest-outputs-debug`,
         { headers }
       );
       const latestCommitSha = branchResponse.data.object.sha;
-      
+
       // Get the tree SHA of the latest commit
       const commitResponse = await axios.get(
         `${this.baseUrl}/git/commits/${latestCommitSha}`,
         { headers }
       );
       const baseTreeSha = commitResponse.data.tree.sha;
-      
+
       // Prepare files for the commit
       const files = [
         {
@@ -58,7 +58,7 @@ class GitHubDirectCommit {
           content: extractionData.email_content || ''
         }
       ];
-      
+
       // Add EPUB if available
       if (extractionData.epub_base64) {
         files.push({
@@ -67,7 +67,7 @@ class GitHubDirectCommit {
           encoding: 'base64'
         });
       }
-      
+
       // Add config if used
       if (extractionData.config_used) {
         files.push({
@@ -75,7 +75,7 @@ class GitHubDirectCommit {
           content: JSON.stringify(extractionData.config_used, null, 2)
         });
       }
-      
+
       // Create blobs for each file
       const blobs = await Promise.all(
         files.map(async (file) => {
@@ -87,7 +87,7 @@ class GitHubDirectCommit {
             },
             { headers }
           );
-          
+
           return {
             path: file.path,
             mode: '100644',
@@ -96,7 +96,7 @@ class GitHubDirectCommit {
           };
         })
       );
-      
+
       // Create a new tree
       const treeResponse = await axios.post(
         `${this.baseUrl}/git/trees`,
@@ -106,7 +106,7 @@ class GitHubDirectCommit {
         },
         { headers }
       );
-      
+
       // Create the commit
       const commitMessage = `Debug output: ${extractionData.title || 'Unknown'} [${timestamp}]`;
       const newCommitResponse = await axios.post(
@@ -118,7 +118,7 @@ class GitHubDirectCommit {
         },
         { headers }
       );
-      
+
       // Update the branch reference
       await axios.patch(
         `${this.baseUrl}/git/refs/heads/latest-outputs-debug`,
@@ -128,14 +128,14 @@ class GitHubDirectCommit {
         },
         { headers }
       );
-      
+
       console.log(`[GitHubDirectCommit] Successfully created commit: ${commitMessage}`);
       return {
         success: true,
         commit: newCommitResponse.data.sha,
         path: folderPath
       };
-      
+
     } catch (error) {
       console.error('[GitHubDirectCommit] Failed to create commit:', error.message);
       if (error.response) {
@@ -144,7 +144,7 @@ class GitHubDirectCommit {
       throw error;
     }
   }
-  
+
   createSummary(data) {
     return `# Extraction Debug Output
 

@@ -77,19 +77,19 @@ class ConfigFetcher {
 
       const command = commandParts[0].trim();
       const val = commandParts[1].trim();
-      
+
       if (!command || !val) continue;
 
       // Multi-statement commands (PHP: in_array check for arrays)
-      if (['title', 'body', 'author', 'date', 'strip', 'strip_id_or_class', 'strip_image_src', 
-           'single_page_link', 'next_page_link', 'test_url', 'find_string', 'replace_string'].includes(command)) {
+      if (['title', 'body', 'author', 'date', 'strip', 'strip_id_or_class', 'strip_image_src',
+        'single_page_link', 'next_page_link', 'test_url', 'find_string', 'replace_string'].includes(command)) {
         config[command].push(val);
       }
       // Boolean commands (PHP: $config->$command = ($val == 'yes' || $val == 'true'))
       else if (['tidy', 'prune', 'autodetect_on_failure'].includes(command)) {
         config[command] = (val === 'yes' || val === 'true');
       }
-      // String commands  
+      // String commands
       else if (['parser'].includes(command)) {
         config[command] = val;
       }

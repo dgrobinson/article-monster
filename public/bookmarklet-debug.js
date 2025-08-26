@@ -2,7 +2,7 @@
 // Shows full HTML and extracted content for comparison
 (function() {
   'use strict';
-  
+
   // Simplified Readability implementation (must be defined before use)
   function Readability(doc, options) {
     this._doc = doc;
@@ -17,11 +17,11 @@
         if (jsonLdContent) {
           return jsonLdContent;
         }
-        
+
         // Fall back to DOM-based extraction
         var documentClone = this._doc.cloneNode(true);
         var article = this._grabArticle(documentClone);
-        
+
         if (!article) return null;
 
         return {
@@ -62,17 +62,17 @@
     _grabArticle: function(doc) {
       // Remove unwanted elements (more aggressive)
       this._removeNodes(doc, 'script, style, noscript, iframe, object, embed, nav, header, footer, aside');
-      
+
       // Remove common ad and social elements
       this._removeNodes(doc, '[class*="ad"], [id*="ad"], [class*="social"], [class*="share"], [class*="newsletter"], [class*="subscribe"], [class*="popup"], [class*="modal"], [class*="overlay"]');
-      
+
       // Remove elements with ad-like text content
       this._removeAdContent(doc);
-      
+
       // Try to find the main content
       var candidates = this._getCandidates(doc);
       var topCandidate = this._getTopCandidate(candidates);
-      
+
       if (topCandidate) {
         // Clean the selected content further
         this._cleanContent(topCandidate);
@@ -104,43 +104,43 @@
     _getCandidates: function(doc) {
       var candidates = [];
       var paragraphs = doc.querySelectorAll('p');
-      
+
       for (var i = 0; i < paragraphs.length; i++) {
         var p = paragraphs[i];
         var parent = p.parentNode;
         if (!parent || parent.tagName === 'BLOCKQUOTE') continue;
-        
+
         var score = this._getContentScore(p);
         if (score > 0) {
           candidates.push({ element: parent, score: score });
         }
       }
-      
+
       return candidates;
     },
 
     _getContentScore: function(element) {
       var text = element.textContent || element.innerText || '';
       if (text.length < 50) return 0;
-      
+
       var score = text.length / 100;
-      
+
       // Bonus for paragraph tags
       if (element.tagName === 'P') score += 1;
-      
+
       // Penalty for unlikely classes/ids
       var className = element.className || '';
       var id = element.id || '';
       if (/(comment|meta|footer|sidebar)/i.test(className + ' ' + id)) {
         score -= 5;
       }
-      
+
       return score;
     },
 
     _getTopCandidate: function(candidates) {
       if (candidates.length === 0) return null;
-      
+
       candidates.sort(function(a, b) { return b.score - a.score; });
       return candidates[0].element;
     },
@@ -153,7 +153,7 @@
         var text = element.textContent || '';
         var className = element.className || '';
         var id = element.id || '';
-        
+
         // Remove if contains ad-like text or attributes
         if (/advertisement|sponsored|promo|banner|popup/i.test(text + ' ' + className + ' ' + id)) {
           if (text.length < 200) { // Only remove short ad-like content
@@ -165,7 +165,7 @@
 
     _cleanContent: function(element) {
       if (!element) return;
-      
+
       // Remove remaining unwanted elements within the content
       var unwantedSelectors = [
         '.advertisement', '.ad', '.ads', '.sponsored', '.promo',
@@ -173,7 +173,7 @@
         '.popup', '.modal', '.overlay', '.sidebar', '.related-articles',
         '[data-ad]', '[data-advertisement]'
       ];
-      
+
       for (var i = 0; i < unwantedSelectors.length; i++) {
         var unwanted = element.querySelectorAll(unwantedSelectors[i]);
         for (var j = unwanted.length - 1; j >= 0; j--) {
@@ -185,23 +185,23 @@
     _extractFromJsonLd: function() {
       try {
         var jsonLdScripts = this._doc.querySelectorAll('script[type="application/ld+json"]');
-        
+
         for (var i = 0; i < jsonLdScripts.length; i++) {
           var script = jsonLdScripts[i];
           var jsonData = JSON.parse(script.textContent || script.innerText);
-          
+
           // Handle both single objects and arrays
           var articles = Array.isArray(jsonData) ? jsonData : [jsonData];
-          
+
           for (var j = 0; j < articles.length; j++) {
             var data = articles[j];
-            
+
             // Look for NewsArticle or Article types
             if (data['@type'] === 'NewsArticle' || data['@type'] === 'Article') {
               if (data.articleBody && data.articleBody.length > 500) {
                 // Convert plain text to basic HTML with paragraphs
                 var htmlContent = this._textToHtml(data.articleBody);
-                
+
                 return {
                   title: data.headline || data.name || this._getArticleTitle(),
                   content: htmlContent,
@@ -217,7 +217,7 @@
             }
           }
         }
-        
+
         return null;
       } catch (e) {
         console.error('JSON-LD extraction failed:', e);
@@ -237,15 +237,15 @@
 
     _extractAuthor: function(authorData) {
       if (!authorData) return null;
-      
+
       if (typeof authorData === 'string') return authorData;
-      
+
       if (Array.isArray(authorData)) {
         return authorData.map(function(author) {
           return author.name || author;
         }).join(', ');
       }
-      
+
       return authorData.name || null;
     },
 
@@ -254,17 +254,17 @@
       return text.substring(0, 300).trim() + (text.length > 300 ? '...' : '');
     }
   };
-  
+
   try {
     // Extract article content using simplified Readability
     const reader = new Readability(document);
     const article = reader.parse();
-    
+
     // Get the full page HTML (sanitized for display)
     const fullHTML = document.documentElement.outerHTML
       .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '[SCRIPT REMOVED]')
       .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '[STYLE REMOVED]');
-    
+
     // If extraction failed, create a fallback article object
     if (!article) {
       const fallbackArticle = {
@@ -278,16 +278,16 @@
         publishedTime: 'Unknown',
         extractionError: 'The simplified Readability algorithm could not identify article content on this page'
       };
-      
+
       showDebugComparison(fullHTML, fallbackArticle, true);
     } else {
       // Show comparison dialog
       showDebugComparison(fullHTML, article, false);
     }
-    
+
   } catch (error) {
     alert('❌ Debug extraction failed: ' + error.message + '\n\nTrying to show debug info anyway...');
-    
+
     // Even if there's an error, try to show what we can
     try {
       const fullHTML = document.documentElement.outerHTML;
@@ -302,13 +302,13 @@
         publishedTime: 'Error',
         extractionError: error.message
       };
-      
+
       showDebugComparison(fullHTML, errorArticle, true);
     } catch (secondError) {
       alert('❌ Complete failure: ' + secondError.message);
     }
   }
-  
+
   function showDebugComparison(fullHTML, extractedArticle, isExtractionFailure = false) {
     // Create debug dialog
     const dialog = document.createElement('div');
@@ -323,7 +323,7 @@
       overflow: auto;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     `;
-    
+
     dialog.innerHTML = `
       <div style="padding: 20px; color: white;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
@@ -386,9 +386,9 @@
         </div>
       </div>
     `;
-    
+
     document.body.appendChild(dialog);
-    
+
     // Add global copy functions
     window.copyToClipboard = function(text, type) {
       navigator.clipboard.writeText(type === 'Full HTML' ? fullHTML : text).then(function() {
@@ -404,7 +404,7 @@
         alert('✅ ' + type + ' copied to clipboard!');
       });
     };
-    
+
     window.copyBothToClipboard = function() {
       const structuredOutput = `ARTICLE EXTRACTION DEBUG REPORT
 URL: ${window.location.href}
@@ -455,7 +455,7 @@ END REPORT
       });
     };
   }
-  
+
   function escapeHtml(text) {
     if (!text) return '';
     return text

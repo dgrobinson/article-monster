@@ -5,7 +5,7 @@ const { extractArticle } = require('./articleExtractor');
 async function testExtraction() {
   const testUrls = [
     'https://example.com', // Simple test case
-    'https://en.wikipedia.org/wiki/Node.js', // Complex content
+    'https://en.wikipedia.org/wiki/Node.js' // Complex content
   ];
 
   console.log('🧪 Testing article extraction...\n');
@@ -14,14 +14,14 @@ async function testExtraction() {
     try {
       console.log(`Testing: ${url}`);
       const article = await extractArticle(url);
-      
-      console.log(`✅ Success!`);
+
+      console.log('✅ Success!');
       console.log(`   Title: ${article.title}`);
       console.log(`   Length: ${article.length} characters`);
       console.log(`   Excerpt: ${article.excerpt.substring(0, 100)}...`);
       console.log(`   Site: ${article.siteName}`);
       console.log(`   Author: ${article.byline || 'Unknown'}\n`);
-      
+
     } catch (error) {
       console.log(`❌ Failed: ${error.message}\n`);
     }
@@ -34,7 +34,7 @@ function testConfig() {
 
   const required = [
     'EMAIL_USER',
-    'EMAIL_PASS', 
+    'EMAIL_PASS',
     'KINDLE_EMAIL',
     'ZOTERO_USER_ID',
     'ZOTERO_API_KEY'
@@ -58,10 +58,10 @@ function testConfig() {
 // Run tests
 async function runTests() {
   console.log('📚 Article Bookmarklet Service - Local Tests\n');
-  
+
   testConfig();
   await testExtraction();
-  
+
   console.log('🎉 Tests complete! Start the server with: npm run dev');
 }
 

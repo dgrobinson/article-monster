@@ -5,7 +5,7 @@ const axios = require('axios');
 async function extractArticle(url) {
   try {
     console.log(`Fetching article from: ${url}`);
-    
+
     // Fetch the webpage
     const response = await axios.get(url, {
       headers: {
@@ -80,8 +80,8 @@ function extractPublishedTime(doc) {
   for (const selector of selectors) {
     const element = doc.querySelector(selector);
     if (element) {
-      const content = element.getAttribute('content') || 
-                     element.getAttribute('datetime') || 
+      const content = element.getAttribute('content') ||
+                     element.getAttribute('datetime') ||
                      element.textContent;
       if (content) {
         const date = new Date(content);
@@ -91,7 +91,7 @@ function extractPublishedTime(doc) {
       }
     }
   }
-  
+
   return null;
 }
 

@@ -7,7 +7,7 @@ async function sendToZotero(article, debugLogger = null) {
       if (debugLogger) debugLogger.log(category, message, data);
       else console.log(`[${category}] ${message}`, data);
     };
-    
+
     log('zotero', `Sending to Zotero: "${article.title}"`);
 
     // Get environment variables for Zotero API
@@ -21,7 +21,7 @@ async function sendToZotero(article, debugLogger = null) {
 
     // Base API URL
     const baseUrl = `https://api.zotero.org/users/${userId}`;
-    
+
     // Headers for all requests
     const headers = {
       'Zotero-API-Key': apiKey,
@@ -30,10 +30,10 @@ async function sendToZotero(article, debugLogger = null) {
 
     // Step 1: Create the main item (webpage)
     const mainItem = createZoteroItem(article);
-    
+
     log('zotero', 'Creating Zotero item');
     const itemResponse = await axios.post(`${baseUrl}/items`, [mainItem], { headers });
-    
+
     if (!itemResponse.data.successful || itemResponse.data.successful.length === 0) {
       throw new Error('Failed to create Zotero item: ' + JSON.stringify(itemResponse.data));
     }
@@ -48,7 +48,7 @@ async function sendToZotero(article, debugLogger = null) {
       log('zotero', 'Generating EPUB for Zotero attachment');
       const epub = await generateEpub(article);
       epubBase64 = epub.toString('base64');
-      
+
       // Step 3: Upload EPUB as attachment
       log('zotero', 'Uploading EPUB attachment to Zotero');
       attachmentKey = await uploadAttachment(baseUrl, headers, itemKey, epub, article, log);
@@ -56,18 +56,18 @@ async function sendToZotero(article, debugLogger = null) {
       log('zotero', 'EPUB attachment failed (item still created)', { error: attachmentError.message });
       // Don't throw - the main item was successfully created
     }
-    
+
     // Step 4: Optionally add to test collection
     if (testCollection) {
       log('zotero', 'Adding item to collection', { collection: testCollection });
       await addToCollection(baseUrl, headers, itemKey, testCollection);
     }
 
-    const message = attachmentKey 
+    const message = attachmentKey
       ? `item ${itemKey}, attachment ${attachmentKey}`
       : `item ${itemKey} (attachment failed)`;
     log('zotero', 'Successfully sent to Zotero', { itemKey, attachmentKey });
-    
+
     return {
       success: true,
       itemKey: itemKey,
@@ -78,12 +78,12 @@ async function sendToZotero(article, debugLogger = null) {
 
   } catch (error) {
     console.error('Failed to send to Zotero:', error.message);
-    
+
     // Log more details for debugging
     if (error.response) {
       console.error('Zotero API Error:', error.response.status, error.response.data);
     }
-    
+
     throw new Error(`Zotero sending failed: ${error.message}`);
   }
 }
@@ -91,7 +91,7 @@ async function sendToZotero(article, debugLogger = null) {
 function createZoteroItem(article) {
   // Parse authors into Zotero's preferred format
   const creators = parseAuthors(article.byline);
-  
+
   // Create a Zotero item of type "webpage"
   return {
     itemType: 'webpage',
@@ -113,17 +113,17 @@ function createZoteroItem(article) {
 
 function parseAuthors(bylineString) {
   if (!bylineString) return [];
-  
+
   // Handle multiple authors separated by common delimiters
   const authorStrings = bylineString
     .split(/(?:,\s*and\s+|,\s*&\s*|\s+and\s+|\s+&\s+|,\s*)/i)
     .map(s => s.trim())
     .filter(s => s.length > 0);
-  
+
   return authorStrings.map(authorStr => {
     // Try to parse first and last names
     const parts = authorStr.split(/\s+/);
-    
+
     if (parts.length === 1) {
       // Single word - treat as single name
       return { creatorType: 'author', name: authorStr };
@@ -139,7 +139,7 @@ function parseAuthors(bylineString) {
       // Assume last word is last name, everything else is first/middle
       const lastName = parts[parts.length - 1];
       const firstName = parts.slice(0, -1).join(' ');
-      
+
       return {
         creatorType: 'author',
         firstName: firstName,
@@ -163,7 +163,7 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article, log 
     };
 
     const attachmentResponse = await axios.post(`${baseUrl}/items`, [attachmentItem], { headers });
-    
+
     if (!attachmentResponse.data.successful || attachmentResponse.data.successful.length === 0) {
       throw new Error('Failed to register attachment: ' + JSON.stringify(attachmentResponse.data));
     }
@@ -191,7 +191,7 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article, log 
 
     const uploadUrl = authResponse.data.url;
     const uploadParams = authResponse.data.params || {};
-    
+
     console.log('Upload auth response:', {
       exists: authResponse.data.exists,
       url: uploadUrl ? 'present' : 'missing',
@@ -202,14 +202,14 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article, log 
     // Create form data for upload
     const FormData = require('form-data');
     const form = new FormData();
-    
+
     // Add all required parameters
     if (uploadParams && typeof uploadParams === 'object') {
       Object.keys(uploadParams).forEach(key => {
         form.append(key, uploadParams[key]);
       });
     }
-    
+
     // Add file
     form.append('file', epub.buffer, {
       filename: epub.filename,
@@ -221,7 +221,7 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article, log 
       maxContentLength: Infinity,
       maxBodyLength: Infinity
     });
-    
+
     console.log('S3 upload result:', uploadResult.status);
 
     // Step 4: Register upload
@@ -241,14 +241,14 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article, log 
 async function addToCollection(baseUrl, headers, itemKey, collectionKey, log = console.log) {
   try {
     console.log(`Adding item to collection: ${collectionKey}`);
-    
+
     await axios.post(`${baseUrl}/collections/${collectionKey}/items`, itemKey, {
       headers: {
         ...headers,
         'Content-Type': 'text/plain'
       }
     });
-    
+
     console.log('Successfully added to collection');
   } catch (error) {
     console.warn('Failed to add to collection (continuing anyway):', error.message);

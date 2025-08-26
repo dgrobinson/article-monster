@@ -502,7 +502,7 @@
             var elements = this._evaluateXPathAll(config.body[i]);
             if (elements && elements.length > 0) {
               console.log('Body matched:', elements.length, 'element(s) for XPath:', config.body[i]);
-              
+
               var bodyElement;
               if (elements.length === 1) {
                 // Single element (matches PHP: $this->body = $elems->item(0))
@@ -516,13 +516,13 @@
                 }
                 console.log('Combined', elements.length, 'body elements into single container');
               }
-              
+
               // Clone and clean the element with full config
               var cleanElement = this._cleanElementWithConfig(bodyElement, config);
               result.content = cleanElement.innerHTML;
               result.textContent = cleanElement.textContent || cleanElement.innerText || '';
               result.length = result.textContent.length;
-              
+
               // Only accept if we have some content (basic sanity check)
               if (result.textContent && result.textContent.trim().length > 0) {
                 break;
@@ -606,12 +606,12 @@
           var selector = config.strip_id_or_class[i];
           // Remove quotes (PHP: strtr($string, array("'"=>'', '"'=>'')))
           selector = selector.replace(/['"]/g, '');
-          
+
           // Find elements by class or id containing this string
           var elementsToRemove = clone.querySelectorAll(
             '[class*="' + selector + '"], [id*="' + selector + '"]'
           );
-          
+
           for (var j = elementsToRemove.length - 1; j >= 0; j--) {
             if (elementsToRemove[j] && elementsToRemove[j].remove) {
               elementsToRemove[j].remove();
@@ -620,16 +620,16 @@
         }
       }
 
-      // Apply strip_image_src rules (PHP: strip_image_src array) 
+      // Apply strip_image_src rules (PHP: strip_image_src array)
       if (config.strip_image_src && config.strip_image_src.length > 0) {
         for (var i = 0; i < config.strip_image_src.length; i++) {
           var srcPattern = config.strip_image_src[i];
           // Remove quotes (PHP: strtr($string, array("'"=>'', '"'=>'')))
           srcPattern = srcPattern.replace(/['"]/g, '');
-          
+
           // Find img elements with src containing this string
           var imagesToRemove = clone.querySelectorAll('img[src*="' + srcPattern + '"]');
-          
+
           for (var j = imagesToRemove.length - 1; j >= 0; j--) {
             if (imagesToRemove[j] && imagesToRemove[j].remove) {
               imagesToRemove[j].remove();
@@ -658,7 +658,7 @@
       for (var i = 0; i < serviceData.length; i++) {
         serviceData[i].removeAttribute('data-candidate');
       }
-      
+
       // Remove unrelated links and other elements
       var nofollowLinks = element.querySelectorAll('a[rel="nofollow"]');
       for (var i = nofollowLinks.length - 1; i >= 0; i--) {
@@ -666,7 +666,7 @@
           nofollowLinks[i].remove();
         }
       }
-      
+
       // Clean out junk from the article content (matches PHP clean() calls)
       var junkSelectors = ['input', 'button', 'nav', 'object', 'iframe', 'canvas'];
       for (var i = 0; i < junkSelectors.length; i++) {
@@ -677,7 +677,7 @@
           }
         }
       }
-      
+
       // Remove h1 elements (already have title)
       var h1Elements = element.querySelectorAll('h1');
       for (var i = h1Elements.length - 1; i >= 0; i--) {
@@ -685,11 +685,11 @@
           h1Elements[i].remove();
         }
       }
-      
+
       // Clean up empty elements and normalize whitespace
       this._cleanEmptyElements(element);
     },
-    
+
     _cleanEmptyElements: function(element) {
       // Remove elements that are empty or contain only whitespace
       var emptyElements = element.querySelectorAll('p:empty, div:empty, span:empty');
@@ -698,7 +698,7 @@
           emptyElements[i].remove();
         }
       }
-      
+
       // Clean up elements that only contain whitespace
       var textNodes = document.createTreeWalker(
         element,
@@ -706,7 +706,7 @@
         null,
         false
       );
-      
+
       var node;
       while (node = textNodes.nextNode()) {
         if (node.nodeValue && /^\s*$/.test(node.nodeValue)) {
@@ -721,7 +721,7 @@
         }
       }
     },
-    
+
     // HTML tidy functionality (basic cleanup)
     _tidyContent: function(element) {
       // Fix common HTML structure issues
@@ -739,7 +739,7 @@
           }
         }
       }
-      
+
       // Clean up excessive whitespace
       var walker = document.createTreeWalker(
         element,
@@ -747,7 +747,7 @@
         null,
         false
       );
-      
+
       var textNode;
       while (textNode = walker.nextNode()) {
         if (textNode.nodeValue) {
@@ -755,7 +755,7 @@
           textNode.nodeValue = textNode.nodeValue.replace(/[ \t]+/g, ' ');
         }
       }
-      
+
       // Remove empty attributes
       var allElements = element.querySelectorAll('*');
       for (var i = 0; i < allElements.length; i++) {
@@ -787,7 +787,7 @@
             XPathResult.STRING_TYPE,
             null
           );
-          
+
           if (result.stringValue && result.stringValue.trim()) {
             var url = this._makeAbsoluteUrl(result.stringValue.trim());
             if (url) return url;
@@ -821,7 +821,7 @@
           console.warn('Single page link XPath evaluation failed:', pattern, e);
         }
       }
-      
+
       return null;
     },
 
@@ -836,7 +836,7 @@
           XPathResult.ORDERED_NODE_ITERATOR_TYPE,
           null
         );
-        
+
         var nodes = [];
         var node;
         while (node = result.iterateNext()) {
@@ -852,22 +852,22 @@
     // Make URL absolute (basic implementation)
     _makeAbsoluteUrl: function(url) {
       if (!url) return null;
-      
+
       // Already absolute
       if (url.match(/^https?:\/\//)) {
         return url;
       }
-      
+
       // Protocol-relative
       if (url.startsWith('//')) {
         return window.location.protocol + url;
       }
-      
+
       // Absolute path
       if (url.startsWith('/')) {
         return window.location.protocol + '//' + window.location.host + url;
       }
-      
+
       // Relative path - more complex, skip for now
       return null;
     },
@@ -1125,7 +1125,7 @@
   function applyHtmlPreprocessing(html, preprocessingRules) {
     var modifiedHtml = html;
     var extraRules = [];
-    
+
     for (var i = 0; i < preprocessingRules.length; i++) {
       var rule = preprocessingRules[i];
       if (rule.find && rule.replace !== undefined) {
@@ -1134,23 +1134,23 @@
         var replaceString = rule.replace;
         modifiedHtml = modifiedHtml.split(findString).join(replaceString);
         console.log('Applied HTML preprocessing:', findString, '->', replaceString);
-        
+
         // Auto-generate closing tag replacement for opening tags
         // Pattern: <tagname -> <newtag should also create </tagname -> </newtag
         var openingTagMatch = findString.match(/^<([a-zA-Z][a-zA-Z0-9-]*)$/);
         var replaceTagMatch = replaceString.match(/^<([a-zA-Z][a-zA-Z0-9-]*)$/);
-        
+
         if (openingTagMatch && replaceTagMatch) {
           var originalTag = openingTagMatch[1];
           var newTag = replaceTagMatch[1];
           var closingFind = '</' + originalTag + '>';
           var closingReplace = '</' + newTag + '>';
-          
+
           // Only add if not already explicitly defined
           var alreadyDefined = preprocessingRules.some(function(r) {
             return r.find === closingFind;
           });
-          
+
           if (!alreadyDefined) {
             extraRules.push({
               find: closingFind,
@@ -1161,14 +1161,14 @@
         }
       }
     }
-    
+
     // Apply auto-generated closing tag rules
     for (var j = 0; j < extraRules.length; j++) {
       var extraRule = extraRules[j];
       modifiedHtml = modifiedHtml.split(extraRule.find).join(extraRule.replace);
       console.log('Applied auto-generated rule:', extraRule.find, '->', extraRule.replace);
     }
-    
+
     return modifiedHtml;
   }
 
@@ -1176,7 +1176,7 @@
   function extractArticleWithConfig(indicator) {
     return new Promise(function(resolve, reject) {
       var hostname = window.location.hostname.replace(/^www\./, '');
-      
+
       // Check if we have a cached config from a previous fetch
       var tempReader = new Readability(document);
       var config = tempReader._getCachedConfig(hostname);
@@ -1185,27 +1185,27 @@
         // We have config - follow PHP FiveFilters flow exactly
         var rawHtml = document.documentElement.outerHTML;
         var finalHtml = rawHtml;
-        
+
         // Step 1: Apply HTML preprocessing if needed (matches PHP str_replace)
         if (config.htmlPreprocessing && config.htmlPreprocessing.length > 0) {
           finalHtml = applyHtmlPreprocessing(rawHtml, config.htmlPreprocessing);
           console.log('Applied', config.htmlPreprocessing.length, 'preprocessing rules');
         }
-        
+
         // Step 2: Parse HTML to DOM (matches PHP Readability constructor)
         var parser = new DOMParser();
         var processedDoc = parser.parseFromString(finalHtml, 'text/html');
-        
+
         // Step 3: Try XPath extraction first (matches PHP ContentExtractor::process)
         var reader = new Readability(processedDoc);
         var siteConfigResult = reader._extractWithSiteConfig();
-        
+
         if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
           console.log('Extraction successful using FiveFilters XPath rules');
           resolve(siteConfigResult);
           return;
         }
-        
+
         // Step 4: XPath failed, fall back to Readability auto-detection (matches PHP autodetect_on_failure)
         console.log('XPath extraction failed, falling back to Readability auto-detection');
         var article = reader.parse();
@@ -1245,21 +1245,21 @@
             // Follow PHP FiveFilters flow exactly (same logic as cached config path)
             var rawHtml = document.documentElement.outerHTML;
             var finalHtml = rawHtml;
-            
+
             // Step 1: Apply HTML preprocessing if needed
             if (data.config.htmlPreprocessing && data.config.htmlPreprocessing.length > 0) {
               finalHtml = applyHtmlPreprocessing(rawHtml, data.config.htmlPreprocessing);
               console.log('Applied', data.config.htmlPreprocessing.length, 'preprocessing rules');
             }
-            
+
             // Step 2: Parse HTML to DOM
             var parser = new DOMParser();
             var processedDoc = parser.parseFromString(finalHtml, 'text/html');
-            
+
             // Step 3: Try XPath extraction first
             var reader = new Readability(processedDoc);
             var siteConfigResult = reader._extractWithSiteConfig();
-            
+
             var article;
             if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
               console.log('Extraction successful using FiveFilters XPath rules');
