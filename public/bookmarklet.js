@@ -491,7 +491,11 @@
         
         if (!titleExtracted && shouldAutoDetectTitle) {
           console.log('Auto-detecting title: no title rules or extraction failed');
+          console.log('config.title:', config.title, 'length:', config.title ? config.title.length : 'undefined');
+          console.log('titleExtracted:', titleExtracted);
+          console.log('autodetect_on_failure:', config.autodetect_on_failure);
           result.title = this._getArticleTitle();
+          console.log('Auto-detected title result:', result.title);
         }
 
         // Check for single page link before extracting body (PHP: makefulltextfeed.php)
