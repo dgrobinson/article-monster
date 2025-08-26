@@ -1372,6 +1372,22 @@
       // Send to service
       updateIndicator(indicator, 'Sending to Kindle and Zotero...');
 
+      // Log extraction results for debugging
+      console.log('=== ARTICLE EXTRACTION DEBUG ===');
+      console.log('Title:', enhancedArticle.title);
+      console.log('Content length:', enhancedArticle.content?.length || 0);
+      console.log('Text content length:', enhancedArticle.textContent?.length || 0);
+      console.log('Extraction method:', enhancedArticle.extractionMethod);
+      console.log('Extraction note:', enhancedArticle.extractionNote);
+      console.log('Has images:', enhancedArticle.hasImages);
+      if (enhancedArticle.content) {
+        var pCount = (enhancedArticle.content.match(/<p[^>]*>/gi) || []).length;
+        var brCount = (enhancedArticle.content.match(/<br[^>]*>/gi) || []).length;
+        console.log('Content structure:', pCount, '<p> tags,', brCount, '<br> tags');
+        console.log('Content preview:', enhancedArticle.content.substring(0, 200) + '...');
+      }
+      console.log('=== END EXTRACTION DEBUG ===');
+
       return fetch(SERVICE_URL, {
         method: 'POST',
         headers: {

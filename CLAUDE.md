@@ -109,3 +109,32 @@ HTML preprocessing timing requires either:
 2. Test suite covering all 43 directive types
 3. Integration tests with representative site configs
 4. Performance benchmarks for config parsing and caching
+
+## Production Debugging Protocol
+
+**CRITICAL: Always check production logs when debugging extraction issues**
+
+### DigitalOcean CLI (`doctl`) Commands
+- Check app status: `doctl apps list`
+- View recent logs: `doctl apps logs <app-id> --tail 100`
+- Monitor deployments: `doctl apps get-deployment <app-id> <deployment-id>`
+- App ID: `214fb1d0-54f7-4a28-ba39-7db566e8a8e6`
+- App URL: https://seal-app-t4vff.ondigitalocean.app
+
+### GitHub CLI (`gh`) Commands
+- Check workflow status: `gh workflow list`
+- View workflow runs: `gh run list`
+- View debug outputs: `gh api repos/dgrobinson/article-monster/contents/outputs/<timestamp>`
+
+### Production Debugging Checklist
+1. **Always run `doctl apps logs` first** - shows server-side extraction results
+2. **Check for `title: undefined`** - indicates client-side extraction failure
+3. **Look for content stats** - `contentLength`, paragraph count, etc.
+4. **Check debug captures** - GitHub commits with client-side console logs
+5. **Verify deployment status** - ensure latest code is deployed
+
+### Common Log Patterns
+- **Successful extraction**: `title: "Article Title"`, structured content
+- **Failed extraction**: `title: undefined`, raw HTML without structure
+- **Config missing**: `No FiveFilters config found for <hostname>`
+- **Preprocessing issues**: Missing console logs about HTML transformation
