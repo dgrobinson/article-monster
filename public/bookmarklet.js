@@ -467,8 +467,9 @@
           hostname: hostname
         };
 
-        // Extract title
-        if (config.title) {
+        // Extract title (matches PHP: if config has title rules, try them first)
+        var titleExtracted = false;
+        if (config.title && config.title.length > 0) {
           for (var i = 0; i < config.title.length; i++) {
             var element = this._evaluateXPath(config.title[i]);
             if (element) {
@@ -476,14 +477,20 @@
                 element.value : element.textContent;
               if (result.title) {
                 result.title = result.title.trim();
+                titleExtracted = true;
                 break;
               }
             }
           }
         }
 
-        // Fall back to default title extraction if no rule matched
-        if (!result.title) {
+        // Auto-detect title if: 1) no title rules OR 2) title extraction failed AND autodetect_on_failure
+        // (matches PHP: empty($this->config->title) || $this->config->autodetect_on_failure())
+        var shouldAutoDetectTitle = !config.title || config.title.length === 0 || 
+          (!titleExtracted && config.autodetect_on_failure !== false);
+        
+        if (!titleExtracted && shouldAutoDetectTitle) {
+          console.log('Auto-detecting title: no title rules or extraction failed');
           result.title = this._getArticleTitle();
         }
 
