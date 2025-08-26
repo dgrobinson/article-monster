@@ -72,11 +72,12 @@ class ConfigFetcher {
       if (!trimmed || trimmed[0] === '#') continue;
 
       // Split command and value (PHP: explode(':', $line, 2))
-      const commandParts = trimmed.split(':', 2);
-      if (commandParts.length !== 2) continue;
+      // Only split on the FIRST colon to preserve XPath expressions like "article:author"
+      const colonIndex = trimmed.indexOf(':');
+      if (colonIndex === -1) continue;
 
-      const command = commandParts[0].trim();
-      const val = commandParts[1].trim();
+      const command = trimmed.substring(0, colonIndex).trim();
+      const val = trimmed.substring(colonIndex + 1).trim();
 
       if (!command || !val) continue;
 
