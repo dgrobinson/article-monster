@@ -1,0 +1,56 @@
+{
+  "title": [],
+  "body": [
+    "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+  ],
+  "author": [
+    "//meta[@property=\"article"
+  ],
+  "strip": [
+    "//button[@id=\"bookmark\"]",
+    "//div[@data-testid=\"ResponsiveClipVideoContainer\"]",
+    "//div[@data-testid=\"ContentHeaderRubric\"]",
+    "//h1",
+    "//div[@data-testid=\"BylinesWrapper\"]",
+    "//time",
+    "//ul[@data-testid=\"socialIconslist\"]",
+    "//div[contains(concat(' ', normalize-space(@class), ' '), ' caption ')]",
+    "//div[@data-testid=\"GenericCallout\"]",
+    "//figure[@data-testid=\"IframeEmbed\"]",
+    "//div[contains(concat(' ', normalize-space(@class), ' '), ' responsive-cartoon ')]"
+  ],
+  "date": [
+    "//meta[@property=\"article",
+    "//article//time[contains(@class, 'content-header__publish-date')]"
+  ],
+  "preferJsonLd": false,
+  "find_string": [
+    "<header"
+  ],
+  "replace_string": [
+    "<em"
+  ],
+  "strip_id_or_class": [
+    "full-bleed-ad"
+  ],
+  "strip_image_src": [],
+  "single_page_link": [],
+  "next_page_link": [],
+  "test_url": [
+    "https",
+    "https",
+    "https",
+    "https",
+    "https"
+  ],
+  "prune": false,
+  "tidy": false,
+  "autodetect_on_failure": null,
+  "parser": null,
+  "htmlPreprocessing": [
+    {
+      "find": "<header",
+      "replace": "<em"
+    }
+  ]
+}
