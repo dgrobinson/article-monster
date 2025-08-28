@@ -1,0 +1,586 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756415669184,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-08-28T21:14:34.123Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756415669184,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-08-28T21:14:34.124Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for nytimes.com",
+    "data": {
+      "t": 1756415671509,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "nytimes.com"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.124Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 2 rules",
+    "data": {
+      "t": 1756415671513,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "2",
+        "rules"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.124Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png -> ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+    "data": {
+      "t": 1756415671514,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+        "->",
+        "ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.125Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: data-mediaviewer-src='https://static01.nyt.com -> src='https://static01.nyt.com",
+    "data": {
+      "t": 1756415671514,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "data-mediaviewer-src='https://static01.nyt.com",
+        "->",
+        "src='https://static01.nyt.com"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.125Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Applied 2 preprocessing rules",
+    "data": {
+      "t": 1756415671514,
+      "level": "log",
+      "args": [
+        "Applied",
+        "2",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.125Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.nytimes.com",
+    "data": {
+      "t": 1756415671527,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.nytimes.com"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.125Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756415671528,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "nytimes.com"
+      }
+    },
+    "time": "2025-08-28T21:14:34.126Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"nytimes.com\"}",
+    "data": {
+      "t": 1756415671528,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"nytimes.com\"}"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.126Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for nytimes.com",
+    "data": {
+      "t": 1756415671528,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "nytimes.com"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.126Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Trying body XPath: //section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]",
+    "data": {
+      "t": 1756415671528,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.126Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Body matched: 1 element(s) for XPath: //section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]",
+    "data": {
+      "t": 1756415671529,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "1",
+        "element(s) for XPath:",
+        "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.126Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1756415671531,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.126Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756415671531,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Seeking God, or Peter Thiel, in Silicon Valley",
+        "contentLength": 43689,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-08-28T21:14:34.126Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Seeking God, or Peter Thiel, in Silicon Valley\",\"contentLength\":43689,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1756415671531,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Seeking God, or Peter Thiel, in Silicon Valley\",\"contentLength\":43689,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.127Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756415671531,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.127Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756415671534,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.127Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756415671534,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.127Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Content to encode starts with: Everything clicked when Peter Thiel gave the speech about God.</",
+    "data": {
+      "t": 1756415671534,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "Everything clicked when Peter Thiel gave the speech about God.</"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.127Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Successfully encoded 43703 chars to base64",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "43703",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.127Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-28T21:14:34.127Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Title: Seeking God, or Peter Thiel, in Silicon Valley",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Seeking God, or Peter Thiel, in Silicon Valley"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.128Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content length: 43703",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "43703"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.128Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Text content length: 19158",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "19158"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.128Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-08-28T21:14:34.128Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-08-28T21:14:34.128Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-08-28T21:14:34.128Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content structure: 58 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "58",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-08-28T21:14:34.128Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content preview: <div class=\"css-s99gbd StoryBodyCompanionColumn\" data-testid=\"companionColumn-0\"><div class=\"css-53u6y8\"><p class=\"css-at9mc1 evys1bk0\">Everything clicked when Peter Thiel gave the speech about God.</...",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div class=\"css-s99gbd StoryBodyCompanionColumn\" data-testid=\"companionColumn-0\"><div class=\"css-53u6y8\"><p class=\"css-at9mc1 evys1bk0\">Everything clicked when Peter Thiel gave the speech about God.</..."
+      ]
+    },
+    "time": "2025-08-28T21:14:34.128Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756415671535,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-28T21:14:34.129Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.nytimes.com/2025/02/11/business/silicon-valley-christianity.html",
+      "title": "Seeking God, or Peter Thiel, in Silicon Valley",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-28T21:14:34.129Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "processing",
+    "message": "Processing article: Seeking God, or Peter Thiel, in Silicon Valley",
+    "data": {},
+    "time": "2025-08-28T21:14:34.130Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Seeking God, or Peter Thiel, in Silicon Valley",
+      "contentLength": 43703,
+      "textContentLength": 19158,
+      "hasContent": true
+    },
+    "time": "2025-08-28T21:14:34.130Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-28T21:14:34.130Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Seeking God, or Peter Thiel, in Silicon Valley\"",
+    "data": {},
+    "time": "2025-08-28T21:14:34.130Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Seeking God, or Peter Thiel, in Silicon Valley",
+      "byline": "By Emma Goldberg",
+      "siteName": "nytimes.com",
+      "url": "https://www.nytimes.com/2025/02/11/business/silicon-valley-christianity.html",
+      "publishedTime": "2025-02-11T10:00:19.000Z",
+      "contentLength": 43703,
+      "hasImages": true
+    },
+    "time": "2025-08-28T21:14:34.130Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Seeking-God,-or-Peter-Thiel,-in-Silicon-Valley_MEVWJJTF.html",
+      "contentSizeKB": "44.58"
+    },
+    "time": "2025-08-28T21:14:34.131Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Seeking God, or Peter Thiel, in Silicon Valley\"",
+    "data": {},
+    "time": "2025-08-28T21:14:34.133Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-28T21:14:34.133Z"
+  },
+  {
+    "timestamp": 288,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "GJU4MUW9"
+    },
+    "time": "2025-08-28T21:14:34.411Z"
+  },
+  {
+    "timestamp": 288,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-28T21:14:34.411Z"
+  },
+  {
+    "timestamp": 668,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-28T21:14:34.791Z"
+  },
+  {
+    "timestamp": 1361,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-28T21:14:35.484Z"
+  },
+  {
+    "timestamp": 1414,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "GJU4MUW9",
+      "attachmentKey": "SHQTVQQE"
+    },
+    "time": "2025-08-28T21:14:35.537Z"
+  },
+  {
+    "timestamp": 1983,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<71aaaf0b-0432-c9f0-5aac-71e76733263a@gmail.com>",
+      "filename": "Seeking-God,-or-Peter-Thiel,-in-Silicon-Valley_MEVWJJTF.html",
+      "subject": "Seeking God, or Peter Thiel, in Silicon Valley",
+      "sizekB": "44.58"
+    },
+    "time": "2025-08-28T21:14:36.106Z"
+  }
+]

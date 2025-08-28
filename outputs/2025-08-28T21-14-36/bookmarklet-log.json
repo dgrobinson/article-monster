@@ -1,0 +1,259 @@
+[
+  {
+    "t": 1756415669184,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1756415669184,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1756415671509,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "nytimes.com"
+    ]
+  },
+  {
+    "t": 1756415671513,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "2",
+      "rules"
+    ]
+  },
+  {
+    "t": 1756415671514,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+      "->",
+      "ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png"
+    ]
+  },
+  {
+    "t": 1756415671514,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "data-mediaviewer-src='https://static01.nyt.com",
+      "->",
+      "src='https://static01.nyt.com"
+    ]
+  },
+  {
+    "t": 1756415671514,
+    "level": "log",
+    "args": [
+      "Applied",
+      "2",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1756415671527,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.nytimes.com"
+    ]
+  },
+  {
+    "t": 1756415671528,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "nytimes.com"
+    }
+  },
+  {
+    "t": 1756415671528,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"nytimes.com\"}"
+    ]
+  },
+  {
+    "t": 1756415671528,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "nytimes.com"
+    ]
+  },
+  {
+    "t": 1756415671528,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+    ]
+  },
+  {
+    "t": 1756415671529,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "1",
+      "element(s) for XPath:",
+      "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+    ]
+  },
+  {
+    "t": 1756415671531,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1756415671531,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Seeking God, or Peter Thiel, in Silicon Valley",
+      "contentLength": 43689,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1756415671531,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Seeking God, or Peter Thiel, in Silicon Valley\",\"contentLength\":43689,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1756415671531,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756415671534,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756415671534,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756415671534,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "Everything clicked when Peter Thiel gave the speech about God.</"
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "43703",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Seeking God, or Peter Thiel, in Silicon Valley"
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "43703"
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "19158"
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "58",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<div class=\"css-s99gbd StoryBodyCompanionColumn\" data-testid=\"companionColumn-0\"><div class=\"css-53u6y8\"><p class=\"css-at9mc1 evys1bk0\">Everything clicked when Peter Thiel gave the speech about God.</..."
+    ]
+  },
+  {
+    "t": 1756415671535,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
