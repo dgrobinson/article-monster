@@ -22,7 +22,9 @@
   Readability.prototype = {
     parse: function() {
       try {
-        // Try JSON-LD structured data if available (FiveFilters handled separately now)
+        // FiveFilters site-specific configuration now handled separately by FiveFiltersExtractor
+        
+        // Try JSON-LD structured data if available
         var jsonLdContent = this._extractFromJsonLd();
         if (jsonLdContent) {
           jsonLdContent.extractionMethod = 'json-ld';
@@ -435,9 +437,7 @@
       }
     },
 
-    // OLD _extractWithSiteConfig method removed - now handled by FiveFiltersExtractor
-
-    _evaluateXPath: function(xpath, contextNode) {
+    _extractWithSiteConfig: function() {
       try {
         var hostname = window.location.hostname.replace(/^www\./, '');
 
