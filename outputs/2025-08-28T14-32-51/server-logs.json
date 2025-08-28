@@ -1,0 +1,143 @@
+[
+  {
+    "timestamp": 0,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.theatlantic.com/podcasts/archive/2025/08/a-blueprint-for-military-takeovers/684026/",
+      "title": "A Blueprint for Military Takeovers",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-28T14:32:49.224Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "processing",
+    "message": "Processing article: A Blueprint for Military Takeovers",
+    "data": {},
+    "time": "2025-08-28T14:32:49.226Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "A Blueprint for Military Takeovers",
+      "contentLength": 48242,
+      "textContentLength": 32588,
+      "hasContent": true
+    },
+    "time": "2025-08-28T14:32:49.226Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-28T14:32:49.226Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"A Blueprint for Military Takeovers\"",
+    "data": {},
+    "time": "2025-08-28T14:32:49.226Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "A Blueprint for Military Takeovers",
+      "byline": "Hanna Rosin",
+      "siteName": "theatlantic.com",
+      "url": "https://www.theatlantic.com/podcasts/archive/2025/08/a-blueprint-for-military-takeovers/684026/",
+      "publishedTime": "2025-08-28T11:00:00Z",
+      "contentLength": 48242,
+      "hasImages": true
+    },
+    "time": "2025-08-28T14:32:49.227Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "A-Blueprint-for-Military-Takeovers_MEVI6WCS.html",
+      "contentSizeKB": "49.02"
+    },
+    "time": "2025-08-28T14:32:49.228Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"A Blueprint for Military Takeovers\"",
+    "data": {},
+    "time": "2025-08-28T14:32:49.229Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-28T14:32:49.229Z"
+  },
+  {
+    "timestamp": 274,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "WRJT33QE"
+    },
+    "time": "2025-08-28T14:32:49.498Z"
+  },
+  {
+    "timestamp": 274,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-28T14:32:49.498Z"
+  },
+  {
+    "timestamp": 445,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-28T14:32:49.669Z"
+  },
+  {
+    "timestamp": 1046,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-28T14:32:50.270Z"
+  },
+  {
+    "timestamp": 1111,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "WRJT33QE",
+      "attachmentKey": "9D8ZW48X"
+    },
+    "time": "2025-08-28T14:32:50.335Z"
+  },
+  {
+    "timestamp": 2069,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<5c6a8d7d-eb90-4498-f1d3-c0e565f653ff@gmail.com>",
+      "filename": "A-Blueprint-for-Military-Takeovers_MEVI6WCS.html",
+      "subject": "A Blueprint for Military Takeovers",
+      "sizekB": "49.02"
+    },
+    "time": "2025-08-28T14:32:51.293Z"
+  }
+]
