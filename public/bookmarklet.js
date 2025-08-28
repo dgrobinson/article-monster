@@ -1156,6 +1156,352 @@
     }
   };
 
+  // FiveFilters Site-Specific Extractor
+  function FiveFiltersExtractor(doc, config) {
+    this._doc = doc;
+    this._config = config;
+  }
+
+  FiveFiltersExtractor.prototype = {
+    extract: function() {
+      try {
+        var hostname = window.location.hostname.replace(/^www\./, '');
+        var config = this._config;
+
+        if (!config) {
+          console.log('No FiveFilters config provided');
+          return null;
+        }
+
+        // If site prefers JSON-LD, let that handler take over
+        if (config.preferJsonLd) return null;
+
+        var result = {
+          source: 'site-config',
+          hostname: hostname
+        };
+
+        // Extract title (matches PHP: if config has title rules, try them first)
+        var titleExtracted = false;
+        if (config.title && config.title.length > 0) {
+          for (var i = 0; i < config.title.length; i++) {
+            var element = this._evaluateXPath(config.title[i]);
+            if (element) {
+              result.title = config.title[i].endsWith('/@content') ?
+                element.value : element.textContent;
+              if (result.title) {
+                result.title = result.title.trim();
+                titleExtracted = true;
+                break;
+              }
+            }
+          }
+        }
+
+        // Auto-detect title if: 1) no title rules OR 2) title extraction failed AND autodetect_on_failure
+        // (matches PHP: empty($this->config->title) || $this->config->autodetect_on_failure())
+        var shouldAutoDetectTitle = !config.title || config.title.length === 0 || 
+          (!titleExtracted && config.autodetect_on_failure !== false);
+        
+        if (!titleExtracted && shouldAutoDetectTitle) {
+          console.log('Auto-detecting title: no title rules or extraction failed');
+          console.log('config.title:', config.title, 'length:', config.title ? config.title.length : 'undefined');
+          console.log('titleExtracted:', titleExtracted);
+          console.log('autodetect_on_failure:', config.autodetect_on_failure);
+          result.title = this._getArticleTitle();
+          console.log('Auto-detected title result:', result.title);
+        }
+
+        // Check for single page link before extracting body (PHP: makefulltextfeed.php)
+        var singlePageUrl = this._findSinglePageLink(config);
+        if (singlePageUrl && singlePageUrl !== window.location.href) {
+          // Found a single page link - navigate to full article
+          console.log('Found single page link, navigating to full article:', singlePageUrl);
+          window.location.href = singlePageUrl;
+          return null; // Don't process current page
+        }
+
+        // Extract body (matches PHP: no minimum length, handles multiple elements)
+        if (config.body) {
+          for (var i = 0; i < config.body.length; i++) {
+            var elements = this._evaluateXPathAll(config.body[i]);
+            if (elements && elements.length > 0) {
+              console.log('Body matched:', elements.length, 'element(s) for XPath:', config.body[i]);
+
+              var bodyElement;
+              if (elements.length === 1) {
+                // Single element (matches PHP: $this->body = $elems->item(0))
+                bodyElement = elements[0];
+              } else {
+                // Multiple elements - combine them (matches PHP logic)
+                bodyElement = this._doc.createElement('div');
+                for (var j = 0; j < elements.length; j++) {
+                  var clonedNode = elements[j].cloneNode(true);
+                  bodyElement.appendChild(clonedNode);
+                }
+                console.log('Combined', elements.length, 'body elements into single container');
+              }
+
+              // Clone and clean the element with full config
+              var cleanElement = this._cleanElementWithConfig(bodyElement, config);
+              result.content = cleanElement.innerHTML;
+              result.textContent = cleanElement.textContent || cleanElement.innerText || '';
+              result.length = result.textContent.length;
+
+              // Only accept if we have some content (basic sanity check)
+              if (result.textContent && result.textContent.trim().length > 0) {
+                break;
+              }
+            }
+          }
+        }
+
+        // Extract author
+        if (config.author) {
+          for (var i = 0; i < config.author.length; i++) {
+            var element = this._evaluateXPath(config.author[i]);
+            if (element) {
+              result.byline = config.author[i].endsWith('/@content') ?
+                element.value : element.textContent;
+              if (result.byline) {
+                result.byline = result.byline.trim();
+                break;
+              }
+            }
+          }
+        }
+
+        // Add other metadata
+        result.excerpt = this._createExcerpt(result.textContent);
+        result.siteName = hostname;
+        result.publishedTime = this._getArticleMetadata('published_time') || this._getArticleMetadata('date');
+
+        // Only return if we successfully extracted content
+        return result.content ? result : null;
+
+      } catch (e) {
+        console.error('FiveFilters extraction failed:', e);
+        return null;
+      }
+    },
+
+    // Helper methods moved from Readability
+    _evaluateXPath: function(xpath, contextNode) {
+      try {
+        contextNode = contextNode || this._doc;
+        var result = this._doc.evaluate(
+          xpath,
+          contextNode,
+          null,
+          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          null
+        );
+        return result.singleNodeValue;
+      } catch (e) {
+        console.warn('XPath evaluation failed:', xpath, e);
+        return null;
+      }
+    },
+
+    _evaluateXPathAll: function(xpath, contextNode) {
+      try {
+        contextNode = contextNode || this._doc;
+        var result = this._doc.evaluate(
+          xpath,
+          contextNode,
+          null,
+          XPathResult.ORDERED_NODE_ITERATOR_TYPE,
+          null
+        );
+        
+        var nodes = [];
+        var node;
+        while (node = result.iterateNext()) {
+          nodes.push(node);
+        }
+        return nodes;
+      } catch (e) {
+        console.warn('XPath evaluation failed:', xpath, e);
+        return [];
+      }
+    },
+
+    _getArticleTitle: function() {
+      // Try multiple selectors for title
+      var selectors = [
+        'h1',
+        '[property="og:title"]',
+        'title',
+        '.article-title',
+        '.entry-title',
+        '.post-title'
+      ];
+
+      for (var i = 0; i < selectors.length; i++) {
+        var element = this._doc.querySelector(selectors[i]);
+        if (element) {
+          var title = element.getAttribute('content') || element.textContent || element.innerText;
+          if (title && title.trim()) {
+            return title.trim();
+          }
+        }
+      }
+      return null;
+    },
+
+    _findSinglePageLink: function(config) {
+      if (!config.single_page_link) return null;
+
+      for (var i = 0; i < config.single_page_link.length; i++) {
+        var pattern = config.single_page_link[i];
+        
+        try {
+          // Try to evaluate as XPath returning nodes (PHP: $elems instanceof DOMNodeList)
+          var nodes = this._evaluateXPathAll(pattern);
+          if (nodes && nodes.length > 0) {
+            for (var j = 0; j < nodes.length; j++) {
+              var node = nodes[j];
+              // Check if it's an element with href attribute (PHP: hasAttribute('href'))
+              if (node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('href')) {
+                var url = this._makeAbsoluteUrl(node.getAttribute('href'));
+                if (url) return url;
+              }
+              // Also check if the text content looks like a URL
+              else if (node.textContent) {
+                var text = node.textContent.trim();
+                if (text.match(/^https?:\/\//)) {
+                  return text;
+                }
+              }
+            }
+          }
+        } catch (e) {
+          // XPath failed, try as node selector
+        }
+      }
+
+      return null;
+    },
+
+    _makeAbsoluteUrl: function(url) {
+      if (!url) return null;
+      
+      if (url.match(/^https?:\/\//)) {
+        return url;
+      }
+      
+      if (url.startsWith('/')) {
+        return window.location.protocol + '//' + window.location.host + url;
+      }
+      
+      // Relative path - more complex, skip for now
+      return null;
+    },
+
+    _cleanElementWithConfig: function(element, config) {
+      var clone = element.cloneNode(true);
+      
+      // Apply strip rules
+      if (config.strip) {
+        for (var i = 0; i < config.strip.length; i++) {
+          var elements = clone.querySelectorAll(config.strip[i]);
+          for (var j = elements.length - 1; j >= 0; j--) {
+            if (elements[j] && elements[j].remove) {
+              elements[j].remove();
+            }
+          }
+        }
+      }
+
+      // Apply strip_id_or_class rules
+      if (config.strip_id_or_class) {
+        for (var i = 0; i < config.strip_id_or_class.length; i++) {
+          var selector = config.strip_id_or_class[i];
+          var elements = clone.querySelectorAll('#' + selector + ', .' + selector);
+          for (var j = elements.length - 1; j >= 0; j--) {
+            if (elements[j] && elements[j].remove) {
+              elements[j].remove();
+            }
+          }
+        }
+      }
+
+      // Clean out junk from the article content (matches PHP clean() calls)
+      var junkSelectors = ['input', 'button', 'nav', 'object', 'iframe', 'canvas'];
+      for (var i = 0; i < junkSelectors.length; i++) {
+        var elements = clone.querySelectorAll(junkSelectors[i]);
+        for (var j = elements.length - 1; j >= 0; j--) {
+          if (elements[j] && elements[j].remove) {
+            elements[j].remove();
+          }
+        }
+      }
+
+      // Remove h1 elements (already have title)
+      var h1Elements = clone.querySelectorAll('h1');
+      for (var i = h1Elements.length - 1; i >= 0; i--) {
+        if (h1Elements[i] && h1Elements[i].remove) {
+          h1Elements[i].remove();
+        }
+      }
+
+      // Clean up empty elements and normalize whitespace
+      this._cleanEmptyElements(clone);
+      return clone;
+    },
+
+    _cleanEmptyElements: function(element) {
+      // Remove elements that are empty or contain only whitespace
+      var emptyElements = element.querySelectorAll('p:empty, div:empty, span:empty');
+      for (var i = 0; i < emptyElements.length; i++) {
+        if (emptyElements[i] && emptyElements[i].remove) {
+          emptyElements[i].remove();
+        }
+      }
+
+      // Clean up elements that only contain whitespace
+      var textNodes = document.createTreeWalker(
+        element,
+        NodeFilter.SHOW_TEXT,
+        null,
+        false
+      );
+
+      var node;
+      while (node = textNodes.nextNode()) {
+        if (node.nodeValue && /^\s*$/.test(node.nodeValue)) {
+          // Node contains only whitespace
+          var parent = node.parentNode;
+          if (parent && parent.childNodes.length === 1) {
+            // Parent only contains this whitespace node, remove parent
+            if (parent.remove) {
+              parent.remove();
+            }
+          } else {
+            // Just remove the whitespace text node
+            node.remove();
+          }
+        }
+      }
+    },
+
+    _createExcerpt: function(text, maxLength) {
+      if (!text) return '';
+      maxLength = maxLength || 200;
+      
+      var cleaned = text.replace(/\s+/g, ' ').trim();
+      if (cleaned.length <= maxLength) return cleaned;
+      
+      return cleaned.substring(0, maxLength).replace(/\s+\S*$/, '') + '...';
+    },
+
+    _getArticleMetadata: function(property) {
+      var element = this._doc.querySelector('[property="' + property + '"]') || 
+                   this._doc.querySelector('[name="' + property + '"]');
+      return element ? element.getAttribute('content') : null;
+    }
+  };
+
   // Standalone HTML preprocessing function (matches PHP str_replace logic)
   function applyHtmlPreprocessing(html, preprocessingRules) {
     console.log('Starting HTML preprocessing with', preprocessingRules.length, 'rules');
@@ -1232,21 +1578,22 @@
         var parser = new DOMParser();
         var processedDoc = parser.parseFromString(finalHtml, 'text/html');
 
-        // Step 3: Try XPath extraction first (matches PHP ContentExtractor::process)
-        var reader = new Readability(processedDoc);
-        var siteConfigResult = reader._extractWithSiteConfig();
+        // Step 3: Try FiveFilters extraction first (matches PHP ContentExtractor::process)
+        var extractor = new FiveFiltersExtractor(processedDoc, config);
+        var siteConfigResult = extractor.extract();
 
-        if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
+        if (siteConfigResult && siteConfigResult.content) {
           console.log('Extraction successful using FiveFilters XPath rules');
           resolve(siteConfigResult);
           return;
         }
 
-        // Step 4: XPath failed, fall back to Readability auto-detection (matches PHP autodetect_on_failure)
-        console.log('XPath extraction failed, falling back to Readability auto-detection');
+        // Step 4: FiveFilters failed, fall back to Readability auto-detection (matches PHP autodetect_on_failure)
+        console.log('FiveFilters extraction failed, falling back to Readability auto-detection');
+        var reader = new Readability(processedDoc);
         var article = reader.parse();
         if (article) {
-          article.extractionNote = 'XPath rules failed, used Readability fallback';
+          article.extractionNote = 'FiveFilters XPath rules failed, used Readability fallback';
         }
         resolve(article);
         return;
@@ -1284,20 +1631,21 @@
             var parser = new DOMParser();
             var processedDoc = parser.parseFromString(finalHtml, 'text/html');
 
-            // Step 3: Try XPath extraction first
-            var reader = new Readability(processedDoc);
-            var siteConfigResult = reader._extractWithSiteConfig();
+            // Step 3: Try FiveFilters extraction first
+            var extractor = new FiveFiltersExtractor(processedDoc, data.config);
+            var siteConfigResult = extractor.extract();
 
             var article;
-            if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
+            if (siteConfigResult && siteConfigResult.content) {
               console.log('Extraction successful using FiveFilters XPath rules');
               article = siteConfigResult;
             } else {
-              // Step 4: XPath failed, fall back to Readability
-              console.log('XPath extraction failed, falling back to Readability auto-detection');
+              // Step 4: FiveFilters failed, fall back to Readability
+              console.log('FiveFilters extraction failed, falling back to Readability auto-detection');
+              var reader = new Readability(processedDoc);
               article = reader.parse();
               if (article) {
-                article.extractionNote = 'XPath rules failed, used Readability fallback';
+                article.extractionNote = 'FiveFilters XPath rules failed, used Readability fallback';
               }
             }
             resolve(article);
