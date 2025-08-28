@@ -899,19 +899,8 @@
     // Note: HTML preprocessing now handled by standalone applyHtmlPreprocessing() function
 
     _getCachedConfig: function(hostname) {
-      try {
-        var cached = sessionStorage.getItem('siteConfig_' + hostname);
-        if (cached) {
-          var data = JSON.parse(cached);
-          // Check if cache is less than 24 hours old
-          if (Date.now() - data.timestamp < 24 * 60 * 60 * 1000) {
-            console.log('Using cached FiveFilters config for', hostname);
-            return data.config;
-          }
-        }
-      } catch (e) {
-        // Session storage not available or parsing failed
-      }
+      // Caching disabled - always return null to force fresh fetch from server
+      console.log('Config caching disabled - fetching fresh config for', hostname);
       return null;
     },
 
@@ -935,16 +924,8 @@
           })
           .then(function(data) {
             if (data.success && data.config) {
-              // Store in session storage for potential future use
-              try {
-                sessionStorage.setItem('siteConfig_' + hostname, JSON.stringify({
-                  config: data.config,
-                  timestamp: Date.now()
-                }));
-                console.log('Fetched site config for', hostname, 'from FiveFilters');
-              } catch (e) {
-                // Session storage not available, ignore
-              }
+              // Caching disabled - config fetched fresh every time
+              console.log('Fetched site config for', hostname, 'from FiveFilters (no caching)');
             }
           })
           .catch(function(error) {
@@ -1284,16 +1265,8 @@
         })
         .then(function(data) {
           if (data.success && data.config) {
-            // Store the config and extract with it
-            try {
-              sessionStorage.setItem('siteConfig_' + hostname, JSON.stringify({
-                config: data.config,
-                timestamp: Date.now()
-              }));
-              console.log('Using fresh FiveFilters config for', hostname);
-            } catch (e) {
-              // Session storage not available, continue anyway
-            }
+            // Caching disabled - config fetched fresh every time
+            console.log('Using fresh FiveFilters config for', hostname, '(no caching)');
 
             updateIndicator(indicator, '📖 Extracting with site-specific rules...');
 
