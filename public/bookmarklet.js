@@ -2,8 +2,53 @@
 (function() {
   'use strict';
 
+  // Client-side debug capture (console + errors)
+  var __bmLog = [];
+  function logDebug(category, message, details) {
+    try {
+      __bmLog.push({ t: Date.now(), category: category, message: String(message), details: details || null });
+    } catch (e) {}
+    try {
+      console.log('[bm:' + category + ']', message, details || '');
+    } catch (e) {}
+  }
+
+  // Proxy console methods into __bmLog while preserving original behavior
+  (function() {
+    var __orig = {
+      log: console.log,
+      info: console.info,
+      warn: console.warn,
+      error: console.error,
+      debug: console.debug
+    };
+    ['log', 'info', 'warn', 'error', 'debug'].forEach(function(level) {
+      var orig = __orig[level] || function() {};
+      console[level] = function() {
+        var args = Array.prototype.slice.call(arguments);
+        try {
+          var safeArgs = args.map(function(a) {
+            try { return typeof a === 'string' ? a : JSON.stringify(a); } catch (e) { return String(a); }
+          }).slice(0, 10);
+          __bmLog.push({ t: Date.now(), level: level, args: safeArgs });
+        } catch (e) {}
+        return orig.apply(console, args);
+      };
+    });
+    window.addEventListener('error', function(e) {
+      try { __bmLog.push({ t: Date.now(), level: 'error', message: e.message, source: e.filename, line: e.lineno, col: e.colno }); } catch (_) {}
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      try {
+        var reason = e.reason;
+        var msg = reason && (reason.message || String(reason));
+        __bmLog.push({ t: Date.now(), level: 'error', message: msg || 'unhandledrejection' });
+      } catch (_) {}
+    });
+  })();
+
   // Configuration - replace with your actual service URL
-  const SERVICE_URL = 'https://seal-app-t4vff.ondigitalocean.app/process-article';
+  const SERVICE_URL = (window.__BOOKMARKLET_SERVICE_URL__ || 'https://seal-app-t4vff.ondigitalocean.app/process-article');
 
   // Check if we're already processing to avoid double-clicks
   if (window.articleBookmarkletProcessing) {
@@ -446,6 +491,7 @@
 
     _extractWithSiteConfig: function() {
       console.log('_extractWithSiteConfig called for hostname:', window.location.hostname);
+      logDebug('site-config', '_extractWithSiteConfig enter', { hostname: window.location.hostname.replace(/^www\./, '') });
       try {
         var hostname = window.location.hostname.replace(/^www\./, '');
 
@@ -1458,7 +1504,8 @@
             content_b64: contentB64,
             // Also send raw content to compare
             content: enhancedArticle.content
-          }
+          },
+          debugInfo: __bmLog
         })
       });
     })

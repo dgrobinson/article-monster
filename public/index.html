@@ -231,11 +231,11 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
             fetch('/bookmarklet.js')
                 .then(response => response.text())
                 .then(code => {
-                    // Replace the placeholder URL with the actual service URL
-                    const updatedCode = code.replace('https://your-service.digitalocean.app/process-article', serviceUrl);
+                    // Inject runtime service URL so bookmarklet targets the serving origin
+                    const injected = 'window.__BOOKMARKLET_SERVICE_URL__=' + JSON.stringify(serviceUrl) + ';' + code;
                     
                     // Create the bookmarklet href
-                    const bookmarkletHref = 'javascript:' + encodeURIComponent(updatedCode);
+                    const bookmarkletHref = 'javascript:' + encodeURIComponent(injected);
                     
                     // Update the link
                     document.getElementById('bookmarklet-link').href = bookmarkletHref;
