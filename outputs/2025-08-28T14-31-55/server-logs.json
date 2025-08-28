@@ -1,0 +1,143 @@
+[
+  {
+    "timestamp": 0,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.wsj.com/economy/central-banking/lisa-cook-trump-lawsuit-fed-reserve-62f1ef95?mod=hp_lead_pos1",
+      "title": "Fed Governor Lisa Cook Sues to Stop Trump From Firing Her",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-28T14:31:54.094Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "processing",
+    "message": "Processing article: Fed Governor Lisa Cook Sues to Stop Trump From Firing Her",
+    "data": {},
+    "time": "2025-08-28T14:31:54.096Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Fed Governor Lisa Cook Sues to Stop Trump From Firing Her",
+      "contentLength": 37073,
+      "textContentLength": 6687,
+      "hasContent": true
+    },
+    "time": "2025-08-28T14:31:54.096Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-28T14:31:54.097Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Fed Governor Lisa Cook Sues to Stop Trump From Firing Her\"",
+    "data": {},
+    "time": "2025-08-28T14:31:54.097Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Fed Governor Lisa Cook Sues to Stop Trump From Firing Her",
+      "byline": "Lydia Wheeler",
+      "siteName": "wsj.com",
+      "url": "https://www.wsj.com/economy/central-banking/lisa-cook-trump-lawsuit-fed-reserve-62f1ef95?mod=hp_lead_pos1",
+      "publishedTime": "2025-08-28T14:08:00.000Z",
+      "contentLength": 37073,
+      "hasImages": true
+    },
+    "time": "2025-08-28T14:31:54.097Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Fed-Governor-Lisa-Cook-Sues-to-Stop-Trump-From-Firing-Her_MEVI5PTF.html",
+      "contentSizeKB": "38.17"
+    },
+    "time": "2025-08-28T14:31:54.099Z"
+  },
+  {
+    "timestamp": 14,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Fed Governor Lisa Cook Sues to Stop Trump From Firing Her\"",
+    "data": {},
+    "time": "2025-08-28T14:31:54.108Z"
+  },
+  {
+    "timestamp": 14,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-28T14:31:54.108Z"
+  },
+  {
+    "timestamp": 286,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "6STV72P8"
+    },
+    "time": "2025-08-28T14:31:54.380Z"
+  },
+  {
+    "timestamp": 286,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-28T14:31:54.380Z"
+  },
+  {
+    "timestamp": 825,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-28T14:31:54.919Z"
+  },
+  {
+    "timestamp": 1514,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-28T14:31:55.608Z"
+  },
+  {
+    "timestamp": 1567,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "6STV72P8",
+      "attachmentKey": "28FZU9NR"
+    },
+    "time": "2025-08-28T14:31:55.661Z"
+  },
+  {
+    "timestamp": 1768,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<de15a5d5-1a1d-40c2-f63f-629454fc1d55@gmail.com>",
+      "filename": "Fed-Governor-Lisa-Cook-Sues-to-Stop-Trump-From-Firing-Her_MEVI5PTF.html",
+      "subject": "Fed Governor Lisa Cook Sues to Stop Trump From Firing Her",
+      "sizekB": "38.17"
+    },
+    "time": "2025-08-28T14:31:55.862Z"
+  }
+]

@@ -1,0 +1,108 @@
+{
+  "title": [
+    "//meta[@property=\"og:title\"]/@content"
+  ],
+  "body": [
+    "//main//article/div[contains(concat(' ',normalize-space(@class),' '),' crawler ')] | //main//div[contains(@class, 'article-header')]",
+    "//main",
+    "//article",
+    "//main[@id=\"main\"]//div[@itemprop=\"articleLead\" or @itemprop=\"articleBody\" or contains(concat(' ',normalize-space(@class),' '),' articleBody ')]",
+    "//div[@id='wsj-article-wrap']",
+    "//div[@id='article_story_body']",
+    "//ul[@id='imageSlide']//li[@class='firstSlide']//img | (//div[@class='txt_body']//p)[1]"
+  ],
+  "author": [
+    "//a[contains(@class, 'AuthorLink')]",
+    "//meta[@name=\"author\"]/@content"
+  ],
+  "strip": [
+    "//div[contains(@class, 'ribbon-container')]/parent::div",
+    "//div[contains(@class, 'AuthoringContainer')]",
+    "//div[@data-inset_type='newsletterinset']",
+    "//div[@class='audioplayer' and @id='articlereader']",
+    "//picture/@source",
+    "//button",
+    "//nav",
+    "//svg",
+    "//main/div/article//section[last()]/following-sibling::*",
+    "//div[contains(@class, 'article-byline')]/parent::div",
+    "//h1[1]",
+    "//div[@aria-label='Sponsored Offers']",
+    "//div[@aria-label='What to Read Next']",
+    "//div[@aria-label='Utility Bar']",
+    "//div[@data-type='inset']",
+    "//iframe",
+    "//div[contains(@class, '_hoverText_')]",
+    "//textarea[contains(text(), 'video-api.wsj.com/')]",
+    "//a[contains(text(), 'video-api.wsj.com/')]",
+    "//amp-iframe",
+    "//*[@amp-access-hide]",
+    "//div[contains(@class, 'insetContent')]//cite",
+    "//*[contains(@style, 'visibility: hidden;')]",
+    "//div[contains(@class, 'insetContent') and not(contains(@class, 'image'))]",
+    "//div[contains(@class, 'carousel')]",
+    "//div[div[contains(@class, 'media-object-rich-text') and h4 and ul[@class=\"articleList\"]]]",
+    "//div[contains(@class, 'snippet')]",
+    "//div[contains(@class, 'media-object-video')]"
+  ],
+  "date": [
+    "//meta[@itemprop=\"dateCreated\"]/@content"
+  ],
+  "preferJsonLd": false,
+  "find_string": [
+    "<textarea",
+    "</textarea>"
+  ],
+  "replace_string": [
+    "<a",
+    "</a>"
+  ],
+  "strip_id_or_class": [
+    "article-body-tools",
+    "print-header",
+    "controls-container",
+    "category",
+    "aside-container",
+    "uds-ad-container",
+    "jw-hidden-accessibility",
+    "jw-shortcuts-tooltip",
+    "jw-controlbar",
+    "jw-text",
+    "jw-rightclick",
+    "insetFullBracket",
+    "newsletter-inset",
+    "insettipBox",
+    "recipeACShopAndBuyText",
+    "article__byline",
+    "type-InsetMediaVideo",
+    "wsj-ad",
+    "bylineWrap"
+  ],
+  "strip_image_src": [],
+  "single_page_link": [],
+  "next_page_link": [],
+  "test_url": [
+    "http://www.wsj.com/articles/airasia-flight-8501-tail-recovered-1420878809",
+    "http://www.wsj.com/news/articles/SB10001424052702304626304579509100018004342",
+    "http://www.wsj.com/article/SB10001424052970203363504577185322849515102.html",
+    "http://www.wsj.com/article/SB10001424052970204791104577110550376458164.html",
+    "https://www.wsj.com/articles/what-the-world-will-speak-in-2115-1420234648",
+    "https://www.wsj.com/articles/our-amazingly-plastic-brains-1423262095",
+    "https://www.wsj.com/articles/the-biggest-money-mistakes-we-makedecade-by-decade-1477275181",
+    "https://www.wsj.com/articles/russia-figure-skating-world-championships-11646143414"
+  ],
+  "prune": false,
+  "tidy": false,
+  "autodetect_on_failure": null,
+  "parser": null,
+  "htmlPreprocessing": [
+    {
+      "find": "<textarea",
+      "replace": "<a"
+    },
+    {
+      "find": "</textarea>",
+      "replace": "</a>"
+    }
+  ]
+}
