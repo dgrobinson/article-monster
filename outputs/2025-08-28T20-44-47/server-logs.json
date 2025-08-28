@@ -1,0 +1,744 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756413884329,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-08-28T20:44:45.719Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756413884329,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-08-28T20:44:45.719Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756413884731,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.720Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 1 rules",
+    "data": {
+      "t": 1756413884735,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "1",
+        "rules"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.720Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: <header -> <em",
+    "data": {
+      "t": 1756413884737,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "<header",
+        "->",
+        "<em"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.720Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Auto-generated closing tag rule: </header> -> </em>",
+    "data": {
+      "t": 1756413884737,
+      "level": "log",
+      "args": [
+        "Auto-generated closing tag rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.721Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Applied auto-generated rule: </header> -> </em>",
+    "data": {
+      "t": 1756413884738,
+      "level": "log",
+      "args": [
+        "Applied auto-generated rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.721Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Applied 1 preprocessing rules",
+    "data": {
+      "t": 1756413884738,
+      "level": "log",
+      "args": [
+        "Applied",
+        "1",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.721Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.newyorker.com",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.newyorker.com"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.722Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756413884750,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "newyorker.com"
+      }
+    },
+    "time": "2025-08-28T20:44:45.722Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"newyorker.com\"}",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"newyorker.com\"}"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.722Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.722Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Auto-detecting title: no title rules or extraction failed",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "Auto-detecting title: no title rules or extraction failed"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.722Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "config.title: [] length: 0",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "config.title:",
+        "[]",
+        "length:",
+        "0"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.722Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "titleExtracted: false",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "titleExtracted:",
+        "false"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.723Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "autodetect_on_failure: null",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "autodetect_on_failure:",
+        "null"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.723Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: The Lives and Loves of James Baldwin | The New Yorker",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "The Lives and Loves of James Baldwin | The New Yorker"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.723Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: The Lives and Loves of James Baldwin",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "The Lives and Loves of James Baldwin"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.723Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle - using h1 title: The Lives and Loves of James Baldwin",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using h1 title:",
+        "The Lives and Loves of James Baldwin"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.723Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: The Lives and Loves of James Baldwin",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "The Lives and Loves of James Baldwin"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.723Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Auto-detected title result: The Lives and Loves of James Baldwin",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "Auto-detected title result:",
+        "The Lives and Loves of James Baldwin"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.723Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Trying body XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756413884750,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.723Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Body matched: 5 element(s) for XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756413884751,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "5",
+        "element(s) for XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.724Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Combined 5 body elements into single container",
+    "data": {
+      "t": 1756413884751,
+      "level": "log",
+      "args": [
+        "Combined",
+        "5",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.724Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1756413884752,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.724Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756413884752,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "The Lives and Loves of James Baldwin",
+        "contentLength": 58821,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-08-28T20:44:45.724Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"The Lives and Loves of James Baldwin\",\"contentLength\":58821,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1756413884752,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"The Lives and Loves of James Baldwin\",\"contentLength\":58821,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.724Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 1 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756413884752,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 1 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.724Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "After fixImageUrls: 1 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756413884752,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 1 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.724Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Encoding content with: 1 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Encoding content with: 1 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.725Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content to encode starts with: <figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-bo",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-bo"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.725Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Successfully encoded 58821 chars to base64",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "58821",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.725Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-28T20:44:45.725Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Title: The Lives and Loves of James Baldwin",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Title:",
+        "The Lives and Loves of James Baldwin"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.725Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Content length: 58821",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "58821"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.726Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Text content length: 35124",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "35124"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.726Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-08-28T20:44:45.726Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-08-28T20:44:45.726Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-08-28T20:44:45.726Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content structure: 58 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "58",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-08-28T20:44:45.727Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content preview: <div class=\"body__inner-container\"><figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-boundary=\"click\" data-event-click=\"{&quot;pattern&quot;:&quot;CNEAu...",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div class=\"body__inner-container\"><figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-boundary=\"click\" data-event-click=\"{&quot;pattern&quot;:&quot;CNEAu..."
+      ]
+    },
+    "time": "2025-08-28T20:44:45.727Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756413884753,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-28T20:44:45.727Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/magazine/2025/08/18/baldwin-a-love-story-nicholas-boggs-book-review",
+      "title": "The Lives and Loves of James Baldwin",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-28T20:44:45.727Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "processing",
+    "message": "Processing article: The Lives and Loves of James Baldwin",
+    "data": {},
+    "time": "2025-08-28T20:44:45.729Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "The Lives and Loves of James Baldwin",
+      "contentLength": 58821,
+      "textContentLength": 35124,
+      "hasContent": true
+    },
+    "time": "2025-08-28T20:44:45.730Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-28T20:44:45.730Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"The Lives and Loves of James Baldwin\"",
+    "data": {},
+    "time": "2025-08-28T20:44:45.730Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "The Lives and Loves of James Baldwin",
+      "byline": "Louis Menand",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/magazine/2025/08/18/baldwin-a-love-story-nicholas-boggs-book-review",
+      "publishedTime": "2025-08-11T10:00:00.000Z",
+      "contentLength": 58821,
+      "hasImages": false
+    },
+    "time": "2025-08-28T20:44:45.730Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "The-Lives-and-Loves-of-James-Baldwin_MEVVH7VO.html",
+      "contentSizeKB": "59.35"
+    },
+    "time": "2025-08-28T20:44:45.732Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"The Lives and Loves of James Baldwin\"",
+    "data": {},
+    "time": "2025-08-28T20:44:45.734Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-28T20:44:45.734Z"
+  },
+  {
+    "timestamp": 224,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "6ID3RDN9"
+    },
+    "time": "2025-08-28T20:44:45.943Z"
+  },
+  {
+    "timestamp": 224,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-28T20:44:45.943Z"
+  },
+  {
+    "timestamp": 448,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-28T20:44:46.167Z"
+  },
+  {
+    "timestamp": 939,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-28T20:44:46.658Z"
+  },
+  {
+    "timestamp": 989,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "6ID3RDN9",
+      "attachmentKey": "8C3DIIPI"
+    },
+    "time": "2025-08-28T20:44:46.708Z"
+  },
+  {
+    "timestamp": 1742,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<7391d3a4-2bba-083d-44fc-0b727d884b55@gmail.com>",
+      "filename": "The-Lives-and-Loves-of-James-Baldwin_MEVVH7VO.html",
+      "subject": "The Lives and Loves of James Baldwin",
+      "sizekB": "59.35"
+    },
+    "time": "2025-08-28T20:44:47.461Z"
+  }
+]
