@@ -518,6 +518,7 @@
         // Extract body (matches PHP: no minimum length, handles multiple elements)
         if (config.body) {
           for (var i = 0; i < config.body.length; i++) {
+            console.log('Trying body XPath:', config.body[i]);
             var elements = this._evaluateXPathAll(config.body[i]);
             if (elements && elements.length > 0) {
               console.log('Body matched:', elements.length, 'element(s) for XPath:', config.body[i]);
@@ -545,7 +546,11 @@
               // Only accept if we have some content (basic sanity check)
               if (result.textContent && result.textContent.trim().length > 0) {
                 break;
+              } else {
+                console.log('Body XPath matched but content empty/too short:', result.textContent ? result.textContent.length : 'null');
               }
+            } else {
+              console.log('Body XPath found no elements:', config.body[i]);
             }
           }
         }
@@ -1172,6 +1177,7 @@
 
   // Standalone HTML preprocessing function (matches PHP str_replace logic)
   function applyHtmlPreprocessing(html, preprocessingRules) {
+    console.log('Starting HTML preprocessing with', preprocessingRules.length, 'rules');
     var modifiedHtml = html;
     var extraRules = [];
 
