@@ -1,0 +1,129 @@
+[
+  {
+    "timestamp": 0,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/magazine/2025/09/01/ai-is-coming-for-culture",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-28T14:32:11.650Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "processing",
+    "message": "Processing article: https://www.newyorker.com/magazine/2025/09/01/ai-is-coming-for-culture",
+    "data": {},
+    "time": "2025-08-28T14:32:11.650Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "contentLength": 16495,
+      "textContentLength": 9564,
+      "hasContent": true
+    },
+    "time": "2025-08-28T14:32:11.651Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-28T14:32:11.651Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"undefined\"",
+    "data": {},
+    "time": "2025-08-28T14:32:11.651Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "byline": "Joshua Rothman",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/magazine/2025/09/01/ai-is-coming-for-culture",
+      "publishedTime": "2025-08-25T10:00:00.000Z",
+      "contentLength": 16495,
+      "hasImages": false
+    },
+    "time": "2025-08-28T14:32:11.651Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"undefined\"",
+    "data": {},
+    "time": "2025-08-28T14:32:11.653Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-28T14:32:11.654Z"
+  },
+  {
+    "timestamp": 243,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "9KWD9RQH"
+    },
+    "time": "2025-08-28T14:32:11.893Z"
+  },
+  {
+    "timestamp": 243,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-28T14:32:11.893Z"
+  },
+  {
+    "timestamp": 244,
+    "category": "zotero",
+    "message": "EPUB attachment failed (item still created)",
+    "data": {
+      "error": "EPUB generation failed: Cannot read properties of undefined (reading 'trim')"
+    },
+    "time": "2025-08-28T14:32:11.894Z"
+  },
+  {
+    "timestamp": 244,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-28T14:32:11.894Z"
+  },
+  {
+    "timestamp": 319,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "9KWD9RQH",
+      "attachmentKey": null
+    },
+    "time": "2025-08-28T14:32:11.969Z"
+  },
+  {
+    "timestamp": 319,
+    "category": "error",
+    "message": "Kindle failed",
+    "data": {
+      "error": "Kindle sending failed: Cannot read properties of undefined (reading 'trim')"
+    },
+    "time": "2025-08-28T14:32:11.969Z"
+  }
+]
