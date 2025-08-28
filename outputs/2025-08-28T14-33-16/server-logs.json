@@ -1,0 +1,143 @@
+[
+  {
+    "timestamp": 0,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.theatlantic.com/podcasts/archive/2025/08/the-david-frum-show-mary-beard-roman-empire/684022/",
+      "title": "Why America Isn’t Rome (And Why That Matters)",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-28T14:33:14.394Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "processing",
+    "message": "Processing article: Why America Isn’t Rome (And Why That Matters)",
+    "data": {},
+    "time": "2025-08-28T14:33:14.396Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Why America Isn’t Rome (And Why That Matters)",
+      "contentLength": 64276,
+      "textContentLength": 47879,
+      "hasContent": true
+    },
+    "time": "2025-08-28T14:33:14.396Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-28T14:33:14.396Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Why America Isn’t Rome (And Why That Matters)\"",
+    "data": {},
+    "time": "2025-08-28T14:33:14.396Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Why America Isn’t Rome (And Why That Matters)",
+      "byline": "David Frum",
+      "siteName": "theatlantic.com",
+      "url": "https://www.theatlantic.com/podcasts/archive/2025/08/the-david-frum-show-mary-beard-roman-empire/684022/",
+      "publishedTime": "2025-08-27T15:30:00Z",
+      "contentLength": 64276,
+      "hasImages": true
+    },
+    "time": "2025-08-28T14:33:14.396Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Why-America-Isn’t-Rome-(And-Why-That-Matters)_MEVI7FRX.html",
+      "contentSizeKB": "64.72"
+    },
+    "time": "2025-08-28T14:33:14.397Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Why America Isn’t Rome (And Why That Matters)\"",
+    "data": {},
+    "time": "2025-08-28T14:33:14.399Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-28T14:33:14.399Z"
+  },
+  {
+    "timestamp": 294,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "DKARJJ6M"
+    },
+    "time": "2025-08-28T14:33:14.688Z"
+  },
+  {
+    "timestamp": 298,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-28T14:33:14.692Z"
+  },
+  {
+    "timestamp": 523,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-28T14:33:14.917Z"
+  },
+  {
+    "timestamp": 1230,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-28T14:33:15.624Z"
+  },
+  {
+    "timestamp": 1291,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "DKARJJ6M",
+      "attachmentKey": "J4P2CTH3"
+    },
+    "time": "2025-08-28T14:33:15.685Z"
+  },
+  {
+    "timestamp": 2172,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<2ea7fc37-6f29-d637-b104-241289ceb2e4@gmail.com>",
+      "filename": "Why-America-Isn’t-Rome-(And-Why-That-Matters)_MEVI7FRX.html",
+      "subject": "Why America Isn’t Rome (And Why That Matters)",
+      "sizekB": "64.72"
+    },
+    "time": "2025-08-28T14:33:16.566Z"
+  }
+]
