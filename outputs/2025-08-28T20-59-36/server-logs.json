@@ -1,0 +1,580 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756414772469,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-08-28T20:59:34.902Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756414772470,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-08-28T20:59:34.903Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for theatlantic.com",
+    "data": {
+      "t": 1756414773712,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "theatlantic.com"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.903Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.theatlantic.com",
+    "data": {
+      "t": 1756414773719,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.theatlantic.com"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.903Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756414773719,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "theatlantic.com"
+      }
+    },
+    "time": "2025-08-28T20:59:34.903Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"theatlantic.com\"}",
+    "data": {
+      "t": 1756414773719,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"theatlantic.com\"}"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.904Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for theatlantic.com",
+    "data": {
+      "t": 1756414773719,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "theatlantic.com"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.904Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Trying body XPath: //article[@id='main-article']",
+    "data": {
+      "t": 1756414773720,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//article[@id='main-article']"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.904Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Body XPath found no elements: //article[@id='main-article']",
+    "data": {
+      "t": 1756414773720,
+      "level": "log",
+      "args": [
+        "Body XPath found no elements:",
+        "//article[@id='main-article']"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.904Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Trying body XPath: //div[@id='main-article']",
+    "data": {
+      "t": 1756414773720,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//div[@id='main-article']"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.905Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Body XPath found no elements: //div[@id='main-article']",
+    "data": {
+      "t": 1756414773720,
+      "level": "log",
+      "args": [
+        "Body XPath found no elements:",
+        "//div[@id='main-article']"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.905Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Trying body XPath: //article[contains(@class, 'ArticleLayout_article')]",
+    "data": {
+      "t": 1756414773720,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//article[contains(@class, 'ArticleLayout_article')]"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.905Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Body matched: 1 element(s) for XPath: //article[contains(@class, 'ArticleLayout_article')]",
+    "data": {
+      "t": 1756414773721,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "1",
+        "element(s) for XPath:",
+        "//article[contains(@class, 'ArticleLayout_article')]"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.905Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1756414773723,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.905Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756414773723,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Did the White House Not Understand What Putin Was Really Offering?",
+        "contentLength": 20538,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-08-28T20:59:34.905Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Did the White House Not Understand What Putin Was Really Offering?\",\"contentLength\":20538,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1756414773723,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Did the White House Not Understand What Putin Was Really Offering?\",\"contentLength\":20538,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.905Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756414773723,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.905Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756414773724,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.905Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.906Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Content to encode starts with: Sign up for </",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "Sign up for </"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.906Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Successfully encoded 20538 chars to base64",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "20538",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.906Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-28T20:59:34.906Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Title: Did the White House Not Understand What Putin Was Really Offering?",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Did the White House Not Understand What Putin Was Really Offering?"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.906Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content length: 20538",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "20538"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.907Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Text content length: 12056",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "12056"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.907Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-08-28T20:59:34.907Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-08-28T20:59:34.907Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-08-28T20:59:34.908Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content structure: 28 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "28",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-08-28T20:59:34.908Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content preview: <div><section class=\"ArticleBody_root__2gF81\" data-event-module=\"article body\" data-flatplan-body=\"true\"><p class=\"ArticleParagraph_root__4mszW\" data-flatplan-paragraph=\"true\"><small><i>Sign up for </...",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div><section class=\"ArticleBody_root__2gF81\" data-event-module=\"article body\" data-flatplan-body=\"true\"><p class=\"ArticleParagraph_root__4mszW\" data-flatplan-paragraph=\"true\"><small><i>Sign up for </..."
+      ]
+    },
+    "time": "2025-08-28T20:59:34.908Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756414773725,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-28T20:59:34.908Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.theatlantic.com/national-security/archive/2025/08/us-russia-diplomacy-europe/684034/",
+      "title": "Did the White House Not Understand What Putin Was Really Offering?",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-28T20:59:34.908Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "processing",
+    "message": "Processing article: Did the White House Not Understand What Putin Was Really Offering?",
+    "data": {},
+    "time": "2025-08-28T20:59:34.909Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Did the White House Not Understand What Putin Was Really Offering?",
+      "contentLength": 20538,
+      "textContentLength": 12056,
+      "hasContent": true
+    },
+    "time": "2025-08-28T20:59:34.909Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-28T20:59:34.910Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Did the White House Not Understand What Putin Was Really Offering?\"",
+    "data": {},
+    "time": "2025-08-28T20:59:34.910Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Did the White House Not Understand What Putin Was Really Offering?",
+      "byline": "Vivian Salama, Jonathan Lemire",
+      "siteName": "theatlantic.com",
+      "url": "https://www.theatlantic.com/national-security/archive/2025/08/us-russia-diplomacy-europe/684034/",
+      "publishedTime": "2025-08-28T15:23:52Z",
+      "contentLength": 20538,
+      "hasImages": true
+    },
+    "time": "2025-08-28T20:59:34.910Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Did-the-White-House-Not-Understand-What-Putin-Was-Really-Offering_MEVW09Z5.html",
+      "contentSizeKB": "22.05"
+    },
+    "time": "2025-08-28T20:59:34.913Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Did the White House Not Understand What Putin Was Really Offering?\"",
+    "data": {},
+    "time": "2025-08-28T20:59:34.915Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-28T20:59:34.915Z"
+  },
+  {
+    "timestamp": 370,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "2GMNXUG2"
+    },
+    "time": "2025-08-28T20:59:35.272Z"
+  },
+  {
+    "timestamp": 371,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-28T20:59:35.273Z"
+  },
+  {
+    "timestamp": 522,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-28T20:59:35.424Z"
+  },
+  {
+    "timestamp": 1223,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-28T20:59:36.125Z"
+  },
+  {
+    "timestamp": 1332,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "2GMNXUG2",
+      "attachmentKey": "9ADWNKRU"
+    },
+    "time": "2025-08-28T20:59:36.234Z"
+  },
+  {
+    "timestamp": 1588,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<4cb6a204-c084-8db3-982e-0a6749d4dab9@gmail.com>",
+      "filename": "Did-the-White-House-Not-Understand-What-Putin-Was-Really-Offering_MEVW09Z5.html",
+      "subject": "Did the White House Not Understand What Putin Was Really Offering?",
+      "sizekB": "22.05"
+    },
+    "time": "2025-08-28T20:59:36.490Z"
+  }
+]

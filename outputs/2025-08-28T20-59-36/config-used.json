@@ -1,0 +1,61 @@
+{
+  "title": [
+    "//meta[@property='og:title']/@content"
+  ],
+  "body": [
+    "//article[@id='main-article']",
+    "//div[@id='main-article']",
+    "//article[contains(@class, 'ArticleLayout_article')]",
+    "//div[@itemprop='articleBody']",
+    "//div[@class='articleText']",
+    "//div[@class='articleContent']",
+    "//div[@id='article']"
+  ],
+  "author": [
+    "//meta[@name=\"author\"]/@content",
+    "//div[@id='profile']//*[@class='authors']//a[1]",
+    "//*[@class='author']/span"
+  ],
+  "strip": [
+    "//header",
+    "//gpt-ad",
+    "//div[contains(@class, 'ArticleBio_social')]",
+    "//*[contains(@class, 'ArticleRecirc')]",
+    "//*[contains(@class, 'ArticleRelatedContentModule')]",
+    "//aside[contains(@class, 'Pullquote')]",
+    "//div[@class='moreOnBoxWithImages']",
+    "//p[contains(., 'This article available online at:')]",
+    "//p[contains(., 'This article available online at:')]/following::*",
+    "//div[@class='earthbox']",
+    "//aside[@role=\"complementary\"]",
+    "//p[contains(@id, 'injected-recirculation-link')]",
+    "//div[contains(@class, 'ArticleAudio_')]"
+  ],
+  "date": [
+    "//*[contains(@class, 'date')]"
+  ],
+  "preferJsonLd": false,
+  "find_string": [],
+  "replace_string": [],
+  "strip_id_or_class": [
+    "share-social",
+    "c-article-writer__social",
+    "c-nudge__container",
+    "ad-boxinjector-m-wrapper"
+  ],
+  "strip_image_src": [],
+  "single_page_link": [],
+  "next_page_link": [],
+  "test_url": [
+    "https://www.theatlantic.com/technology/archive/2011/04/want-to-see-how-crazy-a-bot-run-market-can-be/237773/",
+    "https://www.theatlantic.com/magazine/archive/2007/11/the-autumn-of-the-multitaskers/6342/",
+    "https://www.theatlantic.com/entertainment/archive/2012/04/30-rock-live-a-funny-reminder-of-why-sitcoms-arent-shot-live-anymore/256447/",
+    "https://www.theatlantic.com/technology/archive/2013/06/fix-things-never-force-it-lessons-from-grandpa/276873/",
+    "https://www.theatlantic.com/family/archive/2020/11/dear-therapist-i-discovered-my-husbands-sexts/617092/"
+  ],
+  "prune": false,
+  "tidy": null,
+  "autodetect_on_failure": null,
+  "parser": null,
+  "htmlPreprocessing": []
+}

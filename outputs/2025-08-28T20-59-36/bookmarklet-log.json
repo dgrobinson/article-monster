@@ -1,0 +1,253 @@
+[
+  {
+    "t": 1756414772469,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1756414772470,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1756414773712,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "theatlantic.com"
+    ]
+  },
+  {
+    "t": 1756414773719,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.theatlantic.com"
+    ]
+  },
+  {
+    "t": 1756414773719,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "theatlantic.com"
+    }
+  },
+  {
+    "t": 1756414773719,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"theatlantic.com\"}"
+    ]
+  },
+  {
+    "t": 1756414773719,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "theatlantic.com"
+    ]
+  },
+  {
+    "t": 1756414773720,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//article[@id='main-article']"
+    ]
+  },
+  {
+    "t": 1756414773720,
+    "level": "log",
+    "args": [
+      "Body XPath found no elements:",
+      "//article[@id='main-article']"
+    ]
+  },
+  {
+    "t": 1756414773720,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//div[@id='main-article']"
+    ]
+  },
+  {
+    "t": 1756414773720,
+    "level": "log",
+    "args": [
+      "Body XPath found no elements:",
+      "//div[@id='main-article']"
+    ]
+  },
+  {
+    "t": 1756414773720,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//article[contains(@class, 'ArticleLayout_article')]"
+    ]
+  },
+  {
+    "t": 1756414773721,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "1",
+      "element(s) for XPath:",
+      "//article[contains(@class, 'ArticleLayout_article')]"
+    ]
+  },
+  {
+    "t": 1756414773723,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1756414773723,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Did the White House Not Understand What Putin Was Really Offering?",
+      "contentLength": 20538,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1756414773723,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Did the White House Not Understand What Putin Was Really Offering?\",\"contentLength\":20538,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1756414773723,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756414773724,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "Sign up for </"
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "20538",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Did the White House Not Understand What Putin Was Really Offering?"
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "20538"
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "12056"
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "28",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<div><section class=\"ArticleBody_root__2gF81\" data-event-module=\"article body\" data-flatplan-body=\"true\"><p class=\"ArticleParagraph_root__4mszW\" data-flatplan-paragraph=\"true\"><small><i>Sign up for </..."
+    ]
+  },
+  {
+    "t": 1756414773725,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
