@@ -1,0 +1,129 @@
+[
+  {
+    "timestamp": 0,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/science/annals-of-artificial-intelligence/what-kind-of-mind-does-chatgpt-have",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-28T18:04:21.718Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "processing",
+    "message": "Processing article: https://www.newyorker.com/science/annals-of-artificial-intelligence/what-kind-of-mind-does-chatgpt-have",
+    "data": {},
+    "time": "2025-08-28T18:04:21.720Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "contentLength": 22983,
+      "textContentLength": 16455,
+      "hasContent": true
+    },
+    "time": "2025-08-28T18:04:21.720Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-28T18:04:21.721Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"undefined\"",
+    "data": {},
+    "time": "2025-08-28T18:04:21.722Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "byline": "Cal Newport",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/science/annals-of-artificial-intelligence/what-kind-of-mind-does-chatgpt-have",
+      "publishedTime": "2023-04-13T13:00:00.000Z",
+      "contentLength": 22983,
+      "hasImages": false
+    },
+    "time": "2025-08-28T18:04:21.722Z"
+  },
+  {
+    "timestamp": 113,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"undefined\"",
+    "data": {},
+    "time": "2025-08-28T18:04:21.831Z"
+  },
+  {
+    "timestamp": 114,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-28T18:04:21.832Z"
+  },
+  {
+    "timestamp": 581,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "H7WI6SEG"
+    },
+    "time": "2025-08-28T18:04:22.299Z"
+  },
+  {
+    "timestamp": 581,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-28T18:04:22.299Z"
+  },
+  {
+    "timestamp": 583,
+    "category": "zotero",
+    "message": "EPUB attachment failed (item still created)",
+    "data": {
+      "error": "EPUB generation failed: Cannot read properties of undefined (reading 'trim')"
+    },
+    "time": "2025-08-28T18:04:22.301Z"
+  },
+  {
+    "timestamp": 584,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-28T18:04:22.302Z"
+  },
+  {
+    "timestamp": 631,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "H7WI6SEG",
+      "attachmentKey": null
+    },
+    "time": "2025-08-28T18:04:22.349Z"
+  },
+  {
+    "timestamp": 631,
+    "category": "error",
+    "message": "Kindle failed",
+    "data": {
+      "error": "Kindle sending failed: Cannot read properties of undefined (reading 'trim')"
+    },
+    "time": "2025-08-28T18:04:22.349Z"
+  }
+]
