@@ -22,16 +22,7 @@
   Readability.prototype = {
     parse: function() {
       try {
-        // First try site-specific configuration
-        var siteConfig = this._extractWithSiteConfig();
-        if (siteConfig) {
-          siteConfig.extractionMethod = 'site-config';
-          siteConfig.configSource = window.location.hostname.replace(/^www\./, '');
-          console.log('Extraction successful using FiveFilters config for:', siteConfig.configSource);
-          return siteConfig;
-        }
-
-        // Then try JSON-LD structured data if available
+        // Try JSON-LD structured data if available (FiveFilters handled separately now)
         var jsonLdContent = this._extractFromJsonLd();
         if (jsonLdContent) {
           jsonLdContent.extractionMethod = 'json-ld';
@@ -444,7 +435,9 @@
       }
     },
 
-    _extractWithSiteConfig: function() {
+    // OLD _extractWithSiteConfig method removed - now handled by FiveFiltersExtractor
+
+    _evaluateXPath: function(xpath, contextNode) {
       try {
         var hostname = window.location.hostname.replace(/^www\./, '');
 
