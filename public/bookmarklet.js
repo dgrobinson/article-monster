@@ -79,12 +79,19 @@
     },
 
     _getArticleTitle: function() {
+      console.log('_getArticleTitle called - document.title:', this._doc.title);
       var title = this._doc.title || '';
       var h1 = this._doc.querySelector('h1');
+      console.log('_getArticleTitle - h1 found:', h1 ? h1.textContent.substring(0, 100) : 'none');
       if (h1 && h1.textContent.length > title.length * 0.5) {
         title = h1.textContent;
+        console.log('_getArticleTitle - using h1 title:', title.substring(0, 100));
+      } else {
+        console.log('_getArticleTitle - using document title:', title);
       }
-      return title.trim();
+      var result = title.trim();
+      console.log('_getArticleTitle final result:', result.substring(0, 100));
+      return result;
     },
 
     _getExcerpt: function(article) {
