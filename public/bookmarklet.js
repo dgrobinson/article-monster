@@ -445,6 +445,7 @@
     },
 
     _extractWithSiteConfig: function() {
+      console.log('_extractWithSiteConfig called for hostname:', window.location.hostname);
       try {
         var hostname = window.location.hostname.replace(/^www\./, '');
 
