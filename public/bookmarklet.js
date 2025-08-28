@@ -445,12 +445,13 @@
         var config = this._getCachedConfig(hostname);
 
         if (!config) {
-          // Try to fetch config asynchronously and cache for next time
-          console.log('No cached config for', hostname, '- will fetch async for next time');
-          this._fetchDynamicConfig(hostname);
-          // For now, return null and let other extraction methods try
-          // Next time the user clicks, the config will be cached
-          return null;
+          // Try to fetch config synchronously for immediate use
+          console.log('No cached config for', hostname, '- fetching synchronously');
+          config = this._fetchSyncConfig(hostname);
+          if (!config) {
+            console.log('No FiveFilters config available for', hostname);
+            return null;
+          }
         }
 
         if (!config) {
@@ -940,6 +941,36 @@
           });
       } catch (e) {
         // Ignore any errors in dynamic config fetching
+      }
+    },
+
+    _fetchSyncConfig: function(hostname) {
+      try {
+        var serviceUrl = SERVICE_URL.replace('/process-article', '');
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', serviceUrl + '/site-config/' + hostname, false); // synchronous
+        xhr.send();
+        
+        if (xhr.status === 200) {
+          var data = JSON.parse(xhr.responseText);
+          if (data.success && data.config) {
+            // Cache the result for future use
+            try {
+              sessionStorage.setItem('siteConfig_' + hostname, JSON.stringify({
+                config: data.config,
+                timestamp: Date.now()
+              }));
+              console.log('Fetched and cached site config for', hostname, 'from FiveFilters');
+            } catch (e) {
+              // Session storage not available, ignore
+            }
+            return data.config;
+          }
+        }
+        return null;
+      } catch (e) {
+        console.log('Sync config fetch failed for', hostname, ':', e.message);
+        return null;
       }
     },
 
