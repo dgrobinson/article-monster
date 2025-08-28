@@ -96,6 +96,19 @@ app.post('/process-article', async (req, res) => {
     // Store bookmarklet debug info if provided
     const bookmarkletLog = debugInfo || [];
 
+    // Mirror client logs into server-side logger for unified visibility
+    if (Array.isArray(bookmarkletLog)) {
+      bookmarkletLog.slice(0, 500).forEach((entry) => {
+        try {
+          const level = entry.level || entry.category || 'log';
+          const message = entry.message || (Array.isArray(entry.args) ? entry.args.join(' ') : '');
+          debugLogger.log('client:' + level, message, entry);
+        } catch (e) {
+          // Best-effort only
+        }
+      });
+    }
+
     if (!url) {
       return res.status(400).json({ error: 'URL is required' });
     }
