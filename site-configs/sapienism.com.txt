@@ -1,0 +1,15 @@
+# Sapienism (Wix) – prefer JSON-LD for reliable content
+
+# Minimal body rule required by our parser; actual extraction will use JSON-LD
+body: //body
+
+# Prefer JSON-LD over XPath body rules
+prefer_jsonld: true
+
+# Optional hygiene
+tidy: yes
+prune: yes
+
+# Test URLs
+test_url: https://www.sapienism.com/post/burning-bridges-skipping-stones
+
