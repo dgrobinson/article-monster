@@ -1318,7 +1318,8 @@
           } else {
             // No config available, fall back to regular extraction
             updateIndicator(indicator, '📖 Extracting with general rules...');
-            var article = reader.parse();
+            var fallbackReader = new Readability(document);
+            var article = fallbackReader.parse();
             resolve(article);
           }
         })
@@ -1326,7 +1327,8 @@
           // Config fetch failed, fall back to regular extraction
           console.log('Config fetch failed for', hostname, '- using fallback extraction');
           updateIndicator(indicator, '📖 Using general extraction (no site-specific config available)...');
-          var article = reader.parse();
+          var fallbackReader = new Readability(document);
+          var article = fallbackReader.parse();
 
           // Add note about fallback extraction
           if (article) {
