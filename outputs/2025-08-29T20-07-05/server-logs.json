@@ -1,0 +1,595 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756498022201,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-08-29T20:07:03.581Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756498022201,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-08-29T20:07:03.581Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Config fetch failed for argmin.net - using fallback extraction",
+    "data": {
+      "t": 1756498022712,
+      "level": "log",
+      "args": [
+        "Config fetch failed for",
+        "argmin.net",
+        "- using fallback extraction"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.582Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.argmin.net",
+    "data": {
+      "t": 1756498022713,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.argmin.net"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.582Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756498022713,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "argmin.net"
+      }
+    },
+    "time": "2025-08-29T20:07:03.583Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"argmin.net\"}",
+    "data": {
+      "t": 1756498022713,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"argmin.net\"}"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.583Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "No cached config for argmin.net - fetching synchronously",
+    "data": {
+      "t": 1756498022713,
+      "level": "log",
+      "args": [
+        "No cached config for",
+        "argmin.net",
+        "- fetching synchronously"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.583Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "No FiveFilters config available for argmin.net",
+    "data": {
+      "t": 1756498022944,
+      "level": "log",
+      "args": [
+        "No FiveFilters config available for",
+        "argmin.net"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.584Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "No site config or JSON-LD found, falling back to DOM extraction",
+    "data": {
+      "t": 1756498022944,
+      "level": "log",
+      "args": [
+        "No site config or JSON-LD found, falling back to DOM extraction"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.584Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Image detection: {\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}",
+    "data": {
+      "t": 1756498022949,
+      "level": "log",
+      "args": [
+        "Image detection:",
+        "{\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.584Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Fallback image check found 15 images on page",
+    "data": {
+      "t": 1756498022950,
+      "level": "log",
+      "args": [
+        "Fallback image check found",
+        "15",
+        "images on page"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.584Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: The Banal Evil of AI Safety - by Ben Recht - arg min",
+    "data": {
+      "t": 1756498022950,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "The Banal Evil of AI Safety - by Ben Recht - arg min"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.585Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: arg min",
+    "data": {
+      "t": 1756498022950,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "arg min"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.585Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle - using document title: The Banal Evil of AI Safety - by Ben Recht - arg min",
+    "data": {
+      "t": 1756498022950,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using document title:",
+        "The Banal Evil of AI Safety - by Ben Recht - arg min"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.586Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: The Banal Evil of AI Safety - by Ben Recht - arg min",
+    "data": {
+      "t": 1756498022950,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "The Banal Evil of AI Safety - by Ben Recht - arg min"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.586Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756498022952,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "The Banal Evil of AI Safety - by Ben Recht - arg min",
+        "contentLength": 6420,
+        "method": "dom-fallback"
+      }
+    },
+    "time": "2025-08-29T20:07:03.586Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"The Banal Evil of AI Safety - by Ben Recht - arg min\",\"contentLength\":6420,\"method\":\"dom-fallback\"}",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"The Banal Evil of AI Safety - by Ben Recht - arg min\",\"contentLength\":6420,\"method\":\"dom-fallback\"}"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.586Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 240 newlines",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 240 newlines"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.587Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 240 newlines",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 240 newlines"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.587Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 240 newlines",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 240 newlines"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.587Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Content to encode starts with: <div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.588Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Successfully encoded 6420 chars to base64",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "6420",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.588Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-29T20:07:03.588Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Title: The Banal Evil of AI Safety - by Ben Recht - arg min",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Title:",
+        "The Banal Evil of AI Safety - by Ben Recht - arg min"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.589Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content length: 6420",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "6420"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.589Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Text content length: 3300",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "3300"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.589Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Extraction method: dom-fallback",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        "dom-fallback"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.590Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Extraction note: Extracted using general rules. For argmin.net, no site-specific configuration was available.",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        "Extracted using general rules. For argmin.net, no site-specific configuration was available."
+      ]
+    },
+    "time": "2025-08-29T20:07:03.590Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Has images: true",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Has images:",
+        "true"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.590Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Content structure: 3 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "3",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-08-29T20:07:03.591Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Content preview: \n        \n\n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx...",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "\n        \n\n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx..."
+      ]
+    },
+    "time": "2025-08-29T20:07:03.591Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756498022952,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-29T20:07:03.591Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.argmin.net/p/the-banal-evil-of-ai-safety",
+      "title": "The Banal Evil of AI Safety - by Ben Recht - arg min",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-29T20:07:03.592Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "processing",
+    "message": "Processing article: The Banal Evil of AI Safety - by Ben Recht - arg min",
+    "data": {},
+    "time": "2025-08-29T20:07:03.593Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "The Banal Evil of AI Safety - by Ben Recht - arg min",
+      "contentLength": 6420,
+      "textContentLength": 3300,
+      "hasContent": true
+    },
+    "time": "2025-08-29T20:07:03.593Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-29T20:07:03.594Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"The Banal Evil of AI Safety - by Ben Recht - arg min\"",
+    "data": {},
+    "time": "2025-08-29T20:07:03.594Z"
+  },
+  {
+    "timestamp": 14,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "The Banal Evil of AI Safety - by Ben Recht - arg min",
+      "byline": "Ben Recht",
+      "siteName": "The Banal Evil of AI Safety - by Ben Recht - arg min",
+      "url": "https://www.argmin.net/p/the-banal-evil-of-ai-safety",
+      "publishedTime": "2023-12-19T15:13:51.096Z",
+      "contentLength": 6420,
+      "hasImages": false
+    },
+    "time": "2025-08-29T20:07:03.595Z"
+  },
+  {
+    "timestamp": 56,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "The-Banal-Evil-of-AI-Safety-by-Ben-Recht-arg-min_MEX9KL3P.html",
+      "contentSizeKB": "8.17"
+    },
+    "time": "2025-08-29T20:07:03.637Z"
+  },
+  {
+    "timestamp": 65,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"The Banal Evil of AI Safety - by Ben Recht - arg min\"",
+    "data": {},
+    "time": "2025-08-29T20:07:03.646Z"
+  },
+  {
+    "timestamp": 66,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-29T20:07:03.647Z"
+  },
+  {
+    "timestamp": 543,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "M5BZ98GH"
+    },
+    "time": "2025-08-29T20:07:04.124Z"
+  },
+  {
+    "timestamp": 544,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-29T20:07:04.125Z"
+  },
+  {
+    "timestamp": 662,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-29T20:07:04.243Z"
+  },
+  {
+    "timestamp": 1220,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-29T20:07:04.801Z"
+  },
+  {
+    "timestamp": 1274,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "M5BZ98GH",
+      "attachmentKey": "7EH4V2IS"
+    },
+    "time": "2025-08-29T20:07:04.855Z"
+  },
+  {
+    "timestamp": 1649,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<99b26360-7827-80f4-7bbe-fc3a9b76ed3b@gmail.com>",
+      "filename": "The-Banal-Evil-of-AI-Safety-by-Ben-Recht-arg-min_MEX9KL3P.html",
+      "subject": "The Banal Evil of AI Safety - by Ben Recht - arg min",
+      "sizekB": "8.17"
+    },
+    "time": "2025-08-29T20:07:05.230Z"
+  }
+]
