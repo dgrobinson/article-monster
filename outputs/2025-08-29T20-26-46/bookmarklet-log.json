@@ -1,0 +1,268 @@
+[
+  {
+    "t": 1756499202677,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1756499202677,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1756499204159,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "wsj.com"
+    ]
+  },
+  {
+    "t": 1756499204164,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "2",
+      "rules"
+    ]
+  },
+  {
+    "t": 1756499204165,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "<textarea",
+      "->",
+      "<a"
+    ]
+  },
+  {
+    "t": 1756499204166,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "</textarea>",
+      "->",
+      "</a>"
+    ]
+  },
+  {
+    "t": 1756499204166,
+    "level": "log",
+    "args": [
+      "Applied",
+      "2",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1756499204183,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.wsj.com"
+    ]
+  },
+  {
+    "t": 1756499204183,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "wsj.com"
+    }
+  },
+  {
+    "t": 1756499204183,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"wsj.com\"}"
+    ]
+  },
+  {
+    "t": 1756499204183,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "wsj.com"
+    ]
+  },
+  {
+    "t": 1756499204184,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//main//article/div[contains(concat(' ',normalize-space(@class),' '),' crawler ')] | //main//div[contains(@class, 'article-header')]"
+    ]
+  },
+  {
+    "t": 1756499204184,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "2",
+      "element(s) for XPath:",
+      "//main//article/div[contains(concat(' ',normalize-space(@class),' '),' crawler ')] | //main//div[contains(@class, 'article-header')]"
+    ]
+  },
+  {
+    "t": 1756499204184,
+    "level": "log",
+    "args": [
+      "Combined",
+      "2",
+      "body elements into single container"
+    ]
+  },
+  {
+    "t": 1756499204186,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1756499204186,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "‘Storyteller’ Review: True Adventures of a Dreamer",
+      "contentLength": 12196,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1756499204186,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"‘Storyteller’ Review: True Adventures of a Dreamer\",\"contentLength\":12196,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1756499204186,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<div class=\"crawler css-1skj0ht-Box e1vnmyc"
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "12196",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Title:",
+      "‘Storyteller’ Review: True Adventures of a Dreamer"
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "12196"
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "8821"
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "15",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<div class=\"article-header css-2u0xl7 e129c7hm5\"><div class=\"css-j6808u e1oaw0qc12\"><div height=\"25px\" display=\"flex\" class=\"css-2o6n7q-Box e1vnmyci0\"></div><div class=\"crawler css-1skj0ht-Box e1vnmyc..."
+    ]
+  },
+  {
+    "t": 1756499204187,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
