@@ -8,13 +8,16 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const AdmZip = require('adm-zip');
+
+const repoRoot = path.join(__dirname, '..', '..');
 
 // Load test cases from folders
 function loadTestCases() {
   const testCases = [];
   
   // Load unsolved cases (high priority)
-  const unsolvedDir = path.join(__dirname, 'test-cases/unsolved');
+  const unsolvedDir = path.join(repoRoot, 'test-cases', 'unsolved');
   if (fs.existsSync(unsolvedDir)) {
     const files = fs.readdirSync(unsolvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
@@ -26,7 +29,7 @@ function loadTestCases() {
   }
   
   // Load solved cases (regression tests)
-  const solvedDir = path.join(__dirname, 'test-cases/solved');
+  const solvedDir = path.join(repoRoot, 'test-cases', 'solved');
   if (fs.existsSync(solvedDir)) {
     const files = fs.readdirSync(solvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
@@ -59,7 +62,7 @@ function testExtraction(testCase) {
   const document = window.document;
   
   // Load our Readability.min.js and execute it
-  const readabilityCode = fs.readFileSync('public/readability.min.js', 'utf8');
+  const readabilityCode = fs.readFileSync(path.join(repoRoot, 'public', 'readability.min.js'), 'utf8');
   
   // The code is an IIFE (immediately invoked function expression)
   // We need to execute it in a way that gives it access to window
@@ -97,6 +100,39 @@ function testExtraction(testCase) {
   if (!article || !article.content) {
     console.log('❌ No content extracted');
     return false;
+  }
+
+  // If an EPUB golden exists, compare against it
+  const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
+  const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
+  if (fs.existsSync(expectedEpubPath)) {
+    console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
+    try {
+      const zip = new AdmZip(expectedEpubPath);
+      const entries = zip.getEntries();
+      let expectedXhtml = '';
+      entries.forEach(entry => {
+        if (entry.entryName.endsWith('.xhtml') || entry.entryName.endsWith('.html')) {
+          expectedXhtml += zip.readAsText(entry);
+        }
+      });
+      const normalize = (s) => s.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').toLowerCase().replace(/\s+/g, ' ').trim();
+      const expectedText = normalize(expectedXhtml);
+      const actualText = normalize(article.content);
+      const lenDiff = Math.abs(actualText.length - expectedText.length);
+      const relDiff = expectedText.length ? (lenDiff / Math.max(actualText.length, expectedText.length)) : 0;
+      const containsEither = actualText.includes(expectedText.substring(0, Math.min(200, expectedText.length))) || expectedText.includes(actualText.substring(0, Math.min(200, actualText.length)));
+      if (relDiff < 0.1 && containsEither) {
+        console.log('✅ EPUB golden comparison passed (len diff < 10% and content aligned)');
+      } else {
+        console.log('❌ EPUB golden comparison failed');
+        console.log(`   Expected length: ${expectedText.length}, Actual length: ${actualText.length}, Rel diff: ${(relDiff*100).toFixed(1)}%`);
+        return false;
+      }
+    } catch (e) {
+      console.log('❌ Failed to read/compare EPUB golden:', e.message);
+      return false;
+    }
   }
   
   // Check content length

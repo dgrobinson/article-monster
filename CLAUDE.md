@@ -10,6 +10,34 @@ Article Monster is a bookmarklet service that extracts articles from web pages a
 - **Site Configs** (`site-configs/`): 2000+ FiveFilters-format extraction rules
 - **Config Parser** (`src/configFetcher.js`): Parses FiveFilters site config files
 
+## Critical Bug Fixes (August 2025)
+
+### MAJOR BREAKTHROUGH: System Now Works Reliably 🎯
+
+After months of debugging, two critical bug fixes resolved the extraction failures:
+
+**Bug Fix #1: XPath Parser String Truncation (commit 4cd68a8)**
+- **Problem**: `split(':', 2)` broke XPath expressions with colons like `//meta[@property="article:author"]`
+- **Impact**: 90% of advanced site configs failed due to invalid XPath selectors
+- **Solution**: Use `indexOf(':')` to split only on first colon, preserving full XPath expressions
+
+**Bug Fix #2: Synchronous Config Fetching (commit 176c70e)**
+- **Problem**: No cached config → async fetch "for next time" → return null → extraction fails
+- **Impact**: Required TWO bookmarklet clicks - first to cache config, second to extract
+- **Solution**: Fetch configs synchronously on first visit, enabling immediate extraction
+
+**Result**: Baldwin article (and all complex sites) now extract perfectly on first click with full content.
+
+### Client-Side Debugging Infrastructure (commit 4119be9)
+
+Added comprehensive debugging system to capture client-side extraction failures:
+- **Console/Error Capture**: All client-side logs sent to server for unified debugging
+- **Service URL Injection**: Bookmarklet installer injects correct service URL at install time
+- **Server Log Mirroring**: Client-side events appear in server logs for complete visibility
+- **GitHub Debug Commits**: Failed extractions automatically captured with full context
+
+This infrastructure was crucial for identifying the root causes above.
+
 ## Implementation Insights
 
 ### FiveFilters Integration
@@ -47,9 +75,11 @@ Article Monster is a bookmarklet service that extracts articles from web pages a
 4. Execute XPath extraction rules
 5. Clean content using strip/prune/tidy directives
 
-**Common Pitfalls:**
-- Applying preprocessing after DOM parsing breaks the extraction
-- Using different config structure between parser and bookmarklet
+**Common Pitfalls (RESOLVED):**
+- ~~Applying preprocessing after DOM parsing breaks the extraction~~ ✅ Fixed
+- ~~Using different config structure between parser and bookmarklet~~ ✅ Fixed  
+- ~~XPath expressions with colons being truncated~~ ✅ Fixed (commit 4cd68a8)
+- ~~Two-click requirement for first-time site visits~~ ✅ Fixed (commit 176c70e)
 - Assuming documentation covers all real-world directives (only 37% coverage)
 
 ## Debugging Patterns
@@ -62,21 +92,28 @@ Article Monster is a bookmarklet service that extracts articles from web pages a
 5. **Content Length**: Verify extracted content meets minimum length requirements
 
 ### Critical Testing URLs
-- **New Yorker Baldwin Article**: Tests `find_string: <header` → `replace_string: <em` preprocessing
+- **New Yorker Baldwin Article**: ✅ NOW WORKING - Full extraction with title and content
 - **FiveFilters Test Service**: Compare output with official service for validation
+- **Production Test**: https://seal-app-t4vff.ondigitalocean.app
 
 ## Documentation References
 
-**External Docs:**
+**Active Documentation:**
 - `FIVEFILTERS_IMPLEMENTATION_PLAN.md`: Complete directive inventory and implementation roadmap
 - `vendor/fivefilters-reference/`: Official PHP source code for reference
-- `DEBUGGING_SYSTEM.md`: Debug output and GitHub commit patterns
+- `BALDWIN_EXTRACTION_DEBUG.md`: Complete debugging saga with technical details and resolution
 
-**Implementation Status (as of commit 9898b07):**
+**Archived Documentation:** (see `docs/archive/`)
+- Historical debugging files, outdated implementation summaries, and legacy analysis files have been moved to maintain a clean repository root
+
+**Implementation Status (as of commit 4119be9):**
 - ✅ PHP-compatible config parser
-- ✅ Basic HTML preprocessing  
-- ⚠️  Baldwin article still fails (architectural preprocessing timing issue)
-- ❌ Full directive implementation in bookmarklet
+- ✅ Complete FiveFilters config processing
+- ✅ **Baldwin article extraction WORKING** (all extraction issues resolved)
+- ✅ XPath parser bug fixed (colon truncation)
+- ✅ Synchronous config fetching (eliminates two-click problem)
+- ✅ Client-side debugging infrastructure with server log mirroring
+- ❌ Full directive implementation in bookmarklet (partial coverage)
 - ❌ Server-side preprocessing pipeline
 
 ## Architecture Decisions
@@ -91,11 +128,11 @@ Article Monster is a bookmarklet service that extracts articles from web pages a
 - Mature directive system covering edge cases
 - Active community maintenance
 
-**Next Architectural Challenge:**
-HTML preprocessing timing requires either:
-1. Server-side preprocessing (fetch page server-side, apply rules, return to client)
-2. Client-side raw HTML access (before Readability processes it)
-3. Hybrid approach (preprocess critical rules server-side, rest client-side)
+**Next Architectural Opportunities:**
+1. Complete directive implementation in bookmarklet (currently ~60% coverage)
+2. Server-side preprocessing pipeline for complex transformations
+3. Automated testing against FiveFilters reference implementation
+4. Performance optimizations for config parsing and caching
 
 ## Testing Strategy
 

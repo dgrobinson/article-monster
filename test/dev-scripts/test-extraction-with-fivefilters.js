@@ -8,6 +8,9 @@
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const AdmZip = require('adm-zip');
+
+const repoRoot = path.join(__dirname, '..', '..');
 
 // Parse FiveFilters config format (matching configFetcher.js)
 function parseFtrConfig(configText) {
@@ -47,7 +50,7 @@ function parseFtrConfig(configText) {
 
 // Load FiveFilters config for a site
 function loadSiteConfig(hostname) {
-  const configPath = path.join(__dirname, 'site-configs', `${hostname}.txt`);
+  const configPath = path.join(repoRoot, 'site-configs', `${hostname}.txt`);
   if (fs.existsSync(configPath)) {
     const configContent = fs.readFileSync(configPath, 'utf8');
     const config = parseFtrConfig(configContent);
@@ -164,6 +167,39 @@ function testExtraction(testCase) {
       } else {
         console.log(`✅ Content length OK`);
       }
+
+      // EPUB golden compare if available
+      const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
+      const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
+      if (fs.existsSync(expectedEpubPath)) {
+        console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
+        try {
+          const zip = new AdmZip(expectedEpubPath);
+          const entries = zip.getEntries();
+          let expectedXhtml = '';
+          entries.forEach(entry => {
+            if (entry.entryName.endsWith('.xhtml') || entry.entryName.endsWith('.html')) {
+              expectedXhtml += zip.readAsText(entry);
+            }
+          });
+          const normalize = (s) => s.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').toLowerCase().replace(/\s+/g, ' ').trim();
+          const expectedText = normalize(expectedXhtml);
+          const actualText = normalize(extractedContent);
+          const lenDiff = Math.abs(actualText.length - expectedText.length);
+          const relDiff = expectedText.length ? (lenDiff / Math.max(actualText.length, expectedText.length)) : 0;
+          const containsEither = actualText.includes(expectedText.substring(0, Math.min(200, expectedText.length))) || expectedText.includes(actualText.substring(0, Math.min(200, actualText.length)));
+          if (relDiff < 0.1 && containsEither) {
+            console.log('✅ EPUB golden comparison passed (len diff < 10% and content aligned)');
+          } else {
+            console.log('❌ EPUB golden comparison failed');
+            console.log(`   Expected length: ${expectedText.length}, Actual length: ${actualText.length}, Rel diff: ${(relDiff*100).toFixed(1)}%`);
+            return false;
+          }
+        } catch (e) {
+          console.log('❌ Failed to read/compare EPUB golden:', e.message);
+          return false;
+        }
+      }
       
       // Check for expected phrases
       let allPhrasesFound = true;
@@ -194,7 +230,7 @@ function testExtraction(testCase) {
   console.log('📖 Falling back to Readability.js extraction...');
   
   // Load our Readability.min.js and execute it
-  const readabilityCode = fs.readFileSync('public/readability.min.js', 'utf8');
+  const readabilityCode = fs.readFileSync(path.join(repoRoot, 'public', 'readability.min.js'), 'utf8');
   
   try {
     // Mock sessionStorage for the bookmarklet
@@ -250,6 +286,39 @@ function testExtraction(testCase) {
   } else {
     console.log(`✅ Content length OK`);
   }
+
+  // EPUB golden compare if available
+  const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
+  const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
+  if (fs.existsSync(expectedEpubPath)) {
+    console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
+    try {
+      const zip = new AdmZip(expectedEpubPath);
+      const entries = zip.getEntries();
+      let expectedXhtml = '';
+      entries.forEach(entry => {
+        if (entry.entryName.endsWith('.xhtml') || entry.entryName.endsWith('.html')) {
+          expectedXhtml += zip.readAsText(entry);
+        }
+      });
+      const normalize = (s) => s.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').toLowerCase().replace(/\s+/g, ' ').trim();
+      const expectedText = normalize(expectedXhtml);
+      const actualText = normalize(article.content);
+      const lenDiff = Math.abs(actualText.length - expectedText.length);
+      const relDiff = expectedText.length ? (lenDiff / Math.max(actualText.length, expectedText.length)) : 0;
+      const containsEither = actualText.includes(expectedText.substring(0, Math.min(200, expectedText.length))) || expectedText.includes(actualText.substring(0, Math.min(200, actualText.length)));
+      if (relDiff < 0.1 && containsEither) {
+        console.log('✅ EPUB golden comparison passed (len diff < 10% and content aligned)');
+      } else {
+        console.log('❌ EPUB golden comparison failed');
+        console.log(`   Expected length: ${expectedText.length}, Actual length: ${actualText.length}, Rel diff: ${(relDiff*100).toFixed(1)}%`);
+        return false;
+      }
+    } catch (e) {
+      console.log('❌ Failed to read/compare EPUB golden:', e.message);
+      return false;
+    }
+  }
   
   // Check for expected phrases
   let allPhrasesFound = true;
@@ -282,7 +351,7 @@ function loadTestCases() {
   const testCases = [];
   
   // Load unsolved cases (high priority)
-  const unsolvedDir = path.join(__dirname, 'test-cases/unsolved');
+  const unsolvedDir = path.join(repoRoot, 'test-cases', 'unsolved');
   if (fs.existsSync(unsolvedDir)) {
     const files = fs.readdirSync(unsolvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
@@ -294,7 +363,7 @@ function loadTestCases() {
   }
   
   // Load solved cases (regression tests)
-  const solvedDir = path.join(__dirname, 'test-cases/solved');
+  const solvedDir = path.join(repoRoot, 'test-cases', 'solved');
   if (fs.existsSync(solvedDir)) {
     const files = fs.readdirSync(solvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
