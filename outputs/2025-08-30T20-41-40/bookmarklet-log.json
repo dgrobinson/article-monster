@@ -1,0 +1,351 @@
+[
+  {
+    "t": 1756586497690,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1756586497690,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1756586497957,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1756586497964,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "1",
+      "rules"
+    ]
+  },
+  {
+    "t": 1756586497966,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "<header",
+      "->",
+      "<em"
+    ]
+  },
+  {
+    "t": 1756586497966,
+    "level": "log",
+    "args": [
+      "Auto-generated closing tag rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1756586497968,
+    "level": "log",
+    "args": [
+      "Applied auto-generated rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1756586497968,
+    "level": "log",
+    "args": [
+      "Applied",
+      "1",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.newyorker.com"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "newyorker.com"
+    }
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"newyorker.com\"}"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "Auto-detecting title: no title rules or extraction failed"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "config.title:",
+      "[]",
+      "length:",
+      "0"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "titleExtracted:",
+      "false"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "autodetect_on_failure:",
+      "null"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "What Would Free Buses Look Like, Actually? | The New Yorker"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "What Would Free Buses Look Like, Actually?"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using h1 title:",
+      "What Would Free Buses Look Like, Actually?"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "What Would Free Buses Look Like, Actually?"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "Auto-detected title result:",
+      "What Would Free Buses Look Like, Actually?"
+    ]
+  },
+  {
+    "t": 1756586497985,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1756586497986,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "2",
+      "element(s) for XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1756586497986,
+    "level": "log",
+    "args": [
+      "Combined",
+      "2",
+      "body elements into single container"
+    ]
+  },
+  {
+    "t": 1756586497986,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1756586497986,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "What Would Free Buses Look Like, Actually?",
+      "contentLength": 16518,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1756586497986,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"What Would Free Buses Look Like, Actually?\",\"contentLength\":16518,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1756586497986,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "One of the busiest buses in New York City, the Bx12, starts its route at one end of the A train, in "
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "16518",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Title:",
+      "What Would Free Buses Look Like, Actually?"
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "16518"
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "12062"
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "20",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<div class=\"body__inner-container\"><p class=\"has-dropcap has-dropcap__lead-standard-heading\">One of the busiest buses in New York City, the Bx12, starts its route at one end of the A train, in Inwood ..."
+    ]
+  },
+  {
+    "t": 1756586497987,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]

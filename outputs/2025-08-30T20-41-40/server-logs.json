@@ -1,0 +1,744 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756586497690,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-08-30T20:41:38.684Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756586497690,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-08-30T20:41:38.684Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756586497957,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.684Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 1 rules",
+    "data": {
+      "t": 1756586497964,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "1",
+        "rules"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.684Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: <header -> <em",
+    "data": {
+      "t": 1756586497966,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "<header",
+        "->",
+        "<em"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.684Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Auto-generated closing tag rule: </header> -> </em>",
+    "data": {
+      "t": 1756586497966,
+      "level": "log",
+      "args": [
+        "Auto-generated closing tag rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.685Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Applied auto-generated rule: </header> -> </em>",
+    "data": {
+      "t": 1756586497968,
+      "level": "log",
+      "args": [
+        "Applied auto-generated rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.685Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Applied 1 preprocessing rules",
+    "data": {
+      "t": 1756586497968,
+      "level": "log",
+      "args": [
+        "Applied",
+        "1",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.685Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.newyorker.com",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.685Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756586497985,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "newyorker.com"
+      }
+    },
+    "time": "2025-08-30T20:41:38.685Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"newyorker.com\"}",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"newyorker.com\"}"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.685Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.685Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Auto-detecting title: no title rules or extraction failed",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "Auto-detecting title: no title rules or extraction failed"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.685Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "config.title: [] length: 0",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "config.title:",
+        "[]",
+        "length:",
+        "0"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.687Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "titleExtracted: false",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "titleExtracted:",
+        "false"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.687Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "autodetect_on_failure: null",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "autodetect_on_failure:",
+        "null"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.687Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: What Would Free Buses Look Like, Actually? | The New Yorker",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "What Would Free Buses Look Like, Actually? | The New Yorker"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.687Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: What Would Free Buses Look Like, Actually?",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "What Would Free Buses Look Like, Actually?"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.687Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_getArticleTitle - using h1 title: What Would Free Buses Look Like, Actually?",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using h1 title:",
+        "What Would Free Buses Look Like, Actually?"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.687Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: What Would Free Buses Look Like, Actually?",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "What Would Free Buses Look Like, Actually?"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.687Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Auto-detected title result: What Would Free Buses Look Like, Actually?",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "Auto-detected title result:",
+        "What Would Free Buses Look Like, Actually?"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.687Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Trying body XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756586497985,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Body matched: 2 element(s) for XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756586497986,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "2",
+        "element(s) for XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Combined 2 body elements into single container",
+    "data": {
+      "t": 1756586497986,
+      "level": "log",
+      "args": [
+        "Combined",
+        "2",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1756586497986,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756586497986,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "What Would Free Buses Look Like, Actually?",
+        "contentLength": 16518,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"What Would Free Buses Look Like, Actually?\",\"contentLength\":16518,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1756586497986,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"What Would Free Buses Look Like, Actually?\",\"contentLength\":16518,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586497986,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Content to encode starts with: One of the busiest buses in New York City, the Bx12, starts its route at one end of the A train, in ",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "One of the busiest buses in New York City, the Bx12, starts its route at one end of the A train, in "
+      ]
+    },
+    "time": "2025-08-30T20:41:38.688Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Successfully encoded 16518 chars to base64",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "16518",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.689Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T20:41:38.689Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Title: What Would Free Buses Look Like, Actually?",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Title:",
+        "What Would Free Buses Look Like, Actually?"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.689Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content length: 16518",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "16518"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.689Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Text content length: 12062",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "12062"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.689Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:41:38.690Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:41:38.690Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:41:38.690Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content structure: 20 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "20",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-08-30T20:41:38.690Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content preview: <div class=\"body__inner-container\"><p class=\"has-dropcap has-dropcap__lead-standard-heading\">One of the busiest buses in New York City, the Bx12, starts its route at one end of the A train, in Inwood ...",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div class=\"body__inner-container\"><p class=\"has-dropcap has-dropcap__lead-standard-heading\">One of the busiest buses in New York City, the Bx12, starts its route at one end of the A train, in Inwood ..."
+      ]
+    },
+    "time": "2025-08-30T20:41:38.690Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756586497987,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T20:41:38.691Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/news/the-lede/what-would-free-buses-look-like-actually",
+      "title": "What Would Free Buses Look Like, Actually?",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-30T20:41:38.691Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "processing",
+    "message": "Processing article: What Would Free Buses Look Like, Actually?",
+    "data": {},
+    "time": "2025-08-30T20:41:38.691Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "What Would Free Buses Look Like, Actually?",
+      "contentLength": 16518,
+      "textContentLength": 12062,
+      "hasContent": true
+    },
+    "time": "2025-08-30T20:41:38.691Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-30T20:41:38.691Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"What Would Free Buses Look Like, Actually?\"",
+    "data": {},
+    "time": "2025-08-30T20:41:38.691Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "What Would Free Buses Look Like, Actually?",
+      "byline": "Naaman Zhou",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/news/the-lede/what-would-free-buses-look-like-actually",
+      "publishedTime": "2025-08-28T10:00:00.000Z",
+      "contentLength": 16518,
+      "hasImages": false
+    },
+    "time": "2025-08-30T20:41:38.692Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "What-Would-Free-Buses-Look-Like,-Actually_MEYQ8WW5.html",
+      "contentSizeKB": "18.03"
+    },
+    "time": "2025-08-30T20:41:38.693Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"What Would Free Buses Look Like, Actually?\"",
+    "data": {},
+    "time": "2025-08-30T20:41:38.695Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-30T20:41:38.695Z"
+  },
+  {
+    "timestamp": 324,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "N5XKIXP8"
+    },
+    "time": "2025-08-30T20:41:39.008Z"
+  },
+  {
+    "timestamp": 324,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-30T20:41:39.008Z"
+  },
+  {
+    "timestamp": 382,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-30T20:41:39.066Z"
+  },
+  {
+    "timestamp": 908,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-30T20:41:39.592Z"
+  },
+  {
+    "timestamp": 969,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "N5XKIXP8",
+      "attachmentKey": "9XAES7KR"
+    },
+    "time": "2025-08-30T20:41:39.653Z"
+  },
+  {
+    "timestamp": 1733,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<03da6e0b-dc71-92bd-ce30-846513417548@gmail.com>",
+      "filename": "What-Would-Free-Buses-Look-Like,-Actually_MEYQ8WW5.html",
+      "subject": "What Would Free Buses Look Like, Actually?",
+      "sizekB": "18.03"
+    },
+    "time": "2025-08-30T20:41:40.417Z"
+  }
+]
