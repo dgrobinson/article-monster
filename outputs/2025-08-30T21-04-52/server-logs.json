@@ -1,0 +1,744 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756587889887,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-08-30T21:04:50.644Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756587889887,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-08-30T21:04:50.644Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756587889888,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.644Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 1 rules",
+    "data": {
+      "t": 1756587889893,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "1",
+        "rules"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.644Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: <header -> <em",
+    "data": {
+      "t": 1756587889895,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "<header",
+        "->",
+        "<em"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.645Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Auto-generated closing tag rule: </header> -> </em>",
+    "data": {
+      "t": 1756587889896,
+      "level": "log",
+      "args": [
+        "Auto-generated closing tag rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.645Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Applied auto-generated rule: </header> -> </em>",
+    "data": {
+      "t": 1756587889898,
+      "level": "log",
+      "args": [
+        "Applied auto-generated rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.645Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Applied 1 preprocessing rules",
+    "data": {
+      "t": 1756587889898,
+      "level": "log",
+      "args": [
+        "Applied",
+        "1",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.645Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.newyorker.com",
+    "data": {
+      "t": 1756587889916,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.645Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756587889916,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "newyorker.com"
+      }
+    },
+    "time": "2025-08-30T21:04:50.645Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"newyorker.com\"}",
+    "data": {
+      "t": 1756587889916,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"newyorker.com\"}"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.645Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.646Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Auto-detecting title: no title rules or extraction failed",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "Auto-detecting title: no title rules or extraction failed"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.646Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "config.title: [] length: 0",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "config.title:",
+        "[]",
+        "length:",
+        "0"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.646Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "titleExtracted: false",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "titleExtracted:",
+        "false"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.646Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "autodetect_on_failure: null",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "autodetect_on_failure:",
+        "null"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.646Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: Inside the Tent on “The Great British Bake Off” | The New Yorker",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "Inside the Tent on “The Great British Bake Off” | The New Yorker"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.647Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: Inside the World of “The Great British Bake Off”",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "Inside the World of “The Great British Bake Off”"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.647Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_getArticleTitle - using h1 title: Inside the World of “The Great British Bake Off”",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using h1 title:",
+        "Inside the World of “The Great British Bake Off”"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.647Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: Inside the World of “The Great British Bake Off”",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "Inside the World of “The Great British Bake Off”"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.647Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Auto-detected title result: Inside the World of “The Great British Bake Off”",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "Auto-detected title result:",
+        "Inside the World of “The Great British Bake Off”"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.647Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Trying body XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.647Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Body matched: 5 element(s) for XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756587889917,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "5",
+        "element(s) for XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.648Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Combined 5 body elements into single container",
+    "data": {
+      "t": 1756587889918,
+      "level": "log",
+      "args": [
+        "Combined",
+        "5",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.648Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1756587889918,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.648Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756587889919,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Inside the World of “The Great British Bake Off”",
+        "contentLength": 35418,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-08-30T21:04:50.648Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Inside the World of “The Great British Bake Off”\",\"contentLength\":35418,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1756587889919,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Inside the World of “The Great British Bake Off”\",\"contentLength\":35418,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.648Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 1 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756587889919,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 1 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.648Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 1 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756587889919,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 1 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.648Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 1 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756587889919,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 1 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.648Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content to encode starts with: <em class=\"SplitScreenContentHeaderWrapper-bqcckH eTdCwG content-header standard article__content-he",
+    "data": {
+      "t": 1756587889919,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<em class=\"SplitScreenContentHeaderWrapper-bqcckH eTdCwG content-header standard article__content-he"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Successfully encoded 35418 chars to base64",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "35418",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Title: Inside the World of “The Great British Bake Off”",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Inside the World of “The Great British Bake Off”"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content length: 35418",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "35418"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Text content length: 28018",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "28018"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content structure: 39 <p> tags, 1 <br> tags",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "39",
+        "<p> tags,",
+        "1",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content preview: <em class=\"SplitScreenContentHeaderWrapper-bqcckH eTdCwG content-header standard article__content-header\" data-testid=\"SplitScreenContentHeaderWrapper\" data-event-boundary=\"click\" data-event-click=\"{&...",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<em class=\"SplitScreenContentHeaderWrapper-bqcckH eTdCwG content-header standard article__content-header\" data-testid=\"SplitScreenContentHeaderWrapper\" data-event-boundary=\"click\" data-event-click=\"{&..."
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756587889920,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T21:04:50.649Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/magazine/2025/09/01/inside-the-world-of-the-great-british-bake-off",
+      "title": "Inside the World of “The Great British Bake Off”",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-30T21:04:50.650Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "processing",
+    "message": "Processing article: Inside the World of “The Great British Bake Off”",
+    "data": {},
+    "time": "2025-08-30T21:04:50.650Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Inside the World of “The Great British Bake Off”",
+      "contentLength": 35418,
+      "textContentLength": 28018,
+      "hasContent": true
+    },
+    "time": "2025-08-30T21:04:50.651Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-30T21:04:50.651Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Inside the World of “The Great British Bake Off”\"",
+    "data": {},
+    "time": "2025-08-30T21:04:50.651Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Inside the World of “The Great British Bake Off”",
+      "byline": "Ruby Tandoh",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/magazine/2025/09/01/inside-the-world-of-the-great-british-bake-off",
+      "publishedTime": "2025-08-25T10:00:00.000Z",
+      "contentLength": 35418,
+      "hasImages": false
+    },
+    "time": "2025-08-30T21:04:50.652Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Inside-the-World-of-“The-Great-British-Bake-Off”_MEYR2QXP.html",
+      "contentSizeKB": "36.52"
+    },
+    "time": "2025-08-30T21:04:50.653Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Inside the World of “The Great British Bake Off”\"",
+    "data": {},
+    "time": "2025-08-30T21:04:50.655Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-30T21:04:50.655Z"
+  },
+  {
+    "timestamp": 279,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "WFNIGDWZ"
+    },
+    "time": "2025-08-30T21:04:50.923Z"
+  },
+  {
+    "timestamp": 279,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-30T21:04:50.923Z"
+  },
+  {
+    "timestamp": 325,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-30T21:04:50.969Z"
+  },
+  {
+    "timestamp": 894,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-30T21:04:51.538Z"
+  },
+  {
+    "timestamp": 937,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "WFNIGDWZ",
+      "attachmentKey": "NNWAWGNU"
+    },
+    "time": "2025-08-30T21:04:51.581Z"
+  },
+  {
+    "timestamp": 2039,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<f6f6009c-92b8-b454-bcb4-19dbade70592@gmail.com>",
+      "filename": "Inside-the-World-of-“The-Great-British-Bake-Off”_MEYR2QXP.html",
+      "subject": "Inside the World of “The Great British Bake Off”",
+      "sizekB": "36.52"
+    },
+    "time": "2025-08-30T21:04:52.683Z"
+  }
+]

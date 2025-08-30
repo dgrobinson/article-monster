@@ -1,0 +1,351 @@
+[
+  {
+    "t": 1756587889887,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1756587889887,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1756587889888,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1756587889893,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "1",
+      "rules"
+    ]
+  },
+  {
+    "t": 1756587889895,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "<header",
+      "->",
+      "<em"
+    ]
+  },
+  {
+    "t": 1756587889896,
+    "level": "log",
+    "args": [
+      "Auto-generated closing tag rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1756587889898,
+    "level": "log",
+    "args": [
+      "Applied auto-generated rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1756587889898,
+    "level": "log",
+    "args": [
+      "Applied",
+      "1",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1756587889916,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.newyorker.com"
+    ]
+  },
+  {
+    "t": 1756587889916,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "newyorker.com"
+    }
+  },
+  {
+    "t": 1756587889916,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"newyorker.com\"}"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "Auto-detecting title: no title rules or extraction failed"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "config.title:",
+      "[]",
+      "length:",
+      "0"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "titleExtracted:",
+      "false"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "autodetect_on_failure:",
+      "null"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "Inside the Tent on “The Great British Bake Off” | The New Yorker"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "Inside the World of “The Great British Bake Off”"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using h1 title:",
+      "Inside the World of “The Great British Bake Off”"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "Inside the World of “The Great British Bake Off”"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "Auto-detected title result:",
+      "Inside the World of “The Great British Bake Off”"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1756587889917,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "5",
+      "element(s) for XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1756587889918,
+    "level": "log",
+    "args": [
+      "Combined",
+      "5",
+      "body elements into single container"
+    ]
+  },
+  {
+    "t": 1756587889918,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1756587889919,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Inside the World of “The Great British Bake Off”",
+      "contentLength": 35418,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1756587889919,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Inside the World of “The Great British Bake Off”\",\"contentLength\":35418,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1756587889919,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 1 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756587889919,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 1 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756587889919,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 1 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756587889919,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<em class=\"SplitScreenContentHeaderWrapper-bqcckH eTdCwG content-header standard article__content-he"
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "35418",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Inside the World of “The Great British Bake Off”"
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "35418"
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "28018"
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "39",
+      "<p> tags,",
+      "1",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<em class=\"SplitScreenContentHeaderWrapper-bqcckH eTdCwG content-header standard article__content-header\" data-testid=\"SplitScreenContentHeaderWrapper\" data-event-boundary=\"click\" data-event-click=\"{&..."
+    ]
+  },
+  {
+    "t": 1756587889920,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
