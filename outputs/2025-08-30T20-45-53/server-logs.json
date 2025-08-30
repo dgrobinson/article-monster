@@ -1,0 +1,744 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756586750625,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-08-30T20:45:51.305Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756586750625,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-08-30T20:45:51.305Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756586750625,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.305Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 1 rules",
+    "data": {
+      "t": 1756586750631,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "1",
+        "rules"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.305Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: <header -> <em",
+    "data": {
+      "t": 1756586750634,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "<header",
+        "->",
+        "<em"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.305Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Auto-generated closing tag rule: </header> -> </em>",
+    "data": {
+      "t": 1756586750634,
+      "level": "log",
+      "args": [
+        "Auto-generated closing tag rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.305Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Applied auto-generated rule: </header> -> </em>",
+    "data": {
+      "t": 1756586750636,
+      "level": "log",
+      "args": [
+        "Applied auto-generated rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.305Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Applied 1 preprocessing rules",
+    "data": {
+      "t": 1756586750636,
+      "level": "log",
+      "args": [
+        "Applied",
+        "1",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.305Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.newyorker.com",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756586750654,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "newyorker.com"
+      }
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"newyorker.com\"}",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"newyorker.com\"}"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Auto-detecting title: no title rules or extraction failed",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "Auto-detecting title: no title rules or extraction failed"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "config.title: [] length: 0",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "config.title:",
+        "[]",
+        "length:",
+        "0"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "titleExtracted: false",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "titleExtracted:",
+        "false"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "autodetect_on_failure: null",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "autodetect_on_failure:",
+        "null"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: Ina Garten and the Age of Abundance",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "Ina Garten and the Age of Abundance"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_getArticleTitle - using document title: Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using document title:",
+        "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.306Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Auto-detected title result: Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "Auto-detected title result:",
+        "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Trying body XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Body matched: 8 element(s) for XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756586750654,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "8",
+        "element(s) for XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Combined 8 body elements into single container",
+    "data": {
+      "t": 1756586750655,
+      "level": "log",
+      "args": [
+        "Combined",
+        "8",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1756586750656,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756586750656,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+        "contentLength": 57353,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker\",\"contentLength\":57353,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1756586750656,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker\",\"contentLength\":57353,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 3 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586750656,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 3 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "After fixImageUrls: 3 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586750657,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 3 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Encoding content with: 3 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586750657,
+      "level": "log",
+      "args": [
+        "Encoding content with: 3 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.307Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Content to encode starts with: <em class=\"SplitScreenContentHeaderWrapper-bqcckH iDqFus content-header standard article__content-he",
+    "data": {
+      "t": 1756586750657,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<em class=\"SplitScreenContentHeaderWrapper-bqcckH iDqFus content-header standard article__content-he"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.308Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Successfully encoded 57353 chars to base64",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "57353",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.308Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T20:45:51.308Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Title: Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.308Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Content length: 57353",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "57353"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.308Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Text content length: 45408",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "45408"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.308Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:45:51.308Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:45:51.309Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:45:51.309Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Content structure: 71 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "71",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-08-30T20:45:51.309Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Content preview: <em class=\"SplitScreenContentHeaderWrapper-bqcckH iDqFus content-header standard article__content-header\" data-testid=\"SplitScreenContentHeaderWrapper\" data-event-boundary=\"click\" data-event-click=\"{&...",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<em class=\"SplitScreenContentHeaderWrapper-bqcckH iDqFus content-header standard article__content-header\" data-testid=\"SplitScreenContentHeaderWrapper\" data-event-boundary=\"click\" data-event-click=\"{&..."
+      ]
+    },
+    "time": "2025-08-30T20:45:51.309Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756586750658,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T20:45:51.309Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/magazine/2024/09/09/ina-garten-profile",
+      "title": "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-30T20:45:51.309Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "processing",
+    "message": "Processing article: Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+    "data": {},
+    "time": "2025-08-30T20:45:51.310Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+      "contentLength": 57353,
+      "textContentLength": 45408,
+      "hasContent": true
+    },
+    "time": "2025-08-30T20:45:51.310Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-30T20:45:51.310Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker\"",
+    "data": {},
+    "time": "2025-08-30T20:45:51.311Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+      "byline": "Molly Fischer",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/magazine/2024/09/09/ina-garten-profile",
+      "publishedTime": "2024-09-02T10:00:00.000Z",
+      "contentLength": 57353,
+      "hasImages": true
+    },
+    "time": "2025-08-30T20:45:51.311Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Ina-Garten-Talks-About-Her-Life,-Her-Marriage,-and-Her-New-Memoir-The-New-Yorker_MEYQEBTC.html",
+      "contentSizeKB": "57.96"
+    },
+    "time": "2025-08-30T20:45:51.312Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker\"",
+    "data": {},
+    "time": "2025-08-30T20:45:51.313Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-30T20:45:51.313Z"
+  },
+  {
+    "timestamp": 284,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "2VRJV43X"
+    },
+    "time": "2025-08-30T20:45:51.589Z"
+  },
+  {
+    "timestamp": 284,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-30T20:45:51.589Z"
+  },
+  {
+    "timestamp": 517,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-30T20:45:51.822Z"
+  },
+  {
+    "timestamp": 1092,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-30T20:45:52.397Z"
+  },
+  {
+    "timestamp": 1155,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "2VRJV43X",
+      "attachmentKey": "2KGQNUIQ"
+    },
+    "time": "2025-08-30T20:45:52.460Z"
+  },
+  {
+    "timestamp": 2511,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<66fceb62-46bd-0ef7-6dba-eb5811b4220f@gmail.com>",
+      "filename": "Ina-Garten-Talks-About-Her-Life,-Her-Marriage,-and-Her-New-Memoir-The-New-Yorker_MEYQEBTC.html",
+      "subject": "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+      "sizekB": "57.96"
+    },
+    "time": "2025-08-30T20:45:53.816Z"
+  }
+]

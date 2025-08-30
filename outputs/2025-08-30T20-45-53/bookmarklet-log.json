@@ -1,0 +1,351 @@
+[
+  {
+    "t": 1756586750625,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1756586750625,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1756586750625,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1756586750631,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "1",
+      "rules"
+    ]
+  },
+  {
+    "t": 1756586750634,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "<header",
+      "->",
+      "<em"
+    ]
+  },
+  {
+    "t": 1756586750634,
+    "level": "log",
+    "args": [
+      "Auto-generated closing tag rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1756586750636,
+    "level": "log",
+    "args": [
+      "Applied auto-generated rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1756586750636,
+    "level": "log",
+    "args": [
+      "Applied",
+      "1",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.newyorker.com"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "newyorker.com"
+    }
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"newyorker.com\"}"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "Auto-detecting title: no title rules or extraction failed"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "config.title:",
+      "[]",
+      "length:",
+      "0"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "titleExtracted:",
+      "false"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "autodetect_on_failure:",
+      "null"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "Ina Garten and the Age of Abundance"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using document title:",
+      "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "Auto-detected title result:",
+      "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1756586750654,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "8",
+      "element(s) for XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1756586750655,
+    "level": "log",
+    "args": [
+      "Combined",
+      "8",
+      "body elements into single container"
+    ]
+  },
+  {
+    "t": 1756586750656,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1756586750656,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker",
+      "contentLength": 57353,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1756586750656,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker\",\"contentLength\":57353,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1756586750656,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 3 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586750657,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 3 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586750657,
+    "level": "log",
+    "args": [
+      "Encoding content with: 3 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586750657,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<em class=\"SplitScreenContentHeaderWrapper-bqcckH iDqFus content-header standard article__content-he"
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "57353",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Ina Garten Talks About Her Life, Her Marriage, and Her New Memoir | The New Yorker"
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "57353"
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "45408"
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "71",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<em class=\"SplitScreenContentHeaderWrapper-bqcckH iDqFus content-header standard article__content-header\" data-testid=\"SplitScreenContentHeaderWrapper\" data-event-boundary=\"click\" data-event-click=\"{&..."
+    ]
+  },
+  {
+    "t": 1756586750658,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
