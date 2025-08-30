@@ -1,0 +1,744 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756586311975,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-08-30T20:38:33.869Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756586311976,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-08-30T20:38:33.870Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756586312433,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.870Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 1 rules",
+    "data": {
+      "t": 1756586312439,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "1",
+        "rules"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.870Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: <header -> <em",
+    "data": {
+      "t": 1756586312441,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "<header",
+        "->",
+        "<em"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.870Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Auto-generated closing tag rule: </header> -> </em>",
+    "data": {
+      "t": 1756586312442,
+      "level": "log",
+      "args": [
+        "Auto-generated closing tag rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.871Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Applied auto-generated rule: </header> -> </em>",
+    "data": {
+      "t": 1756586312445,
+      "level": "log",
+      "args": [
+        "Applied auto-generated rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.871Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Applied 1 preprocessing rules",
+    "data": {
+      "t": 1756586312445,
+      "level": "log",
+      "args": [
+        "Applied",
+        "1",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.872Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.newyorker.com",
+    "data": {
+      "t": 1756586312466,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.872Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756586312466,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "newyorker.com"
+      }
+    },
+    "time": "2025-08-30T20:38:33.872Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"newyorker.com\"}",
+    "data": {
+      "t": 1756586312466,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"newyorker.com\"}"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.872Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1756586312466,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.873Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Auto-detecting title: no title rules or extraction failed",
+    "data": {
+      "t": 1756586312466,
+      "level": "log",
+      "args": [
+        "Auto-detecting title: no title rules or extraction failed"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.873Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "config.title: [] length: 0",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "config.title:",
+        "[]",
+        "length:",
+        "0"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.873Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "titleExtracted: false",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "titleExtracted:",
+        "false"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.873Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "autodetect_on_failure: null",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "autodetect_on_failure:",
+        "null"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.874Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: A.I. Is Coming for Culture | The New Yorker",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "A.I. Is Coming for Culture | The New Yorker"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.874Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: A.I. Is Coming for Culture",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "A.I. Is Coming for Culture"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.875Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "_getArticleTitle - using h1 title: A.I. Is Coming for Culture",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using h1 title:",
+        "A.I. Is Coming for Culture"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.875Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: A.I. Is Coming for Culture",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "A.I. Is Coming for Culture"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.875Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Auto-detected title result: A.I. Is Coming for Culture",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "Auto-detected title result:",
+        "A.I. Is Coming for Culture"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.876Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Trying body XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.876Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Body matched: 7 element(s) for XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1756586312467,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "7",
+        "element(s) for XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.876Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Combined 7 body elements into single container",
+    "data": {
+      "t": 1756586312468,
+      "level": "log",
+      "args": [
+        "Combined",
+        "7",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.876Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1756586312469,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.876Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756586312469,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "A.I. Is Coming for Culture",
+        "contentLength": 59048,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-08-30T20:38:33.876Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"A.I. Is Coming for Culture\",\"contentLength\":59048,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1756586312469,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"A.I. Is Coming for Culture\",\"contentLength\":59048,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 2 <p> tags, 1 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586312469,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 2 <p> tags, 1 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "After fixImageUrls: 2 <p> tags, 1 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586312470,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 2 <p> tags, 1 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Encoding content with: 2 <p> tags, 1 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586312470,
+      "level": "log",
+      "args": [
+        "Encoding content with: 2 <p> tags, 1 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content to encode starts with: <figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-bo",
+    "data": {
+      "t": 1756586312470,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-bo"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Successfully encoded 59048 chars to base64",
+    "data": {
+      "t": 1756586312471,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "59048",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756586312471,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Title: A.I. Is Coming for Culture",
+    "data": {
+      "t": 1756586312471,
+      "level": "log",
+      "args": [
+        "Title:",
+        "A.I. Is Coming for Culture"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content length: 59048",
+    "data": {
+      "t": 1756586312471,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "59048"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Text content length: 43648",
+    "data": {
+      "t": 1756586312471,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "43648"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1756586312471,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:38:33.877Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1756586312471,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:38:33.878Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1756586312471,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:38:33.878Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Content structure: 81 <p> tags, 1 <br> tags",
+    "data": {
+      "t": 1756586312472,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "81",
+        "<p> tags,",
+        "1",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-08-30T20:38:33.878Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Content preview: <div class=\"body__inner-container\"><figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-boundary=\"click\" data-event-click=\"{&quot;pattern&quot;:&quot;CNEAu...",
+    "data": {
+      "t": 1756586312472,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div class=\"body__inner-container\"><figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-boundary=\"click\" data-event-click=\"{&quot;pattern&quot;:&quot;CNEAu..."
+      ]
+    },
+    "time": "2025-08-30T20:38:33.878Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756586312472,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T20:38:33.878Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/magazine/2025/09/01/ai-is-coming-for-culture",
+      "title": "A.I. Is Coming for Culture",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-30T20:38:33.878Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "processing",
+    "message": "Processing article: A.I. Is Coming for Culture",
+    "data": {},
+    "time": "2025-08-30T20:38:33.879Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "A.I. Is Coming for Culture",
+      "contentLength": 59048,
+      "textContentLength": 43648,
+      "hasContent": true
+    },
+    "time": "2025-08-30T20:38:33.879Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-30T20:38:33.880Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"A.I. Is Coming for Culture\"",
+    "data": {},
+    "time": "2025-08-30T20:38:33.880Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "A.I. Is Coming for Culture",
+      "byline": "Joshua Rothman",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/magazine/2025/09/01/ai-is-coming-for-culture",
+      "publishedTime": "2025-08-25T10:00:00.000Z",
+      "contentLength": 59048,
+      "hasImages": false
+    },
+    "time": "2025-08-30T20:38:33.880Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "A.I.-Is-Coming-for-Culture_MEYQ4YAH.html",
+      "contentSizeKB": "59.51"
+    },
+    "time": "2025-08-30T20:38:33.881Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"A.I. Is Coming for Culture\"",
+    "data": {},
+    "time": "2025-08-30T20:38:33.882Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-30T20:38:33.882Z"
+  },
+  {
+    "timestamp": 276,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "D8ZNQ6EG"
+    },
+    "time": "2025-08-30T20:38:34.145Z"
+  },
+  {
+    "timestamp": 276,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-30T20:38:34.145Z"
+  },
+  {
+    "timestamp": 419,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-30T20:38:34.288Z"
+  },
+  {
+    "timestamp": 984,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-30T20:38:34.853Z"
+  },
+  {
+    "timestamp": 1045,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "D8ZNQ6EG",
+      "attachmentKey": "JEUEZ53R"
+    },
+    "time": "2025-08-30T20:38:34.914Z"
+  },
+  {
+    "timestamp": 2149,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<9febc44a-692a-a9ca-590b-d37bdc385474@gmail.com>",
+      "filename": "A.I.-Is-Coming-for-Culture_MEYQ4YAH.html",
+      "subject": "A.I. Is Coming for Culture",
+      "sizekB": "59.51"
+    },
+    "time": "2025-08-30T20:38:36.018Z"
+  }
+]

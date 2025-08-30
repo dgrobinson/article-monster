@@ -1,0 +1,351 @@
+[
+  {
+    "t": 1756586311975,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1756586311976,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1756586312433,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1756586312439,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "1",
+      "rules"
+    ]
+  },
+  {
+    "t": 1756586312441,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "<header",
+      "->",
+      "<em"
+    ]
+  },
+  {
+    "t": 1756586312442,
+    "level": "log",
+    "args": [
+      "Auto-generated closing tag rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1756586312445,
+    "level": "log",
+    "args": [
+      "Applied auto-generated rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1756586312445,
+    "level": "log",
+    "args": [
+      "Applied",
+      "1",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1756586312466,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.newyorker.com"
+    ]
+  },
+  {
+    "t": 1756586312466,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "newyorker.com"
+    }
+  },
+  {
+    "t": 1756586312466,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"newyorker.com\"}"
+    ]
+  },
+  {
+    "t": 1756586312466,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1756586312466,
+    "level": "log",
+    "args": [
+      "Auto-detecting title: no title rules or extraction failed"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "config.title:",
+      "[]",
+      "length:",
+      "0"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "titleExtracted:",
+      "false"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "autodetect_on_failure:",
+      "null"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "A.I. Is Coming for Culture | The New Yorker"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "A.I. Is Coming for Culture"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using h1 title:",
+      "A.I. Is Coming for Culture"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "A.I. Is Coming for Culture"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "Auto-detected title result:",
+      "A.I. Is Coming for Culture"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1756586312467,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "7",
+      "element(s) for XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1756586312468,
+    "level": "log",
+    "args": [
+      "Combined",
+      "7",
+      "body elements into single container"
+    ]
+  },
+  {
+    "t": 1756586312469,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1756586312469,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "A.I. Is Coming for Culture",
+      "contentLength": 59048,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1756586312469,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"A.I. Is Coming for Culture\",\"contentLength\":59048,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1756586312469,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 2 <p> tags, 1 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586312470,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 2 <p> tags, 1 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586312470,
+    "level": "log",
+    "args": [
+      "Encoding content with: 2 <p> tags, 1 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586312470,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-bo"
+    ]
+  },
+  {
+    "t": 1756586312471,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "59048",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1756586312471,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1756586312471,
+    "level": "log",
+    "args": [
+      "Title:",
+      "A.I. Is Coming for Culture"
+    ]
+  },
+  {
+    "t": 1756586312471,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "59048"
+    ]
+  },
+  {
+    "t": 1756586312471,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "43648"
+    ]
+  },
+  {
+    "t": 1756586312471,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1756586312471,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1756586312471,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1756586312472,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "81",
+      "<p> tags,",
+      "1",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1756586312472,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<div class=\"body__inner-container\"><figure data-testid=\"cne-audio-embed-figure\" class=\"CneAudioEmbedFigure-bWHoMv hIHLrt\" data-event-boundary=\"click\" data-event-click=\"{&quot;pattern&quot;:&quot;CNEAu..."
+    ]
+  },
+  {
+    "t": 1756586312472,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
