@@ -1,0 +1,259 @@
+[
+  {
+    "t": 1756586102074,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1756586102074,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1756586102077,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "nytimes.com"
+    ]
+  },
+  {
+    "t": 1756586102080,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "2",
+      "rules"
+    ]
+  },
+  {
+    "t": 1756586102081,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+      "->",
+      "ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png"
+    ]
+  },
+  {
+    "t": 1756586102081,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "data-mediaviewer-src='https://static01.nyt.com",
+      "->",
+      "src='https://static01.nyt.com"
+    ]
+  },
+  {
+    "t": 1756586102081,
+    "level": "log",
+    "args": [
+      "Applied",
+      "2",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1756586102093,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.nytimes.com"
+    ]
+  },
+  {
+    "t": 1756586102093,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "nytimes.com"
+    }
+  },
+  {
+    "t": 1756586102093,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"nytimes.com\"}"
+    ]
+  },
+  {
+    "t": 1756586102093,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "nytimes.com"
+    ]
+  },
+  {
+    "t": 1756586102094,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+    ]
+  },
+  {
+    "t": 1756586102095,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "1",
+      "element(s) for XPath:",
+      "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+    ]
+  },
+  {
+    "t": 1756586102096,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1756586102097,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "China Turns to A.I. in Information Warfare",
+      "contentLength": 24964,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1756586102097,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"China Turns to A.I. in Information Warfare\",\"contentLength\":24964,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1756586102097,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<p c"
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "24968",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "Title:",
+      "China Turns to A.I. in Information Warfare"
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "24968"
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "13560"
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1756586102098,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1756586102099,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "56",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1756586102099,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<div class=\"css-1j6l2qt\" data-testid=\"floating-button\"><div class=\"css-6n7j50\"></div></div><div class=\"css-s99gbd StoryBodyCompanionColumn\" data-testid=\"companionColumn-0\"><div class=\"css-53u6y8\"><p c..."
+    ]
+  },
+  {
+    "t": 1756586102099,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]

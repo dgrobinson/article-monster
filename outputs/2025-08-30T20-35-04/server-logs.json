@@ -1,0 +1,586 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756586102074,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-08-30T20:35:02.655Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756586102074,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-08-30T20:35:02.655Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for nytimes.com",
+    "data": {
+      "t": 1756586102077,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "nytimes.com"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.655Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 2 rules",
+    "data": {
+      "t": 1756586102080,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "2",
+        "rules"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.655Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png -> ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+    "data": {
+      "t": 1756586102081,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+        "->",
+        "ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.655Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: data-mediaviewer-src='https://static01.nyt.com -> src='https://static01.nyt.com",
+    "data": {
+      "t": 1756586102081,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "data-mediaviewer-src='https://static01.nyt.com",
+        "->",
+        "src='https://static01.nyt.com"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.655Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Applied 2 preprocessing rules",
+    "data": {
+      "t": 1756586102081,
+      "level": "log",
+      "args": [
+        "Applied",
+        "2",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.656Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.nytimes.com",
+    "data": {
+      "t": 1756586102093,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.nytimes.com"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.656Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756586102093,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "nytimes.com"
+      }
+    },
+    "time": "2025-08-30T20:35:02.656Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"nytimes.com\"}",
+    "data": {
+      "t": 1756586102093,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"nytimes.com\"}"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.656Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for nytimes.com",
+    "data": {
+      "t": 1756586102093,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "nytimes.com"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.656Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Trying body XPath: //section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]",
+    "data": {
+      "t": 1756586102094,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.656Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Body matched: 1 element(s) for XPath: //section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]",
+    "data": {
+      "t": 1756586102095,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "1",
+        "element(s) for XPath:",
+        "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.656Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1756586102096,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.656Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756586102097,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "China Turns to A.I. in Information Warfare",
+        "contentLength": 24964,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-08-30T20:35:02.656Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"China Turns to A.I. in Information Warfare\",\"contentLength\":24964,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1756586102097,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"China Turns to A.I. in Information Warfare\",\"contentLength\":24964,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.657Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586102097,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.657Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.658Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.658Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Content to encode starts with: <p c",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<p c"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.658Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Successfully encoded 24968 chars to base64",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "24968",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.659Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T20:35:02.659Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Title: China Turns to A.I. in Information Warfare",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "Title:",
+        "China Turns to A.I. in Information Warfare"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.659Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content length: 24968",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "24968"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.660Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Text content length: 13560",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "13560"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.660Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:35:02.662Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:35:02.662Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1756586102098,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-08-30T20:35:02.662Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content structure: 56 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1756586102099,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "56",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-08-30T20:35:02.663Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content preview: <div class=\"css-1j6l2qt\" data-testid=\"floating-button\"><div class=\"css-6n7j50\"></div></div><div class=\"css-s99gbd StoryBodyCompanionColumn\" data-testid=\"companionColumn-0\"><div class=\"css-53u6y8\"><p c...",
+    "data": {
+      "t": 1756586102099,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div class=\"css-1j6l2qt\" data-testid=\"floating-button\"><div class=\"css-6n7j50\"></div></div><div class=\"css-s99gbd StoryBodyCompanionColumn\" data-testid=\"companionColumn-0\"><div class=\"css-53u6y8\"><p c..."
+      ]
+    },
+    "time": "2025-08-30T20:35:02.663Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756586102099,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-08-30T20:35:02.663Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.nytimes.com/2025/08/06/us/politics/china-artificial-intelligence-information-warfare.html",
+      "title": "China Turns to A.I. in Information Warfare",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-08-30T20:35:02.663Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "processing",
+    "message": "Processing article: China Turns to A.I. in Information Warfare",
+    "data": {},
+    "time": "2025-08-30T20:35:02.665Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "China Turns to A.I. in Information Warfare",
+      "contentLength": 24968,
+      "textContentLength": 13560,
+      "hasContent": true
+    },
+    "time": "2025-08-30T20:35:02.665Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-08-30T20:35:02.666Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"China Turns to A.I. in Information Warfare\"",
+    "data": {},
+    "time": "2025-08-30T20:35:02.666Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "China Turns to A.I. in Information Warfare",
+      "byline": "By Julian E. Barnes",
+      "siteName": "nytimes.com",
+      "url": "https://www.nytimes.com/2025/08/06/us/politics/china-artificial-intelligence-information-warfare.html",
+      "publishedTime": "2025-08-06T15:24:12.000Z",
+      "contentLength": 24968,
+      "hasImages": true
+    },
+    "time": "2025-08-30T20:35:02.666Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "China-Turns-to-A.I.-in-Information-Warfare_MEYQ0FBF.html",
+      "contentSizeKB": "26.33"
+    },
+    "time": "2025-08-30T20:35:02.667Z"
+  },
+  {
+    "timestamp": 14,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"China Turns to A.I. in Information Warfare\"",
+    "data": {},
+    "time": "2025-08-30T20:35:02.669Z"
+  },
+  {
+    "timestamp": 14,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-08-30T20:35:02.669Z"
+  },
+  {
+    "timestamp": 277,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "DIB844H5"
+    },
+    "time": "2025-08-30T20:35:02.932Z"
+  },
+  {
+    "timestamp": 278,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-08-30T20:35:02.933Z"
+  },
+  {
+    "timestamp": 725,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-08-30T20:35:03.380Z"
+  },
+  {
+    "timestamp": 1299,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-08-30T20:35:03.954Z"
+  },
+  {
+    "timestamp": 1352,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "DIB844H5",
+      "attachmentKey": "B2SFKHDH"
+    },
+    "time": "2025-08-30T20:35:04.007Z"
+  },
+  {
+    "timestamp": 1920,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<bc868b23-8e1a-4fdc-824f-de510bd1d979@gmail.com>",
+      "filename": "China-Turns-to-A.I.-in-Information-Warfare_MEYQ0FBF.html",
+      "subject": "China Turns to A.I. in Information Warfare",
+      "sizekB": "26.33"
+    },
+    "time": "2025-08-30T20:35:04.575Z"
+  }
+]
