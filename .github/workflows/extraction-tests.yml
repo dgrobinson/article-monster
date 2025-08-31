@@ -7,8 +7,10 @@ on:
       - 'public/readability.min.js'
       - 'public/bookmarklet.js'
       - 'test-cases/**'
+      - 'test/dev-scripts/**'
+      - 'scripts/**'
+      - 'test/goldens.manifest.json'
       - 'site-configs/**'
-      - 'test-extraction*.js'
       - '.github/workflows/extraction-tests.yml'
   pull_request:
     branches: [ main ]
@@ -19,10 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-    - name: Checkout repository
+    - name: Checkout repository (main)
       uses: actions/checkout@v4
       with:
-        submodules: true  # Include site-configs submodule
+        submodules: false
     
     - name: Setup Node.js
       uses: actions/setup-node@v4
@@ -32,14 +34,33 @@ jobs:
     
     - name: Install dependencies
       run: npm ci
+
+    - name: Load golden manifest commit (optional)
+      id: manifest
+      run: |
+        if [ -f test/goldens.manifest.json ]; then
+          DEBUG_SHA=$(node -e "const m=require('./test/goldens.manifest.json');console.log(m.debugCommit||'')")
+          echo "debug_sha=$DEBUG_SHA" >> $GITHUB_OUTPUT
+        else
+          echo "debug_sha=" >> $GITHUB_OUTPUT
+        fi
+
+    - name: Checkout debug goldens branch
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ steps.manifest.outputs.debug_sha || 'latest-outputs-debug' }}
+        path: debug-goldens
     
+    - name: Sync goldens from debug branch
+      run: npm run sync:goldens
+
     - name: Run basic extraction tests
       run: |
-        node test-extraction.js 2>&1 | tee basic-tests.log
+        node test/dev-scripts/test-extraction.js 2>&1 | tee basic-tests.log
 
     - name: Run FiveFilters extraction tests
       run: |
-        node test-extraction-with-fivefilters.js 2>&1 | tee fivefilters-tests.log
+        node test/dev-scripts/test-extraction-with-fivefilters.js 2>&1 | tee fivefilters-tests.log
 
     - name: Check for newly passing tests
       if: always()
