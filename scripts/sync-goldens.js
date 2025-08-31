@@ -3,6 +3,7 @@
 const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require('path');
+const AdmZip = require('adm-zip');
 
 async function findOutputPathByMatch(debugCheckoutPath, matchToken) {
   const outputsRoot = path.join(debugCheckoutPath, 'outputs');
@@ -41,6 +42,41 @@ async function findOutputPathByMatch(debugCheckoutPath, matchToken) {
   // Prefer the lexicographically latest (timestamps sort ascending lexicographically)
   candidates.sort();
   return path.join('outputs', candidates[candidates.length - 1]);
+}
+
+function extractPlainTextFromEpub(epubPath) {
+  const zip = new AdmZip(epubPath);
+  const entries = zip.getEntries();
+  let xhtml = '';
+  entries.forEach(entry => {
+    if (entry.entryName.endsWith('.xhtml') || entry.entryName.endsWith('.html')) {
+      xhtml += zip.readAsText(entry);
+    }
+  });
+  // Basic normalization
+  const text = xhtml
+    .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+    .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  return text;
+}
+
+function pickPhrases(text) {
+  const words = text.split(' ');
+  const pickWindow = (startIdx, windowSize) => words.slice(startIdx, startIdx + windowSize).join(' ');
+  const len = words.length;
+  const w = 12; // 10-12 word phrases
+  const begin = pickWindow(0, w);
+  const mid = pickWindow(Math.max(0, Math.floor(len * 0.5) - Math.floor(w / 2)), w);
+  const end = pickWindow(Math.max(0, len - w), w);
+  const phrases = [begin, mid, end]
+    .map(s => s.replace(/[\s\u00A0]+/g, ' ').trim())
+    .filter(Boolean);
+  // Deduplicate if text is short
+  return [...new Set(phrases)];
 }
 
 async function main() {
@@ -101,12 +137,27 @@ async function main() {
       } catch {}
     }
 
+    // Derive checks automatically unless provided
+    let minLength = c.minLength;
+    let expectedPhrases = c.expectedPhrases;
+    try {
+      const plainText = extractPlainTextFromEpub(toEpub);
+      if (!minLength) {
+        minLength = Math.floor(plainText.length * 0.9); // allow 10% drift
+      }
+      if (!expectedPhrases || expectedPhrases.length === 0) {
+        expectedPhrases = pickPhrases(plainText);
+      }
+    } catch (e) {
+      console.warn('Could not derive checks from EPUB:', e.message);
+    }
+
     const testJson = {
       name: c.name || slug,
       url: url,
       htmlFile: `${slug}.html`,
-      expectedPhrases: c.expectedPhrases || [],
-      minLength: c.minLength || 0,
+      expectedPhrases: expectedPhrases || [],
+      minLength: minLength || 0,
       notes: c.notes || 'Golden from latest-outputs-debug',
       addedDate: new Date().toISOString().slice(0,10),
       status: 'solved'
