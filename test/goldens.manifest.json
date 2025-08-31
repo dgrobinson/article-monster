@@ -1,5 +1,17 @@
 {
   "debugCommit": "",
-  "cases": []
+  "cases": [
+    {
+      "slug": "newyorker-joshua-rothman",
+      "name": "New Yorker — Joshua Rothman",
+      "match": "meyq4yah",
+      "minLength": 30000,
+      "expectedPhrases": [
+        "New Yorker",
+        "Joshua Rothman"
+      ],
+      "notes": "Golden selected by match token from latest-outputs-debug"
+    }
+  ]
 }
 
