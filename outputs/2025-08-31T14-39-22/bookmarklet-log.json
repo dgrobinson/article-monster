@@ -1,0 +1,262 @@
+[
+  {
+    "t": 1756651153331,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1756651153331,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1756651156846,
+    "level": "log",
+    "args": [
+      "Config fetch failed for",
+      "speculativefriction.substack.com",
+      "- using fallback extraction"
+    ]
+  },
+  {
+    "t": 1756651156847,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "speculativefriction.substack.com"
+    ]
+  },
+  {
+    "t": 1756651156847,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "speculativefriction.substack.com"
+    }
+  },
+  {
+    "t": 1756651156847,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"speculativefriction.substack.com\"}"
+    ]
+  },
+  {
+    "t": 1756651156847,
+    "level": "log",
+    "args": [
+      "No cached config for",
+      "speculativefriction.substack.com",
+      "- fetching synchronously"
+    ]
+  },
+  {
+    "t": 1756651157637,
+    "level": "log",
+    "args": [
+      "No FiveFilters config available for",
+      "speculativefriction.substack.com"
+    ]
+  },
+  {
+    "t": 1756651157638,
+    "level": "log",
+    "args": [
+      "No site config or JSON-LD found, falling back to DOM extraction"
+    ]
+  },
+  {
+    "t": 1756651157646,
+    "level": "log",
+    "args": [
+      "Image detection:",
+      "{\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}"
+    ]
+  },
+  {
+    "t": 1756651157646,
+    "level": "log",
+    "args": [
+      "Fallback image check found",
+      "15",
+      "images on page"
+    ]
+  },
+  {
+    "t": 1756651157647,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "(1) Unraveling the Loop: Taxonomies, Tensions, and the Futures We Design"
+    ]
+  },
+  {
+    "t": 1756651157647,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "Speculative F(r)iction in AI Use and Governance"
+    ]
+  },
+  {
+    "t": 1756651157647,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using h1 title:",
+      "Speculative F(r)iction in AI Use and Governance"
+    ]
+  },
+  {
+    "t": 1756651157647,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "Speculative F(r)iction in AI Use and Governance"
+    ]
+  },
+  {
+    "t": 1756651157649,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Speculative F(r)iction in AI Use and Governance",
+      "contentLength": 6377,
+      "method": "dom-fallback"
+    }
+  },
+  {
+    "t": 1756651157649,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Speculative F(r)iction in AI Use and Governance\",\"contentLength\":6377,\"method\":\"dom-fallback\"}"
+    ]
+  },
+  {
+    "t": 1756651157649,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 239 newlines"
+    ]
+  },
+  {
+    "t": 1756651157649,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 239 newlines"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 239 newlines"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "6377",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Speculative F(r)iction in AI Use and Governance"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "6377"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "3301"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      "dom-fallback"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      "Extracted using general rules. For speculativefriction.substack.com, no site-specific configuration was available."
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Has images:",
+      "true"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "3",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "\n        \n\n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx..."
+    ]
+  },
+  {
+    "t": 1756651157650,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
