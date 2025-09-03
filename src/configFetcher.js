@@ -15,31 +15,49 @@ class ConfigFetcher {
     // Remove www. prefix
     const cleanHost = hostname.replace(/^www\./, '');
 
-    // Check cache first
-    const cached = this.configCache.get(cleanHost);
-    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-      return cached.config;
+    // Build list of candidate config files to try
+    // Try exact hostname first, then wildcard matches like .example.com.txt
+    const candidates = [cleanHost];
+    const parts = cleanHost.split('.');
+    for (let i = 1; i < parts.length - 1; i++) {
+      candidates.push(`.${parts.slice(i).join('.')}`);
     }
 
-    try {
-      const configPath = path.join(this.configDir, `${cleanHost}.txt`);
-      const configContent = await fs.readFile(configPath, 'utf8');
-
-      // Parse the FiveFilters config format
-      const config = this.parseFtrConfig(configContent);
-
-      // Cache the result
-      this.configCache.set(cleanHost, {
-        config: config,
-        timestamp: Date.now()
-      });
-
-      return config;
-
-    } catch (error) {
-      console.log(`No FiveFilters config found for ${cleanHost}:`, error.message);
-      return null;
+    // Check cache for any candidate before hitting disk
+    for (const candidate of candidates) {
+      const cached = this.configCache.get(candidate);
+      if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+        // Re-cache under the original hostname for faster lookup next time
+        this.configCache.set(cleanHost, cached);
+        return cached.config;
+      }
     }
+
+    for (const candidate of candidates) {
+      try {
+        const configPath = path.join(this.configDir, `${candidate}.txt`);
+        const configContent = await fs.readFile(configPath, 'utf8');
+
+        // Parse the FiveFilters config format
+        const config = this.parseFtrConfig(configContent);
+
+        const cacheEntry = {
+          config: config,
+          timestamp: Date.now()
+        };
+
+        // Cache under both the candidate (for future subdomains) and the requested host
+        this.configCache.set(candidate, cacheEntry);
+        this.configCache.set(cleanHost, cacheEntry);
+
+        return config;
+      } catch (error) {
+        // Continue to next candidate
+      }
+    }
+
+    console.log(`No FiveFilters config found for ${cleanHost}`);
+    return null;
   }
 
   parseFtrConfig(configText) {
