@@ -1,0 +1,595 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1756923375942,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-03T18:16:16.357Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1756923375942,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-03T18:16:16.361Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Config fetch failed for speculativefriction.substack.com - using fallback extraction",
+    "data": {
+      "t": 1756923376110,
+      "level": "log",
+      "args": [
+        "Config fetch failed for",
+        "speculativefriction.substack.com",
+        "- using fallback extraction"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.361Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: speculativefriction.substack.com",
+    "data": {
+      "t": 1756923376110,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "speculativefriction.substack.com"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.362Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1756923376110,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "speculativefriction.substack.com"
+      }
+    },
+    "time": "2025-09-03T18:16:16.362Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"speculativefriction.substack.com\"}",
+    "data": {
+      "t": 1756923376110,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"speculativefriction.substack.com\"}"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.362Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "No cached config for speculativefriction.substack.com - fetching synchronously",
+    "data": {
+      "t": 1756923376110,
+      "level": "log",
+      "args": [
+        "No cached config for",
+        "speculativefriction.substack.com",
+        "- fetching synchronously"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.363Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "No FiveFilters config available for speculativefriction.substack.com",
+    "data": {
+      "t": 1756923376224,
+      "level": "log",
+      "args": [
+        "No FiveFilters config available for",
+        "speculativefriction.substack.com"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.364Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "No site config or JSON-LD found, falling back to DOM extraction",
+    "data": {
+      "t": 1756923376225,
+      "level": "log",
+      "args": [
+        "No site config or JSON-LD found, falling back to DOM extraction"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.364Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Image detection: {\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}",
+    "data": {
+      "t": 1756923376233,
+      "level": "log",
+      "args": [
+        "Image detection:",
+        "{\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.367Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Fallback image check found 9 images on page",
+    "data": {
+      "t": 1756923376233,
+      "level": "log",
+      "args": [
+        "Fallback image check found",
+        "9",
+        "images on page"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.367Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: (2) Introducing a new Blog Series: Speculative F(r)iction in AI Use and Governance",
+    "data": {
+      "t": 1756923376234,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "(2) Introducing a new Blog Series: Speculative F(r)iction in AI Use and Governance"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.367Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: Speculative F(r)iction in AI Use and Governance",
+    "data": {
+      "t": 1756923376234,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "Speculative F(r)iction in AI Use and Governance"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.367Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "_getArticleTitle - using h1 title: Speculative F(r)iction in AI Use and Governance",
+    "data": {
+      "t": 1756923376234,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using h1 title:",
+        "Speculative F(r)iction in AI Use and Governance"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.368Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: Speculative F(r)iction in AI Use and Governance",
+    "data": {
+      "t": 1756923376234,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "Speculative F(r)iction in AI Use and Governance"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.368Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1756923376235,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Speculative F(r)iction in AI Use and Governance",
+        "contentLength": 6610,
+        "method": "dom-fallback"
+      }
+    },
+    "time": "2025-09-03T18:16:16.368Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Speculative F(r)iction in AI Use and Governance\",\"contentLength\":6610,\"method\":\"dom-fallback\"}",
+    "data": {
+      "t": 1756923376235,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Speculative F(r)iction in AI Use and Governance\",\"contentLength\":6610,\"method\":\"dom-fallback\"}"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.368Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 249 newlines",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 249 newlines"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.368Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 249 newlines",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 249 newlines"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.368Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 249 newlines",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 249 newlines"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.369Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Content to encode starts with: <div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.369Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Successfully encoded 6610 chars to base64",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "6610",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.369Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-03T18:16:16.369Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Title: Speculative F(r)iction in AI Use and Governance",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Speculative F(r)iction in AI Use and Governance"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.369Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Content length: 6610",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "6610"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.369Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Text content length: 3419",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "3419"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.369Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Extraction method: dom-fallback",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        "dom-fallback"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.369Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Extraction note: Extracted using general rules. For speculativefriction.substack.com, no site-specific configuration was available.",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        "Extracted using general rules. For speculativefriction.substack.com, no site-specific configuration was available."
+      ]
+    },
+    "time": "2025-09-03T18:16:16.369Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "client:log",
+    "message": "Has images: true",
+    "data": {
+      "t": 1756923376236,
+      "level": "log",
+      "args": [
+        "Has images:",
+        "true"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.370Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "client:log",
+    "message": "Content structure: 3 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1756923376237,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "3",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-03T18:16:16.370Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "client:log",
+    "message": "Content preview: \n        \n\n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx...",
+    "data": {
+      "t": 1756923376237,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "\n        \n\n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx..."
+      ]
+    },
+    "time": "2025-09-03T18:16:16.370Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1756923376237,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-03T18:16:16.370Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://speculativefriction.substack.com/p/introducing-a-new-blog-series-speculative",
+      "title": "Speculative F(r)iction in AI Use and Governance",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-03T18:16:16.370Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "processing",
+    "message": "Processing article: Speculative F(r)iction in AI Use and Governance",
+    "data": {},
+    "time": "2025-09-03T18:16:16.372Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Speculative F(r)iction in AI Use and Governance",
+      "contentLength": 6610,
+      "textContentLength": 3419,
+      "hasContent": true
+    },
+    "time": "2025-09-03T18:16:16.372Z"
+  },
+  {
+    "timestamp": 20,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-03T18:16:16.377Z"
+  },
+  {
+    "timestamp": 21,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Speculative F(r)iction in AI Use and Governance\"",
+    "data": {},
+    "time": "2025-09-03T18:16:16.378Z"
+  },
+  {
+    "timestamp": 21,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Speculative F(r)iction in AI Use and Governance",
+      "byline": "Bogdana Rakova",
+      "siteName": "(2) Introducing a new Blog Series: Speculative F(r)iction in AI Use and Governance",
+      "url": "https://speculativefriction.substack.com/p/introducing-a-new-blog-series-speculative",
+      "publishedTime": "2025-08-15T15:25:05.587Z",
+      "contentLength": 6610,
+      "hasImages": false
+    },
+    "time": "2025-09-03T18:16:16.378Z"
+  },
+  {
+    "timestamp": 128,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Speculative-F(r)iction-in-AI-Use-and-Governance_MF4ATDGL.html",
+      "contentSizeKB": "8.44"
+    },
+    "time": "2025-09-03T18:16:16.485Z"
+  },
+  {
+    "timestamp": 137,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Speculative F(r)iction in AI Use and Governance\"",
+    "data": {},
+    "time": "2025-09-03T18:16:16.494Z"
+  },
+  {
+    "timestamp": 138,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-03T18:16:16.495Z"
+  },
+  {
+    "timestamp": 724,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "N5HUPWZU"
+    },
+    "time": "2025-09-03T18:16:17.081Z"
+  },
+  {
+    "timestamp": 725,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-03T18:16:17.082Z"
+  },
+  {
+    "timestamp": 985,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-03T18:16:17.342Z"
+  },
+  {
+    "timestamp": 1657,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-03T18:16:18.014Z"
+  },
+  {
+    "timestamp": 1729,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "N5HUPWZU",
+      "attachmentKey": "T9AGDUE9"
+    },
+    "time": "2025-09-03T18:16:18.086Z"
+  },
+  {
+    "timestamp": 2016,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<0e9e4ffd-fc45-d148-801f-fedd78c319b7@gmail.com>",
+      "filename": "Speculative-F(r)iction-in-AI-Use-and-Governance_MF4ATDGL.html",
+      "subject": "Speculative F(r)iction in AI Use and Governance",
+      "sizekB": "8.44"
+    },
+    "time": "2025-09-03T18:16:18.373Z"
+  }
+]
