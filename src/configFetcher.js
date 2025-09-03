@@ -21,25 +21,36 @@ class ConfigFetcher {
       return cached.config;
     }
 
-    try {
-      const configPath = path.join(this.configDir, `${cleanHost}.txt`);
-      const configContent = await fs.readFile(configPath, 'utf8');
-
-      // Parse the FiveFilters config format
-      const config = this.parseFtrConfig(configContent);
-
-      // Cache the result
-      this.configCache.set(cleanHost, {
-        config: config,
-        timestamp: Date.now()
-      });
-
-      return config;
-
-    } catch (error) {
-      console.log(`No FiveFilters config found for ${cleanHost}:`, error.message);
-      return null;
+    // Build list of candidate config files to try
+    // Try exact hostname first, then wildcard matches like .example.com.txt
+    const candidates = [cleanHost];
+    const parts = cleanHost.split('.');
+    for (let i = 1; i < parts.length - 1; i++) {
+      candidates.push(`.${parts.slice(i).join('.')}`);
     }
+
+    for (const candidate of candidates) {
+      try {
+        const configPath = path.join(this.configDir, `${candidate}.txt`);
+        const configContent = await fs.readFile(configPath, 'utf8');
+
+        // Parse the FiveFilters config format
+        const config = this.parseFtrConfig(configContent);
+
+        // Cache the result using the original hostname as key
+        this.configCache.set(cleanHost, {
+          config: config,
+          timestamp: Date.now()
+        });
+
+        return config;
+      } catch (error) {
+        // Continue to next candidate
+      }
+    }
+
+    console.log(`No FiveFilters config found for ${cleanHost}`);
+    return null;
   }
 
   parseFtrConfig(configText) {
