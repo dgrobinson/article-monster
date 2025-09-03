@@ -14,32 +14,60 @@ class ConfigFetcher {
   async getConfigForSite(hostname) {
     // Remove www. prefix
     const cleanHost = hostname.replace(/^www\./, '');
+    const candidates = this._generateHostCandidates(cleanHost);
 
-    // Check cache first
-    const cached = this.configCache.get(cleanHost);
-    if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
-      return cached.config;
+    // Try cache first for all candidates
+    for (const candidate of candidates) {
+      const cached = this.configCache.get(candidate);
+      if (cached && Date.now() - cached.timestamp < this.cacheTimeout) {
+        // Cache under requested hostname to avoid future lookups
+        if (candidate !== cleanHost) {
+          this.configCache.set(cleanHost, cached);
+        }
+        return cached.config;
+      }
     }
 
-    try {
-      const configPath = path.join(this.configDir, `${cleanHost}.txt`);
-      const configContent = await fs.readFile(configPath, 'utf8');
+    // Not in cache - try filesystem for each candidate
+    for (const candidate of candidates) {
+      try {
+        const configPath = path.join(this.configDir, `${candidate}.txt`);
+        const configContent = await fs.readFile(configPath, 'utf8');
 
-      // Parse the FiveFilters config format
-      const config = this.parseFtrConfig(configContent);
+        // Parse the FiveFilters config format
+        const config = this.parseFtrConfig(configContent);
 
-      // Cache the result
-      this.configCache.set(cleanHost, {
-        config: config,
-        timestamp: Date.now()
-      });
-
-      return config;
-
-    } catch (error) {
-      console.log(`No FiveFilters config found for ${cleanHost}:`, error.message);
-      return null;
+        if (config) {
+          const entry = { config, timestamp: Date.now() };
+          // Cache under both the candidate and requested hostname
+          this.configCache.set(candidate, entry);
+          if (candidate !== cleanHost) {
+            this.configCache.set(cleanHost, entry);
+          }
+          return config;
+        }
+      } catch (error) {
+        // continue to next candidate
+      }
     }
+
+    console.log(`No FiveFilters config found for ${cleanHost}`);
+    return null;
+  }
+
+  _generateHostCandidates(hostname) {
+    if (hostname.startsWith('.')) return [hostname];
+
+    const parts = hostname.split('.');
+    const candidates = [];
+    for (let i = 0; i <= parts.length - 2; i++) {
+      candidates.push(parts.slice(i).join('.'));
+    }
+    const root = candidates[candidates.length - 1];
+    if (root && !root.startsWith('.')) {
+      candidates.push(`.${root}`);
+    }
+    return candidates;
   }
 
   parseFtrConfig(configText) {
