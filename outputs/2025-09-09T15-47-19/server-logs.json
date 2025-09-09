@@ -1,0 +1,580 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1757432836659,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-09T15:47:16.971Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1757432836659,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-09T15:47:16.972Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for theatlantic.com",
+    "data": {
+      "t": 1757432836833,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "theatlantic.com"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.972Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.theatlantic.com",
+    "data": {
+      "t": 1757432836842,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.theatlantic.com"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.972Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1757432836842,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "theatlantic.com"
+      }
+    },
+    "time": "2025-09-09T15:47:16.973Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"theatlantic.com\"}",
+    "data": {
+      "t": 1757432836843,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"theatlantic.com\"}"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.973Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for theatlantic.com",
+    "data": {
+      "t": 1757432836843,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "theatlantic.com"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.973Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Trying body XPath: //article[@id='main-article']",
+    "data": {
+      "t": 1757432836843,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//article[@id='main-article']"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.973Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Body XPath found no elements: //article[@id='main-article']",
+    "data": {
+      "t": 1757432836843,
+      "level": "log",
+      "args": [
+        "Body XPath found no elements:",
+        "//article[@id='main-article']"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.973Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Trying body XPath: //div[@id='main-article']",
+    "data": {
+      "t": 1757432836843,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//div[@id='main-article']"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.973Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Body XPath found no elements: //div[@id='main-article']",
+    "data": {
+      "t": 1757432836844,
+      "level": "log",
+      "args": [
+        "Body XPath found no elements:",
+        "//div[@id='main-article']"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.974Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Trying body XPath: //article[contains(@class, 'ArticleLayout_article')]",
+    "data": {
+      "t": 1757432836844,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//article[contains(@class, 'ArticleLayout_article')]"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.974Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Body matched: 1 element(s) for XPath: //article[contains(@class, 'ArticleLayout_article')]",
+    "data": {
+      "t": 1757432836844,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "1",
+        "element(s) for XPath:",
+        "//article[contains(@class, 'ArticleLayout_article')]"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.974Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1757432836846,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.974Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1757432836847,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "The Abundance Delusion",
+        "contentLength": 35998,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-09-09T15:47:16.974Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"The Abundance Delusion\",\"contentLength\":35998,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1757432836847,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"The Abundance Delusion\",\"contentLength\":35998,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.975Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1757432836847,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.975Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1757432836848,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.975Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1757432836848,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.975Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Content to encode starts with: This article w",
+    "data": {
+      "t": 1757432836848,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "This article w"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.975Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Successfully encoded 35998 chars to base64",
+    "data": {
+      "t": 1757432836849,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "35998",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.975Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1757432836849,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-09T15:47:16.977Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Title: The Abundance Delusion",
+    "data": {
+      "t": 1757432836849,
+      "level": "log",
+      "args": [
+        "Title:",
+        "The Abundance Delusion"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.977Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content length: 35998",
+    "data": {
+      "t": 1757432836849,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "35998"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.977Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Text content length: 24554",
+    "data": {
+      "t": 1757432836849,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "24554"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.977Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1757432836849,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-09-09T15:47:16.977Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1757432836849,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-09-09T15:47:16.978Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1757432836849,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-09-09T15:47:16.978Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Content structure: 53 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1757432836850,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "53",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-09T15:47:16.978Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Content preview: <div><section class=\"ArticleBody_root__2gF81\" data-event-module=\"article body\" data-flatplan-body=\"true\"><p class=\"ArticleParagraph_root__4mszW\" data-flatplan-paragraph=\"true\"><small><i>This article w...",
+    "data": {
+      "t": 1757432836850,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div><section class=\"ArticleBody_root__2gF81\" data-event-module=\"article body\" data-flatplan-body=\"true\"><p class=\"ArticleParagraph_root__4mszW\" data-flatplan-paragraph=\"true\"><small><i>This article w..."
+      ]
+    },
+    "time": "2025-09-09T15:47:16.978Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1757432836850,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-09T15:47:16.978Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.theatlantic.com/ideas/archive/2025/09/abundant-delusion/684124/",
+      "title": "The Abundance Delusion",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-09T15:47:16.978Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "processing",
+    "message": "Processing article: The Abundance Delusion",
+    "data": {},
+    "time": "2025-09-09T15:47:16.981Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "The Abundance Delusion",
+      "contentLength": 35998,
+      "textContentLength": 24554,
+      "hasContent": true
+    },
+    "time": "2025-09-09T15:47:16.982Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-09T15:47:16.982Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"The Abundance Delusion\"",
+    "data": {},
+    "time": "2025-09-09T15:47:16.982Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "The Abundance Delusion",
+      "byline": "Mike Solana",
+      "siteName": "theatlantic.com",
+      "url": "https://www.theatlantic.com/ideas/archive/2025/09/abundant-delusion/684124/",
+      "publishedTime": "2025-09-08T11:00:00Z",
+      "contentLength": 35998,
+      "hasImages": false
+    },
+    "time": "2025-09-09T15:47:16.982Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "The-Abundance-Delusion_MFCQ4VP3.html",
+      "contentSizeKB": "37.01"
+    },
+    "time": "2025-09-09T15:47:16.983Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"The Abundance Delusion\"",
+    "data": {},
+    "time": "2025-09-09T15:47:16.987Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-09T15:47:16.987Z"
+  },
+  {
+    "timestamp": 269,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "9D2QKAFT"
+    },
+    "time": "2025-09-09T15:47:17.240Z"
+  },
+  {
+    "timestamp": 269,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-09T15:47:17.240Z"
+  },
+  {
+    "timestamp": 359,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-09T15:47:17.330Z"
+  },
+  {
+    "timestamp": 953,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-09T15:47:17.924Z"
+  },
+  {
+    "timestamp": 1019,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "9D2QKAFT",
+      "attachmentKey": "X8MP8ZR4"
+    },
+    "time": "2025-09-09T15:47:17.990Z"
+  },
+  {
+    "timestamp": 2111,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<8a59d712-4b8a-8de5-2640-927ddad1927d@gmail.com>",
+      "filename": "The-Abundance-Delusion_MFCQ4VP3.html",
+      "subject": "The Abundance Delusion",
+      "sizekB": "37.01"
+    },
+    "time": "2025-09-09T15:47:19.082Z"
+  }
+]
