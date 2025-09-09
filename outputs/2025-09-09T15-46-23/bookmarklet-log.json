@@ -1,0 +1,259 @@
+[
+  {
+    "t": 1757432780638,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1757432780638,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1757432780933,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "nytimes.com"
+    ]
+  },
+  {
+    "t": 1757432780936,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "2",
+      "rules"
+    ]
+  },
+  {
+    "t": 1757432780936,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+      "->",
+      "ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png"
+    ]
+  },
+  {
+    "t": 1757432780937,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "data-mediaviewer-src='https://static01.nyt.com",
+      "->",
+      "src='https://static01.nyt.com"
+    ]
+  },
+  {
+    "t": 1757432780937,
+    "level": "log",
+    "args": [
+      "Applied",
+      "2",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1757432780949,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.nytimes.com"
+    ]
+  },
+  {
+    "t": 1757432780950,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "nytimes.com"
+    }
+  },
+  {
+    "t": 1757432780950,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"nytimes.com\"}"
+    ]
+  },
+  {
+    "t": 1757432780950,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "nytimes.com"
+    ]
+  },
+  {
+    "t": 1757432780950,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+    ]
+  },
+  {
+    "t": 1757432780951,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "1",
+      "element(s) for XPath:",
+      "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+    ]
+  },
+  {
+    "t": 1757432780953,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1757432780954,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.",
+      "contentLength": 29923,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1757432780954,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.\",\"contentLength\":29923,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1757432780954,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1757432780955,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1757432780955,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1757432780956,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "When Adam Raine died in April at age 16, some of his friends did"
+    ]
+  },
+  {
+    "t": 1757432780956,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "29927",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1757432780956,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1757432780956,
+    "level": "log",
+    "args": [
+      "Title:",
+      "A Teen Was Suicidal. ChatGPT Was the Friend He Confided In."
+    ]
+  },
+  {
+    "t": 1757432780956,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "29927"
+    ]
+  },
+  {
+    "t": 1757432780956,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "16245"
+    ]
+  },
+  {
+    "t": 1757432780956,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1757432780956,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1757432780956,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1757432780957,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "59",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1757432780957,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<div class=\"css-s99gbd StoryBodyCompanionColumn\" data-testid=\"companionColumn-0\"><div class=\"css-53u6y8\"><p class=\"css-at9mc1 evys1bk0\">When Adam Raine died in April at age 16, some of his friends did..."
+    ]
+  },
+  {
+    "t": 1757432780957,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]

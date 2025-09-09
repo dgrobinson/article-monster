@@ -1,0 +1,586 @@
+[
+  {
+    "timestamp": 2,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1757432780638,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-09T15:46:21.072Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1757432780638,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-09T15:46:21.079Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for nytimes.com",
+    "data": {
+      "t": 1757432780933,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "nytimes.com"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.088Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 2 rules",
+    "data": {
+      "t": 1757432780936,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "2",
+        "rules"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.088Z"
+  },
+  {
+    "timestamp": 19,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png -> ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+    "data": {
+      "t": 1757432780936,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+        "->",
+        "ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.089Z"
+  },
+  {
+    "timestamp": 23,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: data-mediaviewer-src='https://static01.nyt.com -> src='https://static01.nyt.com",
+    "data": {
+      "t": 1757432780937,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "data-mediaviewer-src='https://static01.nyt.com",
+        "->",
+        "src='https://static01.nyt.com"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.093Z"
+  },
+  {
+    "timestamp": 23,
+    "category": "client:log",
+    "message": "Applied 2 preprocessing rules",
+    "data": {
+      "t": 1757432780937,
+      "level": "log",
+      "args": [
+        "Applied",
+        "2",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.093Z"
+  },
+  {
+    "timestamp": 23,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.nytimes.com",
+    "data": {
+      "t": 1757432780949,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.nytimes.com"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.093Z"
+  },
+  {
+    "timestamp": 23,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1757432780950,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "nytimes.com"
+      }
+    },
+    "time": "2025-09-09T15:46:21.093Z"
+  },
+  {
+    "timestamp": 24,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"nytimes.com\"}",
+    "data": {
+      "t": 1757432780950,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"nytimes.com\"}"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.094Z"
+  },
+  {
+    "timestamp": 24,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for nytimes.com",
+    "data": {
+      "t": 1757432780950,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "nytimes.com"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.094Z"
+  },
+  {
+    "timestamp": 24,
+    "category": "client:log",
+    "message": "Trying body XPath: //section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]",
+    "data": {
+      "t": 1757432780950,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.094Z"
+  },
+  {
+    "timestamp": 24,
+    "category": "client:log",
+    "message": "Body matched: 1 element(s) for XPath: //section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]",
+    "data": {
+      "t": 1757432780951,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "1",
+        "element(s) for XPath:",
+        "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.094Z"
+  },
+  {
+    "timestamp": 24,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1757432780953,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.094Z"
+  },
+  {
+    "timestamp": 24,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1757432780954,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.",
+        "contentLength": 29923,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-09-09T15:46:21.094Z"
+  },
+  {
+    "timestamp": 24,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.\",\"contentLength\":29923,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1757432780954,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.\",\"contentLength\":29923,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.094Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1757432780954,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.095Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1757432780955,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.095Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1757432780955,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.095Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "client:log",
+    "message": "Content to encode starts with: When Adam Raine died in April at age 16, some of his friends did",
+    "data": {
+      "t": 1757432780956,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "When Adam Raine died in April at age 16, some of his friends did"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.095Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "client:log",
+    "message": "Successfully encoded 29927 chars to base64",
+    "data": {
+      "t": 1757432780956,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "29927",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.095Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1757432780956,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-09T15:46:21.095Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "client:log",
+    "message": "Title: A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.",
+    "data": {
+      "t": 1757432780956,
+      "level": "log",
+      "args": [
+        "Title:",
+        "A Teen Was Suicidal. ChatGPT Was the Friend He Confided In."
+      ]
+    },
+    "time": "2025-09-09T15:46:21.095Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "client:log",
+    "message": "Content length: 29927",
+    "data": {
+      "t": 1757432780956,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "29927"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.095Z"
+  },
+  {
+    "timestamp": 26,
+    "category": "client:log",
+    "message": "Text content length: 16245",
+    "data": {
+      "t": 1757432780956,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "16245"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.096Z"
+  },
+  {
+    "timestamp": 26,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1757432780956,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-09-09T15:46:21.096Z"
+  },
+  {
+    "timestamp": 26,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1757432780956,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-09-09T15:46:21.096Z"
+  },
+  {
+    "timestamp": 26,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1757432780956,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-09-09T15:46:21.096Z"
+  },
+  {
+    "timestamp": 26,
+    "category": "client:log",
+    "message": "Content structure: 59 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1757432780957,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "59",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-09T15:46:21.096Z"
+  },
+  {
+    "timestamp": 27,
+    "category": "client:log",
+    "message": "Content preview: <div class=\"css-s99gbd StoryBodyCompanionColumn\" data-testid=\"companionColumn-0\"><div class=\"css-53u6y8\"><p class=\"css-at9mc1 evys1bk0\">When Adam Raine died in April at age 16, some of his friends did...",
+    "data": {
+      "t": 1757432780957,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div class=\"css-s99gbd StoryBodyCompanionColumn\" data-testid=\"companionColumn-0\"><div class=\"css-53u6y8\"><p class=\"css-at9mc1 evys1bk0\">When Adam Raine died in April at age 16, some of his friends did..."
+      ]
+    },
+    "time": "2025-09-09T15:46:21.097Z"
+  },
+  {
+    "timestamp": 27,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1757432780957,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-09T15:46:21.097Z"
+  },
+  {
+    "timestamp": 27,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.nytimes.com/2025/08/26/technology/chatgpt-openai-suicide.html",
+      "title": "A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-09T15:46:21.097Z"
+  },
+  {
+    "timestamp": 30,
+    "category": "processing",
+    "message": "Processing article: A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.",
+    "data": {},
+    "time": "2025-09-09T15:46:21.100Z"
+  },
+  {
+    "timestamp": 30,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.",
+      "contentLength": 29927,
+      "textContentLength": 16245,
+      "hasContent": true
+    },
+    "time": "2025-09-09T15:46:21.100Z"
+  },
+  {
+    "timestamp": 42,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-09T15:46:21.112Z"
+  },
+  {
+    "timestamp": 42,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.\"",
+    "data": {},
+    "time": "2025-09-09T15:46:21.112Z"
+  },
+  {
+    "timestamp": 42,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.",
+      "byline": "By Kashmir Hill",
+      "siteName": "nytimes.com",
+      "url": "https://www.nytimes.com/2025/08/26/technology/chatgpt-openai-suicide.html",
+      "publishedTime": "2025-08-26T12:40:04.000Z",
+      "contentLength": 29927,
+      "hasImages": true
+    },
+    "time": "2025-09-09T15:46:21.112Z"
+  },
+  {
+    "timestamp": 81,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "A-Teen-Was-Suicidal.-ChatGPT-Was-the-Friend-He-Confided-In._MFCQ3OM6.html",
+      "contentSizeKB": "31.14"
+    },
+    "time": "2025-09-09T15:46:21.151Z"
+  },
+  {
+    "timestamp": 85,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.\"",
+    "data": {},
+    "time": "2025-09-09T15:46:21.155Z"
+  },
+  {
+    "timestamp": 86,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-09T15:46:21.156Z"
+  },
+  {
+    "timestamp": 467,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "9HQHWAH4"
+    },
+    "time": "2025-09-09T15:46:21.537Z"
+  },
+  {
+    "timestamp": 468,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-09T15:46:21.538Z"
+  },
+  {
+    "timestamp": 594,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-09T15:46:21.664Z"
+  },
+  {
+    "timestamp": 1408,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-09T15:46:22.478Z"
+  },
+  {
+    "timestamp": 1546,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "9HQHWAH4",
+      "attachmentKey": "3I3FGBS4"
+    },
+    "time": "2025-09-09T15:46:22.616Z"
+  },
+  {
+    "timestamp": 2340,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<2201af60-e683-85fb-b12e-8d52388cde43@gmail.com>",
+      "filename": "A-Teen-Was-Suicidal.-ChatGPT-Was-the-Friend-He-Confided-In._MFCQ3OM6.html",
+      "subject": "A Teen Was Suicidal. ChatGPT Was the Friend He Confided In.",
+      "sizekB": "31.14"
+    },
+    "time": "2025-09-09T15:46:23.410Z"
+  }
+]
