@@ -1,0 +1,351 @@
+[
+  {
+    "t": 1757979278778,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1757979278778,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1757979280033,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1757979280037,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "1",
+      "rules"
+    ]
+  },
+  {
+    "t": 1757979280039,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "<header",
+      "->",
+      "<em"
+    ]
+  },
+  {
+    "t": 1757979280040,
+    "level": "log",
+    "args": [
+      "Auto-generated closing tag rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1757979280042,
+    "level": "log",
+    "args": [
+      "Applied auto-generated rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1757979280042,
+    "level": "log",
+    "args": [
+      "Applied",
+      "1",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.newyorker.com"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "newyorker.com"
+    }
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"newyorker.com\"}"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "Auto-detecting title: no title rules or extraction failed"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "config.title:",
+      "[]",
+      "length:",
+      "0"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "titleExtracted:",
+      "false"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "autodetect_on_failure:",
+      "null"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "Where Political Violence Comes From | The New Yorker"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "Where Political Violence Comes From"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using h1 title:",
+      "Where Political Violence Comes From"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "Where Political Violence Comes From"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "Auto-detected title result:",
+      "Where Political Violence Comes From"
+    ]
+  },
+  {
+    "t": 1757979280063,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1757979280064,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "3",
+      "element(s) for XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1757979280064,
+    "level": "log",
+    "args": [
+      "Combined",
+      "3",
+      "body elements into single container"
+    ]
+  },
+  {
+    "t": 1757979280064,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1757979280065,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Where Political Violence Comes From",
+      "contentLength": 20864,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1757979280065,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Where Political Violence Comes From\",\"contentLength\":20864,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1757979280065,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1757979280065,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1757979280065,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1757979280065,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "This past week, the right-wing political activist <a href=\"https://www.newyorker.com/magazine/2025/0"
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "20864",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Where Political Violence Comes From"
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "20864"
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "15421"
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "30",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<div class=\"body__inner-container\"><p class=\"has-dropcap has-dropcap__lead-standard-heading\">This past week, the right-wing political activist <a href=\"https://www.newyorker.com/magazine/2025/09/22/ch..."
+    ]
+  },
+  {
+    "t": 1757979280066,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]

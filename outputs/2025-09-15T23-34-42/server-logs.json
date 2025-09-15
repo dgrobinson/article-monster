@@ -1,0 +1,744 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1757979278778,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-15T23:34:40.179Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1757979278778,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-15T23:34:40.184Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1757979280033,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.185Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 1 rules",
+    "data": {
+      "t": 1757979280037,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "1",
+        "rules"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.186Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: <header -> <em",
+    "data": {
+      "t": 1757979280039,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "<header",
+        "->",
+        "<em"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.186Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Auto-generated closing tag rule: </header> -> </em>",
+    "data": {
+      "t": 1757979280040,
+      "level": "log",
+      "args": [
+        "Auto-generated closing tag rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.186Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Applied auto-generated rule: </header> -> </em>",
+    "data": {
+      "t": 1757979280042,
+      "level": "log",
+      "args": [
+        "Applied auto-generated rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.187Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Applied 1 preprocessing rules",
+    "data": {
+      "t": 1757979280042,
+      "level": "log",
+      "args": [
+        "Applied",
+        "1",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.187Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.newyorker.com",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.newyorker.com"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.187Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1757979280063,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "newyorker.com"
+      }
+    },
+    "time": "2025-09-15T23:34:40.187Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"newyorker.com\"}",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"newyorker.com\"}"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.187Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.187Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Auto-detecting title: no title rules or extraction failed",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "Auto-detecting title: no title rules or extraction failed"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.187Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "config.title: [] length: 0",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "config.title:",
+        "[]",
+        "length:",
+        "0"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.187Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "titleExtracted: false",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "titleExtracted:",
+        "false"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.187Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "autodetect_on_failure: null",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "autodetect_on_failure:",
+        "null"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.188Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: Where Political Violence Comes From | The New Yorker",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "Where Political Violence Comes From | The New Yorker"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.188Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: Where Political Violence Comes From",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "Where Political Violence Comes From"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.188Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "_getArticleTitle - using h1 title: Where Political Violence Comes From",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using h1 title:",
+        "Where Political Violence Comes From"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.188Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: Where Political Violence Comes From",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "Where Political Violence Comes From"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.188Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Auto-detected title result: Where Political Violence Comes From",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "Auto-detected title result:",
+        "Where Political Violence Comes From"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.188Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Trying body XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1757979280063,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.189Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Body matched: 3 element(s) for XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1757979280064,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "3",
+        "element(s) for XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.189Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Combined 3 body elements into single container",
+    "data": {
+      "t": 1757979280064,
+      "level": "log",
+      "args": [
+        "Combined",
+        "3",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.189Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1757979280064,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.189Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1757979280065,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Where Political Violence Comes From",
+        "contentLength": 20864,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-09-15T23:34:40.190Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Where Political Violence Comes From\",\"contentLength\":20864,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1757979280065,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Where Political Violence Comes From\",\"contentLength\":20864,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.190Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1757979280065,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.190Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1757979280065,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.190Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1757979280065,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.190Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "Content to encode starts with: This past week, the right-wing political activist <a href=\"https://www.newyorker.com/magazine/2025/0",
+    "data": {
+      "t": 1757979280065,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "This past week, the right-wing political activist <a href=\"https://www.newyorker.com/magazine/2025/0"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.190Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "Successfully encoded 20864 chars to base64",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "20864",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.190Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-15T23:34:40.190Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "Title: Where Political Violence Comes From",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Where Political Violence Comes From"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.190Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Content length: 20864",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "20864"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.191Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Text content length: 15421",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "15421"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.191Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-09-15T23:34:40.191Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-09-15T23:34:40.191Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-09-15T23:34:40.191Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Content structure: 30 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "30",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-15T23:34:40.191Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Content preview: <div class=\"body__inner-container\"><p class=\"has-dropcap has-dropcap__lead-standard-heading\">This past week, the right-wing political activist <a href=\"https://www.newyorker.com/magazine/2025/09/22/ch...",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div class=\"body__inner-container\"><p class=\"has-dropcap has-dropcap__lead-standard-heading\">This past week, the right-wing political activist <a href=\"https://www.newyorker.com/magazine/2025/09/22/ch..."
+      ]
+    },
+    "time": "2025-09-15T23:34:40.191Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1757979280066,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-15T23:34:40.192Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/news/q-and-a/where-political-violence-comes-from",
+      "title": "Where Political Violence Comes From",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-15T23:34:40.192Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "processing",
+    "message": "Processing article: Where Political Violence Comes From",
+    "data": {},
+    "time": "2025-09-15T23:34:40.194Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Where Political Violence Comes From",
+      "contentLength": 20864,
+      "textContentLength": 15421,
+      "hasContent": true
+    },
+    "time": "2025-09-15T23:34:40.194Z"
+  },
+  {
+    "timestamp": 26,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-15T23:34:40.205Z"
+  },
+  {
+    "timestamp": 26,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Where Political Violence Comes From\"",
+    "data": {},
+    "time": "2025-09-15T23:34:40.205Z"
+  },
+  {
+    "timestamp": 26,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Where Political Violence Comes From",
+      "byline": "Isaac Chotiner",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/news/q-and-a/where-political-violence-comes-from",
+      "publishedTime": "2025-09-15T19:48:31.301Z",
+      "contentLength": 20864,
+      "hasImages": false
+    },
+    "time": "2025-09-15T23:34:40.205Z"
+  },
+  {
+    "timestamp": 58,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Where-Political-Violence-Comes-From_MFLRH20D.html",
+      "contentSizeKB": "22.25"
+    },
+    "time": "2025-09-15T23:34:40.237Z"
+  },
+  {
+    "timestamp": 69,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Where Political Violence Comes From\"",
+    "data": {},
+    "time": "2025-09-15T23:34:40.248Z"
+  },
+  {
+    "timestamp": 69,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-15T23:34:40.248Z"
+  },
+  {
+    "timestamp": 535,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "QQ8HVKAZ"
+    },
+    "time": "2025-09-15T23:34:40.714Z"
+  },
+  {
+    "timestamp": 536,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-15T23:34:40.715Z"
+  },
+  {
+    "timestamp": 585,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-15T23:34:40.764Z"
+  },
+  {
+    "timestamp": 1175,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-15T23:34:41.354Z"
+  },
+  {
+    "timestamp": 1229,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "QQ8HVKAZ",
+      "attachmentKey": "5PBB9ICK"
+    },
+    "time": "2025-09-15T23:34:41.408Z"
+  },
+  {
+    "timestamp": 1895,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<3853be6d-a821-f183-fe73-fa1d18f8611e@gmail.com>",
+      "filename": "Where-Political-Violence-Comes-From_MFLRH20D.html",
+      "subject": "Where Political Violence Comes From",
+      "sizekB": "22.25"
+    },
+    "time": "2025-09-15T23:34:42.074Z"
+  }
+]
