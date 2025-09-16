@@ -20,6 +20,7 @@ const { sendToKindle } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
 const ConfigFetcher = require('./configFetcher');
 const DebugLogger = require('./debugLogger');
+const GitHubIssues = require('./githubIssues');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -53,6 +54,50 @@ app.get('/health', (req, res) => {
     },
     timestamp: new Date().toISOString()
   });
+});
+
+// Endpoint to report a broken extraction which opens a GitHub issue
+app.post('/report-issue', async (req, res) => {
+  try {
+    const { url, notes } = req.body || {};
+
+    if (!url || typeof url !== 'string') {
+      return res.status(400).json({ success: false, error: 'url is required' });
+    }
+
+    const issues = new GitHubIssues();
+
+    const hostname = (() => {
+      try { return new URL(url).hostname; } catch (_) { return 'unknown-host'; }
+    })();
+
+    const title = `Broken extraction: ${hostname}`;
+    const body = [
+      `URL: ${url}`,
+      '',
+      notes ? `Notes:\n\n${notes}` : null,
+      '',
+      `Reported at: ${new Date().toISOString()}`,
+      '',
+      'Checklist:',
+      '- [ ] Reproduce with bookmarklet',
+      '- [ ] Check /site-config for hostname',
+      '- [ ] Compare against FiveFilters reference',
+      '- [ ] Add/Update site-config if needed',
+      '- [ ] Add golden test case'
+    ].filter(Boolean).join('\n');
+
+    const issue = await issues.createIssue({
+      title,
+      body,
+      labels: ['bug', 'extraction'],
+    });
+
+    return res.json({ success: true, issueUrl: issue.html_url, number: issue.number });
+  } catch (error) {
+    console.error('Failed to create GitHub issue:', error.message);
+    return res.status(500).json({ success: false, error: 'Failed to create issue' });
+  }
 });
 
 // Site configuration endpoint - provides dynamic FiveFilters configs to bookmarklet

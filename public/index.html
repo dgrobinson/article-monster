@@ -222,6 +222,23 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
         </ul>
     </div>
 
+    <div class="section">
+        <h2>🐞 Report a broken extraction</h2>
+        <p>If a page doesn't parse correctly, submit it here and we'll track it.</p>
+        <form id="report-form" onsubmit="return submitIssue(event)">
+            <div style="margin-bottom: 10px;">
+                <label for="issue-url"><strong>Article URL</strong></label><br>
+                <input id="issue-url" type="url" placeholder="https://example.com/article" required style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="issue-notes"><strong>Notes (optional)</strong></label><br>
+                <textarea id="issue-notes" rows="4" placeholder="Describe what went wrong..." style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></textarea>
+            </div>
+            <button type="submit" style="background:#3498db; color:white; border:none; padding:10px 16px; border-radius:6px; font-weight:bold;">Submit</button>
+            <span id="report-status" style="margin-left:10px; font-size: 0.95em;"></span>
+        </form>
+    </div>
+
     <script>
         // Generate bookmarklet code
         function generateBookmarklet() {
@@ -317,6 +334,36 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
         
         // Refresh status every 30 seconds
         setInterval(checkStatus, 30000);
+
+        async function submitIssue(e) {
+            e.preventDefault();
+            const statusEl = document.getElementById('report-status');
+            statusEl.textContent = 'Submitting...';
+            statusEl.style.color = '#7f8c8d';
+
+            const url = document.getElementById('issue-url').value.trim();
+            const notes = document.getElementById('issue-notes').value.trim();
+
+            try {
+                const resp = await fetch('/report-issue', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, notes })
+                });
+                const data = await resp.json();
+                if (!resp.ok || !data.success) {
+                    throw new Error(data.error || 'Request failed');
+                }
+                statusEl.innerHTML = `✅ Submitted: <a href="${data.issueUrl}" target="_blank" rel="noopener noreferrer">Issue #${data.number}</a>`;
+                statusEl.style.color = '#155724';
+                document.getElementById('report-form').reset();
+            } catch (err) {
+                console.error('Report failed', err);
+                statusEl.textContent = '❌ Failed to submit. Please try again.';
+                statusEl.style.color = '#721c24';
+            }
+            return false;
+        }
     </script>
 </body>
 </html>
