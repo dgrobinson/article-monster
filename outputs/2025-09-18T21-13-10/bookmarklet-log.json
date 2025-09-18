@@ -1,0 +1,262 @@
+[
+  {
+    "t": 1758229988032,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1758229988032,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1758229988442,
+    "level": "log",
+    "args": [
+      "Config fetch failed for",
+      "astralcodexten.com",
+      "- using fallback extraction"
+    ]
+  },
+  {
+    "t": 1758229988442,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.astralcodexten.com"
+    ]
+  },
+  {
+    "t": 1758229988442,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "astralcodexten.com"
+    }
+  },
+  {
+    "t": 1758229988442,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"astralcodexten.com\"}"
+    ]
+  },
+  {
+    "t": 1758229988442,
+    "level": "log",
+    "args": [
+      "No cached config for",
+      "astralcodexten.com",
+      "- fetching synchronously"
+    ]
+  },
+  {
+    "t": 1758229988504,
+    "level": "log",
+    "args": [
+      "No FiveFilters config available for",
+      "astralcodexten.com"
+    ]
+  },
+  {
+    "t": 1758229988505,
+    "level": "log",
+    "args": [
+      "No site config or JSON-LD found, falling back to DOM extraction"
+    ]
+  },
+  {
+    "t": 1758229988553,
+    "level": "log",
+    "args": [
+      "Image detection:",
+      "{\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}"
+    ]
+  },
+  {
+    "t": 1758229988556,
+    "level": "log",
+    "args": [
+      "Fallback image check found",
+      "8",
+      "images on page"
+    ]
+  },
+  {
+    "t": 1758229988557,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "(8) Book Review: If Anyone Builds It, Everyone Dies"
+    ]
+  },
+  {
+    "t": 1758229988557,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "Astral Codex Ten"
+    ]
+  },
+  {
+    "t": 1758229988557,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using document title:",
+      "(8) Book Review: If Anyone Builds It, Everyone Dies"
+    ]
+  },
+  {
+    "t": 1758229988557,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "(8) Book Review: If Anyone Builds It, Everyone Dies"
+    ]
+  },
+  {
+    "t": 1758229988568,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "(8) Book Review: If Anyone Builds It, Everyone Dies",
+      "contentLength": 8973,
+      "method": "dom-fallback"
+    }
+  },
+  {
+    "t": 1758229988568,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"(8) Book Review: If Anyone Builds It, Everyone Dies\",\"contentLength\":8973,\"method\":\"dom-fallback\"}"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 257 newlines"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 257 newlines"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 257 newlines"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<div class=\"pencraft pc-display-contents"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "8973",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Title:",
+      "(8) Book Review: If Anyone Builds It, Everyone Dies"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "8973"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "3511"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      "dom-fallback"
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      "Extracted using general rules. For astralcodexten.com, no site-specific configuration was available."
+    ]
+  },
+  {
+    "t": 1758229988569,
+    "level": "log",
+    "args": [
+      "Has images:",
+      "true"
+    ]
+  },
+  {
+    "t": 1758229988570,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "3",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1758229988570,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "\n        \n\n        \n            \n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents ..."
+    ]
+  },
+  {
+    "t": 1758229988570,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]

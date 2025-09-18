@@ -1,0 +1,595 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1758229988032,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-18T21:13:08.688Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1758229988032,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-18T21:13:08.690Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Config fetch failed for astralcodexten.com - using fallback extraction",
+    "data": {
+      "t": 1758229988442,
+      "level": "log",
+      "args": [
+        "Config fetch failed for",
+        "astralcodexten.com",
+        "- using fallback extraction"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.691Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.astralcodexten.com",
+    "data": {
+      "t": 1758229988442,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.astralcodexten.com"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.692Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1758229988442,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "astralcodexten.com"
+      }
+    },
+    "time": "2025-09-18T21:13:08.692Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"astralcodexten.com\"}",
+    "data": {
+      "t": 1758229988442,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"astralcodexten.com\"}"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.692Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "No cached config for astralcodexten.com - fetching synchronously",
+    "data": {
+      "t": 1758229988442,
+      "level": "log",
+      "args": [
+        "No cached config for",
+        "astralcodexten.com",
+        "- fetching synchronously"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.692Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "No FiveFilters config available for astralcodexten.com",
+    "data": {
+      "t": 1758229988504,
+      "level": "log",
+      "args": [
+        "No FiveFilters config available for",
+        "astralcodexten.com"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.693Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "No site config or JSON-LD found, falling back to DOM extraction",
+    "data": {
+      "t": 1758229988505,
+      "level": "log",
+      "args": [
+        "No site config or JSON-LD found, falling back to DOM extraction"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.693Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Image detection: {\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}",
+    "data": {
+      "t": 1758229988553,
+      "level": "log",
+      "args": [
+        "Image detection:",
+        "{\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.693Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Fallback image check found 8 images on page",
+    "data": {
+      "t": 1758229988556,
+      "level": "log",
+      "args": [
+        "Fallback image check found",
+        "8",
+        "images on page"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.693Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: (8) Book Review: If Anyone Builds It, Everyone Dies",
+    "data": {
+      "t": 1758229988557,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "(8) Book Review: If Anyone Builds It, Everyone Dies"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.693Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: Astral Codex Ten",
+    "data": {
+      "t": 1758229988557,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "Astral Codex Ten"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.693Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle - using document title: (8) Book Review: If Anyone Builds It, Everyone Dies",
+    "data": {
+      "t": 1758229988557,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using document title:",
+        "(8) Book Review: If Anyone Builds It, Everyone Dies"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.693Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: (8) Book Review: If Anyone Builds It, Everyone Dies",
+    "data": {
+      "t": 1758229988557,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "(8) Book Review: If Anyone Builds It, Everyone Dies"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.693Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1758229988568,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "(8) Book Review: If Anyone Builds It, Everyone Dies",
+        "contentLength": 8973,
+        "method": "dom-fallback"
+      }
+    },
+    "time": "2025-09-18T21:13:08.693Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"(8) Book Review: If Anyone Builds It, Everyone Dies\",\"contentLength\":8973,\"method\":\"dom-fallback\"}",
+    "data": {
+      "t": 1758229988568,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"(8) Book Review: If Anyone Builds It, Everyone Dies\",\"contentLength\":8973,\"method\":\"dom-fallback\"}"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 257 newlines",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 257 newlines"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 257 newlines",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 257 newlines"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 257 newlines",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 257 newlines"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content to encode starts with: <div class=\"pencraft pc-display-contents",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<div class=\"pencraft pc-display-contents"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Successfully encoded 8973 chars to base64",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "8973",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Title: (8) Book Review: If Anyone Builds It, Everyone Dies",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Title:",
+        "(8) Book Review: If Anyone Builds It, Everyone Dies"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content length: 8973",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "8973"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Text content length: 3511",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "3511"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Extraction method: dom-fallback",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        "dom-fallback"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Extraction note: Extracted using general rules. For astralcodexten.com, no site-specific configuration was available.",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        "Extracted using general rules. For astralcodexten.com, no site-specific configuration was available."
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Has images: true",
+    "data": {
+      "t": 1758229988569,
+      "level": "log",
+      "args": [
+        "Has images:",
+        "true"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.694Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Content structure: 3 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1758229988570,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "3",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-18T21:13:08.695Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Content preview: \n        \n\n        \n            \n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents ...",
+    "data": {
+      "t": 1758229988570,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "\n        \n\n        \n            \n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents ..."
+      ]
+    },
+    "time": "2025-09-18T21:13:08.695Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758229988570,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-18T21:13:08.695Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.astralcodexten.com/p/book-review-if-anyone-builds-it-everyone",
+      "title": "(8) Book Review: If Anyone Builds It, Everyone Dies",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-18T21:13:08.695Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "processing",
+    "message": "Processing article: (8) Book Review: If Anyone Builds It, Everyone Dies",
+    "data": {},
+    "time": "2025-09-18T21:13:08.696Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "(8) Book Review: If Anyone Builds It, Everyone Dies",
+      "contentLength": 8973,
+      "textContentLength": 3511,
+      "hasContent": true
+    },
+    "time": "2025-09-18T21:13:08.696Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-18T21:13:08.698Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"(8) Book Review: If Anyone Builds It, Everyone Dies\"",
+    "data": {},
+    "time": "2025-09-18T21:13:08.699Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "(8) Book Review: If Anyone Builds It, Everyone Dies",
+      "byline": "Scott Alexander",
+      "siteName": "(8) Book Review: If Anyone Builds It, Everyone Dies",
+      "url": "https://www.astralcodexten.com/p/book-review-if-anyone-builds-it-everyone",
+      "publishedTime": "2021-01-21T20:18:29.560Z",
+      "contentLength": 8973,
+      "hasImages": false
+    },
+    "time": "2025-09-18T21:13:08.699Z"
+  },
+  {
+    "timestamp": 69,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "(8)-Book-Review-If-Anyone-Builds-It,-Everyone-Dies_MFPWQLXX.html",
+      "contentSizeKB": "10.71"
+    },
+    "time": "2025-09-18T21:13:08.757Z"
+  },
+  {
+    "timestamp": 77,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"(8) Book Review: If Anyone Builds It, Everyone Dies\"",
+    "data": {},
+    "time": "2025-09-18T21:13:08.765Z"
+  },
+  {
+    "timestamp": 78,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-18T21:13:08.766Z"
+  },
+  {
+    "timestamp": 608,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "XP5XH2JZ"
+    },
+    "time": "2025-09-18T21:13:09.296Z"
+  },
+  {
+    "timestamp": 608,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-18T21:13:09.296Z"
+  },
+  {
+    "timestamp": 746,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-18T21:13:09.434Z"
+  },
+  {
+    "timestamp": 1260,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-18T21:13:09.948Z"
+  },
+  {
+    "timestamp": 1316,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "XP5XH2JZ",
+      "attachmentKey": "BMPQKQ2X"
+    },
+    "time": "2025-09-18T21:13:10.004Z"
+  },
+  {
+    "timestamp": 1974,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<14998969-776b-45c8-45bb-6756fa4abe8f@gmail.com>",
+      "filename": "(8)-Book-Review-If-Anyone-Builds-It,-Everyone-Dies_MFPWQLXX.html",
+      "subject": "(8) Book Review: If Anyone Builds It, Everyone Dies",
+      "sizekB": "10.71"
+    },
+    "time": "2025-09-18T21:13:10.662Z"
+  }
+]
