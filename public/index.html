@@ -112,6 +112,134 @@
             margin-right: 10px;
             font-weight: bold;
         }
+
+        .report-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .report-form label {
+            font-weight: 600;
+        }
+
+        .report-form input[type="url"],
+        .report-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .report-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .report-form button {
+            align-self: flex-start;
+            background: #2ecc71;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .report-form button:hover {
+            background: #27ae60;
+        }
+
+        .report-status {
+            margin-top: 10px;
+            font-size: 0.95em;
+            display: none;
+        }
+
+        .report-status.success {
+            color: #155724;
+        }
+
+        .report-status.error {
+            color: #721c24;
+        }
+
+        .report-status.pending {
+            color: #856404;
+        }
+
+        .help-text {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-top: -6px;
+            margin-bottom: 4px;
+        }
+
+        .inline-feedback {
+            display: none;
+            font-size: 0.85em;
+            color: #e74c3c;
+        }
+
+        .inline-feedback.visible {
+            display: block;
+        }
+
+        .screenshot-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .screenshot-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            background: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            max-width: 240px;
+        }
+
+        .screenshot-thumb {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 4px;
+            border: 1px solid #ced4da;
+        }
+
+        .screenshot-info {
+            flex: 1;
+        }
+
+        .screenshot-name {
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 2px;
+            word-break: break-word;
+        }
+
+        .screenshot-meta {
+            font-size: 0.8em;
+            color: #6c757d;
+        }
+
+        .screenshot-remove {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            font-size: 0.8em;
+            padding: 0;
+            margin-top: 6px;
+        }
     </style>
 </head>
 <body>
@@ -222,6 +350,27 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
         </ul>
     </div>
 
+    <div class="section">
+        <h2>🚨 Report Extraction Problem</h2>
+        <p>If an article doesn't parse correctly, send the URL so we can investigate.</p>
+        <form id="failure-report-form" class="report-form">
+            <label for="failure-url">Problem URL</label>
+            <input type="url" id="failure-url" name="failure-url" placeholder="https://example.com/article" required>
+
+            <label for="failure-notes">Details (optional)</label>
+            <textarea id="failure-notes" name="failure-notes" placeholder="Add notes that might help reproduce the problem"></textarea>
+
+            <label for="failure-screenshot">Screenshots (optional)</label>
+            <input type="file" id="failure-screenshot" accept="image/*" multiple>
+            <p class="help-text">Paste screenshots with ⌘V / Ctrl+V or upload images (max 3, 2MB each).</p>
+            <div id="failure-screenshot-feedback" class="inline-feedback"></div>
+            <div id="failure-screenshot-list" class="screenshot-preview"></div>
+
+            <button type="submit">Submit Report</button>
+        </form>
+        <div id="failure-report-status" class="report-status"></div>
+    </div>
+
     <script>
         // Generate bookmarklet code
         function generateBookmarklet() {
@@ -310,11 +459,293 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
             textarea.setSelectionRange(0, 0);
             textarea.blur();
         }
-        
+
+        function initFailureReportForm() {
+            const form = document.getElementById('failure-report-form');
+            if (!form) return;
+
+            const statusEl = document.getElementById('failure-report-status');
+            const notesInput = document.getElementById('failure-notes');
+            const screenshotInput = document.getElementById('failure-screenshot');
+            const attachmentsList = document.getElementById('failure-screenshot-list');
+            const attachmentsFeedback = document.getElementById('failure-screenshot-feedback');
+
+            const attachments = [];
+            const MAX_SCREENSHOTS = 3;
+            const MAX_SCREENSHOT_BYTES = 2 * 1024 * 1024; // 2MB
+
+            function formatBytes(bytes) {
+                if (!bytes || Number.isNaN(bytes)) return '0 KB';
+                const kilobytes = Math.max(1, Math.round(bytes / 1024));
+                return `${kilobytes.toLocaleString()} KB`;
+            }
+
+            function showAttachmentFeedback(message) {
+                if (!attachmentsFeedback) return;
+                attachmentsFeedback.textContent = message;
+                attachmentsFeedback.classList.add('visible');
+            }
+
+            function clearAttachmentFeedback() {
+                if (!attachmentsFeedback) return;
+                attachmentsFeedback.textContent = '';
+                attachmentsFeedback.classList.remove('visible');
+            }
+
+            function renderAttachments() {
+                if (!attachmentsList) return;
+                if (!attachments.length) {
+                    attachmentsList.innerHTML = '';
+                    return;
+                }
+
+                const cards = attachments.map((shot, index) => {
+                    const safeName = shot.name || `Screenshot ${index + 1}`;
+                    const meta = `${shot.type || 'image'} · ${formatBytes(shot.size)}`;
+
+                    return `
+                        <div class="screenshot-card">
+                            <img src="${shot.dataUrl}" alt="${safeName}" class="screenshot-thumb">
+                            <div class="screenshot-info">
+                                <div class="screenshot-name">${safeName}</div>
+                                <div class="screenshot-meta">${meta}</div>
+                                <button type="button" class="screenshot-remove" data-index="${index}">Remove</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                attachmentsList.innerHTML = cards;
+            }
+
+            function readFileAsDataURL(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = () => reject(new Error('Failed to read screenshot.'));
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            async function addAttachmentFromFile(file) {
+                if (!file) return;
+
+                if (!file.type || !file.type.startsWith('image/')) {
+                    showAttachmentFeedback('Only image screenshots are supported.');
+                    return;
+                }
+
+                if (attachments.length >= MAX_SCREENSHOTS) {
+                    showAttachmentFeedback(`You can attach up to ${MAX_SCREENSHOTS} screenshots.`);
+                    return;
+                }
+
+                if (file.size > MAX_SCREENSHOT_BYTES) {
+                    const maxMb = (MAX_SCREENSHOT_BYTES / (1024 * 1024)).toFixed(1);
+                    showAttachmentFeedback(`"${file.name}" is too large. Maximum size is ${maxMb}MB.`);
+                    return;
+                }
+
+                try {
+                    const dataUrl = await readFileAsDataURL(file);
+                    attachments.push({
+                        name: file.name || `screenshot-${attachments.length + 1}.png`,
+                        type: file.type || 'image/png',
+                        size: file.size,
+                        dataUrl
+                    });
+                    clearAttachmentFeedback();
+                    renderAttachments();
+                } catch (error) {
+                    showAttachmentFeedback(error.message);
+                }
+            }
+
+            async function handleFileSelection(fileList) {
+                if (!fileList || !fileList.length) {
+                    return;
+                }
+
+                for (const file of Array.from(fileList)) {
+                    await addAttachmentFromFile(file);
+                    if (attachments.length >= MAX_SCREENSHOTS) {
+                        break;
+                    }
+                }
+            }
+
+            if (screenshotInput) {
+                screenshotInput.addEventListener('change', async (event) => {
+                    await handleFileSelection(event.target.files);
+                    event.target.value = '';
+                });
+            }
+
+            if (attachmentsList) {
+                attachmentsList.addEventListener('click', (event) => {
+                    const target = event.target;
+                    if (target && target.matches('.screenshot-remove')) {
+                        const index = Number(target.getAttribute('data-index'));
+                        if (!Number.isNaN(index)) {
+                            attachments.splice(index, 1);
+                            renderAttachments();
+                            if (!attachments.length) {
+                                clearAttachmentFeedback();
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (notesInput) {
+                notesInput.addEventListener('paste', async (event) => {
+                    if (!event.clipboardData || !event.clipboardData.items) {
+                        return;
+                    }
+
+                    const imageItems = Array.from(event.clipboardData.items).filter(item => item.type && item.type.startsWith('image/'));
+                    if (!imageItems.length) {
+                        return;
+                    }
+
+                    event.preventDefault();
+
+                    for (const item of imageItems) {
+                        const file = item.getAsFile();
+                        if (file) {
+                            await addAttachmentFromFile(file);
+                            if (attachments.length >= MAX_SCREENSHOTS) {
+                                break;
+                            }
+                        }
+                    }
+                });
+            }
+
+            form.addEventListener('submit', async (event) => {
+                event.preventDefault();
+
+                const urlInput = document.getElementById('failure-url');
+                const payload = { url: urlInput.value.trim() };
+
+                if (!payload.url) {
+                    statusEl.textContent = 'Please provide a valid URL.';
+                    statusEl.className = 'report-status error';
+                    statusEl.style.display = 'block';
+                    return;
+                }
+
+                if (notesInput) {
+                    const notesValue = notesInput.value.trim();
+                    if (notesValue) {
+                        payload.notes = notesValue;
+                    }
+                }
+
+                if (attachments.length) {
+                    payload.screenshots = attachments.map(({ name, type, size, dataUrl }) => ({
+                        name,
+                        type,
+                        size,
+                        dataUrl
+                    }));
+                }
+
+                statusEl.textContent = 'Submitting report...';
+                statusEl.className = 'report-status pending';
+                statusEl.style.display = 'block';
+
+                try {
+                    const response = await fetch('/report-parse-issue', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok || !data.success) {
+                        throw new Error(data.error || 'Request failed');
+                    }
+
+                    form.reset();
+                    attachments.length = 0;
+                    renderAttachments();
+                    clearAttachmentFeedback();
+
+                    const issue = data.issue || {};
+                    const analysis = data.analysis || {};
+                    const extraction = analysis.extraction || {};
+                    const config = analysis.config || {};
+                    const codexTask = data.codexTask || null;
+                    const attachmentMeta = Array.isArray(data.attachments) ? data.attachments : [];
+                    const screenshotComment = data.screenshotComment || null;
+
+                    let summary = extraction.success ?
+                        'Local extraction succeeded for comparison.' :
+                        'Local extraction failed to reproduce the article.';
+
+                    if (!extraction.success && extraction.error) {
+                        summary += ` (${extraction.error})`;
+                    }
+
+                    if (config.available === true) {
+                        summary += ' Config found for this site.';
+                    } else if (config.available === false) {
+                        summary += ' No FiveFilters config detected.';
+                    }
+
+                    const link = issue.url ?
+                        `<a href="${issue.url}" target="_blank" rel="noopener noreferrer">GitHub issue #${issue.number}</a>` :
+                        'GitHub issue';
+
+                    let codexSummary = '';
+                    if (codexTask && typeof codexTask === 'object') {
+                        if (codexTask.success) {
+                            const jobId = codexTask.jobId ? ` (job ${codexTask.jobId})` : '';
+                            codexSummary = ` Codex agent triggered${jobId}.`;
+                        } else if (codexTask.error) {
+                            codexSummary = ` Codex automation failed: ${codexTask.error}.`;
+                        } else {
+                            codexSummary = ' Codex automation status unknown.';
+                        }
+                    } else if (codexTask === null) {
+                        codexSummary = ' Codex automation not configured on this service.';
+                    }
+
+                    let attachmentsSummary = '';
+                    if (attachmentMeta.length) {
+                        const count = attachmentMeta.length;
+                        attachmentsSummary = ` ${count} screenshot${count > 1 ? 's' : ''} attached for triage.`;
+                    }
+
+                    let screenshotCommentSummary = '';
+                    if (screenshotComment) {
+                        if (screenshotComment.error) {
+                            screenshotCommentSummary = ` Screenshot upload error: ${screenshotComment.error}.`;
+                        } else if (screenshotComment.url) {
+                            screenshotCommentSummary = ` <a href="${screenshotComment.url}" target="_blank" rel="noopener noreferrer">View uploaded screenshots</a>.`;
+                        }
+                    }
+
+                    statusEl.innerHTML = `Created ${link}. ${summary}${codexSummary}${attachmentsSummary}${screenshotCommentSummary}`;
+                    statusEl.className = 'report-status success';
+                    statusEl.style.display = 'block';
+                } catch (error) {
+                    statusEl.textContent = `Failed to submit report: ${error.message}`;
+                    statusEl.className = 'report-status error';
+                    statusEl.style.display = 'block';
+                }
+            });
+        }
+
         // Initialize
         generateBookmarklet();
         checkStatus();
-        
+        initFailureReportForm();
+
         // Refresh status every 30 seconds
         setInterval(checkStatus, 30000);
     </script>

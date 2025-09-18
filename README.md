@@ -48,6 +48,11 @@ ZOTERO_USER_ID=your-numeric-user-id
 ZOTERO_API_KEY=your-api-key
 ZOTERO_TEST_COLLECTION=optional-collection-key
 
+# Optional automation
+CODEX_AGENT_API_URL=https://codex.example.com/v1/jobs
+CODEX_AGENT_API_KEY=your-secret
+CODEX_AGENT_ID=parse-triage
+
 ```
 
 ### 3. Setup Kindle
@@ -120,3 +125,6 @@ The bookmarklet runs Mozilla Readability.js in your browser to extract clean art
 - Test Zotero API key permissions
 - Check browser console for bookmarklet errors
 
+## Automated Codex Triage (Optional)
+
+If `CODEX_AGENT_API_URL` is configured, every failed extraction report will trigger a POST request to your Codex automation service containing the GitHub issue number, repository name, reporter notes, and the server's Readability analysis. Use this hook to launch an agent that can reproduce the problem, diagnose it, and open a pull request. Provide `CODEX_AGENT_API_KEY` if the endpoint requires authentication, and optionally `CODEX_AGENT_ID` to select a specific agent profile.

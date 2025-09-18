@@ -17,6 +17,7 @@ const { sendToKindle } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
 const ConfigFetcher = require('./configFetcher');
 const DebugLogger = require('./debugLogger');
+const { reportParsingIssue, FailureReportError } = require('./failureReporter');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -255,10 +256,42 @@ app.post('/process-article', async (req, res) => {
     };
     
     await debugLogger.captureToGitHub(extractionData);
-    
+
     res.status(500).json({ 
       error: 'Failed to process article',
       message: error.message 
+    });
+  }
+});
+
+app.post('/report-parse-issue', async (req, res) => {
+  try {
+    const { url, notes, screenshots } = req.body || {};
+    const result = await reportParsingIssue({
+      url,
+      notes,
+      screenshots,
+      configFetcher
+    });
+
+    res.json({
+      success: true,
+      issue: {
+        number: result.issueNumber,
+        url: result.issueUrl
+      },
+      analysis: result.analysis,
+      codexTask: result.codexTask || null,
+      attachments: result.attachments || [],
+      screenshotComment: result.screenshotComment || null,
+      attachmentLimits: result.attachmentLimits || null
+    });
+  } catch (error) {
+    console.error('Parse issue report failed:', error);
+    const status = error instanceof FailureReportError ? error.status : 500;
+    res.status(status).json({
+      success: false,
+      error: error.message || 'Failed to submit parse issue'
     });
   }
 });
