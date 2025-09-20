@@ -1,0 +1,40 @@
+{
+  "title": [
+    "//meta[@property=\"og:title\"]/@content"
+  ],
+  "body": [
+    "//article[1]//div[position()<3]/div[1]"
+  ],
+  "author": [
+    "//meta[@name=\"author\"]/@content"
+  ],
+  "strip": [
+    "//div[contains(@class, 'tweet-footer')]//span",
+    "//button",
+    "//svg",
+    "//p[contains(concat(' ',normalize-space(@class),' '),' button-wrapper ')]"
+  ],
+  "date": [],
+  "preferJsonLd": false,
+  "find_string": [],
+  "replace_string": [],
+  "strip_id_or_class": [
+    "subscription-widget-wrap",
+    "profile-hover-card-target",
+    "expanded-link-description",
+    "expanded-link-domain",
+    "header-anchor-widget",
+    "subscribe-widget"
+  ],
+  "strip_image_src": [],
+  "single_page_link": [],
+  "next_page_link": [],
+  "test_url": [
+    "https://substack.com/home/post/p-152931025"
+  ],
+  "prune": false,
+  "tidy": null,
+  "autodetect_on_failure": null,
+  "parser": null,
+  "htmlPreprocessing": []
+}

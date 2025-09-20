@@ -1,0 +1,230 @@
+[
+  {
+    "t": 1758327421983,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1758327421983,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1758327422209,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "substack.com"
+    ]
+  },
+  {
+    "t": 1758327422229,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "substack.com"
+    ]
+  },
+  {
+    "t": 1758327422229,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "substack.com"
+    }
+  },
+  {
+    "t": 1758327422229,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"substack.com\"}"
+    ]
+  },
+  {
+    "t": 1758327422229,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "substack.com"
+    ]
+  },
+  {
+    "t": 1758327422229,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//article[1]//div[position()<3]/div[1]"
+    ]
+  },
+  {
+    "t": 1758327422230,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "83",
+      "element(s) for XPath:",
+      "//article[1]//div[position()<3]/div[1]"
+    ]
+  },
+  {
+    "t": 1758327422231,
+    "level": "log",
+    "args": [
+      "Combined",
+      "83",
+      "body elements into single container"
+    ]
+  },
+  {
+    "t": 1758327422235,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1758327422235,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "The 25 Most Interesting Ideas I've Found in 2025 (So Far)",
+      "contentLength": 222538,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1758327422235,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"The 25 Most Interesting Ideas I've Found in 2025 (So Far)\",\"contentLength\":222538,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1758327422235,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 72 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1758327422240,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 72 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1758327422240,
+    "level": "log",
+    "args": [
+      "Encoding content with: 72 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1758327422241,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<div class=\"pencraft pc-display-flex pc-flexDirection-column pc-gap-4 pc-ali"
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "238114",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "Title:",
+      "The 25 Most Interesting Ideas I've Found in 2025 (So Far)"
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "238114"
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "21517"
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "528",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<div class=\"pencraft pc-display-flex pc-flexDirection-column pc-gap-16 pc-reset flex-grow-rzmknG\" style=\"max-width: 600px;\"><div class=\"pencraft pc-display-flex pc-flexDirection-column pc-gap-4 pc-ali..."
+    ]
+  },
+  {
+    "t": 1758327422243,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]

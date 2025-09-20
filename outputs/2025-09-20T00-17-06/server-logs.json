@@ -1,0 +1,539 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1758327421983,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-20T00:17:04.496Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1758327421983,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-20T00:17:04.499Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for substack.com",
+    "data": {
+      "t": 1758327422209,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "substack.com"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.499Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: substack.com",
+    "data": {
+      "t": 1758327422229,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "substack.com"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.499Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1758327422229,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "substack.com"
+      }
+    },
+    "time": "2025-09-20T00:17:04.499Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"substack.com\"}",
+    "data": {
+      "t": 1758327422229,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"substack.com\"}"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.499Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for substack.com",
+    "data": {
+      "t": 1758327422229,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "substack.com"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.499Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Trying body XPath: //article[1]//div[position()<3]/div[1]",
+    "data": {
+      "t": 1758327422229,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//article[1]//div[position()<3]/div[1]"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.500Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Body matched: 83 element(s) for XPath: //article[1]//div[position()<3]/div[1]",
+    "data": {
+      "t": 1758327422230,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "83",
+        "element(s) for XPath:",
+        "//article[1]//div[position()<3]/div[1]"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.500Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Combined 83 body elements into single container",
+    "data": {
+      "t": 1758327422231,
+      "level": "log",
+      "args": [
+        "Combined",
+        "83",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.500Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1758327422235,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.500Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1758327422235,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "The 25 Most Interesting Ideas I've Found in 2025 (So Far)",
+        "contentLength": 222538,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-09-20T00:17:04.500Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"The 25 Most Interesting Ideas I've Found in 2025 (So Far)\",\"contentLength\":222538,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1758327422235,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"The 25 Most Interesting Ideas I've Found in 2025 (So Far)\",\"contentLength\":222538,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.500Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 72 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758327422235,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 72 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.501Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "After fixImageUrls: 72 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758327422240,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 72 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.501Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Encoding content with: 72 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758327422240,
+      "level": "log",
+      "args": [
+        "Encoding content with: 72 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.501Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Content to encode starts with: <div class=\"pencraft pc-display-flex pc-flexDirection-column pc-gap-4 pc-ali",
+    "data": {
+      "t": 1758327422241,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<div class=\"pencraft pc-display-flex pc-flexDirection-column pc-gap-4 pc-ali"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.501Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Successfully encoded 238114 chars to base64",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "238114",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.501Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-20T00:17:04.502Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Title: The 25 Most Interesting Ideas I've Found in 2025 (So Far)",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "Title:",
+        "The 25 Most Interesting Ideas I've Found in 2025 (So Far)"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.502Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content length: 238114",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "238114"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.502Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Text content length: 21517",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "21517"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.502Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-09-20T00:17:04.502Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-09-20T00:17:04.502Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-09-20T00:17:04.503Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Content structure: 528 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "528",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-20T00:17:04.503Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content preview: <div class=\"pencraft pc-display-flex pc-flexDirection-column pc-gap-16 pc-reset flex-grow-rzmknG\" style=\"max-width: 600px;\"><div class=\"pencraft pc-display-flex pc-flexDirection-column pc-gap-4 pc-ali...",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<div class=\"pencraft pc-display-flex pc-flexDirection-column pc-gap-16 pc-reset flex-grow-rzmknG\" style=\"max-width: 600px;\"><div class=\"pencraft pc-display-flex pc-flexDirection-column pc-gap-4 pc-ali..."
+      ]
+    },
+    "time": "2025-09-20T00:17:04.504Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758327422243,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-20T00:17:04.504Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://substack.com/home/post/p-173751882",
+      "title": "The 25 Most Interesting Ideas I've Found in 2025 (So Far)",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-20T00:17:04.504Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "processing",
+    "message": "Processing article: The 25 Most Interesting Ideas I've Found in 2025 (So Far)",
+    "data": {},
+    "time": "2025-09-20T00:17:04.514Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "The 25 Most Interesting Ideas I've Found in 2025 (So Far)",
+      "contentLength": 238114,
+      "textContentLength": 21517,
+      "hasContent": true
+    },
+    "time": "2025-09-20T00:17:04.514Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-20T00:17:04.521Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"The 25 Most Interesting Ideas I've Found in 2025 (So Far)\"",
+    "data": {},
+    "time": "2025-09-20T00:17:04.521Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "The 25 Most Interesting Ideas I've Found in 2025 (So Far)",
+      "byline": "Substack",
+      "siteName": "substack.com",
+      "url": "https://substack.com/home/post/p-173751882",
+      "publishedTime": null,
+      "contentLength": 238114,
+      "hasImages": true
+    },
+    "time": "2025-09-20T00:17:04.521Z"
+  },
+  {
+    "timestamp": 30,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "The-25-Most-Interesting-Ideas-I've-Found-in-2025-(So-Far)_MFRIQZV2.html",
+      "contentSizeKB": "234.38"
+    },
+    "time": "2025-09-20T00:17:04.526Z"
+  },
+  {
+    "timestamp": 34,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"The 25 Most Interesting Ideas I've Found in 2025 (So Far)\"",
+    "data": {},
+    "time": "2025-09-20T00:17:04.530Z"
+  },
+  {
+    "timestamp": 35,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-20T00:17:04.531Z"
+  },
+  {
+    "timestamp": 573,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "96HEIGQ9"
+    },
+    "time": "2025-09-20T00:17:05.069Z"
+  },
+  {
+    "timestamp": 573,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-20T00:17:05.069Z"
+  },
+  {
+    "timestamp": 1296,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-20T00:17:05.792Z"
+  },
+  {
+    "timestamp": 1998,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-20T00:17:06.494Z"
+  },
+  {
+    "timestamp": 2058,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "96HEIGQ9",
+      "attachmentKey": "BDQQDG8S"
+    },
+    "time": "2025-09-20T00:17:06.554Z"
+  },
+  {
+    "timestamp": 2458,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<9d0f6dcf-473b-f9c1-6f42-994f3d5b6a72@gmail.com>",
+      "filename": "The-25-Most-Interesting-Ideas-I've-Found-in-2025-(So-Far)_MFRIQZV2.html",
+      "subject": "The 25 Most Interesting Ideas I've Found in 2025 (So Far)",
+      "sizekB": "234.38"
+    },
+    "time": "2025-09-20T00:17:06.954Z"
+  }
+]
