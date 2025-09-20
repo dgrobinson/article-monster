@@ -84,6 +84,26 @@
           return jsonLdContent;
         }
 
+        // Try Wix DOM fallback directly when JSON-LD is absent or unusable
+        var wixOnly = this._extractWixArticleFromDom();
+        if (wixOnly && wixOnly.text && wixOnly.text.length > 500) {
+          var processedWix = this._fixImageUrls(wixOnly.html);
+          var sectionedWix = this._addContentSections(processedWix);
+          return {
+            title: this._getArticleTitle(),
+            content: sectionedWix,
+            textContent: wixOnly.text,
+            length: wixOnly.text.length,
+            excerpt: this._createExcerpt(wixOnly.text),
+            byline: this._getArticleMetadata('author') || this._getArticleMetadata('byline'),
+            siteName: this._getArticleMetadata('site_name') || document.title,
+            publishedTime: this._getArticleMetadata('published_time') || this._getArticleMetadata('date'),
+            hasImages: wixOnly.hasImages || /<img\b/i.test(sectionedWix),
+            lang: this._doc.documentElement.lang || 'en',
+            source: 'wix-dom'
+          };
+        }
+
         console.log('No site config or JSON-LD found, falling back to DOM extraction');
         // Fall back to DOM-based extraction
         var documentClone = this._doc.cloneNode(true);
@@ -384,11 +404,24 @@
             continue;
           }
 
-          // Handle both single objects and arrays
-          var articles = Array.isArray(jsonData) ? jsonData : [jsonData];
+          // Handle single objects, arrays, @graph collections, and WebPage.mainEntity
+          var articles = [];
+          if (Array.isArray(jsonData)) {
+            articles = jsonData;
+          } else if (jsonData && typeof jsonData === 'object') {
+            articles = [jsonData];
+            if (Array.isArray(jsonData['@graph'])) {
+              articles = articles.concat(jsonData['@graph']);
+            }
+          }
 
           for (var j = 0; j < articles.length; j++) {
             var data = articles[j];
+
+            // If this is a WebPage pointing at mainEntity, use that
+            if (data && data['@type'] === 'WebPage' && data.mainEntity && typeof data.mainEntity === 'object') {
+              data = data.mainEntity;
+            }
 
             // Look for NewsArticle or Article types
             if (data['@type'] === 'NewsArticle' || data['@type'] === 'Article' || data['@type'] === 'BlogPosting') {
