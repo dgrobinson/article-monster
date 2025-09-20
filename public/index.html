@@ -242,42 +242,22 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
     <script>
         // Generate bookmarklet code
         function generateBookmarklet() {
-            const serviceUrl = window.location.origin + '/process-article';
-            
-            // Load the main bookmarklet code and replace the service URL
-            fetch('/bookmarklet.js')
-                .then(response => response.text())
-                .then(code => {
-                    // Inject runtime service URL so bookmarklet targets the serving origin
-                    const injected = 'window.__BOOKMARKLET_SERVICE_URL__=' + JSON.stringify(serviceUrl) + ';' + code;
-                    
-                    // Create the bookmarklet href
-                    const bookmarkletHref = 'javascript:' + encodeURIComponent(injected);
-                    
-                    // Update the link
-                    document.getElementById('bookmarklet-link').href = bookmarkletHref;
-                    
-                    // Also populate the textarea with the full bookmarklet code
-                    document.getElementById('bookmarklet-code').value = bookmarkletHref;
-                })
-                .catch(error => {
-                    console.error('Failed to load bookmarklet code:', error);
-                    document.getElementById('bookmarklet-code').value = 'Error loading bookmarklet code. Please refresh the page.';
-                });
-            
-            // Load the debug bookmarklet code
-            fetch('/bookmarklet-debug.js')
-                .then(response => response.text())
-                .then(code => {
-                    // Create the debug bookmarklet href
-                    const debugBookmarkletHref = 'javascript:' + encodeURIComponent(code);
-                    
-                    // Update the debug link
-                    document.getElementById('debug-bookmarklet-link').href = debugBookmarkletHref;
-                })
-                .catch(error => {
-                    console.error('Failed to load debug bookmarklet code:', error);
-                });
+            const origin = window.location.origin;
+            const serviceUrl = origin + '/process-article';
+
+            // Minimal loader that fetches the latest extractor at click-time
+            const loader = `(function(){try{var d=document;window.__BOOKMARKLET_SERVICE_URL__=${JSON.stringify(serviceUrl)};var id='article-monster-script';var s=d.getElementById(id);if(s&&s.parentNode){s.parentNode.removeChild(s);}s=d.createElement('script');s.id=id;s.src='${origin}/bookmarklet.js?v=' + Date.now();s.referrerPolicy='no-referrer-when-downgrade';d.body.appendChild(s);}catch(e){alert('Article Monster failed to load: '+(e&&e.message||e));}})();`;
+
+            const bookmarkletHref = 'javascript:' + encodeURIComponent(loader);
+
+            // Update the main bookmarklet link and textarea
+            document.getElementById('bookmarklet-link').href = bookmarkletHref;
+            document.getElementById('bookmarklet-code').value = bookmarkletHref;
+
+            // Debug loader that fetches the debug extractor at click-time
+            const debugLoader = `(function(){try{var d=document;var id='article-monster-debug-script';var s=d.getElementById(id);if(s&&s.parentNode){s.parentNode.removeChild(s);}s=d.createElement('script');s.id=id;s.src='${origin}/bookmarklet-debug.js?v=' + Date.now();d.body.appendChild(s);}catch(e){alert('Article Monster (debug) failed to load: '+(e&&e.message||e));}})();`;
+            const debugBookmarkletHref = 'javascript:' + encodeURIComponent(debugLoader);
+            document.getElementById('debug-bookmarklet-link').href = debugBookmarkletHref;
         }
         
         // Check service status

@@ -118,6 +118,8 @@ This infrastructure was crucial for identifying the root causes above.
 
 ## Architecture Decisions
 
+Before performing any nontrivial change, agents must read all ADRs in `docs/adr/` on first inference per session, and re-check ADRs when encountering conflicts or uncertainty. Adhere to accepted decisions unless an ADR update is explicitly proposed and accepted.
+
 **Why Client-Side Extraction:**
 - Avoids CORS issues with direct page scraping
 - Leverages browser's full DOM and JavaScript capabilities
