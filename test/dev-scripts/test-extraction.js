@@ -39,7 +39,24 @@ function loadTestCases() {
       testCases.push(testCase);
     }
   }
-  
+
+  // Optional filtering via environment flags to support CI grouping
+  const onlySolved = String(process.env.ONLY_SOLVED || '').toLowerCase() === 'true';
+  const onlyUnsolved = String(process.env.ONLY_UNSOLVED || '').toLowerCase() === 'true';
+
+  if (onlySolved && onlyUnsolved) {
+    // If both are set, prefer solved to avoid ambiguity
+    return testCases.filter(tc => tc.priority === 'SOLVED');
+  }
+
+  if (onlySolved) {
+    return testCases.filter(tc => tc.priority === 'SOLVED');
+  }
+
+  if (onlyUnsolved) {
+    return testCases.filter(tc => tc.priority === 'UNSOLVED');
+  }
+
   return testCases;
 }
 

@@ -1,0 +1,47 @@
+name: ADR Compliance
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  enforce-adr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Enforce ADR-001 (no FiveFilters config modifications)
+        run: |
+          echo "## 🔒 ADR-001 Enforcement" >> $GITHUB_STEP_SUMMARY
+          # Fail if any changes in site-configs/ are not from upstream subtree path (skip check in main for now)
+          CHANGED=$(git diff --name-only origin/main...HEAD | grep '^site-configs/' || true)
+          if [ -n "$CHANGED" ]; then
+            echo "❌ Modifications detected in site-configs/:" >> $GITHUB_STEP_SUMMARY
+            echo "$CHANGED" | sed 's/^/ - /' >> $GITHUB_STEP_SUMMARY
+            echo "Commit does not conform to ADR-001 (vendored configs are read-only)." >&2
+            exit 1
+          else
+            echo "✅ No local modifications to site-configs/" >> $GITHUB_STEP_SUMMARY
+          fi
+
+      - name: Enforce ADR-002 (bookmarklet loader pattern)
+        run: |
+          echo "\n## 🧭 ADR-002 Enforcement" >> $GITHUB_STEP_SUMMARY
+          # Ensure index.html generates loader (javascript: that injects script from service origin)
+          if ! grep -q "article-monster-script" public/index.html; then
+            echo "❌ Loader script injection not found in public/index.html" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          # Ensure bookmarklet.js does not contain site-specific domain keywords
+          if grep -Ei "sapienism|wixstatic|substack|medium\.com" public/bookmarklet.js; then
+            echo "❌ Site-specific logic detected in bookmarklet.js (disallowed by ADR-002)" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+          echo "✅ Loader pattern enforced and no site-specific logic detected" >> $GITHUB_STEP_SUMMARY
+
+

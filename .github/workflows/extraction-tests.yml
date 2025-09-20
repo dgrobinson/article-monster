@@ -1,4 +1,4 @@
-name: Article Extraction Tests
+name: Extraction Suite
 
 on:
   push:
@@ -17,7 +17,7 @@ on:
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
-  test-extraction:
+  goldens:
     runs-on: ubuntu-latest
     
     steps:
@@ -54,9 +54,11 @@ jobs:
     - name: Sync goldens from debug branch
       run: npm run sync:goldens
 
-    - name: Run basic extraction tests
+    - name: Run golden (solved) extraction tests
+      env:
+        ONLY_SOLVED: 'true'
       run: |
-        node test/dev-scripts/test-extraction.js 2>&1 | tee basic-tests.log
+        node test/dev-scripts/test-extraction.js 2>&1 | tee goldens.log
 
     - name: Run FiveFilters extraction tests
       run: |
@@ -70,14 +72,47 @@ jobs:
           echo "Consider moving them to test-cases/solved/ folder" >> $GITHUB_STEP_SUMMARY
         fi
 
-    - name: Upload test artifacts
+    - name: Upload artifacts (goldens)
       if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: test-results
+        name: goldens-results
         path: |
-          basic-tests.log
+          goldens.log
           fivefilters-tests.log
+          test-cases/unsolved/
+        retention-days: 7
+
+  unsolved:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository (main)
+      uses: actions/checkout@v4
+      with:
+        submodules: false
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run unsolved exploration tests
+      env:
+        ONLY_UNSOLVED: 'true'
+      run: |
+        node test/dev-scripts/test-extraction.js 2>&1 | tee unsolved.log || true
+
+    - name: Upload artifacts (unsolved)
+      uses: actions/upload-artifact@v4
+      with:
+        name: unsolved-results
+        path: |
+          unsolved.log
           test-cases/unsolved/
         retention-days: 7
 

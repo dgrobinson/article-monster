@@ -84,25 +84,7 @@
           return jsonLdContent;
         }
 
-        // Try Wix DOM fallback directly when JSON-LD is absent or unusable
-        var wixOnly = this._extractWixArticleFromDom();
-        if (wixOnly && wixOnly.text && wixOnly.text.length > 500) {
-          var processedWix = this._fixImageUrls(wixOnly.html);
-          var sectionedWix = this._addContentSections(processedWix);
-          return {
-            title: this._getArticleTitle(),
-            content: sectionedWix,
-            textContent: wixOnly.text,
-            length: wixOnly.text.length,
-            excerpt: this._createExcerpt(wixOnly.text),
-            byline: this._getArticleMetadata('author') || this._getArticleMetadata('byline'),
-            siteName: this._getArticleMetadata('site_name') || document.title,
-            publishedTime: this._getArticleMetadata('published_time') || this._getArticleMetadata('date'),
-            hasImages: wixOnly.hasImages || /<img\b/i.test(sectionedWix),
-            lang: this._doc.documentElement.lang || 'en',
-            source: 'wix-dom'
-          };
-        }
+        // (No site-specific fallback here; follow ADR to avoid hardcoding)
 
         console.log('No site config or JSON-LD found, falling back to DOM extraction');
         // Fall back to DOM-based extraction
@@ -506,43 +488,42 @@
 
     _extractWixArticleFromDom: function() {
       var doc = this._doc;
-      var firstBlock = doc.querySelector('[data-hook="rcv-block-first"]');
-      var container = null;
+      // Try multiple known Wix Rich Content containers
+      var container =
+        doc.querySelector('[data-id="content-viewer"]') ||
+        doc.querySelector('[data-hook="post-description"]') ||
+        doc.querySelector('[data-testid="rich-content-container"]') ||
+        doc.querySelector('.HBUKN') ||
+        (function() {
+          var first = doc.querySelector('[data-hook="rcv-block-first"]');
+          if (first && typeof first.closest === 'function') {
+            return first.closest('[data-testid="rich-content-container"], .HBUKN');
+          }
+          return null;
+        })();
 
-      if (firstBlock && typeof firstBlock.closest === 'function') {
-        container = firstBlock.closest('.HBUKN');
-        if (!container) {
-          container = firstBlock.closest('[data-testid="rich-content-container"]');
-        }
-      }
-
-      if (!container) {
-        container = doc.querySelector('.HBUKN') || doc.querySelector('[data-testid="rich-content-container"]');
-      }
-
-      if (!container) {
-        return null;
-      }
+      if (!container) return null;
 
       var clone = container.cloneNode(true);
-      var removalSelectors = 'script, style, noscript, .hiddenText';
+      var removalSelectors = [
+        'script',
+        'style',
+        'noscript',
+        '.hiddenText',
+        'svg[data-dom-store]',
+        '[data-dom-store]'
+      ].join(', ');
       clone.querySelectorAll(removalSelectors).forEach(function(node) {
         node.remove();
       });
 
       var textContent = clone.textContent ? clone.textContent.replace(/\s+/g, ' ').trim() : '';
-      if (!textContent || textContent.length < 500) {
-        return null;
-      }
+      if (!textContent || textContent.length < 500) return null;
 
       var html = '<div>' + clone.innerHTML + '</div>';
       var hasImages = !!clone.querySelector('img');
 
-      return {
-        html: html,
-        text: textContent,
-        hasImages: hasImages
-      };
+      return { html: html, text: textContent, hasImages: hasImages };
     },
 
     _textToHtml: function(text) {
