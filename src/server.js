@@ -172,8 +172,9 @@ app.post('/report-issue', async (req, res) => {
       '- [ ] Reproduce with bookmarklet',
       '- [ ] Check /site-config for hostname',
       '- [ ] Compare against FiveFilters reference',
-      '- [ ] Add/Update site-config if needed',
-      '- [ ] Add golden test case'
+      '- [ ] Document extraction differences',
+      '- [ ] Add golden test case',
+      '- [ ] Consider custom extraction logic if needed'
     ].filter(Boolean).join('\n');
 
     const issue = await issues.createIssue({
