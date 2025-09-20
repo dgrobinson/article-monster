@@ -1,0 +1,292 @@
+[
+  {
+    "t": 1758337718407,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1758337718407,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1758337718574,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "sapienism.com"
+    ]
+  },
+  {
+    "t": 1758337718596,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.sapienism.com"
+    ]
+  },
+  {
+    "t": 1758337718596,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "sapienism.com"
+    }
+  },
+  {
+    "t": 1758337718596,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"sapienism.com\"}"
+    ]
+  },
+  {
+    "t": 1758337718596,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "sapienism.com"
+    ]
+  },
+  {
+    "t": 1758337718596,
+    "level": "log",
+    "args": [
+      "XPath extraction failed, falling back to Readability auto-detection"
+    ]
+  },
+  {
+    "t": 1758337718596,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.sapienism.com"
+    ]
+  },
+  {
+    "t": 1758337718596,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "sapienism.com"
+    }
+  },
+  {
+    "t": 1758337718596,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"sapienism.com\"}"
+    ]
+  },
+  {
+    "t": 1758337718596,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "sapienism.com"
+    ]
+  },
+  {
+    "t": 1758337718596,
+    "level": "log",
+    "args": [
+      "No site config or JSON-LD found, falling back to DOM extraction"
+    ]
+  },
+  {
+    "t": 1758337718605,
+    "level": "log",
+    "args": [
+      "Image detection:",
+      "{\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}"
+    ]
+  },
+  {
+    "t": 1758337718605,
+    "level": "log",
+    "args": [
+      "Fallback image check found",
+      "19",
+      "images on page"
+    ]
+  },
+  {
+    "t": 1758337718606,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1758337718606,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "SapienisM"
+    ]
+  },
+  {
+    "t": 1758337718606,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using document title:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1758337718606,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher"
+    ]
+  },
+  {
+    "t": 1758337718606,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "contentLength": 16760,
+      "method": "dom-fallback"
+    }
+  },
+  {
+    "t": 1758337718606,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\",\"contentLength\":16760,\"method\":\"dom-fallback\"}"
+    ]
+  },
+  {
+    "t": 1758337718606,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 174 newlines"
+    ]
+  },
+  {
+    "t": 1758337718606,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 174 newlines"
+    ]
+  },
+  {
+    "t": 1758337718606,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 174 newlines"
+    ]
+  },
+  {
+    "t": 1758337718606,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<defs"
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "16760",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "16760"
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "428"
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      "dom-fallback"
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      "XPath rules failed, used Readability fallback"
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "Has images:",
+      "true"
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "0",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "\n\n\n\n\n\n\n\n\n    <!--pageHtmlEmbeds.bodyStart start-->\n    \n    \n    \n    <!--pageHtmlEmbeds.bodyStart end-->\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n    <!-- domStoreHtml -->\n    <svg data-dom-store=\"\" style=\"display:none\"><defs ..."
+    ]
+  },
+  {
+    "t": 1758337718607,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
