@@ -1,0 +1,601 @@
+[
+  {
+    "timestamp": 1,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1758389233650,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-20T17:27:13.878Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1758389233650,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-20T17:27:13.878Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for nytimes.com",
+    "data": {
+      "t": 1758389233750,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "nytimes.com"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.889Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 2 rules",
+    "data": {
+      "t": 1758389233752,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "2",
+        "rules"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.889Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png -> ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+    "data": {
+      "t": 1758389233752,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png",
+        "->",
+        "ignore-src='https://static01.nyt.com/packages/flash/multimedia/ICONS/transparent.png"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.890Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: data-mediaviewer-src='https://static01.nyt.com -> src='https://static01.nyt.com",
+    "data": {
+      "t": 1758389233753,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "data-mediaviewer-src='https://static01.nyt.com",
+        "->",
+        "src='https://static01.nyt.com"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.890Z"
+  },
+  {
+    "timestamp": 13,
+    "category": "client:log",
+    "message": "Applied 2 preprocessing rules",
+    "data": {
+      "t": 1758389233753,
+      "level": "log",
+      "args": [
+        "Applied",
+        "2",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.890Z"
+  },
+  {
+    "timestamp": 14,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.nytimes.com",
+    "data": {
+      "t": 1758389233761,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.nytimes.com"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.891Z"
+  },
+  {
+    "timestamp": 14,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1758389233762,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "nytimes.com"
+      }
+    },
+    "time": "2025-09-20T17:27:13.891Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"nytimes.com\"}",
+    "data": {
+      "t": 1758389233762,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"nytimes.com\"}"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for nytimes.com",
+    "data": {
+      "t": 1758389233762,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "nytimes.com"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "Trying body XPath: //section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]",
+    "data": {
+      "t": 1758389233762,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "Body matched: 2 element(s) for XPath: //section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]",
+    "data": {
+      "t": 1758389233763,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "2",
+        "element(s) for XPath:",
+        "//section[@name=\"articleBody\"] | //p[@id=\"article-summary\"] | //header/figure[contains(@class, 'sizeMedium')]"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "Combined 2 body elements into single container",
+    "data": {
+      "t": 1758389233763,
+      "level": "log",
+      "args": [
+        "Combined",
+        "2",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1758389233765,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1758389233766,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.",
+        "contentLength": 26653,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.\",\"contentLength\":26653,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1758389233766,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.\",\"contentLength\":26653,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758389233766,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758389233768,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.892Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758389233768,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Content to encode starts with: Residents of Palmetto Bay, Fla., have demanded the resignation of Councilman Stephen Cody, who wrote",
+    "data": {
+      "t": 1758389233768,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "Residents of Palmetto Bay, Fla., have demanded the resignation of Councilman Stephen Cody, who wrote"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Successfully encoded 26661 chars to base64",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "26661",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Title: He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "Title:",
+        "He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast."
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Content length: 26661",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "26661"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Text content length: 11190",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "11190"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Content structure: 51 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "51",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "client:log",
+    "message": "Content preview: <p id=\"article-summary\" class=\"css-79rysd e1wiw3jv0\">Residents of Palmetto Bay, Fla., have demanded the resignation of Councilman Stephen Cody, who wrote a post mocking Charlie Kirk’s support for gun ...",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<p id=\"article-summary\" class=\"css-79rysd e1wiw3jv0\">Residents of Palmetto Bay, Fla., have demanded the resignation of Councilman Stephen Cody, who wrote a post mocking Charlie Kirk’s support for gun ..."
+      ]
+    },
+    "time": "2025-09-20T17:27:13.893Z"
+  },
+  {
+    "timestamp": 17,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758389233769,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-20T17:27:13.894Z"
+  },
+  {
+    "timestamp": 17,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.nytimes.com/2025/09/20/us/florida-charlie-kirk-free-speech.html",
+      "title": "He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-20T17:27:13.894Z"
+  },
+  {
+    "timestamp": 17,
+    "category": "processing",
+    "message": "Processing article: He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.",
+    "data": {},
+    "time": "2025-09-20T17:27:13.894Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.",
+      "contentLength": 26661,
+      "textContentLength": 11190,
+      "hasContent": true
+    },
+    "time": "2025-09-20T17:27:13.895Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-20T17:27:13.895Z"
+  },
+  {
+    "timestamp": 19,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.\"",
+    "data": {},
+    "time": "2025-09-20T17:27:13.896Z"
+  },
+  {
+    "timestamp": 19,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.",
+      "byline": "By Richard Fausset",
+      "siteName": "nytimes.com",
+      "url": "https://www.nytimes.com/2025/09/20/us/florida-charlie-kirk-free-speech.html",
+      "publishedTime": "2025-09-20T09:02:10.000Z",
+      "contentLength": 26661,
+      "hasImages": true
+    },
+    "time": "2025-09-20T17:27:13.896Z"
+  },
+  {
+    "timestamp": 45,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "He-Wrote-a-Biting-Post-About-Charlie-Kirk.-The-Fury-Came-Fast._MFSJJSAQ.html",
+      "contentSizeKB": "27.97"
+    },
+    "time": "2025-09-20T17:27:13.922Z"
+  },
+  {
+    "timestamp": 51,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.\"",
+    "data": {},
+    "time": "2025-09-20T17:27:13.928Z"
+  },
+  {
+    "timestamp": 51,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-20T17:27:13.928Z"
+  },
+  {
+    "timestamp": 405,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "24DX9M4F"
+    },
+    "time": "2025-09-20T17:27:14.282Z"
+  },
+  {
+    "timestamp": 405,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-20T17:27:14.282Z"
+  },
+  {
+    "timestamp": 639,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-20T17:27:14.516Z"
+  },
+  {
+    "timestamp": 1339,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-20T17:27:15.216Z"
+  },
+  {
+    "timestamp": 1392,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "24DX9M4F",
+      "attachmentKey": "PAWV5R9M"
+    },
+    "time": "2025-09-20T17:27:15.269Z"
+  },
+  {
+    "timestamp": 1736,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<167c66e9-ff30-6260-629f-0f13d5beff7a@gmail.com>",
+      "filename": "He-Wrote-a-Biting-Post-About-Charlie-Kirk.-The-Fury-Came-Fast._MFSJJSAQ.html",
+      "subject": "He Wrote a Biting Post About Charlie Kirk. The Fury Came Fast.",
+      "sizekB": "27.97"
+    },
+    "time": "2025-09-20T17:27:15.613Z"
+  }
+]
