@@ -22,7 +22,11 @@ function loadTestCases() {
     const files = fs.readdirSync(unsolvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
       const testCase = JSON.parse(fs.readFileSync(path.join(unsolvedDir, file), 'utf8'));
-      testCase.htmlPath = path.join(unsolvedDir, testCase.htmlFile);
+      if (testCase.htmlFile) {
+        testCase.htmlPath = path.join(unsolvedDir, testCase.htmlFile);
+      } else if (typeof testCase.content === 'string' && testCase.content.length > 0) {
+        testCase.htmlContent = testCase.content;
+      }
       testCase.priority = 'UNSOLVED';
       testCases.push(testCase);
     }
@@ -34,7 +38,11 @@ function loadTestCases() {
     const files = fs.readdirSync(solvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
       const testCase = JSON.parse(fs.readFileSync(path.join(solvedDir, file), 'utf8'));
-      testCase.htmlPath = path.join(solvedDir, testCase.htmlFile);
+      if (testCase.htmlFile) {
+        testCase.htmlPath = path.join(solvedDir, testCase.htmlFile);
+      } else if (typeof testCase.content === 'string' && testCase.content.length > 0) {
+        testCase.htmlContent = testCase.content;
+      }
       testCase.priority = 'SOLVED';
       testCases.push(testCase);
     }
@@ -66,7 +74,7 @@ function testExtraction(testCase) {
   console.log('─'.repeat(50));
   
   // Load HTML or handle EPUB-only cases
-  const htmlExists = fs.existsSync(testCase.htmlPath);
+  const htmlExists = testCase.htmlPath ? fs.existsSync(testCase.htmlPath) : false;
   const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
   const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
 
@@ -105,12 +113,12 @@ function testExtraction(testCase) {
     }
   }
 
-  if (!htmlExists) {
-    console.log(`❌ Test file not found: ${testCase.htmlPath}`);
+  if (!htmlExists && !testCase.htmlContent) {
+    console.log(`❌ Test file not found and no inline content provided: ${testCase.htmlPath || '(inline missing)'}`);
     return false;
   }
-  
-  const html = fs.readFileSync(testCase.htmlPath, 'utf8');
+
+  const html = htmlExists ? fs.readFileSync(testCase.htmlPath, 'utf8') : testCase.htmlContent;
   const dom = new JSDOM(html, { 
     url: testCase.url || 'https://example.com'
   });

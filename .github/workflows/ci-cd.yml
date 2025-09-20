@@ -115,14 +115,14 @@ jobs:
         } > "$logfile"
         echo "LOG_FILE=$logfile" >> $GITHUB_ENV
 
-    - name: Commit CI log
+    - name: Commit CI log (push only on main branch events)
+      if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git add "$LOG_FILE"
         git commit -m "ci: add log for ${GITHUB_SHA} [skip ci]" || echo "No changes to commit"
         git push
-      if: always()
 
   build:
     needs: [test, lint]
@@ -181,7 +181,7 @@ jobs:
         output: 'trivy-results.sarif'
 
     - name: Upload Trivy scan results to GitHub Security tab
-      uses: github/codeql-action/upload-sarif@v2
+      uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: 'trivy-results.sarif'
 
