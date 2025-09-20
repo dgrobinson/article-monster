@@ -374,7 +374,15 @@
 
         for (var i = 0; i < jsonLdScripts.length; i++) {
           var script = jsonLdScripts[i];
-          var jsonData = JSON.parse(script.textContent || script.innerText);
+          var raw = script.textContent || script.innerText;
+          if (!raw) continue;
+          var jsonData;
+          try {
+            jsonData = JSON.parse(raw);
+          } catch (parseError) {
+            console.warn('Skipping malformed JSON-LD script:', parseError.message);
+            continue;
+          }
 
           // Handle both single objects and arrays
           var articles = Array.isArray(jsonData) ? jsonData : [jsonData];
@@ -383,52 +391,46 @@
             var data = articles[j];
 
             // Look for NewsArticle or Article types
-            if (data['@type'] === 'NewsArticle' || data['@type'] === 'Article') {
-              if (data.articleBody && data.articleBody.length > 500) {
-                // Convert plain text to basic HTML with paragraphs
-                var htmlContent = this._textToHtml(data.articleBody);
+            if (data['@type'] === 'NewsArticle' || data['@type'] === 'Article' || data['@type'] === 'BlogPosting') {
+              var textContent = typeof data.articleBody === 'string' ? data.articleBody.trim() : '';
+              var htmlInfo = null;
+              var extractionMethod = 'json-ld';
 
-                // For JSON-LD articles, check the actual page for images since articleBody is plain text
-                var pageImages = document.querySelectorAll('article img, main img, .article-content img, [role="main"] img');
-                var hasImages = pageImages.length > 0;
-
-                // If we found images, try to include them in the content
-                if (hasImages && pageImages.length > 0) {
-                  console.log('Found', pageImages.length, 'images in page, attempting to include them');
-                  // Try to extract images from the actual article element
-                  var articleElement = document.querySelector('article, main, .article-content, [role="main"]');
-                  if (articleElement) {
-                    var imgElements = articleElement.querySelectorAll('img');
-                    var imageHtml = '';
-                    imgElements.forEach(function(img) {
-                      if (img.src) {
-                        imageHtml += '<figure><img src="' + img.src + '" alt="' + (img.alt || '') + '" /></figure>';
-                      }
-                    });
-                    if (imageHtml) {
-                      htmlContent = htmlContent.replace('</div>', imageHtml + '</div>');
-                    }
-                  }
+              if (textContent && textContent.length > 500) {
+                htmlInfo = this._buildJsonLdHtmlFromText(textContent);
+              } else {
+                var wixContent = this._extractWixArticleFromDom();
+                if (wixContent && wixContent.text.length > 500) {
+                  htmlInfo = {
+                    html: wixContent.html,
+                    hasImages: wixContent.hasImages
+                  };
+                  textContent = wixContent.text;
+                  extractionMethod = 'json-ld+wix-dom';
                 }
-
-                // Process content for images and sections
-                var processedContent = this._fixImageUrls(htmlContent);
-                var sectionedContent = this._addContentSections(processedContent);
-
-                return {
-                  title: data.headline || data.name || this._getArticleTitle(),
-                  content: sectionedContent,
-                  textContent: data.articleBody,
-                  length: data.articleBody.length,
-                  excerpt: data.description || this._createExcerpt(data.articleBody),
-                  byline: this._extractAuthor(data.author) || this._getArticleMetadata('author'),
-                  siteName: data.publisher && data.publisher.name || this._getArticleMetadata('site_name') || document.title,
-                  publishedTime: data.datePublished || this._getArticleMetadata('published_time'),
-                  hasImages: hasImages,
-                  lang: this._doc.documentElement.lang || 'en',
-                  source: 'json-ld'
-                };
               }
+
+              if (!htmlInfo) {
+                continue;
+              }
+
+              // Process content for images and sections
+              var processedContent = this._fixImageUrls(htmlInfo.html);
+              var sectionedContent = this._addContentSections(processedContent);
+
+              return {
+                title: data.headline || data.name || this._getArticleTitle(),
+                content: sectionedContent,
+                textContent: textContent,
+                length: textContent.length,
+                excerpt: data.description || this._createExcerpt(textContent),
+                byline: this._extractAuthor(data.author) || this._getArticleMetadata('author'),
+                siteName: data.publisher && data.publisher.name || this._getArticleMetadata('site_name') || document.title,
+                publishedTime: data.datePublished || this._getArticleMetadata('published_time'),
+                hasImages: htmlInfo.hasImages || /<img\b/i.test(sectionedContent),
+                lang: this._doc.documentElement.lang || 'en',
+                source: extractionMethod
+              };
             }
           }
         }
@@ -438,6 +440,76 @@
         console.error('JSON-LD extraction failed:', e);
         return null;
       }
+    },
+
+    _buildJsonLdHtmlFromText: function(text) {
+      var htmlContent = this._textToHtml(text);
+      var doc = this._doc;
+      var pageImages = doc.querySelectorAll('article img, main img, .article-content img, [role="main"] img');
+      var hasImages = pageImages.length > 0;
+
+      if (hasImages) {
+        console.log('Found', pageImages.length, 'images in page, attempting to include them');
+        var articleElement = doc.querySelector('article, main, .article-content, [role="main"]');
+        if (articleElement) {
+          var imgElements = articleElement.querySelectorAll('img');
+          var imageHtml = '';
+          imgElements.forEach(function(img) {
+            if (img.src) {
+              imageHtml += '<figure><img src="' + img.src + '" alt="' + (img.alt || '') + '" /></figure>';
+            }
+          });
+          if (imageHtml) {
+            htmlContent = htmlContent.replace('</div>', imageHtml + '</div>');
+          }
+        }
+      }
+
+      return {
+        html: htmlContent,
+        hasImages: hasImages
+      };
+    },
+
+    _extractWixArticleFromDom: function() {
+      var doc = this._doc;
+      var firstBlock = doc.querySelector('[data-hook="rcv-block-first"]');
+      var container = null;
+
+      if (firstBlock && typeof firstBlock.closest === 'function') {
+        container = firstBlock.closest('.HBUKN');
+        if (!container) {
+          container = firstBlock.closest('[data-testid="rich-content-container"]');
+        }
+      }
+
+      if (!container) {
+        container = doc.querySelector('.HBUKN') || doc.querySelector('[data-testid="rich-content-container"]');
+      }
+
+      if (!container) {
+        return null;
+      }
+
+      var clone = container.cloneNode(true);
+      var removalSelectors = 'script, style, noscript, .hiddenText';
+      clone.querySelectorAll(removalSelectors).forEach(function(node) {
+        node.remove();
+      });
+
+      var textContent = clone.textContent ? clone.textContent.replace(/\s+/g, ' ').trim() : '';
+      if (!textContent || textContent.length < 500) {
+        return null;
+      }
+
+      var html = '<div>' + clone.innerHTML + '</div>';
+      var hasImages = !!clone.querySelector('img');
+
+      return {
+        html: html,
+        text: textContent,
+        hasImages: hasImages
+      };
     },
 
     _textToHtml: function(text) {
@@ -541,9 +613,9 @@
 
         // Auto-detect title if: 1) no title rules OR 2) title extraction failed AND autodetect_on_failure
         // (matches PHP: empty($this->config->title) || $this->config->autodetect_on_failure())
-        var shouldAutoDetectTitle = !config.title || config.title.length === 0 || 
+        var shouldAutoDetectTitle = !config.title || config.title.length === 0 ||
           (!titleExtracted && config.autodetect_on_failure !== false);
-        
+
         if (!titleExtracted && shouldAutoDetectTitle) {
           console.log('Auto-detecting title: no title rules or extraction failed');
           console.log('config.title:', config.title, 'length:', config.title ? config.title.length : 'undefined');
@@ -1009,7 +1081,7 @@
         var xhr = new XMLHttpRequest();
         xhr.open('GET', serviceUrl + '/site-config/' + hostname, false); // synchronous
         xhr.send();
-        
+
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           if (data.success && data.config) {
