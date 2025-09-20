@@ -613,9 +613,9 @@
 
         // Auto-detect title if: 1) no title rules OR 2) title extraction failed AND autodetect_on_failure
         // (matches PHP: empty($this->config->title) || $this->config->autodetect_on_failure())
-        var shouldAutoDetectTitle = !config.title || config.title.length === 0 || 
+        var shouldAutoDetectTitle = !config.title || config.title.length === 0 ||
           (!titleExtracted && config.autodetect_on_failure !== false);
-        
+
         if (!titleExtracted && shouldAutoDetectTitle) {
           console.log('Auto-detecting title: no title rules or extraction failed');
           console.log('config.title:', config.title, 'length:', config.title ? config.title.length : 'undefined');
@@ -1081,7 +1081,7 @@
         var xhr = new XMLHttpRequest();
         xhr.open('GET', serviceUrl + '/site-config/' + hostname, false); // synchronous
         xhr.send();
-        
+
         if (xhr.status === 200) {
           var data = JSON.parse(xhr.responseText);
           if (data.success && data.config) {

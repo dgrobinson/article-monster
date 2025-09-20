@@ -66,21 +66,21 @@ function isRateLimited(ip) {
   const now = Date.now();
   const windowMs = 15 * 60 * 1000; // 15 minutes
   const maxRequests = 3; // Max 3 issues per 15 minutes per IP
-  
+
   const key = `rate_limit_${ip}`;
   const requests = rateLimitStore.get(key) || [];
-  
+
   // Remove old requests outside the window
   const validRequests = requests.filter(time => now - time < windowMs);
-  
+
   if (validRequests.length >= maxRequests) {
     return true;
   }
-  
+
   // Add current request
   validRequests.push(now);
   rateLimitStore.set(key, validRequests);
-  
+
   // Clean up old entries periodically
   if (Math.random() < 0.1) {
     for (const [k, v] of rateLimitStore.entries()) {
@@ -92,7 +92,7 @@ function isRateLimited(ip) {
       }
     }
   }
-  
+
   return false;
 }
 
@@ -111,17 +111,17 @@ function validateReportUrl(url) {
 
   // Block private/internal networks to prevent SSRF
   const hostname = parsedUrl.hostname.toLowerCase();
-  
+
   // Block localhost and loopback
   if (['localhost', '127.0.0.1', '::1'].includes(hostname)) {
     throw new Error('Localhost URLs are not allowed');
   }
-  
+
   // Block private IP ranges (basic check)
   if (hostname.match(/^(10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)/)) {
     throw new Error('Private IP addresses are not allowed');
   }
-  
+
   // Block common internal domains
   if (hostname.includes('.local') || hostname.includes('.internal')) {
     throw new Error('Internal domains are not allowed');
@@ -134,12 +134,12 @@ function validateReportUrl(url) {
 app.post('/report-issue', async (req, res) => {
   try {
     const clientIp = req.ip || req.connection.remoteAddress || 'unknown';
-    
+
     // Rate limiting
     if (isRateLimited(clientIp)) {
-      return res.status(429).json({ 
-        success: false, 
-        error: 'Too many requests. Please wait before submitting another report.' 
+      return res.status(429).json({
+        success: false,
+        error: 'Too many requests. Please wait before submitting another report.'
       });
     }
 
@@ -180,7 +180,7 @@ app.post('/report-issue', async (req, res) => {
     const issue = await issues.createIssue({
       title,
       body,
-      labels: ['bug', 'extraction'],
+      labels: ['bug', 'extraction']
     });
 
     return res.json({ success: true, issueUrl: issue.html_url, number: issue.number });
