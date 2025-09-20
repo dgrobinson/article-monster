@@ -25,6 +25,9 @@ const GitHubIssues = require('./githubIssues');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy for rate limiting (important for DigitalOcean App Platform)
+app.set('trust proxy', true);
+
 // Initialize config fetcher and preload popular sites
 const configFetcher = new ConfigFetcher();
 configFetcher.preloadConfigs();
@@ -56,28 +59,114 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Simple rate limiting store (in-memory)
+const rateLimitStore = new Map();
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const windowMs = 15 * 60 * 1000; // 15 minutes
+  const maxRequests = 3; // Max 3 issues per 15 minutes per IP
+  
+  const key = `rate_limit_${ip}`;
+  const requests = rateLimitStore.get(key) || [];
+  
+  // Remove old requests outside the window
+  const validRequests = requests.filter(time => now - time < windowMs);
+  
+  if (validRequests.length >= maxRequests) {
+    return true;
+  }
+  
+  // Add current request
+  validRequests.push(now);
+  rateLimitStore.set(key, validRequests);
+  
+  // Clean up old entries periodically
+  if (Math.random() < 0.1) {
+    for (const [k, v] of rateLimitStore.entries()) {
+      const validTimes = v.filter(time => now - time < windowMs);
+      if (validTimes.length === 0) {
+        rateLimitStore.delete(k);
+      } else {
+        rateLimitStore.set(k, validTimes);
+      }
+    }
+  }
+  
+  return false;
+}
+
+function validateReportUrl(url) {
+  let parsedUrl;
+  try {
+    parsedUrl = new URL(url);
+  } catch (error) {
+    throw new Error('Invalid URL format');
+  }
+
+  // Only allow HTTP/HTTPS
+  if (!['http:', 'https:'].includes(parsedUrl.protocol)) {
+    throw new Error('Only HTTP and HTTPS URLs are allowed');
+  }
+
+  // Block private/internal networks to prevent SSRF
+  const hostname = parsedUrl.hostname.toLowerCase();
+  
+  // Block localhost and loopback
+  if (['localhost', '127.0.0.1', '::1'].includes(hostname)) {
+    throw new Error('Localhost URLs are not allowed');
+  }
+  
+  // Block private IP ranges (basic check)
+  if (hostname.match(/^(10\.|172\.(1[6-9]|2[0-9]|3[01])\.|192\.168\.)/)) {
+    throw new Error('Private IP addresses are not allowed');
+  }
+  
+  // Block common internal domains
+  if (hostname.includes('.local') || hostname.includes('.internal')) {
+    throw new Error('Internal domains are not allowed');
+  }
+
+  return parsedUrl;
+}
+
 // Endpoint to report a broken extraction which opens a GitHub issue
 app.post('/report-issue', async (req, res) => {
   try {
+    const clientIp = req.ip || req.connection.remoteAddress || 'unknown';
+    
+    // Rate limiting
+    if (isRateLimited(clientIp)) {
+      return res.status(429).json({ 
+        success: false, 
+        error: 'Too many requests. Please wait before submitting another report.' 
+      });
+    }
+
     const { url, notes } = req.body || {};
 
     if (!url || typeof url !== 'string') {
       return res.status(400).json({ success: false, error: 'url is required' });
     }
 
+    // Validate URL for security
+    let parsedUrl;
+    try {
+      parsedUrl = validateReportUrl(url);
+    } catch (error) {
+      return res.status(400).json({ success: false, error: error.message });
+    }
+
     const issues = new GitHubIssues();
 
-    const hostname = (() => {
-      try { return new URL(url).hostname; } catch (_) { return 'unknown-host'; }
-    })();
-
-    const title = `Broken extraction: ${hostname}`;
+    const title = `Broken extraction: ${parsedUrl.hostname}`;
     const body = [
       `URL: ${url}`,
       '',
       notes ? `Notes:\n\n${notes}` : null,
       '',
       `Reported at: ${new Date().toISOString()}`,
+      `Reported from: ${clientIp}`,
       '',
       'Checklist:',
       '- [ ] Reproduce with bookmarklet',
