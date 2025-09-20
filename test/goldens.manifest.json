@@ -11,6 +11,19 @@
         "Joshua Rothman"
       ],
       "notes": "Golden selected by match token from latest-outputs-debug"
+    },
+    {
+      "slug": "sapienism-burning-bridges",
+      "name": "Sapienism — Burning Bridges, Skipping Stones",
+      "url": "https://www.sapienism.com/post/burning-bridges-skipping-stones",
+      "minLength": 15000,
+      "expectedPhrases": [
+        "Burning Bridges, Skipping Stones",
+        "philosopher's stone",
+        "Uriel",
+        "sapienism"
+      ],
+      "notes": "Issue #36 - Zotero attachment upload issue, extraction works correctly"
     }
   ]
 }
