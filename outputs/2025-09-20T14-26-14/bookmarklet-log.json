@@ -1,0 +1,351 @@
+[
+  {
+    "t": 1758378370497,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1758378370497,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1758378370671,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1758378370673,
+    "level": "log",
+    "args": [
+      "Starting HTML preprocessing with",
+      "1",
+      "rules"
+    ]
+  },
+  {
+    "t": 1758378370675,
+    "level": "log",
+    "args": [
+      "Applied HTML preprocessing:",
+      "<header",
+      "->",
+      "<em"
+    ]
+  },
+  {
+    "t": 1758378370675,
+    "level": "log",
+    "args": [
+      "Auto-generated closing tag rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1758378370676,
+    "level": "log",
+    "args": [
+      "Applied auto-generated rule:",
+      "</header>",
+      "->",
+      "</em>"
+    ]
+  },
+  {
+    "t": 1758378370676,
+    "level": "log",
+    "args": [
+      "Applied",
+      "1",
+      "preprocessing rules"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.newyorker.com"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "newyorker.com"
+    }
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"newyorker.com\"}"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "newyorker.com"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "Auto-detecting title: no title rules or extraction failed"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "config.title:",
+      "[]",
+      "length:",
+      "0"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "titleExtracted:",
+      "false"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "autodetect_on_failure:",
+      "null"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "What It’s Like to Get Really, Really High | The New Yorker"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "What It’s Like to Get Really, Really High"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using h1 title:",
+      "What It’s Like to Get Really, Really High"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "What It’s Like to Get Really, Really High"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "Auto-detected title result:",
+      "What It’s Like to Get Really, Really High"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "7",
+      "element(s) for XPath:",
+      "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+    ]
+  },
+  {
+    "t": 1758378370688,
+    "level": "log",
+    "args": [
+      "Combined",
+      "7",
+      "body elements into single container"
+    ]
+  },
+  {
+    "t": 1758378370689,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1758378370690,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "What It’s Like to Get Really, Really High",
+      "contentLength": 44686,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1758378370690,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"What It’s Like to Get Really, Really High\",\"contentLength\":44686,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1758378370690,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1758378370690,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1758378370690,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1758378370690,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<em class=\"SplitScreenContentHeaderWrapper-bqcckH kjIBMI content-header standard article__content-he"
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "44686",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "Title:",
+      "What It’s Like to Get Really, Really High"
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "44686"
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "25325"
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "28",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<em class=\"SplitScreenContentHeaderWrapper-bqcckH kjIBMI content-header standard article__content-header\" data-testid=\"SplitScreenContentHeaderWrapper\" data-event-boundary=\"click\" data-event-click=\"{&..."
+    ]
+  },
+  {
+    "t": 1758378370691,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
