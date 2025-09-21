@@ -1,0 +1,886 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1758420227288,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-21T02:03:48.808Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1758420227291,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-21T02:03:48.812Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for sapienism.com",
+    "data": {
+      "t": 1758420227502,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "sapienism.com"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.813Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.sapienism.com",
+    "data": {
+      "t": 1758420227560,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.sapienism.com"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.813Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1758420227560,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "sapienism.com"
+      }
+    },
+    "time": "2025-09-21T02:03:48.814Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"sapienism.com\"}",
+    "data": {
+      "t": 1758420227560,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"sapienism.com\"}"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.814Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for sapienism.com",
+    "data": {
+      "t": 1758420227563,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "sapienism.com"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.814Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "XPath extraction failed, falling back to Readability auto-detection",
+    "data": {
+      "t": 1758420227563,
+      "level": "log",
+      "args": [
+        "XPath extraction failed, falling back to Readability auto-detection"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.814Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.sapienism.com",
+    "data": {
+      "t": 1758420227563,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.sapienism.com"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.815Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1758420227563,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "sapienism.com"
+      }
+    },
+    "time": "2025-09-21T02:03:48.815Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"sapienism.com\"}",
+    "data": {
+      "t": 1758420227563,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"sapienism.com\"}"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for sapienism.com",
+    "data": {
+      "t": 1758420227599,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "sapienism.com"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_b35a0f3e2f944b9b810aaae251232fab~mv2.jpg/v1/fill/w_147,h_196,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_b35a0f3e2f944b9b810aaae251232fab~mv2.jpg",
+    "data": {
+      "t": 1758420227701,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_b35a0f3e2f944b9b810aaae251232fab~mv2.jpg/v1/fill/w_147,h_196,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_b35a0f3e2f944b9b810aaae251232fab~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_0cbf3031371c48cc8bd49eea064fd1aa~mv2.jpg/v1/fill/w_147,h_216,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_0cbf3031371c48cc8bd49eea064fd1aa~mv2.jpg",
+    "data": {
+      "t": 1758420227702,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_0cbf3031371c48cc8bd49eea064fd1aa~mv2.jpg/v1/fill/w_147,h_216,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_0cbf3031371c48cc8bd49eea064fd1aa~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_5dc20b647d2b4c78a04bef2527019e2f~mv2.jpg/v1/fill/w_147,h_186,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_5dc20b647d2b4c78a04bef2527019e2f~mv2.jpg",
+    "data": {
+      "t": 1758420227707,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_5dc20b647d2b4c78a04bef2527019e2f~mv2.jpg/v1/fill/w_147,h_186,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_5dc20b647d2b4c78a04bef2527019e2f~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_11c7b0323b3f424b8c0cc3e7b99da29b~mv2.jpg/v1/fill/w_100,h_132,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_11c7b0323b3f424b8c0cc3e7b99da29b~mv2.jpg",
+    "data": {
+      "t": 1758420227707,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_11c7b0323b3f424b8c0cc3e7b99da29b~mv2.jpg/v1/fill/w_100,h_132,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_11c7b0323b3f424b8c0cc3e7b99da29b~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_3475b90c432749d28ee5229346ddd615~mv2.jpg/v1/fill/w_147,h_91,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_3475b90c432749d28ee5229346ddd615~mv2.jpg",
+    "data": {
+      "t": 1758420227707,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_3475b90c432749d28ee5229346ddd615~mv2.jpg/v1/fill/w_147,h_91,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_3475b90c432749d28ee5229346ddd615~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_f7412ddd970245f193453cba057a3b97~mv2.jpg/v1/fill/w_153,h_89,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_f7412ddd970245f193453cba057a3b97~mv2.jpg",
+    "data": {
+      "t": 1758420227707,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_f7412ddd970245f193453cba057a3b97~mv2.jpg/v1/fill/w_153,h_89,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_f7412ddd970245f193453cba057a3b97~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_c45969ac120541beb915b281c6e2eb59~mv2.jpg/v1/fill/w_147,h_89,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_c45969ac120541beb915b281c6e2eb59~mv2.jpg",
+    "data": {
+      "t": 1758420227707,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_c45969ac120541beb915b281c6e2eb59~mv2.jpg/v1/fill/w_147,h_89,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_c45969ac120541beb915b281c6e2eb59~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_9bfa282e710943bebdcd19f517285cb1~mv2.jpg/v1/fill/w_147,h_110,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_9bfa282e710943bebdcd19f517285cb1~mv2.jpg",
+    "data": {
+      "t": 1758420227707,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_9bfa282e710943bebdcd19f517285cb1~mv2.jpg/v1/fill/w_147,h_110,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_9bfa282e710943bebdcd19f517285cb1~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_a00bca252d8a423fad6f936dc14b1874~mv2.jpg/v1/fill/w_123,h_184,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_a00bca252d8a423fad6f936dc14b1874~mv2.jpg",
+    "data": {
+      "t": 1758420227707,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_a00bca252d8a423fad6f936dc14b1874~mv2.jpg/v1/fill/w_123,h_184,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_a00bca252d8a423fad6f936dc14b1874~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.816Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg",
+    "data": {
+      "t": 1758420227707,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg",
+    "data": {
+      "t": 1758420227728,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg",
+    "data": {
+      "t": 1758420227771,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg",
+    "data": {
+      "t": 1758420227782,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg",
+    "data": {
+      "t": 1758420227782,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg",
+    "data": {
+      "t": 1758420227782,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg",
+    "data": {
+      "t": 1758420227782,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg",
+    "data": {
+      "t": 1758420227782,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg",
+    "data": {
+      "t": 1758420227782,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg",
+    "data": {
+      "t": 1758420227782,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg",
+    "data": {
+      "t": 1758420227782,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg",
+    "data": {
+      "t": 1758420227783,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg",
+    "data": {
+      "t": 1758420227783,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.817Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Fixed image: https://static.wixstatic.com/media/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg",
+    "data": {
+      "t": 1758420227783,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://static.wixstatic.com/media/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Extraction successful using JSON-LD structured data",
+    "data": {
+      "t": 1758420227812,
+      "level": "log",
+      "args": [
+        "Extraction successful using JSON-LD structured data"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1758420227813,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+        "contentLength": 633,
+        "method": "json-ld"
+      }
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\",\"contentLength\":633,\"method\":\"json-ld\"}",
+    "data": {
+      "t": 1758420227834,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\",\"contentLength\":633,\"method\":\"json-ld\"}"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758420227850,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758420227852,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758420227864,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Content to encode starts with: Fire, air, earth, and water. Th",
+    "data": {
+      "t": 1758420227874,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "Fire, air, earth, and water. Th"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Successfully encoded 633 chars to base64",
+    "data": {
+      "t": 1758420227878,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "633",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758420227878,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Title: Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+    "data": {
+      "t": 1758420227878,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Content length: 633",
+    "data": {
+      "t": 1758420227879,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "633"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Text content length: 15418",
+    "data": {
+      "t": 1758420227879,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "15418"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Extraction method: json-ld",
+    "data": {
+      "t": 1758420227879,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        "json-ld"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "Extraction note: XPath rules failed, used Readability fallback",
+    "data": {
+      "t": 1758420227879,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        "XPath rules failed, used Readability fallback"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.818Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "Has images: true",
+    "data": {
+      "t": 1758420227880,
+      "level": "log",
+      "args": [
+        "Has images:",
+        "true"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.819Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "Content structure: 0 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1758420227885,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "0",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-21T02:03:48.819Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "Content preview: <section class=\"content-section\" data-section=\"1\"><h3 class=\"SLBiB _9j-5z ewTCf rgwei\" dir=\"auto\" id=\"section-1\"><span class=\"d2Cmp\"><em style=\"font-style:italic\"><span>Fire, air, earth, and water. Th...",
+    "data": {
+      "t": 1758420227885,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<section class=\"content-section\" data-section=\"1\"><h3 class=\"SLBiB _9j-5z ewTCf rgwei\" dir=\"auto\" id=\"section-1\"><span class=\"d2Cmp\"><em style=\"font-style:italic\"><span>Fire, air, earth, and water. Th..."
+      ]
+    },
+    "time": "2025-09-21T02:03:48.819Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758420227885,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-21T02:03:48.819Z"
+  },
+  {
+    "timestamp": 11,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.sapienism.com/post/burning-bridges-skipping-stones",
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-21T02:03:48.819Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "processing",
+    "message": "Processing article: Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+    "data": {},
+    "time": "2025-09-21T02:03:48.820Z"
+  },
+  {
+    "timestamp": 12,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "contentLength": 633,
+      "textContentLength": 15418,
+      "hasContent": true
+    },
+    "time": "2025-09-21T02:03:48.820Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-21T02:03:48.823Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\"",
+    "data": {},
+    "time": "2025-09-21T02:03:48.824Z"
+  },
+  {
+    "timestamp": 16,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "byline": "Uriel",
+      "siteName": "sapienism",
+      "url": "https://www.sapienism.com/post/burning-bridges-skipping-stones",
+      "publishedTime": "2025-08-02T22:54:40.417Z",
+      "contentLength": 633,
+      "hasImages": false
+    },
+    "time": "2025-09-21T02:03:48.824Z"
+  },
+  {
+    "timestamp": 81,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Burning-Bridges,-Skipping-Stones-Suffering-in-the-Israel-Hamas-War-urges-us-to-f_MFT20461.html",
+      "contentSizeKB": "2.60"
+    },
+    "time": "2025-09-21T02:03:48.889Z"
+  },
+  {
+    "timestamp": 89,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\"",
+    "data": {},
+    "time": "2025-09-21T02:03:48.897Z"
+  },
+  {
+    "timestamp": 91,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-21T02:03:48.899Z"
+  },
+  {
+    "timestamp": 601,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "5USVP699"
+    },
+    "time": "2025-09-21T02:03:49.409Z"
+  },
+  {
+    "timestamp": 601,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-21T02:03:49.409Z"
+  },
+  {
+    "timestamp": 732,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-21T02:03:49.540Z"
+  },
+  {
+    "timestamp": 1360,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-21T02:03:50.168Z"
+  },
+  {
+    "timestamp": 1429,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "5USVP699",
+      "attachmentKey": "MIDIUFAD"
+    },
+    "time": "2025-09-21T02:03:50.237Z"
+  },
+  {
+    "timestamp": 1794,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<71fa3b19-f2e6-312c-838c-da3ef408cb1b@gmail.com>",
+      "filename": "Burning-Bridges,-Skipping-Stones-Suffering-in-the-Israel-Hamas-War-urges-us-to-f_MFT20461.html",
+      "subject": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "sizekB": "2.60"
+    },
+    "time": "2025-09-21T02:03:50.602Z"
+  }
+]

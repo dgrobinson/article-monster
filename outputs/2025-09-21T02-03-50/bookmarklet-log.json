@@ -1,0 +1,427 @@
+[
+  {
+    "t": 1758420227288,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1758420227291,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1758420227502,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "sapienism.com"
+    ]
+  },
+  {
+    "t": 1758420227560,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.sapienism.com"
+    ]
+  },
+  {
+    "t": 1758420227560,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "sapienism.com"
+    }
+  },
+  {
+    "t": 1758420227560,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"sapienism.com\"}"
+    ]
+  },
+  {
+    "t": 1758420227563,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "sapienism.com"
+    ]
+  },
+  {
+    "t": 1758420227563,
+    "level": "log",
+    "args": [
+      "XPath extraction failed, falling back to Readability auto-detection"
+    ]
+  },
+  {
+    "t": 1758420227563,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.sapienism.com"
+    ]
+  },
+  {
+    "t": 1758420227563,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "sapienism.com"
+    }
+  },
+  {
+    "t": 1758420227563,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"sapienism.com\"}"
+    ]
+  },
+  {
+    "t": 1758420227599,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "sapienism.com"
+    ]
+  },
+  {
+    "t": 1758420227701,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_b35a0f3e2f944b9b810aaae251232fab~mv2.jpg/v1/fill/w_147,h_196,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_b35a0f3e2f944b9b810aaae251232fab~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227702,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_0cbf3031371c48cc8bd49eea064fd1aa~mv2.jpg/v1/fill/w_147,h_216,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_0cbf3031371c48cc8bd49eea064fd1aa~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227707,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_5dc20b647d2b4c78a04bef2527019e2f~mv2.jpg/v1/fill/w_147,h_186,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_5dc20b647d2b4c78a04bef2527019e2f~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227707,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_11c7b0323b3f424b8c0cc3e7b99da29b~mv2.jpg/v1/fill/w_100,h_132,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_11c7b0323b3f424b8c0cc3e7b99da29b~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227707,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_3475b90c432749d28ee5229346ddd615~mv2.jpg/v1/fill/w_147,h_91,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_3475b90c432749d28ee5229346ddd615~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227707,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_f7412ddd970245f193453cba057a3b97~mv2.jpg/v1/fill/w_153,h_89,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_f7412ddd970245f193453cba057a3b97~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227707,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_c45969ac120541beb915b281c6e2eb59~mv2.jpg/v1/fill/w_147,h_89,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_c45969ac120541beb915b281c6e2eb59~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227707,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_9bfa282e710943bebdcd19f517285cb1~mv2.jpg/v1/fill/w_147,h_110,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_9bfa282e710943bebdcd19f517285cb1~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227707,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_a00bca252d8a423fad6f936dc14b1874~mv2.jpg/v1/fill/w_123,h_184,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_a00bca252d8a423fad6f936dc14b1874~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227707,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227728,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227771,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227782,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227782,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227782,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_c2c2af6805a2469090e4a92ab3e5f02d~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227782,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227782,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_cbf6136ef5cd437887d1aa487d285958~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227782,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227782,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_d11957291c044b04a052a89c5888e969~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227782,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227783,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_b23f237358994b82adf6b92ebb2a1ed9~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227783,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg/v1/fill/w_490,h_250,fp_0.50_0.50,q_30,blur_30/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227783,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg/v1/fill/w_980,h_500,fp_0.50_0.50,q_90/a62535_e7c7ecc8ca50411c9caa996184984135~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1758420227812,
+    "level": "log",
+    "args": [
+      "Extraction successful using JSON-LD structured data"
+    ]
+  },
+  {
+    "t": 1758420227813,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "contentLength": 633,
+      "method": "json-ld"
+    }
+  },
+  {
+    "t": 1758420227834,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\",\"contentLength\":633,\"method\":\"json-ld\"}"
+    ]
+  },
+  {
+    "t": 1758420227850,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1758420227852,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1758420227864,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+    ]
+  },
+  {
+    "t": 1758420227874,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "Fire, air, earth, and water. Th"
+    ]
+  },
+  {
+    "t": 1758420227878,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "633",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1758420227878,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1758420227878,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1758420227879,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "633"
+    ]
+  },
+  {
+    "t": 1758420227879,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "15418"
+    ]
+  },
+  {
+    "t": 1758420227879,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      "json-ld"
+    ]
+  },
+  {
+    "t": 1758420227879,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      "XPath rules failed, used Readability fallback"
+    ]
+  },
+  {
+    "t": 1758420227880,
+    "level": "log",
+    "args": [
+      "Has images:",
+      "true"
+    ]
+  },
+  {
+    "t": 1758420227885,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "0",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1758420227885,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "<section class=\"content-section\" data-section=\"1\"><h3 class=\"SLBiB _9j-5z ewTCf rgwei\" dir=\"auto\" id=\"section-1\"><span class=\"d2Cmp\"><em style=\"font-style:italic\"><span>Fire, air, earth, and water. Th..."
+    ]
+  },
+  {
+    "t": 1758420227885,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
