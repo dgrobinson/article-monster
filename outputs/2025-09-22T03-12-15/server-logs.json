@@ -1,0 +1,744 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1758510733004,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-22T03:12:13.689Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1758510733004,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-22T03:12:13.692Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1758510733174,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.692Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 1 rules",
+    "data": {
+      "t": 1758510733179,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "1",
+        "rules"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.692Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: <header -> <em",
+    "data": {
+      "t": 1758510733181,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "<header",
+        "->",
+        "<em"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.692Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Auto-generated closing tag rule: </header> -> </em>",
+    "data": {
+      "t": 1758510733182,
+      "level": "log",
+      "args": [
+        "Auto-generated closing tag rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.692Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Applied auto-generated rule: </header> -> </em>",
+    "data": {
+      "t": 1758510733183,
+      "level": "log",
+      "args": [
+        "Applied auto-generated rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.692Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Applied 1 preprocessing rules",
+    "data": {
+      "t": 1758510733183,
+      "level": "log",
+      "args": [
+        "Applied",
+        "1",
+        "preprocessing rules"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.692Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.newyorker.com",
+    "data": {
+      "t": 1758510733205,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.newyorker.com"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.693Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1758510733205,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "newyorker.com"
+      }
+    },
+    "time": "2025-09-22T03:12:13.693Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"newyorker.com\"}",
+    "data": {
+      "t": 1758510733205,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"newyorker.com\"}"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.693Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1758510733205,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.693Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Auto-detecting title: no title rules or extraction failed",
+    "data": {
+      "t": 1758510733205,
+      "level": "log",
+      "args": [
+        "Auto-detecting title: no title rules or extraction failed"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.693Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "config.title: [] length: 0",
+    "data": {
+      "t": 1758510733205,
+      "level": "log",
+      "args": [
+        "config.title:",
+        "[]",
+        "length:",
+        "0"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.693Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "titleExtracted: false",
+    "data": {
+      "t": 1758510733205,
+      "level": "log",
+      "args": [
+        "titleExtracted:",
+        "false"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.695Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "autodetect_on_failure: null",
+    "data": {
+      "t": 1758510733205,
+      "level": "log",
+      "args": [
+        "autodetect_on_failure:",
+        "null"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.695Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: Will the Humanities Survive Artificial Intelligence? | The New Yorker",
+    "data": {
+      "t": 1758510733206,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "Will the Humanities Survive Artificial Intelligence? | The New Yorker"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.695Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: Will the Humanities Survive Artificial Intelligence?",
+    "data": {
+      "t": 1758510733206,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "Will the Humanities Survive Artificial Intelligence?"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.695Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "_getArticleTitle - using h1 title: Will the Humanities Survive Artificial Intelligence?",
+    "data": {
+      "t": 1758510733206,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using h1 title:",
+        "Will the Humanities Survive Artificial Intelligence?"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.695Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: Will the Humanities Survive Artificial Intelligence?",
+    "data": {
+      "t": 1758510733206,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "Will the Humanities Survive Artificial Intelligence?"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.695Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Auto-detected title result: Will the Humanities Survive Artificial Intelligence?",
+    "data": {
+      "t": 1758510733206,
+      "level": "log",
+      "args": [
+        "Auto-detected title result:",
+        "Will the Humanities Survive Artificial Intelligence?"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.696Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Trying body XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1758510733206,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.696Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Body matched: 20 element(s) for XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1758510733206,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "20",
+        "element(s) for XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.696Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Combined 20 body elements into single container",
+    "data": {
+      "t": 1758510733207,
+      "level": "log",
+      "args": [
+        "Combined",
+        "20",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.696Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1758510733208,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.696Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1758510733208,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Will the Humanities Survive Artificial Intelligence?",
+        "contentLength": 41919,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-09-22T03:12:13.696Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Will the Humanities Survive Artificial Intelligence?\",\"contentLength\":41919,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1758510733208,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Will the Humanities Survive Artificial Intelligence?\",\"contentLength\":41919,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.696Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 6 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758510733208,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 6 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.696Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "After fixImageUrls: 6 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758510733209,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 6 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.697Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Encoding content with: 6 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1758510733209,
+      "level": "log",
+      "args": [
+        "Encoding content with: 6 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.697Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content to encode starts with: <em class=\"SplitScreenContentHeaderWrapper-bqcckH evVoFu content-header standard article__content-he",
+    "data": {
+      "t": 1758510733209,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<em class=\"SplitScreenContentHeaderWrapper-bqcckH evVoFu content-header standard article__content-he"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.697Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Successfully encoded 41919 chars to base64",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "41919",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.697Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-22T03:12:13.697Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Title: Will the Humanities Survive Artificial Intelligence?",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Will the Humanities Survive Artificial Intelligence?"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.697Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content length: 41919",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "41919"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.697Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Text content length: 30165",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "30165"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.697Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-09-22T03:12:13.698Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-09-22T03:12:13.698Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-09-22T03:12:13.698Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Content structure: 87 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "87",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-22T03:12:13.698Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "Content preview: <em class=\"SplitScreenContentHeaderWrapper-bqcckH evVoFu content-header standard article__content-header\" data-testid=\"SplitScreenContentHeaderWrapper\" data-event-boundary=\"click\" data-event-click=\"{&...",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "<em class=\"SplitScreenContentHeaderWrapper-bqcckH evVoFu content-header standard article__content-header\" data-testid=\"SplitScreenContentHeaderWrapper\" data-event-boundary=\"click\" data-event-click=\"{&..."
+      ]
+    },
+    "time": "2025-09-22T03:12:13.698Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758510733210,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-22T03:12:13.698Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/culture/the-weekend-essay/will-the-humanities-survive-artificial-intelligence?utm_source=facebook&utm_medium=social&utm_campaign=dhfacebook&utm_content=app.dashsocial.com/newyorkermag/library/media/525955554",
+      "title": "Will the Humanities Survive Artificial Intelligence?",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-22T03:12:13.698Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "processing",
+    "message": "Processing article: Will the Humanities Survive Artificial Intelligence?",
+    "data": {},
+    "time": "2025-09-22T03:12:13.699Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Will the Humanities Survive Artificial Intelligence?",
+      "contentLength": 41919,
+      "textContentLength": 30165,
+      "hasContent": true
+    },
+    "time": "2025-09-22T03:12:13.699Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-22T03:12:13.707Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Will the Humanities Survive Artificial Intelligence?\"",
+    "data": {},
+    "time": "2025-09-22T03:12:13.707Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Will the Humanities Survive Artificial Intelligence?",
+      "byline": "D. Graham Burnett",
+      "siteName": "newyorker.com",
+      "url": "https://www.newyorker.com/culture/the-weekend-essay/will-the-humanities-survive-artificial-intelligence?utm_source=facebook&utm_medium=social&utm_campaign=dhfacebook&utm_content=app.dashsocial.com/newyorkermag/library/media/525955554",
+      "publishedTime": "2025-04-26T10:00:00.000Z",
+      "contentLength": 41919,
+      "hasImages": true
+    },
+    "time": "2025-09-22T03:12:13.707Z"
+  },
+  {
+    "timestamp": 44,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Will-the-Humanities-Survive-Artificial-Intelligence_MFUJVY5H.html",
+      "contentSizeKB": "43.16"
+    },
+    "time": "2025-09-22T03:12:13.733Z"
+  },
+  {
+    "timestamp": 45,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Will the Humanities Survive Artificial Intelligence?\"",
+    "data": {},
+    "time": "2025-09-22T03:12:13.734Z"
+  },
+  {
+    "timestamp": 46,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-22T03:12:13.735Z"
+  },
+  {
+    "timestamp": 485,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "95FBHRAU"
+    },
+    "time": "2025-09-22T03:12:14.174Z"
+  },
+  {
+    "timestamp": 485,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-22T03:12:14.174Z"
+  },
+  {
+    "timestamp": 784,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-22T03:12:14.473Z"
+  },
+  {
+    "timestamp": 1475,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-22T03:12:15.164Z"
+  },
+  {
+    "timestamp": 1529,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "95FBHRAU",
+      "attachmentKey": "VHAWRRBE"
+    },
+    "time": "2025-09-22T03:12:15.218Z"
+  },
+  {
+    "timestamp": 2202,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<3d8a6c7f-2eed-6c83-9cff-5ba6f53064e7@gmail.com>",
+      "filename": "Will-the-Humanities-Survive-Artificial-Intelligence_MFUJVY5H.html",
+      "subject": "Will the Humanities Survive Artificial Intelligence?",
+      "sizekB": "43.16"
+    },
+    "time": "2025-09-22T03:12:15.891Z"
+  }
+]
