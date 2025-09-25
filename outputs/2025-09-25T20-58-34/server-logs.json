@@ -1,0 +1,595 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1758833911470,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-09-25T20:58:31.962Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1758833911471,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-09-25T20:58:31.962Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Config fetch failed for kyla.substack.com - using fallback extraction",
+    "data": {
+      "t": 1758833911730,
+      "level": "log",
+      "args": [
+        "Config fetch failed for",
+        "kyla.substack.com",
+        "- using fallback extraction"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.963Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: kyla.substack.com",
+    "data": {
+      "t": 1758833911731,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "kyla.substack.com"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.963Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1758833911731,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "kyla.substack.com"
+      }
+    },
+    "time": "2025-09-25T20:58:31.963Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"kyla.substack.com\"}",
+    "data": {
+      "t": 1758833911731,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"kyla.substack.com\"}"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.963Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "No cached config for kyla.substack.com - fetching synchronously",
+    "data": {
+      "t": 1758833911731,
+      "level": "log",
+      "args": [
+        "No cached config for",
+        "kyla.substack.com",
+        "- fetching synchronously"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.963Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "No FiveFilters config available for kyla.substack.com",
+    "data": {
+      "t": 1758833911817,
+      "level": "log",
+      "args": [
+        "No FiveFilters config available for",
+        "kyla.substack.com"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.963Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "No site config or JSON-LD found, falling back to DOM extraction",
+    "data": {
+      "t": 1758833911818,
+      "level": "log",
+      "args": [
+        "No site config or JSON-LD found, falling back to DOM extraction"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.963Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Image detection: {\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}",
+    "data": {
+      "t": 1758833911830,
+      "level": "log",
+      "args": [
+        "Image detection:",
+        "{\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Fallback image check found 10 images on page",
+    "data": {
+      "t": 1758833911830,
+      "level": "log",
+      "args": [
+        "Fallback image check found",
+        "10",
+        "images on page"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: Who's Getting Rich Off Your Attention? - by kyla scanlon",
+    "data": {
+      "t": 1758833911830,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "Who's Getting Rich Off Your Attention? - by kyla scanlon"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: Kyla’s Newsletter",
+    "data": {
+      "t": 1758833911830,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "Kyla’s Newsletter"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "_getArticleTitle - using document title: Who's Getting Rich Off Your Attention? - by kyla scanlon",
+    "data": {
+      "t": 1758833911830,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using document title:",
+        "Who's Getting Rich Off Your Attention? - by kyla scanlon"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: Who's Getting Rich Off Your Attention? - by kyla scanlon",
+    "data": {
+      "t": 1758833911830,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "Who's Getting Rich Off Your Attention? - by kyla scanlon"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1758833911831,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Who's Getting Rich Off Your Attention? - by kyla scanlon",
+        "contentLength": 6621,
+        "method": "dom-fallback"
+      }
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Who's Getting Rich Off Your Attention? - by kyla scanlon\",\"contentLength\":6621,\"method\":\"dom-fallback\"}",
+    "data": {
+      "t": 1758833911831,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Who's Getting Rich Off Your Attention? - by kyla scanlon\",\"contentLength\":6621,\"method\":\"dom-fallback\"}"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 251 newlines",
+    "data": {
+      "t": 1758833911832,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 251 newlines"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 251 newlines",
+    "data": {
+      "t": 1758833911832,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 251 newlines"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.964Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 251 newlines",
+    "data": {
+      "t": 1758833911832,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 251 newlines"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Content to encode starts with: <div class=\"pencraft pc-display-contents",
+    "data": {
+      "t": 1758833911832,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<div class=\"pencraft pc-display-contents"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Successfully encoded 6621 chars to base64",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "6621",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Title: Who's Getting Rich Off Your Attention? - by kyla scanlon",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Who's Getting Rich Off Your Attention? - by kyla scanlon"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Content length: 6621",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "6621"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Text content length: 3442",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "3442"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Extraction method: dom-fallback",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        "dom-fallback"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Extraction note: Extracted using general rules. For kyla.substack.com, no site-specific configuration was available.",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        "Extracted using general rules. For kyla.substack.com, no site-specific configuration was available."
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Has images: true",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "Has images:",
+        "true"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Content structure: 3 <p> tags, 0 <br> tags",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "3",
+        "<p> tags,",
+        "0",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Content preview: \n        \n\n        \n            \n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents ...",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "\n        \n\n        \n            \n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents ..."
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1758833911833,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://kyla.substack.com/p/whos-getting-rich-off-your-attention?ref=thebrowser.com",
+      "title": "Who's Getting Rich Off Your Attention? - by kyla scanlon",
+      "hasContent": true,
+      "hasBase64": true
+    },
+    "time": "2025-09-25T20:58:31.965Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "processing",
+    "message": "Processing article: Who's Getting Rich Off Your Attention? - by kyla scanlon",
+    "data": {},
+    "time": "2025-09-25T20:58:31.966Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Who's Getting Rich Off Your Attention? - by kyla scanlon",
+      "contentLength": 6621,
+      "textContentLength": 3442,
+      "hasContent": true
+    },
+    "time": "2025-09-25T20:58:31.966Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-09-25T20:58:31.966Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Who's Getting Rich Off Your Attention? - by kyla scanlon\"",
+    "data": {},
+    "time": "2025-09-25T20:58:31.967Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Who's Getting Rich Off Your Attention? - by kyla scanlon",
+      "byline": "kyla scanlon",
+      "siteName": "Who's Getting Rich Off Your Attention? - by kyla scanlon",
+      "url": "https://kyla.substack.com/p/whos-getting-rich-off-your-attention?ref=thebrowser.com",
+      "publishedTime": "2025-05-08T14:39:07.098Z",
+      "contentLength": 6621,
+      "hasImages": false
+    },
+    "time": "2025-09-25T20:58:31.967Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Who's-Getting-Rich-Off-Your-Attention-by-kyla-scanlon_MFZWAS2O.html",
+      "contentSizeKB": "8.45"
+    },
+    "time": "2025-09-25T20:58:31.968Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Who's Getting Rich Off Your Attention? - by kyla scanlon\"",
+    "data": {},
+    "time": "2025-09-25T20:58:31.969Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-09-25T20:58:31.969Z"
+  },
+  {
+    "timestamp": 853,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "A6I27GNR"
+    },
+    "time": "2025-09-25T20:58:32.815Z"
+  },
+  {
+    "timestamp": 853,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-09-25T20:58:32.815Z"
+  },
+  {
+    "timestamp": 904,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-09-25T20:58:32.866Z"
+  },
+  {
+    "timestamp": 1370,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<ed079030-126a-8c3c-e9ca-a72372143612@gmail.com>",
+      "filename": "Who's-Getting-Rich-Off-Your-Attention-by-kyla-scanlon_MFZWAS2O.html",
+      "subject": "Who's Getting Rich Off Your Attention? - by kyla scanlon",
+      "sizekB": "8.45"
+    },
+    "time": "2025-09-25T20:58:33.332Z"
+  },
+  {
+    "timestamp": 2069,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-09-25T20:58:34.031Z"
+  },
+  {
+    "timestamp": 2140,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "A6I27GNR",
+      "attachmentKey": "WNDS53AU"
+    },
+    "time": "2025-09-25T20:58:34.102Z"
+  }
+]

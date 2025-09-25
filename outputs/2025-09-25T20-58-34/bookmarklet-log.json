@@ -1,0 +1,262 @@
+[
+  {
+    "t": 1758833911470,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1758833911471,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1758833911730,
+    "level": "log",
+    "args": [
+      "Config fetch failed for",
+      "kyla.substack.com",
+      "- using fallback extraction"
+    ]
+  },
+  {
+    "t": 1758833911731,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "kyla.substack.com"
+    ]
+  },
+  {
+    "t": 1758833911731,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "kyla.substack.com"
+    }
+  },
+  {
+    "t": 1758833911731,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"kyla.substack.com\"}"
+    ]
+  },
+  {
+    "t": 1758833911731,
+    "level": "log",
+    "args": [
+      "No cached config for",
+      "kyla.substack.com",
+      "- fetching synchronously"
+    ]
+  },
+  {
+    "t": 1758833911817,
+    "level": "log",
+    "args": [
+      "No FiveFilters config available for",
+      "kyla.substack.com"
+    ]
+  },
+  {
+    "t": 1758833911818,
+    "level": "log",
+    "args": [
+      "No site config or JSON-LD found, falling back to DOM extraction"
+    ]
+  },
+  {
+    "t": 1758833911830,
+    "level": "log",
+    "args": [
+      "Image detection:",
+      "{\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}"
+    ]
+  },
+  {
+    "t": 1758833911830,
+    "level": "log",
+    "args": [
+      "Fallback image check found",
+      "10",
+      "images on page"
+    ]
+  },
+  {
+    "t": 1758833911830,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "Who's Getting Rich Off Your Attention? - by kyla scanlon"
+    ]
+  },
+  {
+    "t": 1758833911830,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "Kyla’s Newsletter"
+    ]
+  },
+  {
+    "t": 1758833911830,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using document title:",
+      "Who's Getting Rich Off Your Attention? - by kyla scanlon"
+    ]
+  },
+  {
+    "t": 1758833911830,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "Who's Getting Rich Off Your Attention? - by kyla scanlon"
+    ]
+  },
+  {
+    "t": 1758833911831,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Who's Getting Rich Off Your Attention? - by kyla scanlon",
+      "contentLength": 6621,
+      "method": "dom-fallback"
+    }
+  },
+  {
+    "t": 1758833911831,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Who's Getting Rich Off Your Attention? - by kyla scanlon\",\"contentLength\":6621,\"method\":\"dom-fallback\"}"
+    ]
+  },
+  {
+    "t": 1758833911832,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 251 newlines"
+    ]
+  },
+  {
+    "t": 1758833911832,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 251 newlines"
+    ]
+  },
+  {
+    "t": 1758833911832,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 251 newlines"
+    ]
+  },
+  {
+    "t": 1758833911832,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<div class=\"pencraft pc-display-contents"
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "6621",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Who's Getting Rich Off Your Attention? - by kyla scanlon"
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "6621"
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "3442"
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      "dom-fallback"
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      "Extracted using general rules. For kyla.substack.com, no site-specific configuration was available."
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "Has images:",
+      "true"
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "3",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "\n        \n\n        \n            \n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents ..."
+    ]
+  },
+  {
+    "t": 1758833911833,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
