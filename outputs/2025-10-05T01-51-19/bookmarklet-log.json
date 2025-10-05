@@ -1,0 +1,262 @@
+[
+  {
+    "t": 1759629076710,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1759629076710,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1759629077149,
+    "level": "log",
+    "args": [
+      "Config fetch failed for",
+      "springbett.substack.com",
+      "- using fallback extraction"
+    ]
+  },
+  {
+    "t": 1759629077150,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "springbett.substack.com"
+    ]
+  },
+  {
+    "t": 1759629077150,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "springbett.substack.com"
+    }
+  },
+  {
+    "t": 1759629077150,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"springbett.substack.com\"}"
+    ]
+  },
+  {
+    "t": 1759629077150,
+    "level": "log",
+    "args": [
+      "No cached config for",
+      "springbett.substack.com",
+      "- fetching synchronously"
+    ]
+  },
+  {
+    "t": 1759629077287,
+    "level": "log",
+    "args": [
+      "No FiveFilters config available for",
+      "springbett.substack.com"
+    ]
+  },
+  {
+    "t": 1759629077288,
+    "level": "log",
+    "args": [
+      "No site config or JSON-LD found, falling back to DOM extraction"
+    ]
+  },
+  {
+    "t": 1759629077297,
+    "level": "log",
+    "args": [
+      "Image detection:",
+      "{\"imgTags\":0,\"backgroundImages\":0,\"figures\":0,\"total\":0}"
+    ]
+  },
+  {
+    "t": 1759629077297,
+    "level": "log",
+    "args": [
+      "Fallback image check found",
+      "10",
+      "images on page"
+    ]
+  },
+  {
+    "t": 1759629077299,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "(9) The product of the railways is the timetable"
+    ]
+  },
+  {
+    "t": 1759629077299,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "Benedict’s Substack"
+    ]
+  },
+  {
+    "t": 1759629077299,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using document title:",
+      "(9) The product of the railways is the timetable"
+    ]
+  },
+  {
+    "t": 1759629077299,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "(9) The product of the railways is the timetable"
+    ]
+  },
+  {
+    "t": 1759629077300,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "(9) The product of the railways is the timetable",
+      "contentLength": 6950,
+      "method": "dom-fallback"
+    }
+  },
+  {
+    "t": 1759629077300,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"(9) The product of the railways is the timetable\",\"contentLength\":6950,\"method\":\"dom-fallback\"}"
+    ]
+  },
+  {
+    "t": 1759629077300,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 255 newlines"
+    ]
+  },
+  {
+    "t": 1759629077301,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 255 newlines"
+    ]
+  },
+  {
+    "t": 1759629077301,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 255 newlines"
+    ]
+  },
+  {
+    "t": 1759629077301,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "<div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx"
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "6950",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "Title:",
+      "(9) The product of the railways is the timetable"
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "6950"
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "3510"
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      "dom-fallback"
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      "Extracted using general rules. For springbett.substack.com, no site-specific configuration was available."
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "Has images:",
+      "true"
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "3",
+      "<p> tags,",
+      "0",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "\n        \n\n        \n\n        \n\n        \n\n        \n\n        \n\n        <div id=\"entry\"><div id=\"main\" class=\"main typography use-theme-bg\"><div class=\"pencraft pc-display-contents pc-reset pubTheme-yiXx..."
+    ]
+  },
+  {
+    "t": 1759629077302,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
