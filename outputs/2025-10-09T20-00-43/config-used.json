@@ -1,0 +1,26 @@
+{
+  "title": [],
+  "body": [
+    "//div[@itemprop=\"articleBody\"]"
+  ],
+  "author": [],
+  "strip": [],
+  "date": [],
+  "preferJsonLd": false,
+  "find_string": [],
+  "replace_string": [],
+  "strip_id_or_class": [
+    "pullquote"
+  ],
+  "strip_image_src": [],
+  "single_page_link": [],
+  "next_page_link": [],
+  "test_url": [
+    "https://bostonreview.net/articles/vivian-gornick-sex-love-and-letters-review/"
+  ],
+  "prune": false,
+  "tidy": null,
+  "autodetect_on_failure": null,
+  "parser": null,
+  "htmlPreprocessing": []
+}

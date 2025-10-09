@@ -1,0 +1,143 @@
+[
+  {
+    "timestamp": 0,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.bostonreview.net/forum/the-right-to-be-hostile/",
+      "title": "The Right to Be Hostile",
+      "hasContent": true,
+      "hasBase64": false
+    },
+    "time": "2025-10-09T20:00:41.292Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "processing",
+    "message": "Processing article: The Right to Be Hostile",
+    "data": {},
+    "time": "2025-10-09T20:00:41.295Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "The Right to Be Hostile",
+      "contentLength": 46320,
+      "textContentLength": 37710,
+      "hasContent": true
+    },
+    "time": "2025-10-09T20:00:41.295Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-10-09T20:00:41.300Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"The Right to Be Hostile\"",
+    "data": {},
+    "time": "2025-10-09T20:00:41.300Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "The Right to Be Hostile",
+      "byline": null,
+      "siteName": "Boston Review",
+      "url": "https://www.bostonreview.net/forum/the-right-to-be-hostile/",
+      "publishedTime": null,
+      "contentLength": 46320,
+      "hasImages": false
+    },
+    "time": "2025-10-09T20:00:41.300Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "The-Right-to-Be-Hostile_MGJUEBFE.html",
+      "contentSizeKB": "47.04"
+    },
+    "time": "2025-10-09T20:00:41.307Z"
+  },
+  {
+    "timestamp": 18,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"The Right to Be Hostile\"",
+    "data": {},
+    "time": "2025-10-09T20:00:41.310Z"
+  },
+  {
+    "timestamp": 19,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-10-09T20:00:41.311Z"
+  },
+  {
+    "timestamp": 339,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "DWUDP8GG"
+    },
+    "time": "2025-10-09T20:00:41.631Z"
+  },
+  {
+    "timestamp": 339,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-10-09T20:00:41.631Z"
+  },
+  {
+    "timestamp": 491,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-10-09T20:00:41.783Z"
+  },
+  {
+    "timestamp": 1298,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-10-09T20:00:42.590Z"
+  },
+  {
+    "timestamp": 1348,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "DWUDP8GG",
+      "attachmentKey": "NDTN5BEH"
+    },
+    "time": "2025-10-09T20:00:42.640Z"
+  },
+  {
+    "timestamp": 2310,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<7e0a962f-f28d-3e01-0a77-e751fc705f21@gmail.com>",
+      "filename": "The-Right-to-Be-Hostile_MGJUEBFE.html",
+      "subject": "The Right to Be Hostile",
+      "sizekB": "47.04"
+    },
+    "time": "2025-10-09T20:00:43.602Z"
+  }
+]
