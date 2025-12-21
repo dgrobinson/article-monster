@@ -1,0 +1,24 @@
+{
+  "title": [],
+  "body": [
+    "//body"
+  ],
+  "author": [],
+  "strip": [],
+  "date": [],
+  "preferJsonLd": true,
+  "find_string": [],
+  "replace_string": [],
+  "strip_id_or_class": [],
+  "strip_image_src": [],
+  "single_page_link": [],
+  "next_page_link": [],
+  "test_url": [
+    "https://www.sapienism.com/post/burning-bridges-skipping-stones"
+  ],
+  "prune": true,
+  "tidy": true,
+  "autodetect_on_failure": null,
+  "parser": null,
+  "htmlPreprocessing": []
+}
