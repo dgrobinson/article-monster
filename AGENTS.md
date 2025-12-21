@@ -10,6 +10,14 @@ Article Monster is a bookmarklet service that extracts articles from web pages a
 - **Site Configs** (`site-configs/`): 2000+ FiveFilters-format extraction rules
 - **Config Parser** (`src/configFetcher.js`): Parses FiveFilters site config files
 
+## Communication Guidance
+
+The primary operator is not a developer. When reporting changes or decisions, include ELI5 context:
+- What changed (plain language).
+- Why it matters (impact).
+- How to verify (simple steps).
+Define any unavoidable jargon briefly.
+
 ## Critical Bug Fixes (August 2025)
 
 ### MAJOR BREAKTHROUGH: System Now Works Reliably 🎯
