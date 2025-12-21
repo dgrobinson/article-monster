@@ -367,4 +367,4 @@ function formatDate(dateString) {
   }
 }
 
-module.exports = { generateEpub };
+module.exports = { generateEpub, createMultiChapterEpub };

@@ -100,7 +100,7 @@ function validateReportUrl(url) {
   let parsedUrl;
   try {
     parsedUrl = new URL(url);
-  } catch (error) {
+  } catch {
     throw new Error('Invalid URL format');
   }
 
@@ -238,7 +238,7 @@ app.post('/process-article', async (req, res) => {
           const level = entry.level || entry.category || 'log';
           const message = entry.message || (Array.isArray(entry.args) ? entry.args.join(' ') : '');
           debugLogger.log('client:' + level, message, entry);
-        } catch (e) {
+        } catch {
           // Best-effort only
         }
       });
@@ -337,7 +337,7 @@ app.post('/process-article', async (req, res) => {
     const hostname = new URL(url).hostname;
     try {
       configUsed = await configFetcher.getConfigForSite(hostname);
-    } catch (e) {
+    } catch {
       debugLogger.log('config', 'No site config found', { hostname });
     }
 
