@@ -5,8 +5,8 @@ const path = require('path');
 const { extractArticle } = require('../src/articleExtractor');
 
 /**
- * Validates article extraction against reference test cases
- * Test cases are stored on the latest-outputs-debug branch
+ * Manual validation against PDF reference fixtures.
+ * This is optional and not part of default npm test runs.
  */
 async function runValidation() {
   const testCasesDir = process.argv[2] || 'test-cases/pdf-references';
@@ -23,7 +23,7 @@ async function runValidation() {
       process.exit(0);
     }
     
-    console.log(`Running ${manifest.testCases.length} extraction validation tests...`);
+    console.log(`Running ${manifest.testCases.length} PDF reference test(s)...`);
     
     const results = [];
     
