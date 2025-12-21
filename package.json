@@ -8,6 +8,7 @@
     "dev": "node --watch src/server.js",
     "test": "npm run test:extract",
     "test:extract": "node test/dev-scripts/test-extraction.js && node test/dev-scripts/test-extraction-with-fivefilters.js",
+    "test:pdf": "node test/validate-extraction.js test-cases/pdf-references",
     "sync:goldens": "node scripts/sync-goldens.js",
     "lint": "npx eslint src/**/*.js public/**/*.js --ignore-pattern node_modules/",
     "lint:fix": "npx eslint src/**/*.js public/**/*.js --fix --ignore-pattern node_modules/",
