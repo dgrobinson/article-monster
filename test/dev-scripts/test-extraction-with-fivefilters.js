@@ -9,51 +9,17 @@ const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
 const AdmZip = require('adm-zip');
+const ConfigFetcher = require('../../src/configFetcher');
 
 const repoRoot = path.join(__dirname, '..', '..');
-
-// Parse FiveFilters config format (matching configFetcher.js)
-function parseFtrConfig(configText) {
-  const lines = configText.split('\n');
-  const config = {
-    title: [],
-    body: [],
-    author: [],
-    strip: [],
-    date: []
-  };
-
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('//')) continue;
-
-    if (trimmed.startsWith('title:')) {
-      config.title.push(trimmed.substring(6).trim());
-    } else if (trimmed.startsWith('body:')) {
-      // Handle pipe-separated body selectors
-      const bodySelectors = trimmed.substring(5).trim().split(' | ');
-      bodySelectors.forEach(selector => config.body.push(selector.trim()));
-    } else if (trimmed.startsWith('author:')) {
-      config.author.push(trimmed.substring(7).trim());
-    } else if (trimmed.startsWith('date:')) {
-      config.date.push(trimmed.substring(5).trim());
-    } else if (trimmed.startsWith('strip:')) {
-      config.strip.push(trimmed.substring(6).trim());
-    } else if (trimmed.startsWith('strip_id_or_class:')) {
-      const className = trimmed.substring(18).trim();
-      config.strip.push(`//*[contains(@class, '${className}') or contains(@id, '${className}')]`);
-    }
-  }
-
-  return (config.body.length > 0) ? config : null;
-}
+const configFetcher = new ConfigFetcher();
 
 // Load FiveFilters config for a site
 function loadSiteConfig(hostname) {
   const configPath = path.join(repoRoot, 'site-configs', `${hostname}.txt`);
   if (fs.existsSync(configPath)) {
     const configContent = fs.readFileSync(configPath, 'utf8');
-    const config = parseFtrConfig(configContent);
+    const config = configFetcher.parseFtrConfig(configContent);
     console.log(`✅ Loaded FiveFilters config for ${hostname}`);
     console.log(`   Body selectors: ${config.body.length}`);
     console.log(`   Strip rules: ${config.strip.length}`);
@@ -65,15 +31,19 @@ function loadSiteConfig(hostname) {
 
 // Test extraction on a single HTML file
 function testExtraction(testCase) {
-  console.log(`\n📖 Testing: ${testCase.name} [${testCase.priority}]`);
+  const displayName = testCase.name
+    || testCase.url
+    || (testCase.htmlPath ? path.basename(testCase.htmlPath) : 'inline-content');
+  console.log(`\n📖 Testing: ${displayName} [${testCase.priority}]`);
   console.log('─'.repeat(50));
   
   // Load HTML or handle EPUB-only cases
-  const htmlExists = fs.existsSync(testCase.htmlPath);
-  const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
-  const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
+  const htmlExists = testCase.htmlPath ? fs.existsSync(testCase.htmlPath) : false;
+  const htmlFileBase = testCase.htmlPath ? path.basename(testCase.htmlPath, path.extname(testCase.htmlPath)) : null;
+  const expectedEpubPath = htmlFileBase ? path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub') : null;
+  const expectedPhrases = Array.isArray(testCase.expectedPhrases) ? testCase.expectedPhrases : [];
 
-  if (!htmlExists && fs.existsSync(expectedEpubPath)) {
+  if (!htmlExists && expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`ℹ️ No HTML found, running EPUB-only validation using golden: ${expectedEpubPath}`);
     try {
       const zip = new AdmZip(expectedEpubPath);
@@ -95,7 +65,7 @@ function testExtraction(testCase) {
       }
 
       let allPhrasesFound = true;
-      for (const phrase of testCase.expectedPhrases || []) {
+      for (const phrase of expectedPhrases) {
         const found = plainText.toLowerCase().includes(String(phrase).toLowerCase());
         console.log(`${found ? '✅' : '❌'} ${found ? 'Found' : 'Missing'}: "${phrase}"`);
         if (!found) allPhrasesFound = false;
@@ -108,22 +78,29 @@ function testExtraction(testCase) {
     }
   }
 
-  if (!htmlExists) {
-    console.log(`❌ Test file not found: ${testCase.htmlPath}`);
+  if (!htmlExists && !testCase.htmlContent) {
+    console.log(`❌ Test file not found and no inline content provided: ${testCase.htmlPath || '(inline missing)'}`);
     return false;
   }
   
-  const html = fs.readFileSync(testCase.htmlPath, 'utf8');
   const url = testCase.url || 'https://newyorker.com/test';
-  const dom = new JSDOM(html, { url });
-  const window = dom.window;
-  const document = window.document;
-  
   // Get hostname from URL
   const hostname = new URL(url).hostname.replace(/^www\./, '');
   
   // Load FiveFilters config if available
   const siteConfig = loadSiteConfig(hostname);
+
+  const rawHtml = htmlExists ? fs.readFileSync(testCase.htmlPath, 'utf8') : testCase.htmlContent;
+  let html = rawHtml;
+  if (siteConfig && siteConfig.htmlPreprocessing && siteConfig.htmlPreprocessing.length > 0) {
+    html = applyHtmlPreprocessing(rawHtml, siteConfig.htmlPreprocessing);
+    console.log(`🔧 Applied ${siteConfig.htmlPreprocessing.length} preprocessing rule(s)`);
+  }
+
+  const dom = new JSDOM(html, { url });
+  const window = dom.window;
+  const document = window.document;
+  const XPathResult = window.XPathResult;
   
   if (siteConfig) {
     // Use FiveFilters config for extraction
@@ -132,40 +109,37 @@ function testExtraction(testCase) {
     let extractedContent = '';
     let extractedTitle = '';
     
-    // Extract body using XPath selectors
+    // Extract body using XPath selectors (matches production flow)
     for (const bodySelector of siteConfig.body) {
       try {
         const result = document.evaluate(
           bodySelector,
           document,
           null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
           null
         );
-        
-        if (result.singleNodeValue) {
-          const element = result.singleNodeValue;
-          console.log(`   Found content with: ${bodySelector}`);
-          
-          // Apply strip rules
-          for (const stripRule of siteConfig.strip) {
-            const stripResult = document.evaluate(
-              stripRule,
-              element,
-              null,
-              XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
-              null
-            );
-            
-            for (let i = stripResult.snapshotLength - 1; i >= 0; i--) {
-              const nodeToRemove = stripResult.snapshotItem(i);
-              if (nodeToRemove && nodeToRemove.parentNode) {
-                nodeToRemove.parentNode.removeChild(nodeToRemove);
-              }
-            }
+
+        if (result.snapshotLength > 0) {
+          const elements = [];
+          for (let i = 0; i < result.snapshotLength; i++) {
+            elements.push(result.snapshotItem(i));
           }
-          
-          extractedContent = element.innerHTML;
+
+          console.log(`   Found content with: ${bodySelector}`);
+
+          let bodyElement;
+          if (elements.length === 1) {
+            bodyElement = elements[0];
+          } else {
+            bodyElement = document.createElement('div');
+            elements.forEach(node => {
+              bodyElement.appendChild(node.cloneNode(true));
+            });
+          }
+
+          const cleanElement = cleanElementWithConfig(bodyElement, siteConfig, document, XPathResult);
+          extractedContent = cleanElement.innerHTML;
           break;
         }
       } catch (e) {
@@ -208,9 +182,7 @@ function testExtraction(testCase) {
       }
 
       // EPUB golden compare if available
-      const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
-      const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
-      if (fs.existsSync(expectedEpubPath)) {
+      if (expectedEpubPath && fs.existsSync(expectedEpubPath)) {
         console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
         try {
           const zip = new AdmZip(expectedEpubPath);
@@ -242,9 +214,9 @@ function testExtraction(testCase) {
       
       // Check for expected phrases
       let allPhrasesFound = true;
-      const plainText = extractedContent.replace(/<[^>]*>/g, '').trim();
+      const plainText = htmlToText(extractedContent, document).trim();
       
-      for (const phrase of testCase.expectedPhrases) {
+      for (const phrase of expectedPhrases) {
         const found = extractedContent.includes(phrase) || plainText.includes(phrase);
         if (found) {
           console.log(`✅ Found: "${phrase}"`);
@@ -327,10 +299,7 @@ function testExtraction(testCase) {
   }
 
   // EPUB golden compare if available
-  // Recompute EPUB path for readability fallback section
-  const htmlFileBase2 = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
-  const expectedEpubPath2 = path.join(path.dirname(testCase.htmlPath), htmlFileBase2 + '.expected.epub');
-  if (fs.existsSync(expectedEpubPath)) {
+  if (expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
     try {
       const zip = new AdmZip(expectedEpubPath);
@@ -362,7 +331,7 @@ function testExtraction(testCase) {
   
   // Check for expected phrases
   let allPhrasesFound = true;
-  for (const phrase of testCase.expectedPhrases) {
+  for (const phrase of expectedPhrases) {
     const found = article.content.includes(phrase) || article.textContent?.includes(phrase);
     if (found) {
       console.log(`✅ Found: "${phrase}"`);
@@ -373,7 +342,7 @@ function testExtraction(testCase) {
   }
   
   // Show content preview
-  const plainText = article.content.replace(/<[^>]*>/g, '').trim();
+  const plainText = htmlToText(article.content, document).trim();
   console.log('\n📄 Content preview:');
   console.log('Beginning:', plainText.substring(0, 100) + '...');
   console.log('Ending:', '...' + plainText.substring(plainText.length - 100));
@@ -386,6 +355,99 @@ function testExtraction(testCase) {
   return allPhrasesFound && lengthOk;
 }
 
+// Standalone HTML preprocessing function (matches PHP str_replace logic)
+function applyHtmlPreprocessing(html, preprocessingRules) {
+  let modifiedHtml = html;
+  const extraRules = [];
+
+  for (const rule of preprocessingRules) {
+    if (rule.find && rule.replace !== undefined) {
+      const findString = rule.find;
+      const replaceString = rule.replace;
+      modifiedHtml = modifiedHtml.split(findString).join(replaceString);
+
+      // Auto-generate closing tag replacement for opening tags
+      const openingTagMatch = findString.match(/^<([a-zA-Z][a-zA-Z0-9-]*)$/);
+      const replaceTagMatch = replaceString.match(/^<([a-zA-Z][a-zA-Z0-9-]*)$/);
+
+      if (openingTagMatch && replaceTagMatch) {
+        const originalTag = openingTagMatch[1];
+        const newTag = replaceTagMatch[1];
+        const closingFind = '</' + originalTag + '>';
+        const closingReplace = '</' + newTag + '>';
+
+        const alreadyDefined = preprocessingRules.some(r => r.find === closingFind);
+        if (!alreadyDefined) {
+          extraRules.push({ find: closingFind, replace: closingReplace });
+        }
+      }
+    }
+  }
+
+  for (const extraRule of extraRules) {
+    modifiedHtml = modifiedHtml.split(extraRule.find).join(extraRule.replace);
+  }
+
+  return modifiedHtml;
+}
+
+function htmlToText(html, doc) {
+  const div = doc.createElement('div');
+  div.innerHTML = html || '';
+  return div.textContent || div.innerText || '';
+}
+
+function cleanElementWithConfig(element, config, doc, XPathResult) {
+  const clone = element.cloneNode(true);
+
+  if (config.strip && config.strip.length > 0) {
+    for (const stripRule of config.strip) {
+      const elementsToRemove = doc.evaluate(
+        stripRule,
+        clone,
+        null,
+        XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+        null
+      );
+
+      for (let i = elementsToRemove.snapshotLength - 1; i >= 0; i--) {
+        const elementToRemove = elementsToRemove.snapshotItem(i);
+        if (elementToRemove && elementToRemove.remove) {
+          elementToRemove.remove();
+        }
+      }
+    }
+  }
+
+  if (config.strip_id_or_class && config.strip_id_or_class.length > 0) {
+    for (const selector of config.strip_id_or_class) {
+      const cleanSelector = selector.replace(/['"]/g, '');
+      const elementsToRemove = clone.querySelectorAll(
+        '[class*="' + cleanSelector + '"], [id*="' + cleanSelector + '"]'
+      );
+      for (let i = elementsToRemove.length - 1; i >= 0; i--) {
+        if (elementsToRemove[i] && elementsToRemove[i].remove) {
+          elementsToRemove[i].remove();
+        }
+      }
+    }
+  }
+
+  if (config.strip_image_src && config.strip_image_src.length > 0) {
+    for (const srcPattern of config.strip_image_src) {
+      const cleanPattern = srcPattern.replace(/['"]/g, '');
+      const imagesToRemove = clone.querySelectorAll('img[src*="' + cleanPattern + '"]');
+      for (let i = imagesToRemove.length - 1; i >= 0; i--) {
+        if (imagesToRemove[i] && imagesToRemove[i].remove) {
+          imagesToRemove[i].remove();
+        }
+      }
+    }
+  }
+
+  return clone;
+}
+
 // Load test cases from folders
 function loadTestCases() {
   const testCases = [];
@@ -396,7 +458,11 @@ function loadTestCases() {
     const files = fs.readdirSync(unsolvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
       const testCase = JSON.parse(fs.readFileSync(path.join(unsolvedDir, file), 'utf8'));
-      testCase.htmlPath = path.join(unsolvedDir, testCase.htmlFile);
+      if (testCase.htmlFile) {
+        testCase.htmlPath = path.join(unsolvedDir, testCase.htmlFile);
+      } else if (typeof testCase.content === 'string' && testCase.content.length > 0) {
+        testCase.htmlContent = testCase.content;
+      }
       testCase.priority = 'UNSOLVED';
       testCases.push(testCase);
     }
@@ -408,7 +474,11 @@ function loadTestCases() {
     const files = fs.readdirSync(solvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
       const testCase = JSON.parse(fs.readFileSync(path.join(solvedDir, file), 'utf8'));
-      testCase.htmlPath = path.join(solvedDir, testCase.htmlFile);
+      if (testCase.htmlFile) {
+        testCase.htmlPath = path.join(solvedDir, testCase.htmlFile);
+      } else if (typeof testCase.content === 'string' && testCase.content.length > 0) {
+        testCase.htmlContent = testCase.content;
+      }
       testCase.priority = 'SOLVED';
       testCases.push(testCase);
     }

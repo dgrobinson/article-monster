@@ -7,10 +7,10 @@
   function logDebug(category, message, details) {
     try {
       __bmLog.push({ t: Date.now(), category: category, message: String(message), details: details || null });
-    } catch (e) {}
+    } catch {}
     try {
       console.log('[bm:' + category + ']', message, details || '');
-    } catch (e) {}
+    } catch {}
   }
 
   // Proxy console methods into __bmLog while preserving original behavior
@@ -28,22 +28,22 @@
         var args = Array.prototype.slice.call(arguments);
         try {
           var safeArgs = args.map(function(a) {
-            try { return typeof a === 'string' ? a : JSON.stringify(a); } catch (e) { return String(a); }
+            try { return typeof a === 'string' ? a : JSON.stringify(a); } catch { return String(a); }
           }).slice(0, 10);
           __bmLog.push({ t: Date.now(), level: level, args: safeArgs });
-        } catch (e) {}
+        } catch {}
         return orig.apply(console, args);
       };
     });
     window.addEventListener('error', function(e) {
-      try { __bmLog.push({ t: Date.now(), level: 'error', message: e.message, source: e.filename, line: e.lineno, col: e.colno }); } catch (_) {}
+      try { __bmLog.push({ t: Date.now(), level: 'error', message: e.message, source: e.filename, line: e.lineno, col: e.colno }); } catch {}
     });
     window.addEventListener('unhandledrejection', function(e) {
       try {
         var reason = e.reason;
         var msg = reason && (reason.message || String(reason));
         __bmLog.push({ t: Date.now(), level: 'error', message: msg || 'unhandledrejection' });
-      } catch (_) {}
+      } catch {}
     });
   })();
 
@@ -238,7 +238,7 @@
               if (!isNaN(date.getTime())) {
                 return date.toISOString();
               }
-            } catch (e) {
+            } catch {
               // Continue to next selector
             }
           }
@@ -570,7 +570,7 @@
         var div = document.createElement('div');
         div.innerHTML = html;
         return div.textContent || div.innerText || '';
-      } catch (e) {
+      } catch {
         return html.replace(/<[^>]*>/g, '');
       }
     },
@@ -949,7 +949,7 @@
             var url = this._makeAbsoluteUrl(result.stringValue.trim());
             if (url) return url;
           }
-        } catch (e) {
+        } catch {
           // XPath failed, try as node selector
         }
 
@@ -1042,13 +1042,13 @@
             return data.config;
           }
         }
-      } catch (e) {
+      } catch {
         // Session storage not available or parsing failed
       }
       return null;
     },
 
-    _getSiteConfig: function(hostname) {
+    _getSiteConfig: function(_hostname) {
       // All configs should be fetched from server (FiveFilters)
       // This function is deprecated - configs come from cache or server
       return null;
@@ -1075,16 +1075,16 @@
                   timestamp: Date.now()
                 }));
                 console.log('Fetched site config for', hostname, 'from FiveFilters');
-              } catch (e) {
+              } catch {
                 // Session storage not available, ignore
               }
             }
           })
-          .catch(function(error) {
+          .catch(function() {
             // Silently fail - this is a nice-to-have feature
             console.log('No dynamic config available for', hostname);
           });
-      } catch (e) {
+      } catch {
         // Ignore any errors in dynamic config fetching
       }
     },
@@ -1106,7 +1106,7 @@
                 timestamp: Date.now()
               }));
               console.log('Fetched and cached site config for', hostname, 'from FiveFilters');
-            } catch (e) {
+            } catch {
               // Session storage not available, ignore
             }
             return data.config;
@@ -1121,86 +1121,7 @@
 
     // Fix image URLs to be absolute and detect images
     _fixImageUrls: function(html) {
-      if (!html) return html;
-
-      var div = document.createElement('div');
-      div.innerHTML = html;
-      var baseUrl = window.location.origin;
-      var currentUrl = window.location.href;
-
-      div.querySelectorAll('img').forEach(function(img) {
-        // Get the actual resolved src from the DOM element
-        var actualSrc = img.src || img.getAttribute('src');
-
-        // Fix relative URLs to absolute
-        if (actualSrc && !actualSrc.startsWith('http') && !actualSrc.startsWith('data:')) {
-          try {
-            img.src = new URL(actualSrc, currentUrl).href;
-          } catch (e) {
-            // If URL construction fails, try with base URL
-            if (actualSrc.startsWith('/')) {
-              img.src = baseUrl + actualSrc;
-            }
-          }
-        } else if (actualSrc && actualSrc.startsWith('http')) {
-          // Ensure we're using the full URL
-          img.src = actualSrc;
-        }
-
-        // Also fix data-src for lazy-loaded images
-        var dataSrc = img.getAttribute('data-src');
-        if (dataSrc && !img.src) {
-          if (!dataSrc.startsWith('http') && !dataSrc.startsWith('data:')) {
-            try {
-              img.src = new URL(dataSrc, currentUrl).href;
-            } catch (e) {
-              if (dataSrc.startsWith('/')) {
-                img.src = baseUrl + dataSrc;
-              }
-            }
-          } else {
-            img.src = dataSrc;
-          }
-        }
-
-        // Also fix srcset for responsive images
-        if (img.srcset) {
-          img.srcset = img.srcset.split(',').map(function(src) {
-            var parts = src.trim().split(' ');
-            var url = parts[0];
-            var descriptor = parts.slice(1).join(' ');
-
-            if (!url.startsWith('http') && !url.startsWith('data:')) {
-              try {
-                url = new URL(url, currentUrl).href;
-              } catch (e) {
-                if (url.startsWith('/')) {
-                  url = baseUrl + url;
-                }
-              }
-            }
-
-            return descriptor ? url + ' ' + descriptor : url;
-          }).join(', ');
-        }
-
-        // Add loading attributes for better performance
-        if (!img.hasAttribute('loading')) {
-          img.setAttribute('loading', 'lazy');
-        }
-
-        // Add a width/height if missing to prevent layout shifts
-        if (!img.hasAttribute('width') && img.naturalWidth) {
-          img.setAttribute('width', img.naturalWidth);
-        }
-        if (!img.hasAttribute('height') && img.naturalHeight) {
-          img.setAttribute('height', img.naturalHeight);
-        }
-
-        console.log('Fixed image:', img.src);
-      });
-
-      return div.innerHTML;
+      return fixImageUrls(html);
     },
 
     // Detect if content has images
@@ -1362,7 +1283,7 @@
 
   // Async function to extract article, waiting for site config if needed
   function extractArticleWithConfig(indicator) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve) {
       var hostname = window.location.hostname.replace(/^www\./, '');
 
       // Check if we have a cached config from a previous fetch
@@ -1424,7 +1345,7 @@
                 timestamp: Date.now()
               }));
               console.log('Using fresh FiveFilters config for', hostname);
-            } catch (e) {
+            } catch {
               // Session storage not available, continue anyway
             }
 
@@ -1469,7 +1390,7 @@
             resolve(article);
           }
         })
-        .catch(function(error) {
+        .catch(function() {
           // Config fetch failed, fall back to regular extraction
           console.log('Config fetch failed for', hostname, '- using fallback extraction');
           updateIndicator(indicator, '📖 Using general extraction (no site-specific config available)...');
@@ -1559,6 +1480,26 @@
         console.error('Failed to base64-encode content:', e);
       }
 
+      var debugHookResult = null;
+      if (typeof window.__ARTICLE_MONSTER_DEBUG_HOOK__ === 'function') {
+        try {
+          debugHookResult = window.__ARTICLE_MONSTER_DEBUG_HOOK__({
+            article: enhancedArticle,
+            content_b64: contentB64,
+            debugInfo: __bmLog
+          }) || null;
+        } catch (e) {
+          console.warn('Debug hook failed:', e);
+        }
+      }
+
+      if (debugHookResult && debugHookResult.skipSend) {
+        if (document.body.contains(indicator)) {
+          document.body.removeChild(indicator);
+        }
+        return { __debugSkipSend: true };
+      }
+
       // Send to service
       updateIndicator(indicator, 'Sending to Kindle and Zotero...');
 
@@ -1595,8 +1536,16 @@
         })
       });
     })
-      .then(response => response.json())
+      .then(response => {
+        if (response && response.__debugSkipSend) {
+          return response;
+        }
+        return response.json();
+      })
       .then(data => {
+        if (data && data.__debugSkipSend) {
+          return;
+        }
         document.body.removeChild(indicator);
 
         // Show results
@@ -1642,6 +1591,8 @@
   // Fix relative image URLs to absolute URLs
   function fixImageUrls(html) {
     try {
+      if (!html) return html;
+
       // IMPORTANT: When we set innerHTML, the browser normalizes the HTML
       // This can strip newlines and merge paragraphs
       // Let's try to preserve the original structure as much as possible
@@ -1649,47 +1600,79 @@
       var div = document.createElement('div');
       div.innerHTML = html;
       var baseUrl = window.location.origin;
+      var currentUrl = window.location.href;
 
-      // Fix img src attributes
-      var images = div.querySelectorAll('img');
-      for (var i = 0; i < images.length; i++) {
-        var img = images[i];
+      div.querySelectorAll('img').forEach(function(img) {
+        // Get the actual resolved src from the DOM element
+        var actualSrc = img.src || img.getAttribute('src');
 
         // Fix relative URLs to absolute
-        if (img.src && !img.src.startsWith('http')) {
+        if (actualSrc && !actualSrc.startsWith('http') && !actualSrc.startsWith('data:')) {
           try {
-            img.src = new URL(img.src, baseUrl).href;
-          } catch (e) {
-            console.warn('Could not fix image URL:', img.src);
+            img.src = new URL(actualSrc, currentUrl).href;
+          } catch {
+            // If URL construction fails, try with base URL
+            if (actualSrc.startsWith('/')) {
+              img.src = baseUrl + actualSrc;
+            }
+          }
+        } else if (actualSrc && actualSrc.startsWith('http')) {
+          // Ensure we're using the full URL
+          img.src = actualSrc;
+        }
+
+        // Also fix data-src for lazy-loaded images
+        var dataSrc = img.getAttribute('data-src');
+        if (dataSrc && !img.src) {
+          if (!dataSrc.startsWith('http') && !dataSrc.startsWith('data:')) {
+            try {
+              img.src = new URL(dataSrc, currentUrl).href;
+            } catch {
+              if (dataSrc.startsWith('/')) {
+                img.src = baseUrl + dataSrc;
+              }
+            }
+          } else {
+            img.src = dataSrc;
           }
         }
 
         // Also fix srcset for responsive images
         if (img.srcset) {
-          var srcsetParts = img.srcset.split(',');
-          var fixedSrcset = [];
+          img.srcset = img.srcset.split(',').map(function(src) {
+            var parts = src.trim().split(' ');
+            var url = parts[0];
+            var descriptor = parts.slice(1).join(' ');
 
-          for (var j = 0; j < srcsetParts.length; j++) {
-            var part = srcsetParts[j].trim();
-            var spaceIndex = part.lastIndexOf(' ');
-            var url = spaceIndex > -1 ? part.substring(0, spaceIndex) : part;
-            var descriptor = spaceIndex > -1 ? part.substring(spaceIndex) : '';
-
-            if (!url.startsWith('http')) {
+            if (!url.startsWith('http') && !url.startsWith('data:')) {
               try {
-                url = new URL(url, baseUrl).href;
-              } catch (e) {
-                console.warn('Could not fix srcset URL:', url);
-                continue;
+                url = new URL(url, currentUrl).href;
+              } catch {
+                if (url.startsWith('/')) {
+                  url = baseUrl + url;
+                }
               }
             }
 
-            fixedSrcset.push(url + descriptor);
-          }
-
-          img.srcset = fixedSrcset.join(', ');
+            return descriptor ? url + ' ' + descriptor : url;
+          }).join(', ');
         }
-      }
+
+        // Add loading attributes for better performance
+        if (!img.hasAttribute('loading')) {
+          img.setAttribute('loading', 'lazy');
+        }
+
+        // Add a width/height if missing to prevent layout shifts
+        if (!img.hasAttribute('width') && img.naturalWidth) {
+          img.setAttribute('width', img.naturalWidth);
+        }
+        if (!img.hasAttribute('height') && img.naturalHeight) {
+          img.setAttribute('height', img.naturalHeight);
+        }
+
+        console.log('Fixed image:', img.src);
+      });
 
       return div.innerHTML;
     } catch (e) {

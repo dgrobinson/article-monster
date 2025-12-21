@@ -63,9 +63,6 @@ async function sendToZotero(article, debugLogger = null) {
       await addToCollection(baseUrl, headers, itemKey, testCollection);
     }
 
-    const message = attachmentKey
-      ? `item ${itemKey}, attachment ${attachmentKey}`
-      : `item ${itemKey} (attachment failed)`;
     log('zotero', 'Successfully sent to Zotero', { itemKey, attachmentKey });
 
     return {
@@ -149,7 +146,7 @@ function parseAuthors(bylineString) {
   });
 }
 
-async function uploadAttachment(baseUrl, headers, parentKey, epub, article, log = console.log) {
+async function uploadAttachment(baseUrl, headers, parentKey, epub, article, _log = console.log) {
   try {
     // Step 1: Register the attachment
     const attachmentItem = {
@@ -238,7 +235,7 @@ async function uploadAttachment(baseUrl, headers, parentKey, epub, article, log 
   }
 }
 
-async function addToCollection(baseUrl, headers, itemKey, collectionKey, log = console.log) {
+async function addToCollection(baseUrl, headers, itemKey, collectionKey, _log = console.log) {
   try {
     console.log(`Adding item to collection: ${collectionKey}`);
 
