@@ -28,6 +28,8 @@ Enable the endpoints with `ENABLE_KINDLE_ARCHIVE_DEBUG=true`. If `KINDLE_ARCHIVE
 - Fetch a payload by id:
   - `GET /debug/kindle-payloads/:id`
   - Add `?format=json` to return metadata + HTML in JSON.
+- Capture a payload without sending email:
+  - `POST /debug/capture-article`
 
 ## Preview workflow
 1) Find a payload id from the archive directory or the list endpoint.
@@ -44,6 +46,26 @@ If Kindle Previewer is installed in a non-standard location:
 ```
 KINDLE_PREVIEWER_BIN=/path/to/Kindle\ Previewer
 ```
+
+## Capture new payloads (bookmarklet runner)
+Use the capture script to run the bookmarklet on a live URL and archive the HTML without sending mail.
+
+Local mode (default) archives to your local `kindle-archive/`:
+```
+npm run capture:bookmarklet -- --url "https://example.com/article"
+```
+
+Server mode posts the captured payload to the debug endpoint:
+```
+npm run capture:bookmarklet -- --mode server --url "https://example.com/article" --service-origin http://localhost:3000 --token your-token
+```
+
+Optional flags:
+- `--bookmarklet-source remote|local` (remote loads from the service; local uses `public/bookmarklet.js`)
+- `--headful` to see the browser window
+- `--timeout-ms 30000` to adjust capture timeout
+
+The script prints the archive `id` and metrics; then run `npm run preview:kindle -- --id <id>` to inspect.
 
 ## Metrics
 Each send logs `contentLength`, `imageCount`, and `hash` so regressions can be spotted quickly.

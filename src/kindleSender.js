@@ -220,4 +220,4 @@ function formatDate(dateString) {
   }
 }
 
-module.exports = { sendToKindle };
+module.exports = { sendToKindle, createKindleHTML };
