@@ -18,6 +18,11 @@ The primary operator is not a developer. When reporting changes or decisions, in
 - How to verify (simple steps).
 Define any unavoidable jargon briefly.
 
+## Workflow Safety
+
+- Never push directly to `main`. Use a feature branch and open a PR.
+- If a direct push happens, create a revert PR and explain the fix in ELI5 terms.
+
 ## Critical Bug Fixes (August 2025)
 
 ### MAJOR BREAKTHROUGH: System Now Works Reliably 🎯
