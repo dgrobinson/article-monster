@@ -12,12 +12,14 @@ console.log('Environment variables loaded:', {
   NODE_ENV: process.env.NODE_ENV || 'development',
   GITHUB_TOKEN: process.env.GITHUB_TOKEN ? 'YES (hidden)' : 'NO',
   GITHUB_REPOSITORY: process.env.GITHUB_REPOSITORY || 'NOT SET',
-  ENABLE_DEBUG_CAPTURE: process.env.ENABLE_DEBUG_CAPTURE || 'NOT SET'
+  ENABLE_DEBUG_CAPTURE: process.env.ENABLE_DEBUG_CAPTURE || 'NOT SET',
+  ENABLE_KINDLE_ARCHIVE_DEBUG: process.env.ENABLE_KINDLE_ARCHIVE_DEBUG || 'NOT SET'
 });
 const express = require('express');
 const { extractArticle } = require('./articleExtractor');
 const { sendToKindle } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
+const { listKindlePayloads, getKindlePayload } = require('./kindleArchive');
 const ConfigFetcher = require('./configFetcher');
 const DebugLogger = require('./debugLogger');
 const GitHubIssues = require('./githubIssues');
@@ -128,6 +130,24 @@ function validateReportUrl(url) {
   }
 
   return parsedUrl;
+}
+
+function authorizeKindleArchive(req, res) {
+  if (process.env.ENABLE_KINDLE_ARCHIVE_DEBUG !== 'true') {
+    res.status(404).json({ error: 'Not found' });
+    return false;
+  }
+
+  const token = process.env.KINDLE_ARCHIVE_DEBUG_TOKEN;
+  if (token) {
+    const provided = req.get('x-debug-token') || req.query.token;
+    if (provided !== token) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return false;
+    }
+  }
+
+  return true;
 }
 
 // Endpoint to report a broken extraction which opens a GitHub issue
@@ -415,6 +435,61 @@ app.post('/process-article', async (req, res) => {
 
     res.status(500).json({
       error: 'Failed to process article',
+      message: error.message
+    });
+  }
+});
+
+// Debug endpoints for archived Kindle payloads (gated)
+app.get('/debug/kindle-payloads', async (req, res) => {
+  if (!authorizeKindleArchive(req, res)) return;
+
+  try {
+    const rawLimit = Number.parseInt(req.query.limit, 10);
+    const limit = Number.isFinite(rawLimit)
+      ? Math.min(Math.max(rawLimit, 1), 200)
+      : 50;
+
+    const payloads = await listKindlePayloads({ limit });
+    res.json({
+      success: true,
+      count: payloads.length,
+      payloads
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Failed to list Kindle payloads',
+      message: error.message
+    });
+  }
+});
+
+app.get('/debug/kindle-payloads/:id', async (req, res) => {
+  if (!authorizeKindleArchive(req, res)) return;
+
+  try {
+    const { id } = req.params;
+    const { html, metadata } = await getKindlePayload(id);
+
+    if (req.query.format === 'json') {
+      return res.json({
+        success: true,
+        metadata,
+        html
+      });
+    }
+
+    res.set('Content-Type', 'text/html; charset=utf-8');
+    res.set('X-Kindle-Archive-Id', metadata.id || id);
+    res.set('X-Kindle-Archive-Hash', metadata.hash || '');
+    res.set('X-Kindle-Archive-Timestamp', metadata.timestamp || '');
+    return res.send(html);
+  } catch (error) {
+    if (error.code === 'ENOENT') {
+      return res.status(404).json({ error: 'Archive entry not found' });
+    }
+    return res.status(500).json({
+      error: 'Failed to fetch Kindle payload',
       message: error.message
     });
   }
