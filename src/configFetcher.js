@@ -4,6 +4,27 @@
 const fs = require('fs').promises;
 const path = require('path');
 
+const DIRECTIVE_DEFS = {
+  multi: [
+    'title',
+    'body',
+    'author',
+    'date',
+    'strip',
+    'strip_id_or_class',
+    'strip_image_src',
+    'single_page_link',
+    'next_page_link',
+    'test_url',
+    'find_string',
+    'replace_string'
+  ],
+  boolean: ['tidy', 'prune', 'autodetect_on_failure'],
+  string: ['parser'],
+  parameterized: ['replace_string'],
+  legacy: ['prefer_jsonld']
+};
+
 class ConfigFetcher {
   constructor() {
     this.configCache = new Map();
@@ -42,7 +63,8 @@ class ConfigFetcher {
     }
   }
 
-  parseFtrConfig(configText) {
+  parseFtrConfig(configText, options = {}) {
+    const { requireBody = true } = options;
     const lines = configText.split('\n');
     const config = {
       title: [],
@@ -82,28 +104,27 @@ class ConfigFetcher {
       if (!command || !val) continue;
 
       // Multi-statement commands (PHP: in_array check for arrays)
-      if (['title', 'body', 'author', 'date', 'strip', 'strip_id_or_class', 'strip_image_src',
-        'single_page_link', 'next_page_link', 'test_url', 'find_string', 'replace_string'].includes(command)) {
+      if (DIRECTIVE_DEFS.multi.includes(command)) {
         config[command].push(val);
       }
       // Boolean commands (PHP: $config->$command = ($val == 'yes' || $val == 'true'))
-      else if (['tidy', 'prune', 'autodetect_on_failure'].includes(command)) {
+      else if (DIRECTIVE_DEFS.boolean.includes(command)) {
         config[command] = (val === 'yes' || val === 'true');
       }
       // String commands
-      else if (['parser'].includes(command)) {
+      else if (DIRECTIVE_DEFS.string.includes(command)) {
         config[command] = val;
       }
       // Parameterized commands: replace_string(find_text): replace_text
       else if (command.endsWith(')')) {
         const match = command.match(/^([a-z0-9_]+)\((.*?)\)$/i);
-        if (match && match[1] === 'replace_string') {
+        if (match && DIRECTIVE_DEFS.parameterized.includes(match[1])) {
           config.find_string.push(match[2]);
           config.replace_string.push(val);
         }
       }
       // Legacy preference
-      else if (command === 'prefer_jsonld') {
+      else if (DIRECTIVE_DEFS.legacy.includes(command)) {
         config.preferJsonLd = (val === 'true' || val === '1');
       }
     }
@@ -119,7 +140,11 @@ class ConfigFetcher {
     config.htmlPreprocessing = htmlPreprocessing;
 
     // Only require body rules; title extraction can fall back to defaults
-    return config.body.length > 0 ? config : null;
+    if (requireBody && config.body.length === 0) {
+      return null;
+    }
+
+    return config;
   }
 
   // Preload all configs present in the directory
@@ -149,5 +174,6 @@ class ConfigFetcher {
   }
 }
 
-module.exports = ConfigFetcher;
+ConfigFetcher.SUPPORTED_DIRECTIVES = DIRECTIVE_DEFS;
 
+module.exports = ConfigFetcher;

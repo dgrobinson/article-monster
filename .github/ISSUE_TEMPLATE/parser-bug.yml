@@ -1,0 +1,78 @@
+name: "Parser Bug Report"
+description: "Report a FiveFilters parser bug with reproducible artifacts."
+title: "Parser bug: <hostname>"
+labels: ["bug", "parser"]
+body:
+  - type: input
+    id: hostname
+    attributes:
+      label: "Hostname"
+      description: "Hostname only (no scheme or path)."
+      placeholder: "example.com"
+    validations:
+      required: true
+  - type: input
+    id: config_path
+    attributes:
+      label: "Config file path"
+      description: "Path under site-configs/ (do not edit the config)."
+      placeholder: "site-configs/example.com.txt"
+    validations:
+      required: true
+  - type: textarea
+    id: config_snippet
+    attributes:
+      label: "Raw config snippet"
+      description: "Paste the relevant lines (include directive names and values)."
+      render: "shell"
+    validations:
+      required: true
+  - type: textarea
+    id: expected_parse
+    attributes:
+      label: "Expected parse output"
+      description: "What the parser should return (JSON or structured notes)."
+    validations:
+      required: true
+  - type: textarea
+    id: actual_parse
+    attributes:
+      label: "Actual parse output"
+      description: "Paste output from scripts/inspect-config.js using --json."
+      render: "json"
+    validations:
+      required: true
+  - type: textarea
+    id: repro_steps
+    attributes:
+      label: "Reproduction steps"
+      description: "How to reproduce the parser issue locally or via the bookmarklet."
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: "Logs (bookmarklet + server)"
+      description: "Include browser console logs and server logs for the same attempt."
+    validations:
+      required: true
+  - type: dropdown
+    id: html_preprocessing
+    attributes:
+      label: "HTML preprocessing involved?"
+      description: "Does the config use find_string/replace_string or other preprocessing directives?"
+      options:
+        - "Yes"
+        - "No"
+        - "Unsure"
+    validations:
+      required: true
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: "Checklist"
+      options:
+        - label: "Verified /site-config/<hostname> returns the config"
+        - label: "Confirmed preprocessing is applied before DOM parsing"
+        - label: "Tested XPath selectors in browser dev tools"
+        - label: "Considered JSON-LD behavior (prefer_jsonld)"
