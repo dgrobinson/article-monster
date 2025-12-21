@@ -13,6 +13,7 @@ while restoring a single canonical plan for the anchor batch.
 - Ensure each PR matches the intended plan scope.
 - Restore a single canonical set of plan docs for anchor batch work.
 - Provide ELI5 summaries for the operator (non-developer).
+- Record the next batch focus so CI cleanup is not forgotten.
 
 ## Inputs
 - Open PR list: `gh pr list --state open --json number,title,headRefName,updatedAt,author,isDraft,labels`
@@ -94,6 +95,7 @@ Keep explanations in plain language and define jargon.
 - A reconciled list of PRs with merge order.
 - Canonical plan docs in `docs/batches/01-anchor/`.
 - ELI5 summary of decisions and next steps.
+- Note that the next batch is `02-compass` (nautical theme) with CI cleanup as a core focus.
 
 ## Verification
 - `npm test` passes for merged changes.
