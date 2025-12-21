@@ -75,10 +75,14 @@ function testExtraction(testCase) {
   
   // Load HTML or handle EPUB-only cases
   const htmlExists = testCase.htmlPath ? fs.existsSync(testCase.htmlPath) : false;
-  const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
-  const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
+  const htmlFileBase = testCase.htmlPath
+    ? path.basename(testCase.htmlPath, path.extname(testCase.htmlPath))
+    : null;
+  const expectedEpubPath = testCase.htmlPath
+    ? path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub')
+    : null;
 
-  if (!htmlExists && fs.existsSync(expectedEpubPath)) {
+  if (!htmlExists && expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`ℹ️ No HTML found, running EPUB-only validation using golden: ${expectedEpubPath}`);
     try {
       const zip = new AdmZip(expectedEpubPath);
@@ -167,7 +171,7 @@ function testExtraction(testCase) {
   }
 
   // If an EPUB golden exists, compare against it
-  if (fs.existsSync(expectedEpubPath)) {
+  if (expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
     try {
       const zip = new AdmZip(expectedEpubPath);
@@ -209,7 +213,7 @@ function testExtraction(testCase) {
   
   // Check for expected phrases
   let allPhrasesFound = true;
-  for (const phrase of testCase.expectedPhrases) {
+  for (const phrase of (testCase.expectedPhrases || [])) {
     const found = article.content.includes(phrase) || article.textContent?.includes(phrase);
     if (found) {
       console.log(`✅ Found: "${phrase}"`);
