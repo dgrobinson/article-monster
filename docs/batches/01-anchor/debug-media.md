@@ -22,6 +22,9 @@ Out of scope:
 - public/bookmarklet-debug.js
 - docs/EPUB_IMAGE_FIX.md
 - src/server.js (content_b64 handling)
+ - test/dev-scripts/test-debug-media-fixtures.js
+ - test/fixtures/debug-media/**
+ - test/support/fixtures.js
 
 ## Plan
 1) Unify image URL fixing
@@ -44,6 +47,7 @@ Out of scope:
 
 5) Add a small verification path
 - Add or update a dev script to compare debug vs production output for a known URL.
+ - Use fixture-backed checks in cloud; keep live browser validation local-only.
 
 ## Deliverables
 - Single image-fix implementation used across extraction paths.

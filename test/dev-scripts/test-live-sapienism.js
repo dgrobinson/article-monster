@@ -1,4 +1,10 @@
 const puppeteer = require('puppeteer');
+const { allowLiveFetch } = require('../support/network-guard');
+
+if (!allowLiveFetch) {
+  console.error('Live fetch disabled. Set ALLOW_LIVE_FETCH=true to run test-live-sapienism.');
+  process.exit(1);
+}
 
 async function run() {
   const serviceOrigin = process.env.SERVICE_ORIGIN || 'https://seal-app-t4vff.ondigitalocean.app';
@@ -74,5 +80,4 @@ function summarizePayload(p) {
 }
 
 run().catch(e => { console.error(e); process.exit(1); });
-
 

@@ -1,0 +1,23 @@
+{
+  "success": true,
+  "hostname": "fixtures.article-monster.test",
+  "config": {
+    "title": [
+      "//h1"
+    ],
+    "body": [
+      "//div[@id='article-body']"
+    ],
+    "strip": [],
+    "strip_id_or_class": [],
+    "find_string": [],
+    "replace_string": [],
+    "htmlPreprocessing": [],
+    "next_page_link": [
+      "//a[@rel='next']/@href"
+    ],
+    "autodetect_on_failure": false
+  },
+  "source": "fixture",
+  "updatedAt": "2025-01-01T00:00:00.000Z"
+}

@@ -1,6 +1,11 @@
 const puppeteer = require('puppeteer');
+const { allowLiveFetch } = require('../support/network-guard');
 
 async function run() {
+  if (!allowLiveFetch) {
+    console.error('Live fetch disabled. Set ALLOW_LIVE_FETCH=true to run test-loader.');
+    process.exit(1);
+  }
   const origin = process.env.ORIGIN || 'http://localhost:5173';
   const browser = await puppeteer.launch({
     headless: 'new',
@@ -75,5 +80,4 @@ async function run() {
 }
 
 run();
-
 

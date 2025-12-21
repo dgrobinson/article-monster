@@ -1,5 +1,7 @@
 const Epub = require('epub-gen');
 const fs = require('fs').promises;
+const os = require('os');
+const path = require('path');
 
 async function test() {
   const testContent = '<p>First paragraph here.</p>\n<p>Second paragraph here.</p>\n<p>Third paragraph here.</p>';
@@ -27,9 +29,10 @@ async function test() {
   
   // Now unzip and check the output
   const { execSync } = require('child_process');
-  execSync('rm -rf /tmp/test-epub-out && unzip -o -q /tmp/test-paragraphs.epub -d /tmp/test-epub-out');
+  const unzipDir = await fs.mkdtemp(path.join(os.tmpdir(), 'epub-test-'));
+  execSync(`unzip -o -q ${options.output} -d ${unzipDir}`);
   
-  const content = await fs.readFile('/tmp/test-epub-out/OEBPS/0_test-chapter.xhtml', 'utf8');
+  const content = await fs.readFile(path.join(unzipDir, 'OEBPS', '0_test-chapter.xhtml'), 'utf8');
   
   console.log('\nOutput content structure:');
   const pCount = (content.match(/<p>/g) || []).length;
