@@ -5,6 +5,8 @@
  * This properly simulates how the bookmarklet works in production
  */
 
+require('../support/network-guard');
+
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
@@ -69,11 +71,15 @@ function testExtraction(testCase) {
   console.log('─'.repeat(50));
   
   // Load HTML or handle EPUB-only cases
-  const htmlExists = fs.existsSync(testCase.htmlPath);
-  const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
-  const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
+  const htmlExists = testCase.htmlPath ? fs.existsSync(testCase.htmlPath) : false;
+  const htmlFileBase = testCase.htmlPath
+    ? path.basename(testCase.htmlPath, path.extname(testCase.htmlPath))
+    : null;
+  const expectedEpubPath = testCase.htmlPath
+    ? path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub')
+    : null;
 
-  if (!htmlExists && fs.existsSync(expectedEpubPath)) {
+  if (!htmlExists && expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`ℹ️ No HTML found, running EPUB-only validation using golden: ${expectedEpubPath}`);
     try {
       const zip = new AdmZip(expectedEpubPath);
@@ -118,6 +124,7 @@ function testExtraction(testCase) {
   const dom = new JSDOM(html, { url });
   const window = dom.window;
   const document = window.document;
+  const xpathResult = window.XPathResult;
   
   // Get hostname from URL
   const hostname = new URL(url).hostname.replace(/^www\./, '');
@@ -125,7 +132,7 @@ function testExtraction(testCase) {
   // Load FiveFilters config if available
   const siteConfig = loadSiteConfig(hostname);
   
-  if (siteConfig) {
+  if (siteConfig && xpathResult) {
     // Use FiveFilters config for extraction
     console.log('📋 Using FiveFilters extraction...');
     
@@ -139,24 +146,36 @@ function testExtraction(testCase) {
           bodySelector,
           document,
           null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          xpathResult.ORDERED_NODE_SNAPSHOT_TYPE,
           null
         );
-        
-        if (result.singleNodeValue) {
-          const element = result.singleNodeValue;
-          console.log(`   Found content with: ${bodySelector}`);
-          
+
+        if (result.snapshotLength > 0) {
+          console.log(`   Found ${result.snapshotLength} content node(s) with: ${bodySelector}`);
+
+          let element;
+          if (result.snapshotLength === 1) {
+            element = result.snapshotItem(0);
+          } else {
+            element = document.createElement('div');
+            for (let i = 0; i < result.snapshotLength; i++) {
+              const node = result.snapshotItem(i);
+              if (node) {
+                element.appendChild(node.cloneNode(true));
+              }
+            }
+          }
+
           // Apply strip rules
           for (const stripRule of siteConfig.strip) {
             const stripResult = document.evaluate(
               stripRule,
               element,
               null,
-              XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
+              xpathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
               null
             );
-            
+
             for (let i = stripResult.snapshotLength - 1; i >= 0; i--) {
               const nodeToRemove = stripResult.snapshotItem(i);
               if (nodeToRemove && nodeToRemove.parentNode) {
@@ -164,9 +183,13 @@ function testExtraction(testCase) {
               }
             }
           }
-          
-          extractedContent = element.innerHTML;
-          break;
+
+          const candidateContent = element.innerHTML || '';
+          const candidateText = element.textContent || '';
+          if (candidateText.trim().length > 0) {
+            extractedContent = candidateContent;
+            break;
+          }
         }
       } catch (e) {
         console.log(`   XPath error for ${bodySelector}: ${e.message}`);
@@ -180,7 +203,7 @@ function testExtraction(testCase) {
           titleSelector,
           document,
           null,
-          XPathResult.FIRST_ORDERED_NODE_TYPE,
+          xpathResult.FIRST_ORDERED_NODE_TYPE,
           null
         );
         
@@ -199,9 +222,10 @@ function testExtraction(testCase) {
       // Check extraction results
       console.log(`📏 Content length: ${extractedContent.length} bytes`);
       
+      const minLength = Number.isFinite(testCase.minLength) ? testCase.minLength : 0;
       let lengthOk = true;
-      if (extractedContent.length < testCase.minLength) {
-        console.log(`❌ Content too short (expected at least ${testCase.minLength} bytes)`);
+      if (extractedContent.length < minLength) {
+        console.log(`❌ Content too short (expected at least ${minLength} bytes)`);
         lengthOk = false;
       } else {
         console.log(`✅ Content length OK`);
@@ -242,9 +266,14 @@ function testExtraction(testCase) {
       
       // Check for expected phrases
       let allPhrasesFound = true;
-      const plainText = extractedContent.replace(/<[^>]*>/g, '').trim();
+      const plainText = (() => {
+        const wrapper = document.createElement('div');
+        wrapper.innerHTML = extractedContent;
+        return (wrapper.textContent || wrapper.innerText || '').trim();
+      })();
       
-      for (const phrase of testCase.expectedPhrases) {
+      const expectedPhrases = Array.isArray(testCase.expectedPhrases) ? testCase.expectedPhrases : [];
+      for (const phrase of expectedPhrases) {
         const found = extractedContent.includes(phrase) || plainText.includes(phrase);
         if (found) {
           console.log(`✅ Found: "${phrase}"`);
@@ -263,6 +292,8 @@ function testExtraction(testCase) {
     } else {
       console.log('❌ FiveFilters extraction failed, would fall back to Readability');
     }
+  } else if (siteConfig && !xpathResult) {
+    console.log('❌ XPathResult not available in JSDOM, falling back to Readability');
   }
   
   // Fall back to Readability.js if no FiveFilters config or extraction failed
@@ -318,9 +349,10 @@ function testExtraction(testCase) {
   
   // Check content length
   console.log(`📏 Content length: ${article.content.length} bytes`);
+  const minLength = Number.isFinite(testCase.minLength) ? testCase.minLength : 0;
   let lengthOk = true;
-  if (article.content.length < testCase.minLength) {
-    console.log(`❌ Content too short (expected at least ${testCase.minLength} bytes)`);
+  if (article.content.length < minLength) {
+    console.log(`❌ Content too short (expected at least ${minLength} bytes)`);
     lengthOk = false;
   } else {
     console.log(`✅ Content length OK`);
@@ -330,10 +362,10 @@ function testExtraction(testCase) {
   // Recompute EPUB path for readability fallback section
   const htmlFileBase2 = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
   const expectedEpubPath2 = path.join(path.dirname(testCase.htmlPath), htmlFileBase2 + '.expected.epub');
-  if (fs.existsSync(expectedEpubPath)) {
-    console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
+  if (expectedEpubPath2 && fs.existsSync(expectedEpubPath2)) {
+    console.log(`📚 Found EPUB golden: ${expectedEpubPath2}`);
     try {
-      const zip = new AdmZip(expectedEpubPath);
+      const zip = new AdmZip(expectedEpubPath2);
       const entries = zip.getEntries();
       let expectedXhtml = '';
       entries.forEach(entry => {
@@ -362,7 +394,8 @@ function testExtraction(testCase) {
   
   // Check for expected phrases
   let allPhrasesFound = true;
-  for (const phrase of testCase.expectedPhrases) {
+  const expectedPhrasesFallback = Array.isArray(testCase.expectedPhrases) ? testCase.expectedPhrases : [];
+  for (const phrase of expectedPhrasesFallback) {
     const found = article.content.includes(phrase) || article.textContent?.includes(phrase);
     if (found) {
       console.log(`✅ Found: "${phrase}"`);
@@ -396,6 +429,9 @@ function loadTestCases() {
     const files = fs.readdirSync(unsolvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
       const testCase = JSON.parse(fs.readFileSync(path.join(unsolvedDir, file), 'utf8'));
+      if (!testCase.name || !testCase.htmlFile) {
+        continue;
+      }
       testCase.htmlPath = path.join(unsolvedDir, testCase.htmlFile);
       testCase.priority = 'UNSOLVED';
       testCases.push(testCase);
@@ -408,6 +444,9 @@ function loadTestCases() {
     const files = fs.readdirSync(solvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
       const testCase = JSON.parse(fs.readFileSync(path.join(solvedDir, file), 'utf8'));
+      if (!testCase.name || !testCase.htmlFile) {
+        continue;
+      }
       testCase.htmlPath = path.join(solvedDir, testCase.htmlFile);
       testCase.priority = 'SOLVED';
       testCases.push(testCase);
