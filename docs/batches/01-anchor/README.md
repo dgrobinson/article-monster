@@ -6,7 +6,3 @@
 - pagination: add multi-page extraction via next_page_link/autodetect.
 - debug-media: align debug bookmarklet with production and unify image handling.
 - parser-bug-intake: add a structured intake for parser bugs (template + inspection script).
-- cloud-ready: make anchor workstream runnable in Codex Cloud (offline fixtures, network guardrails, env guidance).
-- kindle-loop: capture outbound Kindle payloads and add a preview workflow to close the output loop.
-
-Cloud/local execution split: see docs/batches/01-anchor/cloud-ready.md.
