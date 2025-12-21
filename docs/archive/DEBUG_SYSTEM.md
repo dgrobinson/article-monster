@@ -79,7 +79,7 @@ Best for: Quick setup, personal projects
 1. Create token with `repo` scope
 2. Add to environment: `GITHUB_TOKEN`
 
-See [docs/GITHUB_AUTH_SETUP.md](docs/GITHUB_AUTH_SETUP.md) for detailed setup instructions.
+See [`docs/GITHUB_AUTH_SETUP.md`](../GITHUB_AUTH_SETUP.md) for detailed setup instructions.
 
 ### 3. Initial Branch Creation
 
