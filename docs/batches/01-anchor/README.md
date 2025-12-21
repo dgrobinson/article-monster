@@ -6,3 +6,5 @@
 - pagination: add multi-page extraction via next_page_link/autodetect.
 - debug-media: align debug bookmarklet with production and unify image handling.
 - parser-bug-intake: add a structured intake for parser bugs (template + inspection script).
+
+PR reconciliation plan: docs/plans/anchor-pr-reconciliation.md.
