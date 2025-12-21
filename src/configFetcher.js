@@ -63,6 +63,7 @@ class ConfigFetcher {
       prune: null,
       tidy: null,
       autodetect_on_failure: null,
+      autodetect_next_page: null,
       parser: null
     };
 
@@ -87,7 +88,7 @@ class ConfigFetcher {
         config[command].push(val);
       }
       // Boolean commands (PHP: $config->$command = ($val == 'yes' || $val == 'true'))
-      else if (['tidy', 'prune', 'autodetect_on_failure'].includes(command)) {
+      else if (['tidy', 'prune', 'autodetect_on_failure', 'autodetect_next_page'].includes(command)) {
         config[command] = (val === 'yes' || val === 'true');
       }
       // String commands
@@ -150,4 +151,3 @@ class ConfigFetcher {
 }
 
 module.exports = ConfigFetcher;
-
