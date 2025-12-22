@@ -70,15 +70,18 @@ function loadTestCases() {
 
 // Test extraction on a single HTML file
 function testExtraction(testCase) {
-  console.log(`\n📖 Testing: ${testCase.name} [${testCase.priority}]`);
+  const displayName = testCase.name || testCase.url || '(unnamed test case)';
+  console.log(`\n📖 Testing: ${displayName} [${testCase.priority}]`);
   console.log('─'.repeat(50));
   
   // Load HTML or handle EPUB-only cases
-  const htmlExists = testCase.htmlPath ? fs.existsSync(testCase.htmlPath) : false;
-  const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
-  const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
+  const htmlPath = testCase.htmlPath;
+  const htmlExists = htmlPath ? fs.existsSync(htmlPath) : false;
+  const expectedEpubPath = htmlPath
+    ? path.join(path.dirname(htmlPath), path.basename(htmlPath, path.extname(htmlPath)) + '.expected.epub')
+    : null;
 
-  if (!htmlExists && fs.existsSync(expectedEpubPath)) {
+  if (!htmlExists && expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`ℹ️ No HTML found, running EPUB-only validation using golden: ${expectedEpubPath}`);
     try {
       const zip = new AdmZip(expectedEpubPath);
@@ -118,7 +121,7 @@ function testExtraction(testCase) {
     return false;
   }
 
-  const html = htmlExists ? fs.readFileSync(testCase.htmlPath, 'utf8') : testCase.htmlContent;
+  const html = htmlExists ? fs.readFileSync(htmlPath, 'utf8') : testCase.htmlContent;
   const dom = new JSDOM(html, { 
     url: testCase.url || 'https://example.com'
   });
@@ -167,7 +170,7 @@ function testExtraction(testCase) {
   }
 
   // If an EPUB golden exists, compare against it
-  if (fs.existsSync(expectedEpubPath)) {
+  if (expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
     try {
       const zip = new AdmZip(expectedEpubPath);
@@ -200,7 +203,7 @@ function testExtraction(testCase) {
   // Check content length
   console.log(`📏 Content length: ${article.content.length} bytes`);
   let lengthOk = true;
-  if (article.content.length < testCase.minLength) {
+  if (typeof testCase.minLength === 'number' && article.content.length < testCase.minLength) {
     console.log(`❌ Content too short (expected at least ${testCase.minLength} bytes)`);
     lengthOk = false;
   } else {
@@ -209,7 +212,7 @@ function testExtraction(testCase) {
   
   // Check for expected phrases
   let allPhrasesFound = true;
-  for (const phrase of testCase.expectedPhrases) {
+  for (const phrase of (testCase.expectedPhrases || [])) {
     const found = article.content.includes(phrase) || article.textContent?.includes(phrase);
     if (found) {
       console.log(`✅ Found: "${phrase}"`);
