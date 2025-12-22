@@ -1,31 +1,28 @@
 # Article Extraction Test Cases
 
-This directory contains saved articles for testing and improving extraction methods.
+This directory holds offline fixtures for extraction testing.
 
 ## Structure
-- `examples/` - Saved complete web pages (HTML + assets)
-- `results/` - Expected extraction results for comparison
-- `run-tests.js` - Test runner to validate extraction against examples
+- `test-cases/unsolved/` - Open problems we want to fix.
+- `test-cases/solved/` - Regression tests that should keep passing.
+- Optional goldens: `test-cases/solved/*.expected.epub` for EPUB-based checks.
 
-## Examples
+## Running tests
+- All extraction tests: `npm test`
+- Only solved: `ONLY_SOLVED=true node test/dev-scripts/test-extraction.js`
+- Only unsolved: `ONLY_UNSOLVED=true node test/dev-scripts/test-extraction.js`
 
-### New Yorker (JSON-LD with articleBody)
-- **File**: `examples/new-yorker-example.html` 
-- **Extraction Method**: JSON-LD structured data
-- **Status**: ✅ Working - includes full `articleBody` in JSON-LD
+## Adding a new test case (ELI5)
+1) Save the HTML (best) or paste inline HTML into the JSON.
+2) Create a JSON file in `test-cases/unsolved/`:
+   - Required: `name`, `url`, and one of `htmlFile` or `content`.
+   - Optional: `expectedPhrases`, `minLength`, `notes`.
+3) Add the HTML file (if used) to the same folder.
 
-### The Atlantic (JSON-LD without articleBody)
-- **File**: `examples/atlantic-example.html`
-- **Extraction Method**: Falls back to DOM extraction
-- **Status**: ⚠️ Partial - JSON-LD has metadata but no article content
-
-
-## Adding New Test Cases
-
-1. Save complete webpage using browser "Save Page As" (complete)
-2. Move saved files to `examples/[site-name]-[article-title].html`
-3. Update this README with extraction method and status
-4. Add expected results to `results/[filename].json`
-
-## Testing
-Run `node test-cases/run-tests.js` to test all examples against current extraction logic.
+## Goldens (optional)
+- If you have a known-good EPUB, place it next to the JSON as
+  `slug.expected.epub`. The test runner will compare content to it.
+- Goldens are committed in the repo. CI does not sync from
+  `latest-outputs-debug`.
+- Use `test/goldens.manifest.json` and `scripts/sync-goldens.js` only
+  when you want to manually refresh goldens.

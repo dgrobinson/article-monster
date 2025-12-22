@@ -11,6 +11,7 @@ In scope:
 - Normalize test-case JSON schemas for unsolved and solved cases.
 - Update test runners to match the production extraction pipeline.
 - Align goldens with EPUB-derived checks.
+- Keep goldens committed in-repo; CI should not sync from latest-outputs-debug.
 - Refresh test scripts and package.json to match the new harness.
 
 Out of scope:
