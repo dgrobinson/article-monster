@@ -34,16 +34,15 @@ jobs:
             
             # Rebase onto main
             # Since outputs/ folder only exists on debug branch, no conflicts expected
-            git rebase main || {
-              echo "Rebase failed - manual intervention required"
-              echo "The latest-outputs-debug branch could not be automatically rebased."
-              echo "Please manually rebase or reset the branch."
-              exit 1
-            }
-            
-            # Force push the rebased branch
-            git push origin latest-outputs-debug --force
-            echo "Successfully rebased latest-outputs-debug onto main"
+            if git rebase main; then
+              # Force push the rebased branch
+              git push origin latest-outputs-debug --force
+              echo "Successfully rebased latest-outputs-debug onto main"
+            else
+              echo "Rebase failed - leaving latest-outputs-debug unchanged"
+              echo "Manual rebase may be required if outputs need updating."
+              git rebase --abort || true
+            fi
           else
             echo "WARNING: latest-outputs-debug branch does not exist!"
             echo "The debug system requires this branch to be created manually."
