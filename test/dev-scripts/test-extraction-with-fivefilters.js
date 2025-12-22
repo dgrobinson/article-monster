@@ -65,15 +65,18 @@ function loadSiteConfig(hostname) {
 
 // Test extraction on a single HTML file
 function testExtraction(testCase) {
-  console.log(`\n📖 Testing: ${testCase.name} [${testCase.priority}]`);
+  const displayName = testCase.name || testCase.url || '(unnamed test case)';
+  console.log(`\n📖 Testing: ${displayName} [${testCase.priority}]`);
   console.log('─'.repeat(50));
   
   // Load HTML or handle EPUB-only cases
-  const htmlExists = fs.existsSync(testCase.htmlPath);
-  const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
-  const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
+  const htmlPath = testCase.htmlPath;
+  const htmlExists = htmlPath ? fs.existsSync(htmlPath) : false;
+  const expectedEpubPath = htmlPath
+    ? path.join(path.dirname(htmlPath), path.basename(htmlPath, path.extname(htmlPath)) + '.expected.epub')
+    : null;
 
-  if (!htmlExists && fs.existsSync(expectedEpubPath)) {
+  if (!htmlExists && expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`ℹ️ No HTML found, running EPUB-only validation using golden: ${expectedEpubPath}`);
     try {
       const zip = new AdmZip(expectedEpubPath);
@@ -108,12 +111,12 @@ function testExtraction(testCase) {
     }
   }
 
-  if (!htmlExists) {
-    console.log(`❌ Test file not found: ${testCase.htmlPath}`);
+  if (!htmlExists && !testCase.htmlContent) {
+    console.log(`❌ Test file not found and no inline content provided: ${htmlPath || '(inline missing)'}`);
     return false;
   }
   
-  const html = fs.readFileSync(testCase.htmlPath, 'utf8');
+  const html = htmlExists ? fs.readFileSync(htmlPath, 'utf8') : testCase.htmlContent;
   const url = testCase.url || 'https://newyorker.com/test';
   const dom = new JSDOM(html, { url });
   const window = dom.window;
@@ -200,7 +203,7 @@ function testExtraction(testCase) {
       console.log(`📏 Content length: ${extractedContent.length} bytes`);
       
       let lengthOk = true;
-      if (extractedContent.length < testCase.minLength) {
+      if (typeof testCase.minLength === 'number' && extractedContent.length < testCase.minLength) {
         console.log(`❌ Content too short (expected at least ${testCase.minLength} bytes)`);
         lengthOk = false;
       } else {
@@ -208,9 +211,7 @@ function testExtraction(testCase) {
       }
 
       // EPUB golden compare if available
-      const htmlFileBase = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
-      const expectedEpubPath = path.join(path.dirname(testCase.htmlPath), htmlFileBase + '.expected.epub');
-      if (fs.existsSync(expectedEpubPath)) {
+      if (expectedEpubPath && fs.existsSync(expectedEpubPath)) {
         console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
         try {
           const zip = new AdmZip(expectedEpubPath);
@@ -244,7 +245,7 @@ function testExtraction(testCase) {
       let allPhrasesFound = true;
       const plainText = extractedContent.replace(/<[^>]*>/g, '').trim();
       
-      for (const phrase of testCase.expectedPhrases) {
+      for (const phrase of (testCase.expectedPhrases || [])) {
         const found = extractedContent.includes(phrase) || plainText.includes(phrase);
         if (found) {
           console.log(`✅ Found: "${phrase}"`);
@@ -319,7 +320,7 @@ function testExtraction(testCase) {
   // Check content length
   console.log(`📏 Content length: ${article.content.length} bytes`);
   let lengthOk = true;
-  if (article.content.length < testCase.minLength) {
+  if (typeof testCase.minLength === 'number' && article.content.length < testCase.minLength) {
     console.log(`❌ Content too short (expected at least ${testCase.minLength} bytes)`);
     lengthOk = false;
   } else {
@@ -327,10 +328,7 @@ function testExtraction(testCase) {
   }
 
   // EPUB golden compare if available
-  // Recompute EPUB path for readability fallback section
-  const htmlFileBase2 = path.basename(testCase.htmlPath, path.extname(testCase.htmlPath));
-  const expectedEpubPath2 = path.join(path.dirname(testCase.htmlPath), htmlFileBase2 + '.expected.epub');
-  if (fs.existsSync(expectedEpubPath)) {
+  if (expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
     try {
       const zip = new AdmZip(expectedEpubPath);
@@ -362,7 +360,7 @@ function testExtraction(testCase) {
   
   // Check for expected phrases
   let allPhrasesFound = true;
-  for (const phrase of testCase.expectedPhrases) {
+  for (const phrase of (testCase.expectedPhrases || [])) {
     const found = article.content.includes(phrase) || article.textContent?.includes(phrase);
     if (found) {
       console.log(`✅ Found: "${phrase}"`);
@@ -396,7 +394,11 @@ function loadTestCases() {
     const files = fs.readdirSync(unsolvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
       const testCase = JSON.parse(fs.readFileSync(path.join(unsolvedDir, file), 'utf8'));
-      testCase.htmlPath = path.join(unsolvedDir, testCase.htmlFile);
+      if (testCase.htmlFile) {
+        testCase.htmlPath = path.join(unsolvedDir, testCase.htmlFile);
+      } else if (typeof testCase.content === 'string' && testCase.content.length > 0) {
+        testCase.htmlContent = testCase.content;
+      }
       testCase.priority = 'UNSOLVED';
       testCases.push(testCase);
     }
@@ -408,7 +410,11 @@ function loadTestCases() {
     const files = fs.readdirSync(solvedDir).filter(f => f.endsWith('.json'));
     for (const file of files) {
       const testCase = JSON.parse(fs.readFileSync(path.join(solvedDir, file), 'utf8'));
-      testCase.htmlPath = path.join(solvedDir, testCase.htmlFile);
+      if (testCase.htmlFile) {
+        testCase.htmlPath = path.join(solvedDir, testCase.htmlFile);
+      } else if (typeof testCase.content === 'string' && testCase.content.length > 0) {
+        testCase.htmlContent = testCase.content;
+      }
       testCase.priority = 'SOLVED';
       testCases.push(testCase);
     }
