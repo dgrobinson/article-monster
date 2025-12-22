@@ -84,6 +84,7 @@ async function main() {
   const manifestPath = path.join(repoRoot, 'test', 'goldens.manifest.json');
   const debugCheckoutPath = path.join(repoRoot, 'debug-goldens');
   const solvedDir = path.join(repoRoot, 'test-cases', 'solved');
+  const outputsRoot = path.join(debugCheckoutPath, 'outputs');
 
   if (!fs.existsSync(manifestPath)) {
     console.error('goldens.manifest.json not found:', manifestPath);
@@ -94,6 +95,24 @@ async function main() {
   if (!Array.isArray(manifest.cases)) {
     console.error('Manifest missing cases array');
     process.exit(1);
+  }
+
+  if (!fs.existsSync(outputsRoot)) {
+    console.warn(
+      `No debug outputs folder found at ${outputsRoot}. ` +
+      'Did you checkout latest-outputs-debug into debug-goldens? Skipping golden sync.'
+    );
+    return;
+  }
+
+  const outputEntries = await fsp.readdir(outputsRoot, { withFileTypes: true });
+  const outputFolders = outputEntries.filter(entry => entry.isDirectory());
+  if (outputFolders.length === 0) {
+    console.warn(
+      `No debug output folders found under ${outputsRoot}. ` +
+      'Ensure latest-outputs-debug has outputs/ entries. Skipping golden sync.'
+    );
+    return;
   }
 
   await fsp.mkdir(solvedDir, { recursive: true });
@@ -175,4 +194,3 @@ main().catch(err => {
   console.error('sync-goldens failed:', err);
   process.exit(1);
 });
-
