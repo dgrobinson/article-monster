@@ -114,7 +114,7 @@
         }
     </style>
 </head>
-<body>
+<body data-github-repo="dgrobinson/article-monster">
     <div class="header">
         <h1>📚 Article Bookmarklet Service</h1>
         <p class="subtitle">Send articles to both Kindle and Zotero with one click</p>
@@ -224,8 +224,9 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
 
     <div class="section">
         <h2>🐞 Report a broken extraction</h2>
-        <p>If a page doesn't parse correctly, submit it here and we'll track it.</p>
-        <form id="report-form" onsubmit="return submitIssue(event)">
+        <p>If a page doesn't parse correctly, open a GitHub issue so you can paste screenshots.</p>
+        <p><small>You'll need to be logged into GitHub. A new tab will open.</small></p>
+        <form id="report-form" onsubmit="return openIssue(event)">
             <div style="margin-bottom: 10px;">
                 <label for="issue-url"><strong>Article URL</strong></label><br>
                 <input id="issue-url" type="url" placeholder="https://example.com/article" required style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
@@ -234,7 +235,7 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
                 <label for="issue-notes"><strong>Notes (optional)</strong></label><br>
                 <textarea id="issue-notes" rows="4" placeholder="Describe what went wrong..." style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;"></textarea>
             </div>
-            <button type="submit" style="background:#3498db; color:white; border:none; padding:10px 16px; border-radius:6px; font-weight:bold;">Submit</button>
+            <button type="submit" style="background:#3498db; color:white; border:none; padding:10px 16px; border-radius:6px; font-weight:bold;">Open GitHub issue</button>
             <span id="report-status" style="margin-left:10px; font-size: 0.95em;"></span>
         </form>
     </div>
@@ -315,33 +316,51 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
         // Refresh status every 30 seconds
         setInterval(checkStatus, 30000);
 
-        async function submitIssue(e) {
+        function openIssue(e) {
             e.preventDefault();
             const statusEl = document.getElementById('report-status');
-            statusEl.textContent = 'Submitting...';
+            statusEl.textContent = 'Opening GitHub...';
             statusEl.style.color = '#7f8c8d';
 
             const url = document.getElementById('issue-url').value.trim();
             const notes = document.getElementById('issue-notes').value.trim();
 
+            const repo = document.body.dataset.githubRepo || 'dgrobinson/article-monster';
+            let hostname = '';
             try {
-                const resp = await fetch('/report-issue', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ url, notes })
-                });
-                const data = await resp.json();
-                if (!resp.ok || !data.success) {
-                    throw new Error(data.error || 'Request failed');
-                }
-                statusEl.innerHTML = `✅ Submitted: <a href="${data.issueUrl}" target="_blank" rel="noopener noreferrer">Issue #${data.number}</a>`;
-                statusEl.style.color = '#155724';
-                document.getElementById('report-form').reset();
+                hostname = new URL(url).hostname;
             } catch (err) {
-                console.error('Report failed', err);
-                statusEl.textContent = '❌ Failed to submit. Please try again.';
+                statusEl.textContent = '❌ Please enter a valid URL.';
                 statusEl.style.color = '#721c24';
+                return false;
             }
+
+            const title = `Broken extraction: ${hostname}`;
+            const body = [
+                `URL: ${url}`,
+                '',
+                notes ? `Notes:\n${notes}` : 'Notes:',
+                '',
+                'Screenshots: (paste here)',
+                '',
+                'Checklist:',
+                '- [ ] Reproduce with bookmarklet',
+                '- [ ] Check /site-config for hostname',
+                '- [ ] Compare against FiveFilters reference',
+                '- [ ] Document extraction differences',
+                '- [ ] Add golden test case',
+                '- [ ] Consider custom extraction logic if needed'
+            ].join('\n');
+
+            const issueUrl = `https://github.com/${repo}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+            const popup = window.open(issueUrl, '_blank', 'noopener');
+            if (!popup) {
+                statusEl.innerHTML = `Popup blocked. <a href="${issueUrl}" target="_blank" rel="noopener noreferrer">Open the GitHub issue</a>`;
+                statusEl.style.color = '#856404';
+                return false;
+            }
+            statusEl.textContent = '✅ GitHub issue opened. Paste screenshots there.';
+            statusEl.style.color = '#155724';
             return false;
         }
     </script>
