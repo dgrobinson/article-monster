@@ -40,6 +40,7 @@ Define any unavoidable jargon briefly.
   - merged to `main`
   - deployed (environment URL)
 - Do not ask the operator to test an environment that has not been updated.
+- Avoid raw `\n` sequences in PR titles or bodies; use real newlines so GitHub renders correctly.
 
 ## Critical Bug Fixes (August 2025)
 
