@@ -1,6 +1,7 @@
 # Deployment SOP (gh + doctl)
 
 This is the standard process to deploy and monitor Article Monster using GitHub and DigitalOcean App Platform.
+Note: CI does not deploy; AWS/Kubernetes steps were legacy and have been removed.
 
 ## Prereqs
 - GitHub CLI (`gh`) authenticated to the `dgrobinson/article-monster` repo
