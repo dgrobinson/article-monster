@@ -11,6 +11,7 @@ Rebuild the extraction test harness to mirror the bookmarklet pipeline (preproce
 - Use the bookmarklet extraction path as source of truth; Readability output is used when XPath fails or no config.
 - Tests run offline against saved HTML or inline content.
 - Unsolved cases are lightweight; goldens use EPUB-derived checks.
+- Goldens are committed in-repo; CI does not sync from `latest-outputs-debug` (manual refresh only).
 - Missing optional fields never crash tests.
 - No site-config edits; loader pattern unchanged.
 - Focus on substantive completeness, not pagination.
