@@ -18,10 +18,28 @@ The primary operator is not a developer. When reporting changes or decisions, in
 - How to verify (simple steps).
 Define any unavoidable jargon briefly.
 
+## Operator Time Respect (No Guess-and-Check)
+
+- Do not speculate about system state. Verify locally first (files, logs, deployed HTML) before asking the operator to test.
+- Only involve the operator after you are ready to take a concrete action (deploy, PR review, or a confirmed manual step).
+- If something is not deployed, say so clearly and avoid asking the operator to test that environment.
+- When you need operator input, ask a single focused question and explain why it is needed.
+
 ## Workflow Safety
 
 - Never push directly to `main`. Use a feature branch and open a PR.
 - If a direct push happens, create a revert PR and explain the fix in ELI5 terms.
+
+## State & Deployment Clarity
+
+- Always make changes via a PR; testing is only expected after the change is on `main` and deployed.
+- When reporting work, explicitly state status in one line:
+  - local/uncommitted
+  - committed on branch (name)
+  - PR opened (link)
+  - merged to `main`
+  - deployed (environment URL)
+- Do not ask the operator to test an environment that has not been updated.
 
 ## Critical Bug Fixes (August 2025)
 
