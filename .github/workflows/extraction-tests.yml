@@ -74,7 +74,7 @@ jobs:
 
     - name: Upload artifacts (goldens)
       if: failure()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: goldens-results
         path: |
@@ -108,7 +108,7 @@ jobs:
         node test/dev-scripts/test-extraction.js 2>&1 | tee unsolved.log || true
 
     - name: Upload artifacts (unsolved)
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: unsolved-results
         path: |
