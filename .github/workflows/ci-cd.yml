@@ -133,7 +133,7 @@ jobs:
       contents: read
       packages: write
     outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
+      image-tag: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
       image-digest: ${{ steps.build.outputs.digest }}
     steps:
     - name: Checkout code
