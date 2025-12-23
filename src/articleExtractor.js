@@ -2,20 +2,24 @@ const { Readability } = require('@mozilla/readability');
 const { JSDOM } = require('jsdom');
 const axios = require('axios');
 
-async function extractArticle(url) {
+async function extractArticle(url, sourceHtml) {
   try {
-    console.log(`Fetching article from: ${url}`);
+    let html = sourceHtml;
+    if (!html) {
+      console.log(`Fetching article from: ${url}`);
 
-    // Fetch the webpage
-    const response = await axios.get(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
-      },
-      timeout: 30000
-    });
+      // Fetch the webpage
+      const response = await axios.get(url, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        },
+        timeout: 30000
+      });
+      html = response.data;
+    }
 
     // Parse with JSDOM
-    const dom = new JSDOM(response.data, { url });
+    const dom = new JSDOM(html, { url });
     const doc = dom.window.document;
 
     // Extract with Readability

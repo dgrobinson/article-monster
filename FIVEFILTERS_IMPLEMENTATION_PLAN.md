@@ -232,16 +232,12 @@ This validates the need for complete FiveFilters implementation rather than piec
    - Normalize encoding
 
 ### 2.2 Extraction Stage
-1. **Check JSON-LD preference**
-   - If prefer_jsonld, try JSON-LD first
-   - Fall back to DOM extraction
-
-2. **Apply XPath selectors**
+1. **Apply XPath selectors**
    - Try each selector in order
    - Stop on first match with content
    - Validate minimum content length
 
-3. **Multi-page handling**
+2. **Multi-page handling**
    - Check for single_page_link
    - Follow next_page_link recursively
    - Merge content from all pages

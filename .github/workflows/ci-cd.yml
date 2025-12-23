@@ -129,8 +129,11 @@ jobs:
   build:
     needs: [test, lint]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
+      image-tag: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
       image-digest: ${{ steps.build.outputs.digest }}
     steps:
     - name: Checkout code
@@ -156,7 +159,7 @@ jobs:
           type=ref,event=pr
           type=semver,pattern={{version}}
           type=semver,pattern={{major}}.{{minor}}
-          type=sha,prefix={{branch}}-
+          type=sha,prefix=sha-
 
     - name: Build and push Docker image
       id: build
@@ -164,7 +167,7 @@ jobs:
       with:
         context: .
         file: ./Dockerfile.prod
-        push: true
+        push: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
@@ -174,6 +177,7 @@ jobs:
   security-scan:
     needs: build
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
