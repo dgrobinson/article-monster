@@ -860,20 +860,20 @@
         );
 
         switch (result.resultType) {
-          case XPathResult.STRING_TYPE:
-            return !!(result.stringValue && result.stringValue.trim());
-          case XPathResult.NUMBER_TYPE:
-            return result.numberValue !== 0;
-          case XPathResult.BOOLEAN_TYPE:
-            return result.booleanValue;
-          case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
-          case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
-            return !!result.iterateNext();
-          case XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE:
-          case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
-            return result.snapshotLength > 0;
-          default:
-            return false;
+        case XPathResult.STRING_TYPE:
+          return !!(result.stringValue && result.stringValue.trim());
+        case XPathResult.NUMBER_TYPE:
+          return result.numberValue !== 0;
+        case XPathResult.BOOLEAN_TYPE:
+          return result.booleanValue;
+        case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
+        case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
+          return !!result.iterateNext();
+        case XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE:
+        case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
+          return result.snapshotLength > 0;
+        default:
+          return false;
         }
       } catch (e) {
         try {
