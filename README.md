@@ -117,6 +117,7 @@ The bookmarklet runs Mozilla Readability.js in your browser to extract clean art
 - **Future Enhancements**: See [METADATA_ROADMAP.md](./METADATA_ROADMAP.md) for planned metadata improvements
 - **Contributing**: See [CONTRIBUTING_TO_FIVEFILTERS.md](./CONTRIBUTING_TO_FIVEFILTERS.md) for site extraction rules
 - **Debug System**: See [DEBUG_SYSTEM.md](./DEBUG_SYSTEM.md) for comprehensive debugging capabilities
+- **Kindle Payload Loop**: See [docs/kindle-loop.md](./docs/kindle-loop.md) for archived payloads and preview workflow
 
 ## Troubleshooting
 
@@ -125,4 +126,3 @@ The bookmarklet runs Mozilla Readability.js in your browser to extract clean art
 - Ensure Kindle email is approved for your sender
 - Test Zotero API key permissions
 - Check browser console for bookmarklet errors
-
