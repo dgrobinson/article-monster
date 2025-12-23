@@ -70,6 +70,7 @@ class ConfigFetcher {
       prune: null,
       tidy: null,
       autodetect_on_failure: null,
+      autodetect_next_page: null,
       parser: null,
       strip_comments: null,
       skip_json_ld: null,
@@ -99,7 +100,8 @@ class ConfigFetcher {
         config[command].push(val);
       }
       // Boolean commands (PHP: $config->$command = ($val == 'yes' || $val == 'true'))
-      else if (['tidy', 'prune', 'autodetect_on_failure', 'strip_comments', 'skip_json_ld',
+<<<<<<< HEAD
+      else if (['tidy', 'prune', 'autodetect_on_failure', 'autodetect_next_page', 'strip_comments', 'skip_json_ld',
         'convert_double_br_tags', 'insert_detected_image'].includes(command)) {
         config[command] = (val === 'yes' || val === 'true');
       }

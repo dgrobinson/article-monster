@@ -49,6 +49,8 @@
 
   // Configuration - replace with your actual service URL
   const SERVICE_URL = (window.__BOOKMARKLET_SERVICE_URL__ || 'https://seal-app-t4vff.ondigitalocean.app/process-article');
+  var MAX_PAGINATION_PAGES = 5;
+  var PAGINATION_SEPARATOR_HTML = '<hr data-page-break="true" />';
 
   // Check if we're already processing to avoid double-clicks
   var isTestMode = !!window.__BOOKMARKLET_TEST__;
@@ -583,14 +585,18 @@
       }
     },
 
-    _extractWithSiteConfig: function() {
+    _extractWithSiteConfig: function(configOverride, options) {
       console.log('_extractWithSiteConfig called for hostname:', window.location.hostname);
       logDebug('site-config', '_extractWithSiteConfig enter', { hostname: window.location.hostname.replace(/^www\./, '') });
       try {
+        options = options || {};
         var hostname = window.location.hostname.replace(/^www\./, '');
+        var config = configOverride;
 
         // First check cache
-        var config = this._getCachedConfig(hostname);
+        if (!config) {
+          config = this._getCachedConfig(hostname);
+        }
 
         if (!config) {
           // Try to fetch config synchronously for immediate use
@@ -682,8 +688,8 @@
         }
 
         // Check for single page link before extracting body (PHP: makefulltextfeed.php)
-        var singlePageUrl = this._findSinglePageLink(config);
-        if (singlePageUrl && singlePageUrl !== window.location.href) {
+        var singlePageUrl = options.skipSinglePageLink ? null : this._findSinglePageLink(config);
+        if (!options.skipSinglePageLink && singlePageUrl && singlePageUrl !== window.location.href) {
           // Found a single page link - navigate to full article
           console.log('Found single page link, navigating to full article:', singlePageUrl);
           window.location.href = singlePageUrl;
@@ -1288,6 +1294,90 @@
       return null;
     },
 
+    // Find next page link (matches PHP makefulltextfeed.php logic)
+    _findNextPageLink: function(config) {
+      if (config && config.next_page_link && config.next_page_link.length > 0) {
+        for (var i = 0; i < config.next_page_link.length; i++) {
+          var pattern = config.next_page_link[i];
+          try {
+            var result = this._doc.evaluate(
+              pattern,
+              this._doc,
+              null,
+              XPathResult.STRING_TYPE,
+              null
+            );
+
+            if (result.stringValue && result.stringValue.trim()) {
+              var url = this._makeAbsoluteUrl(result.stringValue.trim());
+              if (url) return url;
+            }
+          } catch (e) {
+            // XPath failed, try as node selector
+          }
+
+          try {
+            var nodes = this._evaluateXPathAll(pattern);
+            if (nodes && nodes.length > 0) {
+              for (var j = 0; j < nodes.length; j++) {
+                var node = nodes[j];
+                if (node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('href')) {
+                  var url = this._makeAbsoluteUrl(node.getAttribute('href'));
+                  if (url) return url;
+                } else if (node.textContent) {
+                  var text = node.textContent.trim();
+                  var textUrl = this._makeAbsoluteUrl(text);
+                  if (textUrl) return textUrl;
+                }
+              }
+            }
+          } catch (e) {
+            console.warn('Next page link XPath evaluation failed:', pattern, e);
+          }
+        }
+      }
+
+      if (config && config.autodetect_next_page) {
+        var autodetected = this._autoDetectNextPageLink();
+        if (autodetected) {
+          return this._makeAbsoluteUrl(autodetected);
+        }
+      }
+
+      return null;
+    },
+
+    _autoDetectNextPageLink: function() {
+      var relNext = this._doc.querySelector('link[rel="next"][href], a[rel="next"][href]');
+      if (relNext) {
+        return relNext.getAttribute('href');
+      }
+
+      var anchors = this._doc.querySelectorAll('a[href]');
+      for (var i = 0; i < anchors.length; i++) {
+        var anchor = anchors[i];
+        var text = (anchor.textContent || '').trim().toLowerCase();
+        var rel = (anchor.getAttribute('rel') || '').toLowerCase();
+        var ariaLabel = (anchor.getAttribute('aria-label') || '').toLowerCase();
+        var className = (anchor.className || '').toString().toLowerCase();
+        var id = (anchor.id || '').toLowerCase();
+
+        if (rel.indexOf('next') !== -1) {
+          return anchor.getAttribute('href');
+        }
+
+        var label = (text + ' ' + ariaLabel).trim();
+        var hint = (className + ' ' + id).trim();
+
+        if ((/\bnext\b|\bolder\b|\bmore\b/.test(label) || /[»›→]/.test(label) || /\bnext\b/.test(hint)) &&
+          !/\bprev\b|\bprevious\b|\bback\b|\bnewer\b/.test(label)) {
+          return anchor.getAttribute('href');
+        }
+      }
+
+      return null;
+    },
+
     // Helper to evaluate XPath returning all matching nodes
     _evaluateXPathAll: function(xpath, contextNode) {
       try {
@@ -1316,23 +1406,37 @@
     _makeAbsoluteUrl: function(url) {
       if (!url) return null;
 
-      // Already absolute
-      if (url.match(/^https?:\/\//)) {
-        return url;
-      }
+      var trimmed = url.trim();
+      if (!trimmed) return null;
 
-      // Protocol-relative
-      if (url.startsWith('//')) {
-        return window.location.protocol + url;
-      }
+      try {
+        var baseHref = null;
+        if (this._doc) {
+          var baseTag = this._doc.querySelector('base[href]');
+          if (baseTag) {
+            baseHref = baseTag.getAttribute('href');
+          } else if (this._doc.baseURI && this._doc.baseURI.indexOf('about:') !== 0) {
+            baseHref = this._doc.baseURI;
+          }
+        }
 
-      // Absolute path
-      if (url.startsWith('/')) {
-        return window.location.protocol + '//' + window.location.host + url;
-      }
+        var base = window.location.href;
+        if (baseHref) {
+          try {
+            base = new URL(baseHref, window.location.href).href;
+          } catch (e) {
+            base = window.location.href;
+          }
+        }
 
-      // Relative path - more complex, skip for now
-      return null;
+        var resolved = new URL(trimmed, base);
+        if (resolved.protocol !== 'http:' && resolved.protocol !== 'https:') {
+          return null;
+        }
+        return resolved.href;
+      } catch (e) {
+        return null;
+      }
     },
 
     // Note: HTML preprocessing now handled by standalone applyHtmlPreprocessing() function
@@ -1666,6 +1770,195 @@
     return modifiedHtml;
   }
 
+  function buildDocumentFromHtml(html, baseUrl, preprocessingRules) {
+    var finalHtml = html;
+    if (preprocessingRules && preprocessingRules.length > 0) {
+      finalHtml = applyHtmlPreprocessing(html, preprocessingRules);
+    }
+
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(finalHtml, 'text/html');
+    ensureBaseTag(doc, baseUrl);
+    return doc;
+  }
+
+  function ensureBaseTag(doc, baseUrl) {
+    if (!doc || !baseUrl) return;
+    var baseTag = doc.querySelector('base[href]');
+    if (baseTag) return;
+    var head = doc.querySelector('head');
+    if (!head) return;
+    var base = doc.createElement('base');
+    base.setAttribute('href', baseUrl);
+    head.insertBefore(base, head.firstChild);
+  }
+
+  function normalizePaginationUrl(url) {
+    try {
+      var resolved = new URL(url, window.location.href);
+      resolved.hash = '';
+      return resolved.href;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function isSameOriginUrl(url) {
+    try {
+      var resolved = new URL(url, window.location.href);
+      return resolved.origin === window.location.origin;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function fetchPageHtml(url) {
+    return fetch(url, { credentials: 'include' })
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('Pagination fetch failed with status ' + response.status);
+        }
+        return response.text();
+      })
+      .catch(function(error) {
+        console.warn('Pagination fetch failed:', url, error);
+        return null;
+      });
+  }
+
+  function mergePaginatedContent(pageBlocks) {
+    var mergedHtml = [];
+    var mergedText = [];
+    var previousBoundary = null;
+    var previousText = null;
+
+    function normalizeText(text) {
+      return (text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+
+    function findBoundary(container, fromStart) {
+      if (!container || !container.children || container.children.length === 0) return null;
+      if (fromStart) {
+        for (var i = 0; i < container.children.length; i++) {
+          var child = container.children[i];
+          var text = normalizeText(child.textContent);
+          if (text) return { element: child, text: text };
+        }
+      } else {
+        for (var j = container.children.length - 1; j >= 0; j--) {
+          var lastChild = container.children[j];
+          var lastText = normalizeText(lastChild.textContent);
+          if (lastText) return { element: lastChild, text: lastText };
+        }
+      }
+      return null;
+    }
+
+    for (var i = 0; i < pageBlocks.length; i++) {
+      var block = pageBlocks[i];
+      var container = document.createElement('div');
+      container.innerHTML = block.html || '';
+
+      var firstBoundary = findBoundary(container, true);
+      var lastBoundary = findBoundary(container, false);
+
+      if (previousBoundary) {
+        if (firstBoundary && (firstBoundary.text === previousBoundary.first || firstBoundary.text === previousBoundary.last)) {
+          firstBoundary.element.remove();
+        }
+        if (lastBoundary && (lastBoundary.text === previousBoundary.last || lastBoundary.text === previousBoundary.first)) {
+          lastBoundary.element.remove();
+        }
+      }
+
+      firstBoundary = findBoundary(container, true);
+      lastBoundary = findBoundary(container, false);
+
+      var pageText = normalizeText(container.textContent || '');
+      if (!pageText) continue;
+      if (previousText && pageText === previousText) continue;
+
+      mergedHtml.push(container.innerHTML);
+      mergedText.push(container.textContent || '');
+      previousText = pageText;
+      previousBoundary = {
+        first: firstBoundary ? firstBoundary.text : '',
+        last: lastBoundary ? lastBoundary.text : ''
+      };
+    }
+
+    return {
+      html: mergedHtml.join('\n' + PAGINATION_SEPARATOR_HTML + '\n'),
+      text: mergedText.join(' ').trim()
+    };
+  }
+
+  async function extractSiteConfigWithPagination(config, processedDoc, baseUrl) {
+    var reader = new Readability(processedDoc);
+    var firstResult = reader._extractWithSiteConfig(config);
+
+    if (!firstResult || !firstResult.content) {
+      return firstResult;
+    }
+
+    var hasPaginationRules = config && ((config.next_page_link && config.next_page_link.length > 0) || config.autodetect_next_page);
+    if (!hasPaginationRules) {
+      return firstResult;
+    }
+
+    var visited = {};
+    var pages = [];
+    var pageCount = 0;
+    var currentReader = reader;
+    var currentResult = firstResult;
+    var normalizedBase = normalizePaginationUrl(baseUrl);
+    if (normalizedBase) {
+      visited[normalizedBase] = true;
+    }
+
+    while (currentResult && currentResult.content) {
+      pages.push({ html: currentResult.content, text: currentResult.textContent });
+      pageCount += 1;
+
+      if (pageCount >= MAX_PAGINATION_PAGES) {
+        console.log('Pagination cap reached at', pageCount, 'pages');
+        break;
+      }
+
+      var nextUrl = currentReader._findNextPageLink(config);
+      if (!nextUrl) break;
+      if (!isSameOriginUrl(nextUrl)) {
+        console.log('Pagination link is cross-origin, skipping:', nextUrl);
+        break;
+      }
+
+      var normalizedNext = normalizePaginationUrl(nextUrl);
+      if (!normalizedNext || visited[normalizedNext]) {
+        console.log('Pagination loop detected, stopping at', nextUrl);
+        break;
+      }
+      visited[normalizedNext] = true;
+
+      var nextHtml = await fetchPageHtml(nextUrl);
+      if (!nextHtml) break;
+      var nextDoc = buildDocumentFromHtml(nextHtml, nextUrl, config.htmlPreprocessing);
+      currentReader = new Readability(nextDoc);
+      currentResult = currentReader._extractWithSiteConfig(config, { skipSinglePageLink: true });
+    }
+
+    if (pages.length > 1) {
+      var merged = mergePaginatedContent(pages);
+      if (merged && merged.html) {
+        firstResult.content = merged.html;
+        firstResult.textContent = merged.text || firstResult.textContent;
+        firstResult.length = (merged.text || '').length;
+        firstResult.pageCount = pages.length;
+      }
+    }
+
+    return firstResult;
+  }
+
   // Async function to extract article, waiting for site config if needed
   function extractArticleWithConfig(indicator) {
     return new Promise(function(resolve, reject) {
@@ -1678,35 +1971,34 @@
       if (config) {
         // We have config - follow PHP FiveFilters flow exactly
         var rawHtml = document.documentElement.outerHTML;
-        var finalHtml = rawHtml;
+        var processedDoc = buildDocumentFromHtml(rawHtml, window.location.href, config.htmlPreprocessing);
 
-        // Step 1: Apply HTML preprocessing if needed (matches PHP str_replace)
-        if (config.htmlPreprocessing && config.htmlPreprocessing.length > 0) {
-          finalHtml = applyHtmlPreprocessing(rawHtml, config.htmlPreprocessing);
-          console.log('Applied', config.htmlPreprocessing.length, 'preprocessing rules');
-        }
+        extractSiteConfigWithPagination(config, processedDoc, window.location.href)
+          .then(function(siteConfigResult) {
+            if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
+              console.log('Extraction successful using FiveFilters XPath rules');
+              resolve(siteConfigResult);
+              return;
+            }
 
-        // Step 2: Parse HTML to DOM (matches PHP Readability constructor)
-        var parser = new DOMParser();
-        var processedDoc = parser.parseFromString(finalHtml, 'text/html');
-
-        // Step 3: Try XPath extraction first (matches PHP ContentExtractor::process)
-        var reader = new Readability(processedDoc);
-        var siteConfigResult = reader._extractWithSiteConfig();
-
-        if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
-          console.log('Extraction successful using FiveFilters XPath rules');
-          resolve(siteConfigResult);
-          return;
-        }
-
-        // Step 4: XPath failed, fall back to Readability auto-detection (matches PHP autodetect_on_failure)
-        console.log('XPath extraction failed, falling back to Readability auto-detection');
-        var article = reader.parse();
-        if (article) {
-          article.extractionNote = 'XPath rules failed, used Readability fallback';
-        }
-        resolve(article);
+            // XPath failed, fall back to Readability auto-detection (matches PHP autodetect_on_failure)
+            console.log('XPath extraction failed, falling back to Readability auto-detection');
+            var fallbackReader = new Readability(processedDoc);
+            var article = fallbackReader.parse();
+            if (article) {
+              article.extractionNote = 'XPath rules failed, used Readability fallback';
+            }
+            resolve(article);
+          })
+          .catch(function(error) {
+            console.log('Site config pagination failed, falling back to Readability:', error);
+            var fallbackReader = new Readability(processedDoc);
+            var article = fallbackReader.parse();
+            if (article) {
+              article.extractionNote = 'Site config pagination failed, used Readability fallback';
+            }
+            resolve(article);
+          });
         return;
       }
 
@@ -1738,35 +2030,35 @@
 
             // Follow PHP FiveFilters flow exactly (same logic as cached config path)
             var rawHtml = document.documentElement.outerHTML;
-            var finalHtml = rawHtml;
+            var processedDoc = buildDocumentFromHtml(rawHtml, window.location.href, data.config.htmlPreprocessing);
 
-            // Step 1: Apply HTML preprocessing if needed
-            if (data.config.htmlPreprocessing && data.config.htmlPreprocessing.length > 0) {
-              finalHtml = applyHtmlPreprocessing(rawHtml, data.config.htmlPreprocessing);
-              console.log('Applied', data.config.htmlPreprocessing.length, 'preprocessing rules');
-            }
-
-            // Step 2: Parse HTML to DOM
-            var parser = new DOMParser();
-            var processedDoc = parser.parseFromString(finalHtml, 'text/html');
-
-            // Step 3: Try XPath extraction first
-            var reader = new Readability(processedDoc);
-            var siteConfigResult = reader._extractWithSiteConfig();
-
-            var article;
-            if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
-              console.log('Extraction successful using FiveFilters XPath rules');
-              article = siteConfigResult;
-            } else {
-              // Step 4: XPath failed, fall back to Readability
-              console.log('XPath extraction failed, falling back to Readability auto-detection');
-              article = reader.parse();
-              if (article) {
-                article.extractionNote = 'XPath rules failed, used Readability fallback';
-              }
-            }
-            resolve(article);
+            extractSiteConfigWithPagination(data.config, processedDoc, window.location.href)
+              .then(function(siteConfigResult) {
+                var article;
+                if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
+                  console.log('Extraction successful using FiveFilters XPath rules');
+                  article = siteConfigResult;
+                } else {
+                  // Step 4: XPath failed, fall back to Readability
+                  console.log('XPath extraction failed, falling back to Readability auto-detection');
+                  var fallbackReader = new Readability(processedDoc);
+                  article = fallbackReader.parse();
+                  if (article) {
+                    article.extractionNote = 'XPath rules failed, used Readability fallback';
+                  }
+                }
+                resolve(article);
+              })
+              .catch(function(error) {
+                console.log('Site config pagination failed, falling back to Readability:', error);
+                var fallbackReader = new Readability(processedDoc);
+                var article = fallbackReader.parse();
+                if (article) {
+                  article.extractionNote = 'Site config pagination failed, used Readability fallback';
+                }
+                resolve(article);
+              });
+            return;
           } else {
             // No config available, fall back to regular extraction
             updateIndicator(indicator, '📖 Extracting with general rules...');
