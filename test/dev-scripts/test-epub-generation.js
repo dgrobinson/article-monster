@@ -9,7 +9,9 @@ const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
 const AdmZip = require('adm-zip');
-const { generateEpub } = require('./src/epubGenerator');
+const { generateEpub } = require('../../src/epubGenerator');
+
+const repoRoot = path.join(__dirname, '..', '..');
 
 // Test that EPUB contains expected content
 async function testEpubGeneration() {
@@ -19,7 +21,7 @@ async function testEpubGeneration() {
   // Step 1: Load and extract the Baldwin article
   console.log('\n📖 Step 1: Extracting article...');
   
-  const htmlPath = path.join(__dirname, 'test-cases/solved/newyorker-baldwin.html');
+  const htmlPath = path.join(repoRoot, 'test-cases', 'solved', 'newyorker-baldwin.html');
   const html = fs.readFileSync(htmlPath, 'utf8');
   const dom = new JSDOM(html, { 
     url: 'https://newyorker.com/test'
@@ -28,7 +30,7 @@ async function testEpubGeneration() {
   const document = window.document;
   
   // Load and execute Readability
-  const readabilityCode = fs.readFileSync('public/readability.min.js', 'utf8');
+  const readabilityCode = fs.readFileSync(path.join(repoRoot, 'public', 'readability.min.js'), 'utf8');
   const executeReadability = new Function('window', 'document', `
     ${readabilityCode}
     return window.Readability;

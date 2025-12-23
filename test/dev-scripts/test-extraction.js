@@ -5,6 +5,8 @@
  * Reads test cases from test-cases/unsolved and test-cases/solved
  */
 
+require('../support/network-guard');
+
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');

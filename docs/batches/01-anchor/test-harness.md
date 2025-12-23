@@ -43,6 +43,7 @@ Out of scope:
 - Accept inline HTML (content) or htmlFile; avoid path operations when htmlFile is missing.
 - Tolerate optional fields and missing expectedPhrases.
 - Add lightweight schema validation and clear error messages.
+ - Enforce network guardrails via `test/support/network-guard.js` (fixture-only by default).
 
 3) Replace FiveFilters parsing in test/dev-scripts/test-extraction-with-fivefilters.js
 - Use src/configFetcher.js to parse configs.
@@ -57,6 +58,7 @@ Out of scope:
 5) Update docs and tooling
 - Update test-cases/README.md to describe the new structure.
 - Ensure scripts/sync-goldens.js still produces the expected solved fixtures.
+ - Document `ALLOW_LIVE_FETCH=true` for local-only network validations.
 
 ## Deliverables
 - Updated test harness scripts with production-like flow.

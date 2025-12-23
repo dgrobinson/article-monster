@@ -4,6 +4,8 @@
  * Test article extraction WITH FiveFilters config - mirrors bookmarklet flow
  */
 
+require('../support/network-guard');
+
 const fs = require('fs');
 const path = require('path');
 const { JSDOM } = require('jsdom');
