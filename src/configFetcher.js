@@ -55,15 +55,26 @@ class ConfigFetcher {
       find_string: [],
       replace_string: [],
       strip_id_or_class: [],
+      strip_attr: [],
+      post_strip_attr: [],
+      dissolve: [],
+      skip_id_or_class: [],
       strip_image_src: [],
       single_page_link: [],
       next_page_link: [],
       test_url: [],
+      if_page_contains: [],
+      native_ad_clue: [],
+      src_lazy_load_attr: [],
       // PHP-matching boolean/string directives
       prune: null,
       tidy: null,
       autodetect_on_failure: null,
-      parser: null
+      parser: null,
+      strip_comments: null,
+      skip_json_ld: null,
+      convert_double_br_tags: null,
+      insert_detected_image: null
     };
 
     for (const line of lines) {
@@ -82,12 +93,14 @@ class ConfigFetcher {
       if (!command || !val) continue;
 
       // Multi-statement commands (PHP: in_array check for arrays)
-      if (['title', 'body', 'author', 'date', 'strip', 'strip_id_or_class', 'strip_image_src',
-        'single_page_link', 'next_page_link', 'test_url', 'find_string', 'replace_string'].includes(command)) {
+      if (['title', 'body', 'author', 'date', 'strip', 'strip_id_or_class', 'strip_attr', 'post_strip_attr',
+        'dissolve', 'skip_id_or_class', 'strip_image_src', 'single_page_link', 'next_page_link', 'test_url',
+        'find_string', 'replace_string', 'if_page_contains', 'native_ad_clue', 'src_lazy_load_attr'].includes(command)) {
         config[command].push(val);
       }
       // Boolean commands (PHP: $config->$command = ($val == 'yes' || $val == 'true'))
-      else if (['tidy', 'prune', 'autodetect_on_failure'].includes(command)) {
+      else if (['tidy', 'prune', 'autodetect_on_failure', 'strip_comments', 'skip_json_ld',
+        'convert_double_br_tags', 'insert_detected_image'].includes(command)) {
         config[command] = (val === 'yes' || val === 'true');
       }
       // String commands
@@ -150,4 +163,3 @@ class ConfigFetcher {
 }
 
 module.exports = ConfigFetcher;
-

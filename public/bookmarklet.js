@@ -51,12 +51,15 @@
   const SERVICE_URL = (window.__BOOKMARKLET_SERVICE_URL__ || 'https://seal-app-t4vff.ondigitalocean.app/process-article');
 
   // Check if we're already processing to avoid double-clicks
-  if (window.articleBookmarkletProcessing) {
-    alert('Already processing this article...');
-    return;
-  }
+  var isTestMode = !!window.__BOOKMARKLET_TEST__;
+  if (!isTestMode) {
+    if (window.articleBookmarkletProcessing) {
+      alert('Already processing this article...');
+      return;
+    }
 
-  window.articleBookmarkletProcessing = true;
+    window.articleBookmarkletProcessing = true;
+  }
 
   // Simplified Readability implementation (must be defined before use)
   function Readability(doc, options) {
@@ -67,6 +70,7 @@
   Readability.prototype = {
     parse: function() {
       try {
+        this._skipJsonLd = false;
         // First try site-specific configuration
         var siteConfig = this._extractWithSiteConfig();
         if (siteConfig) {
@@ -77,11 +81,15 @@
         }
 
         // Then try JSON-LD structured data if available
-        var jsonLdContent = this._extractFromJsonLd();
-        if (jsonLdContent) {
-          jsonLdContent.extractionMethod = 'json-ld';
-          console.log('Extraction successful using JSON-LD structured data');
-          return jsonLdContent;
+        if (!this._skipJsonLd) {
+          var jsonLdContent = this._extractFromJsonLd();
+          if (jsonLdContent) {
+            jsonLdContent.extractionMethod = 'json-ld';
+            console.log('Extraction successful using JSON-LD structured data');
+            return jsonLdContent;
+          }
+        } else {
+          console.log('Skipping JSON-LD extraction due to site config directive');
         }
 
         // (No site-specific fallback here; follow ADR to avoid hardcoding)
@@ -598,15 +606,49 @@
           return null;
         }
 
+        if (config.skip_json_ld === true) {
+          this._skipJsonLd = true;
+        }
+
+        if (config.if_page_contains && config.if_page_contains.length > 0) {
+          var pageMatches = false;
+          for (var p = 0; p < config.if_page_contains.length; p++) {
+            if (this._pageContains(config.if_page_contains[p])) {
+              pageMatches = true;
+              break;
+            }
+          }
+          if (!pageMatches) {
+            console.log('if_page_contains did not match for', hostname, '- skipping config');
+            return null;
+          }
+        }
+
         // If site prefers JSON-LD, let that handler take over
         if (config.preferJsonLd) return null;
 
         // Note: HTML preprocessing now handled before Readability parsing
 
+        var nativeAdDetected = false;
+        var nativeAdClue = null;
+        if (config.native_ad_clue && config.native_ad_clue.length > 0) {
+          for (var n = 0; n < config.native_ad_clue.length; n++) {
+            if (this._pageContains(config.native_ad_clue[n])) {
+              nativeAdDetected = true;
+              nativeAdClue = config.native_ad_clue[n];
+              break;
+            }
+          }
+        }
+
         var result = {
           source: 'site-config',
           hostname: hostname
         };
+        if (nativeAdDetected) {
+          result.nativeAdDetected = true;
+          result.nativeAdClue = nativeAdClue;
+        }
 
         // Extract title (matches PHP: if config has title rules, try them first)
         var titleExtracted = false;
@@ -670,8 +712,18 @@
                 console.log('Combined', elements.length, 'body elements into single container');
               }
 
+              if (this._matchesSkipIdOrClass(bodyElement, config.skip_id_or_class)) {
+                console.log('Body XPath matched but skipped due to skip_id_or_class:', config.body[i]);
+                continue;
+              }
+
               // Clone and clean the element with full config
               var cleanElement = this._cleanElementWithConfig(bodyElement, config);
+
+              if (config.insert_detected_image !== false) {
+                this._insertDetectedImage(cleanElement);
+              }
+
               result.content = cleanElement.innerHTML;
               result.textContent = cleanElement.textContent || cleanElement.innerText || '';
               result.length = result.textContent.length;
@@ -795,6 +847,30 @@
         }
       }
 
+      // Apply dissolve rules (PHP: dissolve array)
+      if (config.dissolve && config.dissolve.length > 0) {
+        for (var i = 0; i < config.dissolve.length; i++) {
+          this._dissolveByXPath(clone, config.dissolve[i]);
+        }
+      }
+
+      // Apply strip_comments rules (PHP: strip_comments)
+      if (config.strip_comments === true) {
+        this._stripCommentsFromElement(clone);
+      }
+
+      // Apply src_lazy_load_attr rules (PHP: src_lazy_load_attr)
+      if (config.src_lazy_load_attr && config.src_lazy_load_attr.length > 0) {
+        this._applyLazyLoadAttrs(clone, config.src_lazy_load_attr);
+      }
+
+      // Apply strip_attr rules (PHP: strip_attr array)
+      if (config.strip_attr && config.strip_attr.length > 0) {
+        for (var i = 0; i < config.strip_attr.length; i++) {
+          this._stripAttributesByXPath(clone, config.strip_attr[i]);
+        }
+      }
+
       // Apply prune directive (PHP: $this->readability->prepArticle($this->body))
       if (config.prune === true) {
         this._pruneContent(clone);
@@ -805,7 +881,237 @@
         this._tidyContent(clone);
       }
 
+      // Apply convert_double_br_tags directive
+      if (config.convert_double_br_tags === true) {
+        this._convertDoubleBrTags(clone);
+      }
+
+      // Apply post_strip_attr rules (PHP: post_strip_attr array)
+      if (config.post_strip_attr && config.post_strip_attr.length > 0) {
+        for (var i = 0; i < config.post_strip_attr.length; i++) {
+          this._stripAttributesByXPath(clone, config.post_strip_attr[i]);
+        }
+      }
+
       return clone;
+    },
+
+    _pageContains: function(expression) {
+      if (!expression) return false;
+      try {
+        var result = this._doc.evaluate(
+          expression,
+          this._doc,
+          null,
+          XPathResult.ANY_TYPE,
+          null
+        );
+
+        switch (result.resultType) {
+          case XPathResult.STRING_TYPE:
+            return !!(result.stringValue && result.stringValue.trim());
+          case XPathResult.NUMBER_TYPE:
+            return result.numberValue !== 0;
+          case XPathResult.BOOLEAN_TYPE:
+            return result.booleanValue;
+          case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
+          case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
+            return !!result.iterateNext();
+          case XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE:
+          case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
+            return result.snapshotLength > 0;
+          default:
+            return false;
+        }
+      } catch (e) {
+        try {
+          var html = this._doc.documentElement ? this._doc.documentElement.outerHTML : '';
+          return html.indexOf(expression) !== -1;
+        } catch (_) {
+          return false;
+        }
+      }
+    },
+
+    _matchesSkipIdOrClass: function(element, skipList) {
+      if (!element || !skipList || skipList.length === 0) return false;
+      for (var i = 0; i < skipList.length; i++) {
+        var selector = skipList[i];
+        if (!selector) continue;
+        selector = selector.replace(/['"]/g, '').trim();
+        if (!selector) continue;
+
+        if (element.id && element.id.indexOf(selector) !== -1) return true;
+        if (element.className && String(element.className).indexOf(selector) !== -1) return true;
+
+        var match = element.querySelector('[class*="' + selector + '"], [id*="' + selector + '"]');
+        if (match) return true;
+      }
+      return false;
+    },
+
+    _normalizeXPathForContext: function(xpath, contextNode) {
+      if (!xpath || !contextNode) return xpath;
+      if (contextNode === this._doc || contextNode.nodeType === Node.DOCUMENT_NODE) return xpath;
+      if (xpath.indexOf('/') === 0) return '.' + xpath;
+      return xpath;
+    },
+
+    _stripAttributesByXPath: function(element, xpath) {
+      try {
+        var normalized = this._normalizeXPathForContext(xpath, element);
+        var results = this._doc.evaluate(
+          normalized,
+          element,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+
+        for (var i = results.snapshotLength - 1; i >= 0; i--) {
+          var node = results.snapshotItem(i);
+          if (!node) continue;
+          if (node.nodeType === Node.ATTRIBUTE_NODE) {
+            var owner = node.ownerElement || node.ownerNode;
+            if (owner && owner.removeAttribute) {
+              owner.removeAttribute(node.name);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('strip_attr XPath evaluation failed:', xpath, e);
+      }
+    },
+
+    _stripCommentsFromElement: function(element) {
+      try {
+        var walker = element.ownerDocument.createTreeWalker(
+          element,
+          NodeFilter.SHOW_COMMENT,
+          null,
+          false
+        );
+        var nodes = [];
+        var node;
+        while (node = walker.nextNode()) {
+          nodes.push(node);
+        }
+        for (var i = 0; i < nodes.length; i++) {
+          if (nodes[i].parentNode) {
+            nodes[i].parentNode.removeChild(nodes[i]);
+          }
+        }
+      } catch (e) {
+        console.warn('strip_comments failed:', e);
+      }
+    },
+
+    _dissolveByXPath: function(element, xpath) {
+      try {
+        var normalized = this._normalizeXPathForContext(xpath, element);
+        var results = this._doc.evaluate(
+          normalized,
+          element,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+
+        for (var i = results.snapshotLength - 1; i >= 0; i--) {
+          var node = results.snapshotItem(i);
+          if (!node || node.nodeType !== Node.ELEMENT_NODE) continue;
+          var parent = node.parentNode;
+          if (!parent) continue;
+          while (node.firstChild) {
+            parent.insertBefore(node.firstChild, node);
+          }
+          parent.removeChild(node);
+        }
+      } catch (e) {
+        console.warn('dissolve XPath evaluation failed:', xpath, e);
+      }
+    },
+
+    _applyLazyLoadAttrs: function(element, attrs) {
+      if (!element || !attrs) return;
+      var attrList = Array.isArray(attrs) ? attrs : [attrs];
+      var images = element.querySelectorAll('img');
+
+      for (var i = 0; i < images.length; i++) {
+        var img = images[i];
+        var src = img.getAttribute('src');
+        if (src && src.trim() !== '') continue;
+
+        for (var j = 0; j < attrList.length; j++) {
+          var attrName = attrList[j];
+          if (!attrName) continue;
+          attrName = attrName.replace(/['"]/g, '').trim();
+          if (!attrName) continue;
+          var value = img.getAttribute(attrName);
+          if (value && value.trim()) {
+            img.setAttribute('src', value);
+            img.removeAttribute(attrName);
+            break;
+          }
+        }
+      }
+    },
+
+    _convertDoubleBrTags: function(element) {
+      if (!element) return;
+      if (element.querySelector('p')) return;
+
+      var html = element.innerHTML;
+      var normalized = html.replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '</p><p>');
+
+      if (normalized !== html) {
+        element.innerHTML = '<p>' + normalized + '</p>';
+        var emptyParagraphs = element.querySelectorAll('p:empty');
+        for (var i = emptyParagraphs.length - 1; i >= 0; i--) {
+          emptyParagraphs[i].remove();
+        }
+      }
+    },
+
+    _insertDetectedImage: function(element) {
+      if (!element || element.querySelector('img')) return false;
+      var imageUrl = this._findDetectedImage();
+      if (!imageUrl) return false;
+
+      var doc = element.ownerDocument || this._doc;
+      var figure = doc.createElement('figure');
+      var img = doc.createElement('img');
+      img.setAttribute('src', imageUrl);
+      figure.appendChild(img);
+
+      if (element.firstChild) {
+        element.insertBefore(figure, element.firstChild);
+      } else {
+        element.appendChild(figure);
+      }
+      return true;
+    },
+
+    _findDetectedImage: function() {
+      var selectors = [
+        'meta[property="og:image"]',
+        'meta[property="og:image:url"]',
+        'meta[name="twitter:image"]',
+        'meta[name="twitter:image:src"]',
+        'meta[itemprop="image"]',
+        'link[rel="image_src"]'
+      ];
+
+      for (var i = 0; i < selectors.length; i++) {
+        var meta = this._doc.querySelector(selectors[i]);
+        if (!meta) continue;
+        var value = meta.getAttribute('content') || meta.getAttribute('href');
+        if (value && value.trim()) {
+          var resolved = this._makeAbsoluteUrl(value.trim());
+          return resolved || value.trim();
+        }
+      }
+      return null;
     },
 
     // Content pruning (matches PHP Readability::prepArticle)
@@ -1486,157 +1792,159 @@
     });
   }
 
-  try {
-    // Create a simple UI indicator
-    const indicator = createIndicator();
-    document.body.appendChild(indicator);
+  if (!isTestMode) {
+    try {
+      // Create a simple UI indicator
+      const indicator = createIndicator();
+      document.body.appendChild(indicator);
 
-    // Extract article content - first try to get site config if needed
-    logDebug('extraction', 'Starting article extraction');
-    extractArticleWithConfig(indicator).then(function(article) {
-      if (!article) {
-        logDebug('error', 'Article extraction returned null');
-        throw new Error('Could not extract article content from this page');
-      }
-
-      logDebug('extraction', 'Article extracted', {
-        title: article.title,
-        contentLength: article.content?.length || 0,
-        method: article.extractionMethod || 'unknown'
-      });
-
-      // Debug: Check content structure before fixImageUrls
-      if (article.content) {
-        const beforeBrCount = (article.content.match(/<br>/gi) || []).length;
-        const beforeNewlineCount = (article.content.match(/\n/g) || []).length;
-        const beforePCount = (article.content.match(/<p>/gi) || []).length;
-        console.log(`Before fixImageUrls: ${beforePCount} <p> tags, ${beforeBrCount} <br> tags, ${beforeNewlineCount} newlines`);
-
-        // Fix image URLs to ensure they're absolute
-        article.content = fixImageUrls(article.content);
-
-        // Debug: Check content structure after fixImageUrls
-        const afterBrCount = (article.content.match(/<br>/gi) || []).length;
-        const afterNewlineCount = (article.content.match(/\n/g) || []).length;
-        const afterPCount = (article.content.match(/<p>/gi) || []).length;
-        console.log(`After fixImageUrls: ${afterPCount} <p> tags, ${afterBrCount} <br> tags, ${afterNewlineCount} newlines`);
-
-        if (beforeNewlineCount !== afterNewlineCount) {
-          console.warn(`fixImageUrls changed newline count from ${beforeNewlineCount} to ${afterNewlineCount}`);
+      // Extract article content - first try to get site config if needed
+      logDebug('extraction', 'Starting article extraction');
+      extractArticleWithConfig(indicator).then(function(article) {
+        if (!article) {
+          logDebug('error', 'Article extraction returned null');
+          throw new Error('Could not extract article content from this page');
         }
-      }
 
-      // Enhance article data
-      const enhancedArticle = {
-        ...article,
-        url: window.location.href,
-        domain: window.location.hostname,
-        extractedAt: new Date().toISOString(),
-        userAgent: navigator.userAgent.substring(0, 100)
-      };
+        logDebug('extraction', 'Article extracted', {
+          title: article.title,
+          contentLength: article.content?.length || 0,
+          method: article.extractionMethod || 'unknown'
+        });
 
-      // Base64 encode to prevent truncation but preserve structure
-      let contentB64 = null;
-      try {
-        if (enhancedArticle.content) {
-          // Debug: Check what we're encoding
-          const brCount = (enhancedArticle.content.match(/<br>/gi) || []).length;
-          const newlineCount = (enhancedArticle.content.match(/\n/g) || []).length;
-          const pCount = (enhancedArticle.content.match(/<p>/gi) || []).length;
-          console.log(`Encoding content with: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+        // Debug: Check content structure before fixImageUrls
+        if (article.content) {
+          const beforeBrCount = (article.content.match(/<br>/gi) || []).length;
+          const beforeNewlineCount = (article.content.match(/\n/g) || []).length;
+          const beforePCount = (article.content.match(/<p>/gi) || []).length;
+          console.log(`Before fixImageUrls: ${beforePCount} <p> tags, ${beforeBrCount} <br> tags, ${beforeNewlineCount} newlines`);
 
-          // Check first paragraph
-          const firstChars = enhancedArticle.content.substring(0, 200).replace(/<[^>]*>/g, '').trim();
-          console.log('Content to encode starts with:', firstChars.substring(0, 100));
+          // Fix image URLs to ensure they're absolute
+          article.content = fixImageUrls(article.content);
 
-          // Use base64 encoding that preserves Unicode properly
-          // The unescape(encodeURIComponent()) pattern converts to Latin-1 for btoa
-          // But this might be altering whitespace characters
-          contentB64 = btoa(unescape(encodeURIComponent(enhancedArticle.content)));
-          console.log('Successfully encoded', enhancedArticle.content.length, 'chars to base64');
+          // Debug: Check content structure after fixImageUrls
+          const afterBrCount = (article.content.match(/<br>/gi) || []).length;
+          const afterNewlineCount = (article.content.match(/\n/g) || []).length;
+          const afterPCount = (article.content.match(/<p>/gi) || []).length;
+          console.log(`After fixImageUrls: ${afterPCount} <p> tags, ${afterBrCount} <br> tags, ${afterNewlineCount} newlines`);
+
+          if (beforeNewlineCount !== afterNewlineCount) {
+            console.warn(`fixImageUrls changed newline count from ${beforeNewlineCount} to ${afterNewlineCount}`);
+          }
         }
-      } catch (e) {
-        console.error('Failed to base64-encode content:', e);
-      }
 
-      // Send to service
-      updateIndicator(indicator, 'Sending to Kindle and Zotero...');
-
-      // Log extraction results for debugging
-      console.log('=== ARTICLE EXTRACTION DEBUG ===');
-      console.log('Title:', enhancedArticle.title);
-      console.log('Content length:', enhancedArticle.content?.length || 0);
-      console.log('Text content length:', enhancedArticle.textContent?.length || 0);
-      console.log('Extraction method:', enhancedArticle.extractionMethod);
-      console.log('Extraction note:', enhancedArticle.extractionNote);
-      console.log('Has images:', enhancedArticle.hasImages);
-      if (enhancedArticle.content) {
-        var pCount = (enhancedArticle.content.match(/<p[^>]*>/gi) || []).length;
-        var brCount = (enhancedArticle.content.match(/<br[^>]*>/gi) || []).length;
-        console.log('Content structure:', pCount, '<p> tags,', brCount, '<br> tags');
-        console.log('Content preview:', enhancedArticle.content.substring(0, 200) + '...');
-      }
-      console.log('=== END EXTRACTION DEBUG ===');
-
-      return fetch(SERVICE_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
+        // Enhance article data
+        const enhancedArticle = {
+          ...article,
           url: window.location.href,
-          article: {
-            ...enhancedArticle,
-            content_b64: contentB64,
-            // Also send raw content to compare
-            content: enhancedArticle.content
+          domain: window.location.hostname,
+          extractedAt: new Date().toISOString(),
+          userAgent: navigator.userAgent.substring(0, 100)
+        };
+
+        // Base64 encode to prevent truncation but preserve structure
+        let contentB64 = null;
+        try {
+          if (enhancedArticle.content) {
+            // Debug: Check what we're encoding
+            const brCount = (enhancedArticle.content.match(/<br>/gi) || []).length;
+            const newlineCount = (enhancedArticle.content.match(/\n/g) || []).length;
+            const pCount = (enhancedArticle.content.match(/<p>/gi) || []).length;
+            console.log(`Encoding content with: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+
+            // Check first paragraph
+            const firstChars = enhancedArticle.content.substring(0, 200).replace(/<[^>]*>/g, '').trim();
+            console.log('Content to encode starts with:', firstChars.substring(0, 100));
+
+            // Use base64 encoding that preserves Unicode properly
+            // The unescape(encodeURIComponent()) pattern converts to Latin-1 for btoa
+            // But this might be altering whitespace characters
+            contentB64 = btoa(unescape(encodeURIComponent(enhancedArticle.content)));
+            console.log('Successfully encoded', enhancedArticle.content.length, 'chars to base64');
+          }
+        } catch (e) {
+          console.error('Failed to base64-encode content:', e);
+        }
+
+        // Send to service
+        updateIndicator(indicator, 'Sending to Kindle and Zotero...');
+
+        // Log extraction results for debugging
+        console.log('=== ARTICLE EXTRACTION DEBUG ===');
+        console.log('Title:', enhancedArticle.title);
+        console.log('Content length:', enhancedArticle.content?.length || 0);
+        console.log('Text content length:', enhancedArticle.textContent?.length || 0);
+        console.log('Extraction method:', enhancedArticle.extractionMethod);
+        console.log('Extraction note:', enhancedArticle.extractionNote);
+        console.log('Has images:', enhancedArticle.hasImages);
+        if (enhancedArticle.content) {
+          var pCount = (enhancedArticle.content.match(/<p[^>]*>/gi) || []).length;
+          var brCount = (enhancedArticle.content.match(/<br[^>]*>/gi) || []).length;
+          console.log('Content structure:', pCount, '<p> tags,', brCount, '<br> tags');
+          console.log('Content preview:', enhancedArticle.content.substring(0, 200) + '...');
+        }
+        console.log('=== END EXTRACTION DEBUG ===');
+
+        return fetch(SERVICE_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
           },
-          debugInfo: __bmLog
+          body: JSON.stringify({
+            url: window.location.href,
+            article: {
+              ...enhancedArticle,
+              content_b64: contentB64,
+              // Also send raw content to compare
+              content: enhancedArticle.content
+            },
+            debugInfo: __bmLog
+          })
+        });
+      })
+        .then(response => response.json())
+        .then(data => {
+          document.body.removeChild(indicator);
+
+          // Show results
+          const results = [];
+          if (data.kindle === 'sent') results.push('✅ Sent to Kindle');
+          else results.push('❌ Kindle failed');
+
+          if (data.zotero === 'sent') results.push('✅ Saved to Zotero');
+          else results.push('❌ Zotero failed');
+
+          const message = `📖 "${data.article.title}"\n\n${results.join('\n')}\n\n👆 Results for your bookmarklet`;
+          showResult(message);
         })
-      });
-    })
-      .then(response => response.json())
-      .then(data => {
-        document.body.removeChild(indicator);
+        .catch(error => {
+          if (document.querySelector('#article-bookmarklet-indicator')) {
+            document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
+          }
+          var hostname = window.location.hostname.replace(/^www\./, '');
+          var helpMessage = '';
 
-        // Show results
-        const results = [];
-        if (data.kindle === 'sent') results.push('✅ Sent to Kindle');
-        else results.push('❌ Kindle failed');
+          if (error.message.includes('fetch') || error.message.includes('network')) {
+            helpMessage = '\n\n💡 This might be due to:\n- Network connectivity issues\n- Site blocking automated access\n- CORS restrictions\n\nTry refreshing the page and using the bookmarklet again.';
+          } else if (error.message.includes('extract')) {
+            helpMessage = `\n\n💡 Extraction failed for ${hostname}:\n- This site may use unusual formatting\n- Content might be dynamically loaded\n- The page might not contain a standard article\n\nTry using the bookmarklet on the main article page.`;
+          } else {
+            helpMessage = '\n\n💡 Please try again or check your internet connection.';
+          }
 
-        if (data.zotero === 'sent') results.push('✅ Saved to Zotero');
-        else results.push('❌ Zotero failed');
+          showResult('❌ Error: ' + error.message + helpMessage);
+        })
+        .finally(() => {
+          window.articleBookmarkletProcessing = false;
+        });
 
-        const message = `📖 "${data.article.title}"\n\n${results.join('\n')}\n\n👆 Results for your bookmarklet`;
-        showResult(message);
-      })
-      .catch(error => {
-        if (document.querySelector('#article-bookmarklet-indicator')) {
-          document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
-        }
-        var hostname = window.location.hostname.replace(/^www\./, '');
-        var helpMessage = '';
-
-        if (error.message.includes('fetch') || error.message.includes('network')) {
-          helpMessage = '\n\n💡 This might be due to:\n- Network connectivity issues\n- Site blocking automated access\n- CORS restrictions\n\nTry refreshing the page and using the bookmarklet again.';
-        } else if (error.message.includes('extract')) {
-          helpMessage = `\n\n💡 Extraction failed for ${hostname}:\n- This site may use unusual formatting\n- Content might be dynamically loaded\n- The page might not contain a standard article\n\nTry using the bookmarklet on the main article page.`;
-        } else {
-          helpMessage = '\n\n💡 Please try again or check your internet connection.';
-        }
-
-        showResult('❌ Error: ' + error.message + helpMessage);
-      })
-      .finally(() => {
-        window.articleBookmarkletProcessing = false;
-      });
-
-  } catch (error) {
-    if (document.querySelector('#article-bookmarklet-indicator')) {
-      document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
+    } catch (error) {
+      if (document.querySelector('#article-bookmarklet-indicator')) {
+        document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
+      }
+      showResult('❌ Extraction failed: ' + error.message);
+      window.articleBookmarkletProcessing = false;
     }
-    showResult('❌ Extraction failed: ' + error.message);
-    window.articleBookmarkletProcessing = false;
   }
 
   // Fix relative image URLs to absolute URLs
@@ -1772,6 +2080,13 @@
         document.body.removeChild(dialog);
       }
     }, 10000);
+  }
+
+  if (isTestMode) {
+    window.__ArticleMonsterTestHooks = {
+      Readability: Readability,
+      applyHtmlPreprocessing: applyHtmlPreprocessing
+    };
   }
 
 })();
