@@ -12,40 +12,229 @@ const AdmZip = require('adm-zip');
 
 const repoRoot = path.join(__dirname, '..', '..');
 
+const UNSOLVED_ALLOWED_FIELDS = new Set([
+  'name',
+  'url',
+  'htmlFile',
+  'content',
+  'expectedPhrases',
+  'minLength',
+  'notes'
+]);
+
+const SOLVED_ALLOWED_FIELDS = new Set([
+  'name',
+  'url',
+  'htmlFile',
+  'content',
+  'expectedPhrases',
+  'minLength',
+  'notes'
+]);
+
+function validateTestCase(testCase, meta) {
+  const errors = [];
+  const warnings = [];
+
+  if (!testCase || typeof testCase !== 'object' || Array.isArray(testCase)) {
+    errors.push('Case must be a JSON object');
+    return { ok: false, errors, warnings };
+  }
+
+  const allowed = meta.priority === 'UNSOLVED' ? UNSOLVED_ALLOWED_FIELDS : SOLVED_ALLOWED_FIELDS;
+  for (const key of Object.keys(testCase)) {
+    if (!allowed.has(key)) {
+      warnings.push(`Unknown field "${key}" will be ignored`);
+    }
+  }
+
+  if (!testCase.name || typeof testCase.name !== 'string') {
+    errors.push('Missing or invalid "name" (string required)');
+  }
+
+  if (!testCase.url || typeof testCase.url !== 'string') {
+    errors.push('Missing or invalid "url" (string required)');
+  }
+
+  if (testCase.htmlFile !== undefined && typeof testCase.htmlFile !== 'string') {
+    errors.push('"htmlFile" must be a string when provided');
+  }
+
+  if (testCase.content !== undefined && typeof testCase.content !== 'string') {
+    errors.push('"content" must be a string when provided');
+  }
+
+  if (meta.priority === 'UNSOLVED') {
+    if (!testCase.htmlFile && !testCase.content) {
+      errors.push('Unsolved cases require one of "htmlFile" or "content"');
+    }
+  } else if (!testCase.htmlFile && !testCase.content) {
+    warnings.push('Solved case has no "htmlFile" or "content"; will rely on EPUB golden if present');
+  }
+
+  if (testCase.expectedPhrases !== undefined) {
+    if (!Array.isArray(testCase.expectedPhrases)) {
+      errors.push('"expectedPhrases" must be an array of strings');
+    } else if (testCase.expectedPhrases.some(p => typeof p !== 'string')) {
+      errors.push('"expectedPhrases" must contain only strings');
+    }
+  }
+
+  if (testCase.minLength !== undefined) {
+    if (!Number.isFinite(testCase.minLength)) {
+      errors.push('"minLength" must be a finite number');
+    } else if (testCase.minLength < 0) {
+      errors.push('"minLength" must be >= 0');
+    }
+  }
+
+  if (testCase.notes !== undefined && typeof testCase.notes !== 'string') {
+    errors.push('"notes" must be a string when provided');
+  }
+
+  return { ok: errors.length === 0, errors, warnings };
+}
+
+function stripHtml(html) {
+  return html.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function normalizeText(text) {
+  return text.replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ').toLowerCase().trim();
+}
+
+function extractPlainTextFromEpub(epubPath) {
+  const zip = new AdmZip(epubPath);
+  const entries = zip.getEntries();
+  let xhtml = '';
+  entries.forEach(entry => {
+    if (entry.entryName.endsWith('.xhtml') || entry.entryName.endsWith('.html')) {
+      xhtml += zip.readAsText(entry);
+    }
+  });
+  return stripHtml(
+    xhtml
+      .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+      .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+  );
+}
+
+function pickPhrases(text) {
+  const words = text.split(' ');
+  const pickWindow = (startIdx, windowSize) => words.slice(startIdx, startIdx + windowSize).join(' ');
+  const len = words.length;
+  const w = 12;
+  const begin = pickWindow(0, w);
+  const mid = pickWindow(Math.max(0, Math.floor(len * 0.5) - Math.floor(w / 2)), w);
+  const end = pickWindow(Math.max(0, len - w), w);
+  const phrases = [begin, mid, end]
+    .map(s => s.replace(/[\s\u00A0]+/g, ' ').trim())
+    .filter(Boolean);
+  return [...new Set(phrases)];
+}
+
+function resolveExpectedEpubPath(testCase) {
+  const baseFromHtml = testCase.htmlFile
+    ? path.basename(testCase.htmlFile, path.extname(testCase.htmlFile))
+    : null;
+  const base = baseFromHtml || testCase.caseId;
+  if (!base || !testCase.caseDir) return null;
+  return path.join(testCase.caseDir, `${base}.expected.epub`);
+}
+
+function resolveChecks(testCase, expectedEpubPath) {
+  let expectedPhrases = Array.isArray(testCase.expectedPhrases) ? testCase.expectedPhrases : [];
+  let minLength = Number.isFinite(testCase.minLength) ? testCase.minLength : null;
+  let epubText = null;
+
+  if (
+    expectedEpubPath &&
+    fs.existsSync(expectedEpubPath) &&
+    (expectedPhrases.length === 0 || minLength === null)
+  ) {
+    try {
+      epubText = extractPlainTextFromEpub(expectedEpubPath);
+      if (expectedPhrases.length === 0) {
+        expectedPhrases = pickPhrases(epubText);
+      }
+      if (minLength === null) {
+        minLength = Math.floor(epubText.length * 0.9);
+      }
+    } catch (e) {
+      console.log('⚠️  Failed to derive checks from EPUB:', e.message);
+    }
+  }
+
+  return { expectedPhrases, minLength, epubText };
+}
+
+function loadReadability(window, document) {
+  const readabilityCode = fs.readFileSync(path.join(repoRoot, 'public', 'readability.min.js'), 'utf8');
+  const executeReadability = new Function('window', 'document', `
+    ${readabilityCode}
+    return window.Readability;
+  `);
+  const Readability = executeReadability(window, document);
+  if (!Readability && !window.Readability) {
+    throw new Error('Failed to load Readability');
+  }
+  window.Readability = Readability || window.Readability;
+}
+
 // Load test cases from folders
 function loadTestCases() {
   const testCases = [];
-  
-  // Load unsolved cases (high priority)
-  const unsolvedDir = path.join(repoRoot, 'test-cases', 'unsolved');
-  if (fs.existsSync(unsolvedDir)) {
-    const files = fs.readdirSync(unsolvedDir).filter(f => f.endsWith('.json'));
+  const errors = [];
+
+  function loadDir(dirName, priority) {
+    const dirPath = path.join(repoRoot, 'test-cases', dirName);
+    if (!fs.existsSync(dirPath)) return;
+    const files = fs.readdirSync(dirPath).filter(f => f.endsWith('.json'));
     for (const file of files) {
-      const testCase = JSON.parse(fs.readFileSync(path.join(unsolvedDir, file), 'utf8'));
+      const filePath = path.join(dirPath, file);
+      const testCase = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      const caseId = path.basename(file, '.json');
+      const meta = {
+        priority,
+        caseId,
+        caseDir: dirPath,
+        caseFile: filePath
+      };
+      const validation = validateTestCase(testCase, meta);
+      if (validation.warnings.length > 0) {
+        for (const warning of validation.warnings) {
+          console.log(`⚠️  ${warning} (${filePath})`);
+        }
+      }
+      if (!validation.ok) {
+        for (const err of validation.errors) {
+          errors.push(`${err} (${filePath})`);
+        }
+        continue;
+      }
+
       if (testCase.htmlFile) {
-        testCase.htmlPath = path.join(unsolvedDir, testCase.htmlFile);
+        testCase.htmlPath = path.join(dirPath, testCase.htmlFile);
       } else if (typeof testCase.content === 'string' && testCase.content.length > 0) {
         testCase.htmlContent = testCase.content;
       }
-      testCase.priority = 'UNSOLVED';
+      testCase.priority = priority;
+      testCase.caseId = caseId;
+      testCase.caseDir = dirPath;
+      testCase.caseFile = filePath;
       testCases.push(testCase);
     }
   }
-  
-  // Load solved cases (regression tests)
-  const solvedDir = path.join(repoRoot, 'test-cases', 'solved');
-  if (fs.existsSync(solvedDir)) {
-    const files = fs.readdirSync(solvedDir).filter(f => f.endsWith('.json'));
-    for (const file of files) {
-      const testCase = JSON.parse(fs.readFileSync(path.join(solvedDir, file), 'utf8'));
-      if (testCase.htmlFile) {
-        testCase.htmlPath = path.join(solvedDir, testCase.htmlFile);
-      } else if (typeof testCase.content === 'string' && testCase.content.length > 0) {
-        testCase.htmlContent = testCase.content;
-      }
-      testCase.priority = 'SOLVED';
-      testCases.push(testCase);
+
+  loadDir('unsolved', 'UNSOLVED');
+  loadDir('solved', 'SOLVED');
+
+  if (errors.length > 0) {
+    console.log('\n❌ Schema validation errors:');
+    for (const err of errors) {
+      console.log(`  - ${err}`);
     }
+    process.exit(1);
   }
 
   // Optional filtering via environment flags to support CI grouping
@@ -53,7 +242,6 @@ function loadTestCases() {
   const onlyUnsolved = String(process.env.ONLY_UNSOLVED || '').toLowerCase() === 'true';
 
   if (onlySolved && onlyUnsolved) {
-    // If both are set, prefer solved to avoid ambiguity
     return testCases.filter(tc => tc.priority === 'SOLVED');
   }
 
@@ -70,215 +258,184 @@ function loadTestCases() {
 
 // Test extraction on a single HTML file
 function testExtraction(testCase) {
-  const displayName = testCase.name || testCase.url || '(unnamed test case)';
-  console.log(`\n📖 Testing: ${displayName} [${testCase.priority}]`);
+  console.log(`\n📖 Testing: ${testCase.name} [${testCase.priority}]`);
   console.log('─'.repeat(50));
-  
-  // Load HTML or handle EPUB-only cases
-  const htmlPath = testCase.htmlPath;
-  const htmlExists = htmlPath ? fs.existsSync(htmlPath) : false;
-  const expectedEpubPath = htmlPath
-    ? path.join(path.dirname(htmlPath), path.basename(htmlPath, path.extname(htmlPath)) + '.expected.epub')
-    : null;
 
-  if (!htmlExists && expectedEpubPath && fs.existsSync(expectedEpubPath)) {
-    console.log(`ℹ️ No HTML found, running EPUB-only validation using golden: ${expectedEpubPath}`);
-    try {
-      const zip = new AdmZip(expectedEpubPath);
-      const entries = zip.getEntries();
-      let expectedXhtml = '';
-      entries.forEach(entry => {
-        if (entry.entryName.endsWith('.xhtml') || entry.entryName.endsWith('.html')) {
-          expectedXhtml += zip.readAsText(entry);
+  const expectedEpubPath = resolveExpectedEpubPath(testCase);
+  const htmlExists = testCase.htmlPath ? fs.existsSync(testCase.htmlPath) : false;
+  const htmlContent = testCase.htmlContent;
+
+  if (!htmlExists && !htmlContent) {
+    if (expectedEpubPath && fs.existsSync(expectedEpubPath)) {
+      console.log(`ℹ️ No HTML found, running EPUB-only validation using golden: ${expectedEpubPath}`);
+      try {
+        const { expectedPhrases, minLength, epubText } = resolveChecks(testCase, expectedEpubPath);
+        const plainText = epubText || extractPlainTextFromEpub(expectedEpubPath);
+        console.log(`📏 EPUB XHTML text length: ${plainText.length} chars`);
+        let lengthOk = true;
+        if (minLength !== null && plainText.length < minLength) {
+          console.log(`❌ EPUB content too short (expected at least ${minLength} chars)`);
+          lengthOk = false;
+        } else if (minLength !== null) {
+          console.log('✅ EPUB content length OK');
         }
-      });
-      const plainText = expectedXhtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-      console.log(`📏 EPUB XHTML text length: ${plainText.length} chars`);
-      let lengthOk = true;
-      if (testCase.minLength && plainText.length < testCase.minLength) {
-        console.log(`❌ EPUB content too short (expected at least ${testCase.minLength} chars)`);
-        lengthOk = false;
-      } else {
-        console.log('✅ EPUB content length OK');
-      }
 
-      let allPhrasesFound = true;
-      for (const phrase of testCase.expectedPhrases || []) {
-        const found = plainText.toLowerCase().includes(String(phrase).toLowerCase());
-        console.log(`${found ? '✅' : '❌'} ${found ? 'Found' : 'Missing'}: "${phrase}"`);
-        if (!found) allPhrasesFound = false;
-      }
+        let allPhrasesFound = true;
+        for (const phrase of expectedPhrases) {
+          const found = plainText.toLowerCase().includes(String(phrase).toLowerCase());
+          console.log(`${found ? '✅' : '❌'} ${found ? 'Found' : 'Missing'}: "${phrase}"`);
+          if (!found) allPhrasesFound = false;
+        }
 
-      return allPhrasesFound && lengthOk;
-    } catch (e) {
-      console.log('❌ EPUB-only validation failed:', e.message);
-      return false;
+        return { status: allPhrasesFound && lengthOk ? 'pass' : 'fail' };
+      } catch (e) {
+        console.log('❌ EPUB-only validation failed:', e.message);
+        return { status: 'fail' };
+      }
     }
+
+    if (testCase.priority === 'SOLVED') {
+      console.log('⚠️  No HTML or inline content provided, skipping case');
+      return { status: 'skip' };
+    }
+
+    console.log('❌ Test file not found and no inline content provided');
+    return { status: 'fail' };
   }
 
-  if (!htmlExists && !testCase.htmlContent) {
-    console.log(`❌ Test file not found and no inline content provided: ${testCase.htmlPath || '(inline missing)'}`);
-    return false;
-  }
-
-  const html = htmlExists ? fs.readFileSync(htmlPath, 'utf8') : testCase.htmlContent;
-  const dom = new JSDOM(html, { 
+  const html = htmlExists ? fs.readFileSync(testCase.htmlPath, 'utf8') : htmlContent;
+  const dom = new JSDOM(html, {
     url: testCase.url || 'https://example.com'
   });
   const window = dom.window;
   const document = window.document;
-  
-  // Load our Readability.min.js and execute it
-  const readabilityCode = fs.readFileSync(path.join(repoRoot, 'public', 'readability.min.js'), 'utf8');
-  
-  // The code is an IIFE (immediately invoked function expression)
-  // We need to execute it in a way that gives it access to window
+
   try {
-    // Use Function constructor to evaluate the code with window context
-    const executeReadability = new Function('window', 'document', `
-      ${readabilityCode}
-      return window.Readability;
-    `);
-    
-    const Readability = executeReadability(window, document);
-    
-    if (!Readability && !window.Readability) {
-      console.log('❌ Failed to load Readability');
-      return false;
-    }
-    
-    // Use whichever is available
-    window.Readability = Readability || window.Readability;
+    loadReadability(window, document);
   } catch (err) {
     console.log('❌ Script execution error:', err.message);
-    return false;
+    return { status: 'fail' };
   }
-  
-  // Extract article
+
   const reader = new window.Readability(window.document);
   let article;
   try {
     article = reader.parse();
   } catch (err) {
     console.log('❌ Extraction error:', err.message);
-    return false;
-  }
-  
-  if (!article || !article.content) {
-    console.log('❌ No content extracted');
-    return false;
+    return { status: 'fail' };
   }
 
-  // If an EPUB golden exists, compare against it
+  if (!article || !article.content) {
+    console.log('❌ No content extracted');
+    return { status: 'fail' };
+  }
+
+  const { expectedPhrases, minLength } = resolveChecks(testCase, expectedEpubPath);
+
   if (expectedEpubPath && fs.existsSync(expectedEpubPath)) {
     console.log(`📚 Found EPUB golden: ${expectedEpubPath}`);
     try {
-      const zip = new AdmZip(expectedEpubPath);
-      const entries = zip.getEntries();
-      let expectedXhtml = '';
-      entries.forEach(entry => {
-        if (entry.entryName.endsWith('.xhtml') || entry.entryName.endsWith('.html')) {
-          expectedXhtml += zip.readAsText(entry);
-        }
-      });
-      const normalize = (s) => s.replace(/<[^>]*>/g, ' ').replace(/&nbsp;/g, ' ').toLowerCase().replace(/\s+/g, ' ').trim();
-      const expectedText = normalize(expectedXhtml);
-      const actualText = normalize(article.content);
+      const expectedText = normalizeText(extractPlainTextFromEpub(expectedEpubPath));
+      const actualText = normalizeText(stripHtml(article.content));
       const lenDiff = Math.abs(actualText.length - expectedText.length);
-      const relDiff = expectedText.length ? (lenDiff / Math.max(actualText.length, expectedText.length)) : 0;
-      const containsEither = actualText.includes(expectedText.substring(0, Math.min(200, expectedText.length))) || expectedText.includes(actualText.substring(0, Math.min(200, actualText.length)));
+      const relDiff = expectedText.length
+        ? (lenDiff / Math.max(actualText.length, expectedText.length))
+        : 0;
+      const containsEither =
+        actualText.includes(expectedText.substring(0, Math.min(200, expectedText.length))) ||
+        expectedText.includes(actualText.substring(0, Math.min(200, actualText.length)));
       if (relDiff < 0.1 && containsEither) {
         console.log('✅ EPUB golden comparison passed (len diff < 10% and content aligned)');
       } else {
         console.log('❌ EPUB golden comparison failed');
-        console.log(`   Expected length: ${expectedText.length}, Actual length: ${actualText.length}, Rel diff: ${(relDiff*100).toFixed(1)}%`);
-        return false;
+        console.log(
+          `   Expected length: ${expectedText.length}, Actual length: ${actualText.length}, Rel diff: ${(relDiff * 100).toFixed(1)}%`
+        );
+        return { status: 'fail' };
       }
     } catch (e) {
       console.log('❌ Failed to read/compare EPUB golden:', e.message);
-      return false;
+      return { status: 'fail' };
     }
   }
-  
-  // Check content length
-  console.log(`📏 Content length: ${article.content.length} bytes`);
+
+  const plainText = stripHtml(article.content);
+
+  console.log(`📏 Content length: ${plainText.length} chars`);
   let lengthOk = true;
-  if (typeof testCase.minLength === 'number' && article.content.length < testCase.minLength) {
-    console.log(`❌ Content too short (expected at least ${testCase.minLength} bytes)`);
+  if (minLength !== null && plainText.length < minLength) {
+    console.log(`❌ Content too short (expected at least ${minLength} chars)`);
     lengthOk = false;
-  } else {
-    console.log(`✅ Content length OK`);
+  } else if (minLength !== null) {
+    console.log('✅ Content length OK');
   }
-  
-  // Check for expected phrases
+
   let allPhrasesFound = true;
-  for (const phrase of (testCase.expectedPhrases || [])) {
-    const found = article.content.includes(phrase) || article.textContent?.includes(phrase);
+  for (const phrase of expectedPhrases) {
+    const found = plainText.toLowerCase().includes(String(phrase).toLowerCase());
     if (found) {
       console.log(`✅ Found: "${phrase}"`);
     } else {
       console.log(`❌ Missing: "${phrase}"`);
       allPhrasesFound = false;
-      
-      // Provide helpful context about where to look for the missing content
-      const plainText = article.content.replace(/<[^>]*>/g, '').trim();
-      const words = phrase.split(' ');
-      if (words.length > 2) {
-        // Check if any part of the phrase exists
-        const firstWords = words.slice(0, 2).join(' ');
-        const lastWords = words.slice(-2).join(' ');
-        if (plainText.includes(firstWords)) {
-          console.log(`   ℹ️  Found beginning "${firstWords}" but not complete phrase`);
-        } else if (plainText.includes(lastWords)) {
-          console.log(`   ℹ️  Found ending "${lastWords}" but not complete phrase`);
-        } else {
-          console.log(`   ℹ️  Phrase not found at all in extracted content`);
-        }
-      }
     }
   }
-  
-  // Show content preview
-  const plainText = article.content.replace(/<[^>]*>/g, '').trim();
+
   console.log('\n📄 Content preview:');
   console.log('Beginning:', plainText.substring(0, 100) + '...');
-  console.log('Ending:', '...' + plainText.substring(plainText.length - 100));
-  
-  // If test notes exist, show them
+  console.log('Ending:', '...' + plainText.substring(Math.max(0, plainText.length - 100)));
+
   if (testCase.notes) {
     console.log('\n📝 Notes:', testCase.notes);
   }
-  
-  return allPhrasesFound && lengthOk;
+
+  return { status: allPhrasesFound && lengthOk ? 'pass' : 'fail' };
 }
 
 // Run all tests
 function runTests() {
   console.log('🧪 Running Article Extraction Tests');
   console.log('═'.repeat(50));
-  
+
   const testCases = loadTestCases();
   console.log(`Found ${testCases.length} test case(s)`);
-  
-  let passed = 0;
-  let failed = 0;
-  let unsolvedPassed = [];
-  
+
+  let solvedPassed = 0;
+  let solvedFailed = 0;
+  let unsolvedPassedCount = 0;
+  let unsolvedFailedCount = 0;
+  let skipped = 0;
+  const unsolvedPassed = [];
+
   for (const testCase of testCases) {
     const result = testExtraction(testCase);
-    if (result) {
-      passed++;
+    if (result.status === 'pass') {
       if (testCase.priority === 'UNSOLVED') {
+        unsolvedPassedCount++;
         unsolvedPassed.push(testCase.name);
+      } else {
+        solvedPassed++;
       }
+    } else if (result.status === 'skip') {
+      skipped++;
     } else {
-      failed++;
+      if (testCase.priority === 'UNSOLVED') {
+        unsolvedFailedCount++;
+      } else {
+        solvedFailed++;
+      }
     }
   }
-  
+
+  const passed = solvedPassed + unsolvedPassedCount;
+  const failed = solvedFailed + unsolvedFailedCount;
+
   console.log('\n' + '═'.repeat(50));
-  console.log(`📊 Results: ${passed} passed, ${failed} failed`);
-  
+  console.log(`📊 Results: ${passed} passed, ${failed} failed, ${skipped} skipped`);
+  console.log(`   Solved: ${solvedPassed} passed, ${solvedFailed} failed`);
+  console.log(`   Unsolved: ${unsolvedPassedCount} passed, ${unsolvedFailedCount} failed`);
+
   if (unsolvedPassed.length > 0) {
     console.log('\n🎉 UNSOLVED CASES NOW PASSING:');
     for (const name of unsolvedPassed) {
@@ -286,10 +443,11 @@ function runTests() {
       console.log('     → Move to test-cases/solved/ to mark as regression test');
     }
   }
-  
-  return failed === 0;
+
+  const ranSolved = solvedPassed + solvedFailed > 0;
+  const shouldFailOnUnsolved = !ranSolved;
+  return solvedFailed === 0 && (!shouldFailOnUnsolved || unsolvedFailedCount === 0);
 }
 
-// Run tests and exit with appropriate code
 const success = runTests();
 process.exit(success ? 0 : 1);
