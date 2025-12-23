@@ -419,20 +419,9 @@
             if (data['@type'] === 'NewsArticle' || data['@type'] === 'Article' || data['@type'] === 'BlogPosting') {
               var textContent = typeof data.articleBody === 'string' ? data.articleBody.trim() : '';
               var htmlInfo = null;
-              var extractionMethod = 'json-ld';
 
               if (textContent && textContent.length > 500) {
                 htmlInfo = this._buildJsonLdHtmlFromText(textContent);
-              } else {
-                var wixContent = this._extractWixArticleFromDom();
-                if (wixContent && wixContent.text.length > 500) {
-                  htmlInfo = {
-                    html: wixContent.html,
-                    hasImages: wixContent.hasImages
-                  };
-                  textContent = wixContent.text;
-                  extractionMethod = 'json-ld+wix-dom';
-                }
               }
 
               if (!htmlInfo) {
@@ -454,7 +443,7 @@
                 publishedTime: data.datePublished || this._getArticleMetadata('published_time'),
                 hasImages: htmlInfo.hasImages || /<img\b/i.test(sectionedContent),
                 lang: this._doc.documentElement.lang || 'en',
-                source: extractionMethod
+                source: 'json-ld'
               };
             }
           }
@@ -494,46 +483,6 @@
         html: htmlContent,
         hasImages: hasImages
       };
-    },
-
-    _extractWixArticleFromDom: function() {
-      var doc = this._doc;
-      // Try multiple known Wix Rich Content containers
-      var container =
-        doc.querySelector('[data-id="content-viewer"]') ||
-        doc.querySelector('[data-hook="post-description"]') ||
-        doc.querySelector('[data-testid="rich-content-container"]') ||
-        doc.querySelector('.HBUKN') ||
-        (function() {
-          var first = doc.querySelector('[data-hook="rcv-block-first"]');
-          if (first && typeof first.closest === 'function') {
-            return first.closest('[data-testid="rich-content-container"], .HBUKN');
-          }
-          return null;
-        })();
-
-      if (!container) return null;
-
-      var clone = container.cloneNode(true);
-      var removalSelectors = [
-        'script',
-        'style',
-        'noscript',
-        '.hiddenText',
-        'svg[data-dom-store]',
-        '[data-dom-store]'
-      ].join(', ');
-      clone.querySelectorAll(removalSelectors).forEach(function(node) {
-        node.remove();
-      });
-
-      var textContent = clone.textContent ? clone.textContent.replace(/\s+/g, ' ').trim() : '';
-      if (!textContent || textContent.length < 500) return null;
-
-      var html = '<div>' + clone.innerHTML + '</div>';
-      var hasImages = !!clone.querySelector('img');
-
-      return { html: html, text: textContent, hasImages: hasImages };
     },
 
     _textToHtml: function(text) {
@@ -629,9 +578,6 @@
             return null;
           }
         }
-
-        // If site prefers JSON-LD, let that handler take over
-        if (config.preferJsonLd) return null;
 
         // Note: HTML preprocessing now handled before Readability parsing
 

@@ -37,8 +37,7 @@ const DIRECTIVE_DEFS = {
     'insert_detected_image'
   ],
   string: ['parser'],
-  parameterized: ['replace_string'],
-  legacy: ['prefer_jsonld']
+  parameterized: ['replace_string']
 };
 
 class ConfigFetcher {
@@ -88,7 +87,6 @@ class ConfigFetcher {
       author: [],
       strip: [],
       date: [],
-      preferJsonLd: false,
       // PHP-matching directive arrays
       find_string: [],
       replace_string: [],
@@ -150,10 +148,6 @@ class ConfigFetcher {
           config.find_string.push(match[2]);
           config.replace_string.push(val);
         }
-      }
-      // Legacy preference
-      else if (DIRECTIVE_DEFS.legacy.includes(command)) {
-        config.preferJsonLd = (val === 'true' || val === '1');
       }
     }
 

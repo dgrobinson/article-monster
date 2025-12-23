@@ -410,10 +410,6 @@ function extractWithSiteConfig(doc, window, config) {
     return null;
   }
 
-  if (config.preferJsonLd) {
-    return null;
-  }
-
   const result = {
     source: 'site-config'
   };

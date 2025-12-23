@@ -29,7 +29,6 @@ function makeConfig(overrides) {
     tidy: null,
     autodetect_on_failure: null,
     parser: null,
-    preferJsonLd: false,
     strip_comments: null,
     skip_json_ld: null,
     convert_double_br_tags: null,

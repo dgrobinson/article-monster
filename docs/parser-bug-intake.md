@@ -61,7 +61,6 @@ It also reports whether any `body` rules were found (`bodyRulesPresent`).
     "author": [],
     "strip": [],
     "date": [],
-    "preferJsonLd": false,
     "find_string": [],
     "replace_string": [],
     "strip_id_or_class": [],
