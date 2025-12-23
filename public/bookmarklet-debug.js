@@ -1,315 +1,96 @@
 // Article Bookmarklet - DEBUG VERSION
-// Shows full HTML and extracted content for comparison
+// Loads production extractor and shows extracted content alongside page HTML
 (function() {
   'use strict';
 
-  // Simplified Readability implementation (must be defined before use)
-  function Readability(doc, options) {
-    this._doc = doc;
-    this._options = options || {};
+  if (window.__ARTICLE_MONSTER_DEBUG_ACTIVE__) {
+    alert('Debug extraction is already running on this page.');
+    return;
   }
+  window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = true;
 
-  Readability.prototype = {
-    parse: function() {
-      try {
-        // First try JSON-LD structured data if available
-        var jsonLdContent = this._extractFromJsonLd();
-        if (jsonLdContent) {
-          return jsonLdContent;
-        }
+  var fullHTML = document.documentElement.outerHTML
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '[SCRIPT REMOVED]')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '[STYLE REMOVED]');
 
-        // Fall back to DOM-based extraction
-        var documentClone = this._doc.cloneNode(true);
-        var article = this._grabArticle(documentClone);
+  var debugHandled = false;
 
-        if (!article) return null;
+  window.__ARTICLE_MONSTER_DEBUG_HOOK__ = function(payload) {
+    if (debugHandled) return { skipSend: true };
+    debugHandled = true;
 
-        return {
-          title: this._getArticleTitle(),
-          content: article.innerHTML,
-          textContent: article.textContent || article.innerText || '',
-          length: (article.textContent || article.innerText || '').length,
-          excerpt: this._getExcerpt(article),
-          byline: this._getArticleMetadata('author') || this._getArticleMetadata('byline'),
-          siteName: this._getArticleMetadata('site_name') || document.title,
-          publishedTime: this._getArticleMetadata('published_time') || this._getArticleMetadata('date')
-        };
-      } catch (e) {
-        console.error('Readability parsing failed:', e);
-        return null;
-      }
-    },
+    var article = (payload && payload.article) || {};
+    var normalized = {
+      title: article.title || document.title || 'No Title',
+      content: article.content || 'No content extracted',
+      textContent: article.textContent || '',
+      length: article.length || (article.textContent ? article.textContent.length : 0),
+      excerpt: article.excerpt || '',
+      byline: article.byline || '',
+      siteName: article.siteName || window.location.hostname,
+      publishedTime: article.publishedTime || '',
+      extractionMethod: article.extractionMethod || article.source || '',
+      extractionNote: article.extractionNote || '',
+      configSource: article.configSource || ''
+    };
 
-    _getArticleTitle: function() {
-      var title = this._doc.title || '';
-      var h1 = this._doc.querySelector('h1');
-      if (h1 && h1.textContent.length > title.length * 0.5) {
-        title = h1.textContent;
-      }
-      return title.trim();
-    },
-
-    _getExcerpt: function(article) {
-      var text = article.textContent || article.innerText || '';
-      return text.substring(0, 300).trim() + (text.length > 300 ? '...' : '');
-    },
-
-    _getArticleMetadata: function(property) {
-      var meta = this._doc.querySelector('meta[property="article:' + property + '"], meta[name="' + property + '"], meta[property="og:' + property + '"]');
-      return meta ? meta.getAttribute('content') : null;
-    },
-
-    _grabArticle: function(doc) {
-      // Remove unwanted elements (more aggressive)
-      this._removeNodes(doc, 'script, style, noscript, iframe, object, embed, nav, header, footer, aside');
-
-      // Remove common ad and social elements
-      this._removeNodes(doc, '[class*="ad"], [id*="ad"], [class*="social"], [class*="share"], [class*="newsletter"], [class*="subscribe"], [class*="popup"], [class*="modal"], [class*="overlay"]');
-
-      // Remove elements with ad-like text content
-      this._removeAdContent(doc);
-
-      // Try to find the main content
-      var candidates = this._getCandidates(doc);
-      var topCandidate = this._getTopCandidate(candidates);
-
-      if (topCandidate) {
-        // Clean the selected content further
-        this._cleanContent(topCandidate);
-        return topCandidate;
-      }
-
-      // Fallback: try common selectors
-      var selectors = ['article', '.post', '.entry', '.content', '#content', 'main', '.main'];
-      for (var i = 0; i < selectors.length; i++) {
-        var element = doc.querySelector(selectors[i]);
-        if (element && element.textContent.length > 500) {
-          this._cleanContent(element);
-          return element;
-        }
-      }
-
-      // Last resort: return body (but clean it)
-      this._cleanContent(doc.body);
-      return doc.body;
-    },
-
-    _removeNodes: function(doc, selector) {
-      var nodes = doc.querySelectorAll(selector);
-      for (var i = nodes.length - 1; i >= 0; i--) {
-        nodes[i].remove();
-      }
-    },
-
-    _getCandidates: function(doc) {
-      var candidates = [];
-      var paragraphs = doc.querySelectorAll('p');
-
-      for (var i = 0; i < paragraphs.length; i++) {
-        var p = paragraphs[i];
-        var parent = p.parentNode;
-        if (!parent || parent.tagName === 'BLOCKQUOTE') continue;
-
-        var score = this._getContentScore(p);
-        if (score > 0) {
-          candidates.push({ element: parent, score: score });
-        }
-      }
-
-      return candidates;
-    },
-
-    _getContentScore: function(element) {
-      var text = element.textContent || element.innerText || '';
-      if (text.length < 50) return 0;
-
-      var score = text.length / 100;
-
-      // Bonus for paragraph tags
-      if (element.tagName === 'P') score += 1;
-
-      // Penalty for unlikely classes/ids
-      var className = element.className || '';
-      var id = element.id || '';
-      if (/(comment|meta|footer|sidebar)/i.test(className + ' ' + id)) {
-        score -= 5;
-      }
-
-      return score;
-    },
-
-    _getTopCandidate: function(candidates) {
-      if (candidates.length === 0) return null;
-
-      candidates.sort(function(a, b) { return b.score - a.score; });
-      return candidates[0].element;
-    },
-
-    _removeAdContent: function(doc) {
-      // Remove elements with ad-like text patterns
-      var allElements = doc.querySelectorAll('*');
-      for (var i = allElements.length - 1; i >= 0; i--) {
-        var element = allElements[i];
-        var text = element.textContent || '';
-        var className = element.className || '';
-        var id = element.id || '';
-
-        // Remove if contains ad-like text or attributes
-        if (/advertisement|sponsored|promo|banner|popup/i.test(text + ' ' + className + ' ' + id)) {
-          if (text.length < 200) { // Only remove short ad-like content
-            element.remove();
-          }
-        }
-      }
-    },
-
-    _cleanContent: function(element) {
-      if (!element) return;
-
-      // Remove remaining unwanted elements within the content
-      var unwantedSelectors = [
-        '.advertisement', '.ad', '.ads', '.sponsored', '.promo',
-        '.social-share', '.share-buttons', '.newsletter', '.subscribe',
-        '.popup', '.modal', '.overlay', '.sidebar', '.related-articles',
-        '[data-ad]', '[data-advertisement]'
-      ];
-
-      for (var i = 0; i < unwantedSelectors.length; i++) {
-        var unwanted = element.querySelectorAll(unwantedSelectors[i]);
-        for (var j = unwanted.length - 1; j >= 0; j--) {
-          unwanted[j].remove();
-        }
-      }
-    },
-
-    _extractFromJsonLd: function() {
-      try {
-        var jsonLdScripts = this._doc.querySelectorAll('script[type="application/ld+json"]');
-
-        for (var i = 0; i < jsonLdScripts.length; i++) {
-          var script = jsonLdScripts[i];
-          var jsonData = JSON.parse(script.textContent || script.innerText);
-
-          // Handle both single objects and arrays
-          var articles = Array.isArray(jsonData) ? jsonData : [jsonData];
-
-          for (var j = 0; j < articles.length; j++) {
-            var data = articles[j];
-
-            // Look for NewsArticle or Article types
-            if (data['@type'] === 'NewsArticle' || data['@type'] === 'Article') {
-              if (data.articleBody && data.articleBody.length > 500) {
-                // Convert plain text to basic HTML with paragraphs
-                var htmlContent = this._textToHtml(data.articleBody);
-
-                return {
-                  title: data.headline || data.name || this._getArticleTitle(),
-                  content: htmlContent,
-                  textContent: data.articleBody,
-                  length: data.articleBody.length,
-                  excerpt: data.description || this._createExcerpt(data.articleBody),
-                  byline: this._extractAuthor(data.author) || this._getArticleMetadata('author'),
-                  siteName: data.publisher && data.publisher.name || this._getArticleMetadata('site_name') || document.title,
-                  publishedTime: data.datePublished || this._getArticleMetadata('published_time'),
-                  source: 'json-ld'
-                };
-              }
-            }
-          }
-        }
-
-        return null;
-      } catch (e) {
-        console.error('JSON-LD extraction failed:', e);
-        return null;
-      }
-    },
-
-    _textToHtml: function(text) {
-      // Convert plain text to basic HTML with paragraph breaks
-      return '<div>' + text
-        .split(/\n\s*\n/)  // Split on double line breaks
-        .map(function(paragraph) {
-          return '<p>' + paragraph.replace(/\n/g, ' ').trim() + '</p>';
-        })
-        .join('') + '</div>';
-    },
-
-    _extractAuthor: function(authorData) {
-      if (!authorData) return null;
-
-      if (typeof authorData === 'string') return authorData;
-
-      if (Array.isArray(authorData)) {
-        return authorData.map(function(author) {
-          return author.name || author;
-        }).join(', ');
-      }
-
-      return authorData.name || null;
-    },
-
-    _createExcerpt: function(text) {
-      if (!text) return '';
-      return text.substring(0, 300).trim() + (text.length > 300 ? '...' : '');
-    }
+    showDebugComparison(fullHTML, normalized, !article || !article.content);
+    window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = false;
+    return { skipSend: true };
   };
 
+  setTimeout(function() {
+    if (debugHandled) return;
+    debugHandled = true;
+    var fallbackArticle = {
+      title: document.title || 'Could not extract title',
+      content: 'EXTRACTION FAILED - No content could be extracted by the production pipeline',
+      textContent: 'EXTRACTION FAILED',
+      length: 0,
+      excerpt: 'No excerpt available - extraction failed',
+      byline: 'Unknown',
+      siteName: window.location.hostname,
+      publishedTime: 'Unknown',
+      extractionMethod: 'failed',
+      extractionNote: 'No production extraction result returned'
+    };
+
+    showDebugComparison(fullHTML, fallbackArticle, true);
+    window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = false;
+  }, 12000);
+
   try {
-    // Extract article content using simplified Readability
-    const reader = new Readability(document);
-    const article = reader.parse();
-
-    // Get the full page HTML (sanitized for display)
-    const fullHTML = document.documentElement.outerHTML
-      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '[SCRIPT REMOVED]')
-      .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '[STYLE REMOVED]');
-
-    // If extraction failed, create a fallback article object
-    if (!article) {
-      const fallbackArticle = {
-        title: document.title || 'Could not extract title',
-        content: 'EXTRACTION FAILED - No content could be extracted by the simplified Readability algorithm',
-        textContent: 'EXTRACTION FAILED',
-        length: 0,
-        excerpt: 'No excerpt available - extraction failed',
-        byline: 'Unknown',
-        siteName: window.location.hostname,
-        publishedTime: 'Unknown',
-        extractionError: 'The simplified Readability algorithm could not identify article content on this page'
-      };
-
-      showDebugComparison(fullHTML, fallbackArticle, true);
-    } else {
-      // Show comparison dialog
-      showDebugComparison(fullHTML, article, false);
+    var serviceOrigin = getServiceOrigin();
+    if (!window.__BOOKMARKLET_SERVICE_URL__) {
+      window.__BOOKMARKLET_SERVICE_URL__ = serviceOrigin + '/process-article';
     }
 
+    var id = 'article-monster-script';
+    var s = document.getElementById(id);
+    if (s && s.parentNode) s.parentNode.removeChild(s);
+    s = document.createElement('script');
+    s.id = id;
+    s.src = serviceOrigin + '/bookmarklet.js?v=' + Date.now();
+    s.referrerPolicy = 'no-referrer-when-downgrade';
+    document.body.appendChild(s);
   } catch (error) {
-    alert('❌ Debug extraction failed: ' + error.message + '\n\nTrying to show debug info anyway...');
-
-    // Even if there's an error, try to show what we can
-    try {
-      const fullHTML = document.documentElement.outerHTML;
-      const errorArticle = {
-        title: document.title || 'Error during extraction',
-        content: 'CRITICAL ERROR: ' + error.message,
-        textContent: 'CRITICAL ERROR: ' + error.message,
-        length: 0,
-        excerpt: 'Error occurred',
-        byline: 'Error',
-        siteName: window.location.hostname,
-        publishedTime: 'Error',
-        extractionError: error.message
-      };
-
-      showDebugComparison(fullHTML, errorArticle, true);
-    } catch (secondError) {
-      alert('❌ Complete failure: ' + secondError.message);
-    }
+    window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = false;
+    alert('❌ Debug extraction failed: ' + (error && error.message ? error.message : error));
   }
 
-  function showDebugComparison(fullHTML, extractedArticle, isExtractionFailure = false) {
+  function getServiceOrigin() {
+    var script = document.getElementById('article-monster-debug-script') || document.currentScript;
+    if (script && script.src) {
+      try {
+        return new URL(script.src).origin;
+      } catch {
+        // Fall through
+      }
+    }
+    return window.location.origin;
+  }
+
+  function showDebugComparison(fullHTML, extractedArticle, isExtractionFailure) {
     // Create debug dialog
     const dialog = document.createElement('div');
     dialog.style.cssText = `
@@ -323,6 +104,10 @@
       overflow: auto;
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     `;
+
+    var methodLine = extractedArticle.extractionMethod ? escapeHtml(extractedArticle.extractionMethod) : 'Unknown';
+    var noteLine = extractedArticle.extractionNote ? escapeHtml(extractedArticle.extractionNote) : 'None';
+    var configLine = extractedArticle.configSource ? escapeHtml(extractedArticle.configSource) : 'None';
 
     dialog.innerHTML = `
       <div style="padding: 20px; color: white;">
@@ -372,8 +157,11 @@
                 <div style="font-size: 12px; color: #7f8c8d; margin-bottom: 15px; padding: 8px; background: #f8f9fa; border-radius: 4px;">
                   <strong>Byline:</strong> ${escapeHtml(extractedArticle.byline || 'None')}<br>
                   <strong>Site:</strong> ${escapeHtml(extractedArticle.siteName || 'Unknown')}<br>
-                  <strong>Length:</strong> ${extractedArticle.length} chars<br>
-                  <strong>Published:</strong> ${escapeHtml(extractedArticle.publishedTime || 'Unknown')}
+                  <strong>Length:</strong> ${extractedArticle.length || 0} chars<br>
+                  <strong>Published:</strong> ${escapeHtml(extractedArticle.publishedTime || 'Unknown')}<br>
+                  <strong>Method:</strong> ${methodLine}<br>
+                  <strong>Config:</strong> ${configLine}<br>
+                  <strong>Note:</strong> ${noteLine}
                 </div>
                 <div style="line-height: 1.6;">${extractedArticle.content || 'No content extracted'}</div>
               </div>
@@ -410,16 +198,18 @@
 URL: ${window.location.href}
 Title: ${extractedArticle.title || 'No Title'}
 Date: ${new Date().toISOString()}
-Extraction Status: ${extractedArticle.extractionError ? 'FAILED' : 'SUCCESS'}
-${extractedArticle.extractionError ? 'Error: ' + extractedArticle.extractionError : ''}
+Extraction Status: ${extractedArticle.extractionMethod === 'failed' ? 'FAILED' : 'SUCCESS'}
 
 ========================================
 EXTRACTION METADATA
 ========================================
 Byline: ${extractedArticle.byline || 'None'}
 Site Name: ${extractedArticle.siteName || 'Unknown'}
-Content Length: ${extractedArticle.length} characters
+Content Length: ${extractedArticle.length || 0} characters
 Published Time: ${extractedArticle.publishedTime || 'Unknown'}
+Method: ${extractedArticle.extractionMethod || 'Unknown'}
+Config: ${extractedArticle.configSource || 'None'}
+Note: ${extractedArticle.extractionNote || 'None'}
 Excerpt: ${extractedArticle.excerpt || 'No excerpt'}
 
 ========================================
@@ -458,7 +248,7 @@ END REPORT
 
   function escapeHtml(text) {
     if (!text) return '';
-    return text
+    return String(text)
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
