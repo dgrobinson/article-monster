@@ -1,5 +1,7 @@
 # Claude Code Context for Article Monster
 
+Sync note: AGENTS.md and CLAUDE.md are kept identical. Update both together to avoid drift.
+
 ## Project Overview
 
 Article Monster is a bookmarklet service that extracts articles from web pages and sends them to Kindle/Zotero. It implements a subset of FiveFilters Full-Text RSS functionality for client-side article extraction.

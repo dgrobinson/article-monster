@@ -2,7 +2,6 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const fs = require('fs').promises;
 const path = require('path');
-const crypto = require('crypto');
 
 const execAsync = promisify(exec);
 
@@ -131,7 +130,7 @@ class GitHubAuth {
 
       try {
         await execAsync(`GIT_SSH_COMMAND="${gitSSHCommand}" git clone --branch latest-outputs-debug --single-branch ${repoUrl} ${tmpDir}/repo`);
-      } catch (cloneError) {
+      } catch {
         // If branch doesn't exist, clone main and create the branch
         console.log('[GitHubAuth] Branch doesn\'t exist, creating it...');
         await execAsync(`GIT_SSH_COMMAND="${gitSSHCommand}" git clone ${repoUrl} ${tmpDir}/repo`);

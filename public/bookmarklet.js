@@ -7,10 +7,10 @@
   function logDebug(category, message, details) {
     try {
       __bmLog.push({ t: Date.now(), category: category, message: String(message), details: details || null });
-    } catch (e) {}
+    } catch {}
     try {
       console.log('[bm:' + category + ']', message, details || '');
-    } catch (e) {}
+    } catch {}
   }
 
   // Proxy console methods into __bmLog while preserving original behavior
@@ -28,35 +28,40 @@
         var args = Array.prototype.slice.call(arguments);
         try {
           var safeArgs = args.map(function(a) {
-            try { return typeof a === 'string' ? a : JSON.stringify(a); } catch (e) { return String(a); }
+            try { return typeof a === 'string' ? a : JSON.stringify(a); } catch { return String(a); }
           }).slice(0, 10);
           __bmLog.push({ t: Date.now(), level: level, args: safeArgs });
-        } catch (e) {}
+        } catch {}
         return orig.apply(console, args);
       };
     });
     window.addEventListener('error', function(e) {
-      try { __bmLog.push({ t: Date.now(), level: 'error', message: e.message, source: e.filename, line: e.lineno, col: e.colno }); } catch (_) {}
+      try { __bmLog.push({ t: Date.now(), level: 'error', message: e.message, source: e.filename, line: e.lineno, col: e.colno }); } catch {}
     });
     window.addEventListener('unhandledrejection', function(e) {
       try {
         var reason = e.reason;
         var msg = reason && (reason.message || String(reason));
         __bmLog.push({ t: Date.now(), level: 'error', message: msg || 'unhandledrejection' });
-      } catch (_) {}
+      } catch {}
     });
   })();
 
   // Configuration - replace with your actual service URL
   const SERVICE_URL = (window.__BOOKMARKLET_SERVICE_URL__ || 'https://seal-app-t4vff.ondigitalocean.app/process-article');
+  var MAX_PAGINATION_PAGES = 5;
+  var PAGINATION_SEPARATOR_HTML = '<hr data-page-break="true" />';
 
   // Check if we're already processing to avoid double-clicks
-  if (window.articleBookmarkletProcessing) {
-    alert('Already processing this article...');
-    return;
-  }
+  var isTestMode = !!window.__BOOKMARKLET_TEST__;
+  if (!isTestMode) {
+    if (window.articleBookmarkletProcessing) {
+      alert('Already processing this article...');
+      return;
+    }
 
-  window.articleBookmarkletProcessing = true;
+    window.articleBookmarkletProcessing = true;
+  }
 
   // Simplified Readability implementation (must be defined before use)
   function Readability(doc, options) {
@@ -67,6 +72,7 @@
   Readability.prototype = {
     parse: function() {
       try {
+        this._skipJsonLd = false;
         // First try site-specific configuration
         var siteConfig = this._extractWithSiteConfig();
         if (siteConfig) {
@@ -77,11 +83,15 @@
         }
 
         // Then try JSON-LD structured data if available
-        var jsonLdContent = this._extractFromJsonLd();
-        if (jsonLdContent) {
-          jsonLdContent.extractionMethod = 'json-ld';
-          console.log('Extraction successful using JSON-LD structured data');
-          return jsonLdContent;
+        if (!this._skipJsonLd) {
+          var jsonLdContent = this._extractFromJsonLd();
+          if (jsonLdContent) {
+            jsonLdContent.extractionMethod = 'json-ld';
+            console.log('Extraction successful using JSON-LD structured data');
+            return jsonLdContent;
+          }
+        } else {
+          console.log('Skipping JSON-LD extraction due to site config directive');
         }
 
         // (No site-specific fallback here; follow ADR to avoid hardcoding)
@@ -238,7 +248,7 @@
               if (!isNaN(date.getTime())) {
                 return date.toISOString();
               }
-            } catch (e) {
+            } catch {
               // Continue to next selector
             }
           }
@@ -570,19 +580,23 @@
         var div = document.createElement('div');
         div.innerHTML = html;
         return div.textContent || div.innerText || '';
-      } catch (e) {
+      } catch {
         return html.replace(/<[^>]*>/g, '');
       }
     },
 
-    _extractWithSiteConfig: function() {
+    _extractWithSiteConfig: function(configOverride, options) {
       console.log('_extractWithSiteConfig called for hostname:', window.location.hostname);
       logDebug('site-config', '_extractWithSiteConfig enter', { hostname: window.location.hostname.replace(/^www\./, '') });
       try {
+        options = options || {};
         var hostname = window.location.hostname.replace(/^www\./, '');
+        var config = configOverride;
 
         // First check cache
-        var config = this._getCachedConfig(hostname);
+        if (!config) {
+          config = this._getCachedConfig(hostname);
+        }
 
         if (!config) {
           // Try to fetch config synchronously for immediate use
@@ -598,15 +612,49 @@
           return null;
         }
 
+        if (config.skip_json_ld === true) {
+          this._skipJsonLd = true;
+        }
+
+        if (config.if_page_contains && config.if_page_contains.length > 0) {
+          var pageMatches = false;
+          for (var p = 0; p < config.if_page_contains.length; p++) {
+            if (this._pageContains(config.if_page_contains[p])) {
+              pageMatches = true;
+              break;
+            }
+          }
+          if (!pageMatches) {
+            console.log('if_page_contains did not match for', hostname, '- skipping config');
+            return null;
+          }
+        }
+
         // If site prefers JSON-LD, let that handler take over
         if (config.preferJsonLd) return null;
 
         // Note: HTML preprocessing now handled before Readability parsing
 
+        var nativeAdDetected = false;
+        var nativeAdClue = null;
+        if (config.native_ad_clue && config.native_ad_clue.length > 0) {
+          for (var n = 0; n < config.native_ad_clue.length; n++) {
+            if (this._pageContains(config.native_ad_clue[n])) {
+              nativeAdDetected = true;
+              nativeAdClue = config.native_ad_clue[n];
+              break;
+            }
+          }
+        }
+
         var result = {
           source: 'site-config',
           hostname: hostname
         };
+        if (nativeAdDetected) {
+          result.nativeAdDetected = true;
+          result.nativeAdClue = nativeAdClue;
+        }
 
         // Extract title (matches PHP: if config has title rules, try them first)
         var titleExtracted = false;
@@ -640,8 +688,8 @@
         }
 
         // Check for single page link before extracting body (PHP: makefulltextfeed.php)
-        var singlePageUrl = this._findSinglePageLink(config);
-        if (singlePageUrl && singlePageUrl !== window.location.href) {
+        var singlePageUrl = options.skipSinglePageLink ? null : this._findSinglePageLink(config);
+        if (!options.skipSinglePageLink && singlePageUrl && singlePageUrl !== window.location.href) {
           // Found a single page link - navigate to full article
           console.log('Found single page link, navigating to full article:', singlePageUrl);
           window.location.href = singlePageUrl;
@@ -670,8 +718,18 @@
                 console.log('Combined', elements.length, 'body elements into single container');
               }
 
+              if (this._matchesSkipIdOrClass(bodyElement, config.skip_id_or_class)) {
+                console.log('Body XPath matched but skipped due to skip_id_or_class:', config.body[i]);
+                continue;
+              }
+
               // Clone and clean the element with full config
               var cleanElement = this._cleanElementWithConfig(bodyElement, config);
+
+              if (config.insert_detected_image !== false) {
+                this._insertDetectedImage(cleanElement);
+              }
+
               result.content = cleanElement.innerHTML;
               result.textContent = cleanElement.textContent || cleanElement.innerText || '';
               result.length = result.textContent.length;
@@ -795,6 +853,30 @@
         }
       }
 
+      // Apply dissolve rules (PHP: dissolve array)
+      if (config.dissolve && config.dissolve.length > 0) {
+        for (var i = 0; i < config.dissolve.length; i++) {
+          this._dissolveByXPath(clone, config.dissolve[i]);
+        }
+      }
+
+      // Apply strip_comments rules (PHP: strip_comments)
+      if (config.strip_comments === true) {
+        this._stripCommentsFromElement(clone);
+      }
+
+      // Apply src_lazy_load_attr rules (PHP: src_lazy_load_attr)
+      if (config.src_lazy_load_attr && config.src_lazy_load_attr.length > 0) {
+        this._applyLazyLoadAttrs(clone, config.src_lazy_load_attr);
+      }
+
+      // Apply strip_attr rules (PHP: strip_attr array)
+      if (config.strip_attr && config.strip_attr.length > 0) {
+        for (var i = 0; i < config.strip_attr.length; i++) {
+          this._stripAttributesByXPath(clone, config.strip_attr[i]);
+        }
+      }
+
       // Apply prune directive (PHP: $this->readability->prepArticle($this->body))
       if (config.prune === true) {
         this._pruneContent(clone);
@@ -805,7 +887,237 @@
         this._tidyContent(clone);
       }
 
+      // Apply convert_double_br_tags directive
+      if (config.convert_double_br_tags === true) {
+        this._convertDoubleBrTags(clone);
+      }
+
+      // Apply post_strip_attr rules (PHP: post_strip_attr array)
+      if (config.post_strip_attr && config.post_strip_attr.length > 0) {
+        for (var i = 0; i < config.post_strip_attr.length; i++) {
+          this._stripAttributesByXPath(clone, config.post_strip_attr[i]);
+        }
+      }
+
       return clone;
+    },
+
+    _pageContains: function(expression) {
+      if (!expression) return false;
+      try {
+        var result = this._doc.evaluate(
+          expression,
+          this._doc,
+          null,
+          XPathResult.ANY_TYPE,
+          null
+        );
+
+        switch (result.resultType) {
+          case XPathResult.STRING_TYPE:
+            return !!(result.stringValue && result.stringValue.trim());
+          case XPathResult.NUMBER_TYPE:
+            return result.numberValue !== 0;
+          case XPathResult.BOOLEAN_TYPE:
+            return result.booleanValue;
+          case XPathResult.UNORDERED_NODE_ITERATOR_TYPE:
+          case XPathResult.ORDERED_NODE_ITERATOR_TYPE:
+            return !!result.iterateNext();
+          case XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE:
+          case XPathResult.ORDERED_NODE_SNAPSHOT_TYPE:
+            return result.snapshotLength > 0;
+          default:
+            return false;
+        }
+      } catch (e) {
+        try {
+          var html = this._doc.documentElement ? this._doc.documentElement.outerHTML : '';
+          return html.indexOf(expression) !== -1;
+        } catch (_) {
+          return false;
+        }
+      }
+    },
+
+    _matchesSkipIdOrClass: function(element, skipList) {
+      if (!element || !skipList || skipList.length === 0) return false;
+      for (var i = 0; i < skipList.length; i++) {
+        var selector = skipList[i];
+        if (!selector) continue;
+        selector = selector.replace(/['"]/g, '').trim();
+        if (!selector) continue;
+
+        if (element.id && element.id.indexOf(selector) !== -1) return true;
+        if (element.className && String(element.className).indexOf(selector) !== -1) return true;
+
+        var match = element.querySelector('[class*="' + selector + '"], [id*="' + selector + '"]');
+        if (match) return true;
+      }
+      return false;
+    },
+
+    _normalizeXPathForContext: function(xpath, contextNode) {
+      if (!xpath || !contextNode) return xpath;
+      if (contextNode === this._doc || contextNode.nodeType === Node.DOCUMENT_NODE) return xpath;
+      if (xpath.indexOf('/') === 0) return '.' + xpath;
+      return xpath;
+    },
+
+    _stripAttributesByXPath: function(element, xpath) {
+      try {
+        var normalized = this._normalizeXPathForContext(xpath, element);
+        var results = this._doc.evaluate(
+          normalized,
+          element,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+
+        for (var i = results.snapshotLength - 1; i >= 0; i--) {
+          var node = results.snapshotItem(i);
+          if (!node) continue;
+          if (node.nodeType === Node.ATTRIBUTE_NODE) {
+            var owner = node.ownerElement || node.ownerNode;
+            if (owner && owner.removeAttribute) {
+              owner.removeAttribute(node.name);
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('strip_attr XPath evaluation failed:', xpath, e);
+      }
+    },
+
+    _stripCommentsFromElement: function(element) {
+      try {
+        var walker = element.ownerDocument.createTreeWalker(
+          element,
+          NodeFilter.SHOW_COMMENT,
+          null,
+          false
+        );
+        var nodes = [];
+        var node;
+        while (node = walker.nextNode()) {
+          nodes.push(node);
+        }
+        for (var i = 0; i < nodes.length; i++) {
+          if (nodes[i].parentNode) {
+            nodes[i].parentNode.removeChild(nodes[i]);
+          }
+        }
+      } catch (e) {
+        console.warn('strip_comments failed:', e);
+      }
+    },
+
+    _dissolveByXPath: function(element, xpath) {
+      try {
+        var normalized = this._normalizeXPathForContext(xpath, element);
+        var results = this._doc.evaluate(
+          normalized,
+          element,
+          null,
+          XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,
+          null
+        );
+
+        for (var i = results.snapshotLength - 1; i >= 0; i--) {
+          var node = results.snapshotItem(i);
+          if (!node || node.nodeType !== Node.ELEMENT_NODE) continue;
+          var parent = node.parentNode;
+          if (!parent) continue;
+          while (node.firstChild) {
+            parent.insertBefore(node.firstChild, node);
+          }
+          parent.removeChild(node);
+        }
+      } catch (e) {
+        console.warn('dissolve XPath evaluation failed:', xpath, e);
+      }
+    },
+
+    _applyLazyLoadAttrs: function(element, attrs) {
+      if (!element || !attrs) return;
+      var attrList = Array.isArray(attrs) ? attrs : [attrs];
+      var images = element.querySelectorAll('img');
+
+      for (var i = 0; i < images.length; i++) {
+        var img = images[i];
+        var src = img.getAttribute('src');
+        if (src && src.trim() !== '') continue;
+
+        for (var j = 0; j < attrList.length; j++) {
+          var attrName = attrList[j];
+          if (!attrName) continue;
+          attrName = attrName.replace(/['"]/g, '').trim();
+          if (!attrName) continue;
+          var value = img.getAttribute(attrName);
+          if (value && value.trim()) {
+            img.setAttribute('src', value);
+            img.removeAttribute(attrName);
+            break;
+          }
+        }
+      }
+    },
+
+    _convertDoubleBrTags: function(element) {
+      if (!element) return;
+      if (element.querySelector('p')) return;
+
+      var html = element.innerHTML;
+      var normalized = html.replace(/<br\s*\/?>\s*<br\s*\/?>/gi, '</p><p>');
+
+      if (normalized !== html) {
+        element.innerHTML = '<p>' + normalized + '</p>';
+        var emptyParagraphs = element.querySelectorAll('p:empty');
+        for (var i = emptyParagraphs.length - 1; i >= 0; i--) {
+          emptyParagraphs[i].remove();
+        }
+      }
+    },
+
+    _insertDetectedImage: function(element) {
+      if (!element || element.querySelector('img')) return false;
+      var imageUrl = this._findDetectedImage();
+      if (!imageUrl) return false;
+
+      var doc = element.ownerDocument || this._doc;
+      var figure = doc.createElement('figure');
+      var img = doc.createElement('img');
+      img.setAttribute('src', imageUrl);
+      figure.appendChild(img);
+
+      if (element.firstChild) {
+        element.insertBefore(figure, element.firstChild);
+      } else {
+        element.appendChild(figure);
+      }
+      return true;
+    },
+
+    _findDetectedImage: function() {
+      var selectors = [
+        'meta[property="og:image"]',
+        'meta[property="og:image:url"]',
+        'meta[name="twitter:image"]',
+        'meta[name="twitter:image:src"]',
+        'meta[itemprop="image"]',
+        'link[rel="image_src"]'
+      ];
+
+      for (var i = 0; i < selectors.length; i++) {
+        var meta = this._doc.querySelector(selectors[i]);
+        if (!meta) continue;
+        var value = meta.getAttribute('content') || meta.getAttribute('href');
+        if (value && value.trim()) {
+          var resolved = this._makeAbsoluteUrl(value.trim());
+          return resolved || value.trim();
+        }
+      }
+      return null;
     },
 
     // Content pruning (matches PHP Readability::prepArticle)
@@ -949,7 +1261,7 @@
             var url = this._makeAbsoluteUrl(result.stringValue.trim());
             if (url) return url;
           }
-        } catch (e) {
+        } catch {
           // XPath failed, try as node selector
         }
 
@@ -976,6 +1288,90 @@
           }
         } catch (e) {
           console.warn('Single page link XPath evaluation failed:', pattern, e);
+        }
+      }
+
+      return null;
+    },
+
+    // Find next page link (matches PHP makefulltextfeed.php logic)
+    _findNextPageLink: function(config) {
+      if (config && config.next_page_link && config.next_page_link.length > 0) {
+        for (var i = 0; i < config.next_page_link.length; i++) {
+          var pattern = config.next_page_link[i];
+          try {
+            var result = this._doc.evaluate(
+              pattern,
+              this._doc,
+              null,
+              XPathResult.STRING_TYPE,
+              null
+            );
+
+            if (result.stringValue && result.stringValue.trim()) {
+              var url = this._makeAbsoluteUrl(result.stringValue.trim());
+              if (url) return url;
+            }
+          } catch (e) {
+            // XPath failed, try as node selector
+          }
+
+          try {
+            var nodes = this._evaluateXPathAll(pattern);
+            if (nodes && nodes.length > 0) {
+              for (var j = 0; j < nodes.length; j++) {
+                var node = nodes[j];
+                if (node.nodeType === Node.ELEMENT_NODE && node.hasAttribute('href')) {
+                  var url = this._makeAbsoluteUrl(node.getAttribute('href'));
+                  if (url) return url;
+                } else if (node.textContent) {
+                  var text = node.textContent.trim();
+                  var textUrl = this._makeAbsoluteUrl(text);
+                  if (textUrl) return textUrl;
+                }
+              }
+            }
+          } catch (e) {
+            console.warn('Next page link XPath evaluation failed:', pattern, e);
+          }
+        }
+      }
+
+      if (config && config.autodetect_next_page) {
+        var autodetected = this._autoDetectNextPageLink();
+        if (autodetected) {
+          return this._makeAbsoluteUrl(autodetected);
+        }
+      }
+
+      return null;
+    },
+
+    _autoDetectNextPageLink: function() {
+      var relNext = this._doc.querySelector('link[rel="next"][href], a[rel="next"][href]');
+      if (relNext) {
+        return relNext.getAttribute('href');
+      }
+
+      var anchors = this._doc.querySelectorAll('a[href]');
+      for (var i = 0; i < anchors.length; i++) {
+        var anchor = anchors[i];
+        var text = (anchor.textContent || '').trim().toLowerCase();
+        var rel = (anchor.getAttribute('rel') || '').toLowerCase();
+        var ariaLabel = (anchor.getAttribute('aria-label') || '').toLowerCase();
+        var className = (anchor.className || '').toString().toLowerCase();
+        var id = (anchor.id || '').toLowerCase();
+
+        if (rel.indexOf('next') !== -1) {
+          return anchor.getAttribute('href');
+        }
+
+        var label = (text + ' ' + ariaLabel).trim();
+        var hint = (className + ' ' + id).trim();
+
+        if ((/\bnext\b|\bolder\b|\bmore\b/.test(label) || /[»›→]/.test(label) || /\bnext\b/.test(hint)) &&
+          !/\bprev\b|\bprevious\b|\bback\b|\bnewer\b/.test(label)) {
+          return anchor.getAttribute('href');
         }
       }
 
@@ -1010,23 +1406,37 @@
     _makeAbsoluteUrl: function(url) {
       if (!url) return null;
 
-      // Already absolute
-      if (url.match(/^https?:\/\//)) {
-        return url;
-      }
+      var trimmed = url.trim();
+      if (!trimmed) return null;
 
-      // Protocol-relative
-      if (url.startsWith('//')) {
-        return window.location.protocol + url;
-      }
+      try {
+        var baseHref = null;
+        if (this._doc) {
+          var baseTag = this._doc.querySelector('base[href]');
+          if (baseTag) {
+            baseHref = baseTag.getAttribute('href');
+          } else if (this._doc.baseURI && this._doc.baseURI.indexOf('about:') !== 0) {
+            baseHref = this._doc.baseURI;
+          }
+        }
 
-      // Absolute path
-      if (url.startsWith('/')) {
-        return window.location.protocol + '//' + window.location.host + url;
-      }
+        var base = window.location.href;
+        if (baseHref) {
+          try {
+            base = new URL(baseHref, window.location.href).href;
+          } catch (e) {
+            base = window.location.href;
+          }
+        }
 
-      // Relative path - more complex, skip for now
-      return null;
+        var resolved = new URL(trimmed, base);
+        if (resolved.protocol !== 'http:' && resolved.protocol !== 'https:') {
+          return null;
+        }
+        return resolved.href;
+      } catch (e) {
+        return null;
+      }
     },
 
     // Note: HTML preprocessing now handled by standalone applyHtmlPreprocessing() function
@@ -1042,13 +1452,13 @@
             return data.config;
           }
         }
-      } catch (e) {
+      } catch {
         // Session storage not available or parsing failed
       }
       return null;
     },
 
-    _getSiteConfig: function(hostname) {
+    _getSiteConfig: function(_hostname) {
       // All configs should be fetched from server (FiveFilters)
       // This function is deprecated - configs come from cache or server
       return null;
@@ -1075,16 +1485,16 @@
                   timestamp: Date.now()
                 }));
                 console.log('Fetched site config for', hostname, 'from FiveFilters');
-              } catch (e) {
+              } catch {
                 // Session storage not available, ignore
               }
             }
           })
-          .catch(function(error) {
+          .catch(function() {
             // Silently fail - this is a nice-to-have feature
             console.log('No dynamic config available for', hostname);
           });
-      } catch (e) {
+      } catch {
         // Ignore any errors in dynamic config fetching
       }
     },
@@ -1106,7 +1516,7 @@
                 timestamp: Date.now()
               }));
               console.log('Fetched and cached site config for', hostname, 'from FiveFilters');
-            } catch (e) {
+            } catch {
               // Session storage not available, ignore
             }
             return data.config;
@@ -1121,86 +1531,7 @@
 
     // Fix image URLs to be absolute and detect images
     _fixImageUrls: function(html) {
-      if (!html) return html;
-
-      var div = document.createElement('div');
-      div.innerHTML = html;
-      var baseUrl = window.location.origin;
-      var currentUrl = window.location.href;
-
-      div.querySelectorAll('img').forEach(function(img) {
-        // Get the actual resolved src from the DOM element
-        var actualSrc = img.src || img.getAttribute('src');
-
-        // Fix relative URLs to absolute
-        if (actualSrc && !actualSrc.startsWith('http') && !actualSrc.startsWith('data:')) {
-          try {
-            img.src = new URL(actualSrc, currentUrl).href;
-          } catch (e) {
-            // If URL construction fails, try with base URL
-            if (actualSrc.startsWith('/')) {
-              img.src = baseUrl + actualSrc;
-            }
-          }
-        } else if (actualSrc && actualSrc.startsWith('http')) {
-          // Ensure we're using the full URL
-          img.src = actualSrc;
-        }
-
-        // Also fix data-src for lazy-loaded images
-        var dataSrc = img.getAttribute('data-src');
-        if (dataSrc && !img.src) {
-          if (!dataSrc.startsWith('http') && !dataSrc.startsWith('data:')) {
-            try {
-              img.src = new URL(dataSrc, currentUrl).href;
-            } catch (e) {
-              if (dataSrc.startsWith('/')) {
-                img.src = baseUrl + dataSrc;
-              }
-            }
-          } else {
-            img.src = dataSrc;
-          }
-        }
-
-        // Also fix srcset for responsive images
-        if (img.srcset) {
-          img.srcset = img.srcset.split(',').map(function(src) {
-            var parts = src.trim().split(' ');
-            var url = parts[0];
-            var descriptor = parts.slice(1).join(' ');
-
-            if (!url.startsWith('http') && !url.startsWith('data:')) {
-              try {
-                url = new URL(url, currentUrl).href;
-              } catch (e) {
-                if (url.startsWith('/')) {
-                  url = baseUrl + url;
-                }
-              }
-            }
-
-            return descriptor ? url + ' ' + descriptor : url;
-          }).join(', ');
-        }
-
-        // Add loading attributes for better performance
-        if (!img.hasAttribute('loading')) {
-          img.setAttribute('loading', 'lazy');
-        }
-
-        // Add a width/height if missing to prevent layout shifts
-        if (!img.hasAttribute('width') && img.naturalWidth) {
-          img.setAttribute('width', img.naturalWidth);
-        }
-        if (!img.hasAttribute('height') && img.naturalHeight) {
-          img.setAttribute('height', img.naturalHeight);
-        }
-
-        console.log('Fixed image:', img.src);
-      });
-
-      return div.innerHTML;
+      return fixImageUrls(html);
     },
 
     // Detect if content has images
@@ -1360,9 +1691,198 @@
     return modifiedHtml;
   }
 
+  function buildDocumentFromHtml(html, baseUrl, preprocessingRules) {
+    var finalHtml = html;
+    if (preprocessingRules && preprocessingRules.length > 0) {
+      finalHtml = applyHtmlPreprocessing(html, preprocessingRules);
+    }
+
+    var parser = new DOMParser();
+    var doc = parser.parseFromString(finalHtml, 'text/html');
+    ensureBaseTag(doc, baseUrl);
+    return doc;
+  }
+
+  function ensureBaseTag(doc, baseUrl) {
+    if (!doc || !baseUrl) return;
+    var baseTag = doc.querySelector('base[href]');
+    if (baseTag) return;
+    var head = doc.querySelector('head');
+    if (!head) return;
+    var base = doc.createElement('base');
+    base.setAttribute('href', baseUrl);
+    head.insertBefore(base, head.firstChild);
+  }
+
+  function normalizePaginationUrl(url) {
+    try {
+      var resolved = new URL(url, window.location.href);
+      resolved.hash = '';
+      return resolved.href;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function isSameOriginUrl(url) {
+    try {
+      var resolved = new URL(url, window.location.href);
+      return resolved.origin === window.location.origin;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function fetchPageHtml(url) {
+    return fetch(url, { credentials: 'include' })
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('Pagination fetch failed with status ' + response.status);
+        }
+        return response.text();
+      })
+      .catch(function(error) {
+        console.warn('Pagination fetch failed:', url, error);
+        return null;
+      });
+  }
+
+  function mergePaginatedContent(pageBlocks) {
+    var mergedHtml = [];
+    var mergedText = [];
+    var previousBoundary = null;
+    var previousText = null;
+
+    function normalizeText(text) {
+      return (text || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    }
+
+    function findBoundary(container, fromStart) {
+      if (!container || !container.children || container.children.length === 0) return null;
+      if (fromStart) {
+        for (var i = 0; i < container.children.length; i++) {
+          var child = container.children[i];
+          var text = normalizeText(child.textContent);
+          if (text) return { element: child, text: text };
+        }
+      } else {
+        for (var j = container.children.length - 1; j >= 0; j--) {
+          var lastChild = container.children[j];
+          var lastText = normalizeText(lastChild.textContent);
+          if (lastText) return { element: lastChild, text: lastText };
+        }
+      }
+      return null;
+    }
+
+    for (var i = 0; i < pageBlocks.length; i++) {
+      var block = pageBlocks[i];
+      var container = document.createElement('div');
+      container.innerHTML = block.html || '';
+
+      var firstBoundary = findBoundary(container, true);
+      var lastBoundary = findBoundary(container, false);
+
+      if (previousBoundary) {
+        if (firstBoundary && (firstBoundary.text === previousBoundary.first || firstBoundary.text === previousBoundary.last)) {
+          firstBoundary.element.remove();
+        }
+        if (lastBoundary && (lastBoundary.text === previousBoundary.last || lastBoundary.text === previousBoundary.first)) {
+          lastBoundary.element.remove();
+        }
+      }
+
+      firstBoundary = findBoundary(container, true);
+      lastBoundary = findBoundary(container, false);
+
+      var pageText = normalizeText(container.textContent || '');
+      if (!pageText) continue;
+      if (previousText && pageText === previousText) continue;
+
+      mergedHtml.push(container.innerHTML);
+      mergedText.push(container.textContent || '');
+      previousText = pageText;
+      previousBoundary = {
+        first: firstBoundary ? firstBoundary.text : '',
+        last: lastBoundary ? lastBoundary.text : ''
+      };
+    }
+
+    return {
+      html: mergedHtml.join('\n' + PAGINATION_SEPARATOR_HTML + '\n'),
+      text: mergedText.join(' ').trim()
+    };
+  }
+
+  async function extractSiteConfigWithPagination(config, processedDoc, baseUrl) {
+    var reader = new Readability(processedDoc);
+    var firstResult = reader._extractWithSiteConfig(config);
+
+    if (!firstResult || !firstResult.content) {
+      return firstResult;
+    }
+
+    var hasPaginationRules = config && ((config.next_page_link && config.next_page_link.length > 0) || config.autodetect_next_page);
+    if (!hasPaginationRules) {
+      return firstResult;
+    }
+
+    var visited = {};
+    var pages = [];
+    var pageCount = 0;
+    var currentReader = reader;
+    var currentResult = firstResult;
+    var normalizedBase = normalizePaginationUrl(baseUrl);
+    if (normalizedBase) {
+      visited[normalizedBase] = true;
+    }
+
+    while (currentResult && currentResult.content) {
+      pages.push({ html: currentResult.content, text: currentResult.textContent });
+      pageCount += 1;
+
+      if (pageCount >= MAX_PAGINATION_PAGES) {
+        console.log('Pagination cap reached at', pageCount, 'pages');
+        break;
+      }
+
+      var nextUrl = currentReader._findNextPageLink(config);
+      if (!nextUrl) break;
+      if (!isSameOriginUrl(nextUrl)) {
+        console.log('Pagination link is cross-origin, skipping:', nextUrl);
+        break;
+      }
+
+      var normalizedNext = normalizePaginationUrl(nextUrl);
+      if (!normalizedNext || visited[normalizedNext]) {
+        console.log('Pagination loop detected, stopping at', nextUrl);
+        break;
+      }
+      visited[normalizedNext] = true;
+
+      var nextHtml = await fetchPageHtml(nextUrl);
+      if (!nextHtml) break;
+      var nextDoc = buildDocumentFromHtml(nextHtml, nextUrl, config.htmlPreprocessing);
+      currentReader = new Readability(nextDoc);
+      currentResult = currentReader._extractWithSiteConfig(config, { skipSinglePageLink: true });
+    }
+
+    if (pages.length > 1) {
+      var merged = mergePaginatedContent(pages);
+      if (merged && merged.html) {
+        firstResult.content = merged.html;
+        firstResult.textContent = merged.text || firstResult.textContent;
+        firstResult.length = (merged.text || '').length;
+        firstResult.pageCount = pages.length;
+      }
+    }
+
+    return firstResult;
+  }
+
   // Async function to extract article, waiting for site config if needed
   function extractArticleWithConfig(indicator) {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function(resolve) {
       var hostname = window.location.hostname.replace(/^www\./, '');
 
       // Check if we have a cached config from a previous fetch
@@ -1372,35 +1892,34 @@
       if (config) {
         // We have config - follow PHP FiveFilters flow exactly
         var rawHtml = document.documentElement.outerHTML;
-        var finalHtml = rawHtml;
+        var processedDoc = buildDocumentFromHtml(rawHtml, window.location.href, config.htmlPreprocessing);
 
-        // Step 1: Apply HTML preprocessing if needed (matches PHP str_replace)
-        if (config.htmlPreprocessing && config.htmlPreprocessing.length > 0) {
-          finalHtml = applyHtmlPreprocessing(rawHtml, config.htmlPreprocessing);
-          console.log('Applied', config.htmlPreprocessing.length, 'preprocessing rules');
-        }
+        extractSiteConfigWithPagination(config, processedDoc, window.location.href)
+          .then(function(siteConfigResult) {
+            if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
+              console.log('Extraction successful using FiveFilters XPath rules');
+              resolve(siteConfigResult);
+              return;
+            }
 
-        // Step 2: Parse HTML to DOM (matches PHP Readability constructor)
-        var parser = new DOMParser();
-        var processedDoc = parser.parseFromString(finalHtml, 'text/html');
-
-        // Step 3: Try XPath extraction first (matches PHP ContentExtractor::process)
-        var reader = new Readability(processedDoc);
-        var siteConfigResult = reader._extractWithSiteConfig();
-
-        if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
-          console.log('Extraction successful using FiveFilters XPath rules');
-          resolve(siteConfigResult);
-          return;
-        }
-
-        // Step 4: XPath failed, fall back to Readability auto-detection (matches PHP autodetect_on_failure)
-        console.log('XPath extraction failed, falling back to Readability auto-detection');
-        var article = reader.parse();
-        if (article) {
-          article.extractionNote = 'XPath rules failed, used Readability fallback';
-        }
-        resolve(article);
+            // XPath failed, fall back to Readability auto-detection (matches PHP autodetect_on_failure)
+            console.log('XPath extraction failed, falling back to Readability auto-detection');
+            var fallbackReader = new Readability(processedDoc);
+            var article = fallbackReader.parse();
+            if (article) {
+              article.extractionNote = 'XPath rules failed, used Readability fallback';
+            }
+            resolve(article);
+          })
+          .catch(function(error) {
+            console.log('Site config pagination failed, falling back to Readability:', error);
+            var fallbackReader = new Readability(processedDoc);
+            var article = fallbackReader.parse();
+            if (article) {
+              article.extractionNote = 'Site config pagination failed, used Readability fallback';
+            }
+            resolve(article);
+          });
         return;
       }
 
@@ -1424,7 +1943,7 @@
                 timestamp: Date.now()
               }));
               console.log('Using fresh FiveFilters config for', hostname);
-            } catch (e) {
+            } catch {
               // Session storage not available, continue anyway
             }
 
@@ -1432,35 +1951,35 @@
 
             // Follow PHP FiveFilters flow exactly (same logic as cached config path)
             var rawHtml = document.documentElement.outerHTML;
-            var finalHtml = rawHtml;
+            var processedDoc = buildDocumentFromHtml(rawHtml, window.location.href, data.config.htmlPreprocessing);
 
-            // Step 1: Apply HTML preprocessing if needed
-            if (data.config.htmlPreprocessing && data.config.htmlPreprocessing.length > 0) {
-              finalHtml = applyHtmlPreprocessing(rawHtml, data.config.htmlPreprocessing);
-              console.log('Applied', data.config.htmlPreprocessing.length, 'preprocessing rules');
-            }
-
-            // Step 2: Parse HTML to DOM
-            var parser = new DOMParser();
-            var processedDoc = parser.parseFromString(finalHtml, 'text/html');
-
-            // Step 3: Try XPath extraction first
-            var reader = new Readability(processedDoc);
-            var siteConfigResult = reader._extractWithSiteConfig();
-
-            var article;
-            if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
-              console.log('Extraction successful using FiveFilters XPath rules');
-              article = siteConfigResult;
-            } else {
-              // Step 4: XPath failed, fall back to Readability
-              console.log('XPath extraction failed, falling back to Readability auto-detection');
-              article = reader.parse();
-              if (article) {
-                article.extractionNote = 'XPath rules failed, used Readability fallback';
-              }
-            }
-            resolve(article);
+            extractSiteConfigWithPagination(data.config, processedDoc, window.location.href)
+              .then(function(siteConfigResult) {
+                var article;
+                if (siteConfigResult && siteConfigResult.title && siteConfigResult.content) {
+                  console.log('Extraction successful using FiveFilters XPath rules');
+                  article = siteConfigResult;
+                } else {
+                  // Step 4: XPath failed, fall back to Readability
+                  console.log('XPath extraction failed, falling back to Readability auto-detection');
+                  var fallbackReader = new Readability(processedDoc);
+                  article = fallbackReader.parse();
+                  if (article) {
+                    article.extractionNote = 'XPath rules failed, used Readability fallback';
+                  }
+                }
+                resolve(article);
+              })
+              .catch(function(error) {
+                console.log('Site config pagination failed, falling back to Readability:', error);
+                var fallbackReader = new Readability(processedDoc);
+                var article = fallbackReader.parse();
+                if (article) {
+                  article.extractionNote = 'Site config pagination failed, used Readability fallback';
+                }
+                resolve(article);
+              });
+            return;
           } else {
             // No config available, fall back to regular extraction
             updateIndicator(indicator, '📖 Extracting with general rules...');
@@ -1469,7 +1988,7 @@
             resolve(article);
           }
         })
-        .catch(function(error) {
+        .catch(function() {
           // Config fetch failed, fall back to regular extraction
           console.log('Config fetch failed for', hostname, '- using fallback extraction');
           updateIndicator(indicator, '📖 Using general extraction (no site-specific config available)...');
@@ -1486,162 +2005,194 @@
     });
   }
 
-  try {
-    // Create a simple UI indicator
-    const indicator = createIndicator();
-    document.body.appendChild(indicator);
+  if (!isTestMode) {
+    try {
+      // Create a simple UI indicator
+      const indicator = createIndicator();
+      document.body.appendChild(indicator);
 
-    // Extract article content - first try to get site config if needed
-    logDebug('extraction', 'Starting article extraction');
-    extractArticleWithConfig(indicator).then(function(article) {
-      if (!article) {
-        logDebug('error', 'Article extraction returned null');
-        throw new Error('Could not extract article content from this page');
-      }
-
-      logDebug('extraction', 'Article extracted', {
-        title: article.title,
-        contentLength: article.content?.length || 0,
-        method: article.extractionMethod || 'unknown'
-      });
-
-      // Debug: Check content structure before fixImageUrls
-      if (article.content) {
-        const beforeBrCount = (article.content.match(/<br>/gi) || []).length;
-        const beforeNewlineCount = (article.content.match(/\n/g) || []).length;
-        const beforePCount = (article.content.match(/<p>/gi) || []).length;
-        console.log(`Before fixImageUrls: ${beforePCount} <p> tags, ${beforeBrCount} <br> tags, ${beforeNewlineCount} newlines`);
-
-        // Fix image URLs to ensure they're absolute
-        article.content = fixImageUrls(article.content);
-
-        // Debug: Check content structure after fixImageUrls
-        const afterBrCount = (article.content.match(/<br>/gi) || []).length;
-        const afterNewlineCount = (article.content.match(/\n/g) || []).length;
-        const afterPCount = (article.content.match(/<p>/gi) || []).length;
-        console.log(`After fixImageUrls: ${afterPCount} <p> tags, ${afterBrCount} <br> tags, ${afterNewlineCount} newlines`);
-
-        if (beforeNewlineCount !== afterNewlineCount) {
-          console.warn(`fixImageUrls changed newline count from ${beforeNewlineCount} to ${afterNewlineCount}`);
+      // Extract article content - first try to get site config if needed
+      logDebug('extraction', 'Starting article extraction');
+      extractArticleWithConfig(indicator).then(function(article) {
+        if (!article) {
+          logDebug('error', 'Article extraction returned null');
+          throw new Error('Could not extract article content from this page');
         }
-      }
 
-      // Enhance article data
-      const enhancedArticle = {
-        ...article,
-        url: window.location.href,
-        domain: window.location.hostname,
-        extractedAt: new Date().toISOString(),
-        userAgent: navigator.userAgent.substring(0, 100)
-      };
+        logDebug('extraction', 'Article extracted', {
+          title: article.title,
+          contentLength: article.content?.length || 0,
+          method: article.extractionMethod || 'unknown'
+        });
 
-      // Base64 encode to prevent truncation but preserve structure
-      let contentB64 = null;
-      try {
-        if (enhancedArticle.content) {
-          // Debug: Check what we're encoding
-          const brCount = (enhancedArticle.content.match(/<br>/gi) || []).length;
-          const newlineCount = (enhancedArticle.content.match(/\n/g) || []).length;
-          const pCount = (enhancedArticle.content.match(/<p>/gi) || []).length;
-          console.log(`Encoding content with: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+        // Debug: Check content structure before fixImageUrls
+        if (article.content) {
+          const beforeBrCount = (article.content.match(/<br>/gi) || []).length;
+          const beforeNewlineCount = (article.content.match(/\n/g) || []).length;
+          const beforePCount = (article.content.match(/<p>/gi) || []).length;
+          console.log(`Before fixImageUrls: ${beforePCount} <p> tags, ${beforeBrCount} <br> tags, ${beforeNewlineCount} newlines`);
 
-          // Check first paragraph
-          const firstChars = enhancedArticle.content.substring(0, 200).replace(/<[^>]*>/g, '').trim();
-          console.log('Content to encode starts with:', firstChars.substring(0, 100));
+          // Fix image URLs to ensure they're absolute
+          article.content = fixImageUrls(article.content);
 
-          // Use base64 encoding that preserves Unicode properly
-          // The unescape(encodeURIComponent()) pattern converts to Latin-1 for btoa
-          // But this might be altering whitespace characters
-          contentB64 = btoa(unescape(encodeURIComponent(enhancedArticle.content)));
-          console.log('Successfully encoded', enhancedArticle.content.length, 'chars to base64');
+          // Debug: Check content structure after fixImageUrls
+          const afterBrCount = (article.content.match(/<br>/gi) || []).length;
+          const afterNewlineCount = (article.content.match(/\n/g) || []).length;
+          const afterPCount = (article.content.match(/<p>/gi) || []).length;
+          console.log(`After fixImageUrls: ${afterPCount} <p> tags, ${afterBrCount} <br> tags, ${afterNewlineCount} newlines`);
+
+          if (beforeNewlineCount !== afterNewlineCount) {
+            console.warn(`fixImageUrls changed newline count from ${beforeNewlineCount} to ${afterNewlineCount}`);
+          }
         }
-      } catch (e) {
-        console.error('Failed to base64-encode content:', e);
-      }
 
-      // Send to service
-      updateIndicator(indicator, 'Sending to Kindle and Zotero...');
-
-      // Log extraction results for debugging
-      console.log('=== ARTICLE EXTRACTION DEBUG ===');
-      console.log('Title:', enhancedArticle.title);
-      console.log('Content length:', enhancedArticle.content?.length || 0);
-      console.log('Text content length:', enhancedArticle.textContent?.length || 0);
-      console.log('Extraction method:', enhancedArticle.extractionMethod);
-      console.log('Extraction note:', enhancedArticle.extractionNote);
-      console.log('Has images:', enhancedArticle.hasImages);
-      if (enhancedArticle.content) {
-        var pCount = (enhancedArticle.content.match(/<p[^>]*>/gi) || []).length;
-        var brCount = (enhancedArticle.content.match(/<br[^>]*>/gi) || []).length;
-        console.log('Content structure:', pCount, '<p> tags,', brCount, '<br> tags');
-        console.log('Content preview:', enhancedArticle.content.substring(0, 200) + '...');
-      }
-      console.log('=== END EXTRACTION DEBUG ===');
-
-      return fetch(SERVICE_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
+        // Enhance article data
+        const enhancedArticle = {
+          ...article,
           url: window.location.href,
-          article: {
-            ...enhancedArticle,
-            content_b64: contentB64,
-            // Also send raw content to compare
-            content: enhancedArticle.content
+          domain: window.location.hostname,
+          extractedAt: new Date().toISOString(),
+          userAgent: navigator.userAgent.substring(0, 100)
+        };
+
+        // Base64 encode to prevent truncation but preserve structure
+        let contentB64 = null;
+        try {
+          if (enhancedArticle.content) {
+            // Debug: Check what we're encoding
+            const brCount = (enhancedArticle.content.match(/<br>/gi) || []).length;
+            const newlineCount = (enhancedArticle.content.match(/\n/g) || []).length;
+            const pCount = (enhancedArticle.content.match(/<p>/gi) || []).length;
+            console.log(`Encoding content with: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+
+            // Check first paragraph
+            const firstChars = enhancedArticle.content.substring(0, 200).replace(/<[^>]*>/g, '').trim();
+            console.log('Content to encode starts with:', firstChars.substring(0, 100));
+
+            // Use base64 encoding that preserves Unicode properly
+            // The unescape(encodeURIComponent()) pattern converts to Latin-1 for btoa
+            // But this might be altering whitespace characters
+            contentB64 = btoa(unescape(encodeURIComponent(enhancedArticle.content)));
+            console.log('Successfully encoded', enhancedArticle.content.length, 'chars to base64');
+          }
+        } catch (e) {
+          console.error('Failed to base64-encode content:', e);
+        }
+
+        var debugHookResult = null;
+        if (typeof window.__ARTICLE_MONSTER_DEBUG_HOOK__ === 'function') {
+          try {
+            debugHookResult = window.__ARTICLE_MONSTER_DEBUG_HOOK__({
+              article: enhancedArticle,
+              content_b64: contentB64,
+              debugInfo: __bmLog
+            }) || null;
+          } catch (e) {
+            console.warn('Debug hook failed:', e);
+          }
+        }
+
+        if (debugHookResult && debugHookResult.skipSend) {
+          if (document.body.contains(indicator)) {
+            document.body.removeChild(indicator);
+          }
+          return { __debugSkipSend: true };
+        }
+
+        // Send to service
+        updateIndicator(indicator, 'Sending to Kindle and Zotero...');
+
+        // Log extraction results for debugging
+        console.log('=== ARTICLE EXTRACTION DEBUG ===');
+        console.log('Title:', enhancedArticle.title);
+        console.log('Content length:', enhancedArticle.content?.length || 0);
+        console.log('Text content length:', enhancedArticle.textContent?.length || 0);
+        console.log('Extraction method:', enhancedArticle.extractionMethod);
+        console.log('Extraction note:', enhancedArticle.extractionNote);
+        console.log('Has images:', enhancedArticle.hasImages);
+        if (enhancedArticle.content) {
+          var pCount = (enhancedArticle.content.match(/<p[^>]*>/gi) || []).length;
+          var brCount = (enhancedArticle.content.match(/<br[^>]*>/gi) || []).length;
+          console.log('Content structure:', pCount, '<p> tags,', brCount, '<br> tags');
+          console.log('Content preview:', enhancedArticle.content.substring(0, 200) + '...');
+        }
+        console.log('=== END EXTRACTION DEBUG ===');
+
+        return fetch(SERVICE_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
           },
-          debugInfo: __bmLog
+          body: JSON.stringify({
+            url: window.location.href,
+            article: {
+              ...enhancedArticle,
+              content_b64: contentB64,
+              // Also send raw content to compare
+              content: enhancedArticle.content
+            },
+            debugInfo: __bmLog
+          })
+        });
+      })
+        .then(response => {
+          if (response && response.__debugSkipSend) {
+            return response;
+          }
+          return response.json();
         })
-      });
-    })
-      .then(response => response.json())
-      .then(data => {
-        document.body.removeChild(indicator);
+        .then(data => {
+          if (data && data.__debugSkipSend) {
+            return;
+          }
+          document.body.removeChild(indicator);
 
-        // Show results
-        const results = [];
-        if (data.kindle === 'sent') results.push('✅ Sent to Kindle');
-        else results.push('❌ Kindle failed');
+          // Show results
+          const results = [];
+          if (data.kindle === 'sent') results.push('✅ Sent to Kindle');
+          else results.push('❌ Kindle failed');
 
-        if (data.zotero === 'sent') results.push('✅ Saved to Zotero');
-        else results.push('❌ Zotero failed');
+          if (data.zotero === 'sent') results.push('✅ Saved to Zotero');
+          else results.push('❌ Zotero failed');
 
-        const message = `📖 "${data.article.title}"\n\n${results.join('\n')}\n\n👆 Results for your bookmarklet`;
-        showResult(message);
-      })
-      .catch(error => {
-        if (document.querySelector('#article-bookmarklet-indicator')) {
-          document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
-        }
-        var hostname = window.location.hostname.replace(/^www\./, '');
-        var helpMessage = '';
+          const message = `📖 "${data.article.title}"\n\n${results.join('\n')}\n\n👆 Results for your bookmarklet`;
+          showResult(message);
+        })
+        .catch(error => {
+          if (document.querySelector('#article-bookmarklet-indicator')) {
+            document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
+          }
+          var hostname = window.location.hostname.replace(/^www\./, '');
+          var helpMessage = '';
 
-        if (error.message.includes('fetch') || error.message.includes('network')) {
-          helpMessage = '\n\n💡 This might be due to:\n- Network connectivity issues\n- Site blocking automated access\n- CORS restrictions\n\nTry refreshing the page and using the bookmarklet again.';
-        } else if (error.message.includes('extract')) {
-          helpMessage = `\n\n💡 Extraction failed for ${hostname}:\n- This site may use unusual formatting\n- Content might be dynamically loaded\n- The page might not contain a standard article\n\nTry using the bookmarklet on the main article page.`;
-        } else {
-          helpMessage = '\n\n💡 Please try again or check your internet connection.';
-        }
+          if (error.message.includes('fetch') || error.message.includes('network')) {
+            helpMessage = '\n\n💡 This might be due to:\n- Network connectivity issues\n- Site blocking automated access\n- CORS restrictions\n\nTry refreshing the page and using the bookmarklet again.';
+          } else if (error.message.includes('extract')) {
+            helpMessage = `\n\n💡 Extraction failed for ${hostname}:\n- This site may use unusual formatting\n- Content might be dynamically loaded\n- The page might not contain a standard article\n\nTry using the bookmarklet on the main article page.`;
+          } else {
+            helpMessage = '\n\n💡 Please try again or check your internet connection.';
+          }
 
-        showResult('❌ Error: ' + error.message + helpMessage);
-      })
-      .finally(() => {
-        window.articleBookmarkletProcessing = false;
-      });
+          showResult('❌ Error: ' + error.message + helpMessage);
+        })
+        .finally(() => {
+          window.articleBookmarkletProcessing = false;
+        });
 
-  } catch (error) {
-    if (document.querySelector('#article-bookmarklet-indicator')) {
-      document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
+    } catch (error) {
+      if (document.querySelector('#article-bookmarklet-indicator')) {
+        document.body.removeChild(document.querySelector('#article-bookmarklet-indicator'));
+      }
+      showResult('❌ Extraction failed: ' + error.message);
+      window.articleBookmarkletProcessing = false;
     }
-    showResult('❌ Extraction failed: ' + error.message);
-    window.articleBookmarkletProcessing = false;
   }
 
   // Fix relative image URLs to absolute URLs
   function fixImageUrls(html) {
     try {
+      if (!html) return html;
+
       // IMPORTANT: When we set innerHTML, the browser normalizes the HTML
       // This can strip newlines and merge paragraphs
       // Let's try to preserve the original structure as much as possible
@@ -1649,47 +2200,79 @@
       var div = document.createElement('div');
       div.innerHTML = html;
       var baseUrl = window.location.origin;
+      var currentUrl = window.location.href;
 
-      // Fix img src attributes
-      var images = div.querySelectorAll('img');
-      for (var i = 0; i < images.length; i++) {
-        var img = images[i];
+      div.querySelectorAll('img').forEach(function(img) {
+        // Get the actual resolved src from the DOM element
+        var actualSrc = img.src || img.getAttribute('src');
 
         // Fix relative URLs to absolute
-        if (img.src && !img.src.startsWith('http')) {
+        if (actualSrc && !actualSrc.startsWith('http') && !actualSrc.startsWith('data:')) {
           try {
-            img.src = new URL(img.src, baseUrl).href;
-          } catch (e) {
-            console.warn('Could not fix image URL:', img.src);
+            img.src = new URL(actualSrc, currentUrl).href;
+          } catch {
+            // If URL construction fails, try with base URL
+            if (actualSrc.startsWith('/')) {
+              img.src = baseUrl + actualSrc;
+            }
+          }
+        } else if (actualSrc && actualSrc.startsWith('http')) {
+          // Ensure we're using the full URL
+          img.src = actualSrc;
+        }
+
+        // Also fix data-src for lazy-loaded images
+        var dataSrc = img.getAttribute('data-src');
+        if (dataSrc && !img.src) {
+          if (!dataSrc.startsWith('http') && !dataSrc.startsWith('data:')) {
+            try {
+              img.src = new URL(dataSrc, currentUrl).href;
+            } catch {
+              if (dataSrc.startsWith('/')) {
+                img.src = baseUrl + dataSrc;
+              }
+            }
+          } else {
+            img.src = dataSrc;
           }
         }
 
         // Also fix srcset for responsive images
         if (img.srcset) {
-          var srcsetParts = img.srcset.split(',');
-          var fixedSrcset = [];
+          img.srcset = img.srcset.split(',').map(function(src) {
+            var parts = src.trim().split(' ');
+            var url = parts[0];
+            var descriptor = parts.slice(1).join(' ');
 
-          for (var j = 0; j < srcsetParts.length; j++) {
-            var part = srcsetParts[j].trim();
-            var spaceIndex = part.lastIndexOf(' ');
-            var url = spaceIndex > -1 ? part.substring(0, spaceIndex) : part;
-            var descriptor = spaceIndex > -1 ? part.substring(spaceIndex) : '';
-
-            if (!url.startsWith('http')) {
+            if (!url.startsWith('http') && !url.startsWith('data:')) {
               try {
-                url = new URL(url, baseUrl).href;
-              } catch (e) {
-                console.warn('Could not fix srcset URL:', url);
-                continue;
+                url = new URL(url, currentUrl).href;
+              } catch {
+                if (url.startsWith('/')) {
+                  url = baseUrl + url;
+                }
               }
             }
 
-            fixedSrcset.push(url + descriptor);
-          }
-
-          img.srcset = fixedSrcset.join(', ');
+            return descriptor ? url + ' ' + descriptor : url;
+          }).join(', ');
         }
-      }
+
+        // Add loading attributes for better performance
+        if (!img.hasAttribute('loading')) {
+          img.setAttribute('loading', 'lazy');
+        }
+
+        // Add a width/height if missing to prevent layout shifts
+        if (!img.hasAttribute('width') && img.naturalWidth) {
+          img.setAttribute('width', img.naturalWidth);
+        }
+        if (!img.hasAttribute('height') && img.naturalHeight) {
+          img.setAttribute('height', img.naturalHeight);
+        }
+
+        console.log('Fixed image:', img.src);
+      });
 
       return div.innerHTML;
     } catch (e) {
@@ -1772,6 +2355,13 @@
         document.body.removeChild(dialog);
       }
     }, 10000);
+  }
+
+  if (isTestMode) {
+    window.__ArticleMonsterTestHooks = {
+      Readability: Readability,
+      applyHtmlPreprocessing: applyHtmlPreprocessing
+    };
   }
 
 })();

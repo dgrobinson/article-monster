@@ -22,6 +22,9 @@ Out of scope:
 - src/configFetcher.js
 - FIVEFILTERS_IMPLEMENTATION_PLAN.md
 - test/dev-scripts/test-extraction-with-fivefilters.js
+ - test/dev-scripts/test-pagination-fixtures.js
+ - test/fixtures/pagination/**
+ - test/support/fixtures.js
 
 ## Plan
 1) Harden URL resolution
@@ -46,6 +49,8 @@ Out of scope:
 5) Add tests
 - Add a test case for a known multi-page site.
 - Validate minLength and expectedPhrases across pages.
+ - Use the fixture-backed harness in `test/dev-scripts/test-pagination-fixtures.js` for cloud runs.
+ - Keep live site validation local-only (CSP/auth dependent).
 
 ## Deliverables
 - Bookmarklet pagination support with guardrails.

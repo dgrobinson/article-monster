@@ -1,29 +1,35 @@
 const fs = require('fs').promises;
 const path = require('path');
 const { JSDOM } = require('jsdom');
+const { allowLiveFetch } = require('../support/network-guard');
+
+const repoRoot = path.join(__dirname, '..', '..');
 
 async function testBookmarkletExtraction() {
   console.log('Testing bookmarklet extraction with Baldwin article...\n');
   
   // Load the test article
   const html = await fs.readFile(
-    path.join(__dirname, 'test-cases/solved/newyorker-baldwin.html'),
+    path.join(repoRoot, 'test-cases', 'solved', 'newyorker-baldwin.html'),
     'utf8'
   );
   
   // Create a DOM
-  const dom = new JSDOM(html, {
+  const domOptions = {
     url: 'https://www.newyorker.com/magazine/2025/08/18/baldwin-a-love-story-nicholas-boggs-book-review',
-    runScripts: 'dangerously',
-    resources: 'usable'
-  });
+    runScripts: 'dangerously'
+  };
+  if (allowLiveFetch) {
+    domOptions.resources = 'usable';
+  }
+  const dom = new JSDOM(html, domOptions);
   
   const window = dom.window;
   const document = window.document;
   
   // Load Readability
   const readabilityCode = await fs.readFile(
-    path.join(__dirname, 'node_modules/@mozilla/readability/Readability.js'),
+    path.join(repoRoot, 'node_modules', '@mozilla', 'readability', 'Readability.js'),
     'utf8'
   );
   window.eval(readabilityCode);
@@ -63,8 +69,9 @@ async function testBookmarkletExtraction() {
     }
     
     // Save extracted content
-    await fs.writeFile('test-readability-output.html', article.content);
-    console.log('\nReadability output saved to test-readability-output.html');
+    const outputPath = path.join(__dirname, 'test-readability-output.html');
+    await fs.writeFile(outputPath, article.content);
+    console.log('\nReadability output saved to', outputPath);
   }
   
   // Test 2: Simulate fixImageUrls
@@ -112,8 +119,9 @@ async function testBookmarkletExtraction() {
     console.log('- Newlines:', newlineCount);
     console.log('- Changed from original?:', fixed !== article.content);
     
-    await fs.writeFile('test-after-fiximage.html', fixed);
-    console.log('\nAfter fixImageUrls saved to test-after-fiximage.html');
+    const outputPath = path.join(__dirname, 'test-after-fiximage.html');
+    await fs.writeFile(outputPath, fixed);
+    console.log('\nAfter fixImageUrls saved to', outputPath);
   }
   
   // Test 3: Base64 encoding/decoding
@@ -137,8 +145,9 @@ async function testBookmarkletExtraction() {
     console.log('- Newlines:', newlineCount);
     console.log('- Same as before base64?:', decoded === fixed);
     
-    await fs.writeFile('test-after-base64.html', decoded);
-    console.log('\nAfter base64 round-trip saved to test-after-base64.html');
+    const outputPath = path.join(__dirname, 'test-after-base64.html');
+    await fs.writeFile(outputPath, decoded);
+    console.log('\nAfter base64 round-trip saved to', outputPath);
   }
   
   // Close the DOM

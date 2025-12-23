@@ -1,0 +1,20 @@
+{
+  "fixtures": {
+    "https://fixtures.article-monster.test/pagination/page-1.html": {
+      "path": "test/fixtures/pagination/page-1.html",
+      "contentType": "text/html"
+    },
+    "https://fixtures.article-monster.test/pagination/page-2.html": {
+      "path": "test/fixtures/pagination/page-2.html",
+      "contentType": "text/html"
+    },
+    "https://fixtures.article-monster.test/site-config/fixtures.article-monster.test": {
+      "path": "test/fixtures/pagination/site-config.json",
+      "contentType": "application/json"
+    },
+    "https://fixtures.article-monster.test/debug-media/article.html": {
+      "path": "test/fixtures/debug-media/article.html",
+      "contentType": "text/html"
+    }
+  }
+}

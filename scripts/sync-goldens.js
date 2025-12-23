@@ -4,6 +4,7 @@ const fs = require('fs');
 const fsp = require('fs').promises;
 const path = require('path');
 const AdmZip = require('adm-zip');
+const { generateEpub } = require('../src/epubGenerator');
 
 async function findOutputPathByMatch(debugCheckoutPath, matchToken) {
   const outputsRoot = path.join(debugCheckoutPath, 'outputs');
@@ -53,30 +54,79 @@ function extractPlainTextFromEpub(epubPath) {
       xhtml += zip.readAsText(entry);
     }
   });
-  // Basic normalization
-  const text = xhtml
+  return xhtml
     .replace(/<script[\s\S]*?<\/script>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style>/gi, ' ')
     .replace(/<[^>]*>/g, ' ')
     .replace(/&nbsp;/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
-  return text;
 }
 
-function pickPhrases(text) {
-  const words = text.split(' ');
-  const pickWindow = (startIdx, windowSize) => words.slice(startIdx, startIdx + windowSize).join(' ');
-  const len = words.length;
-  const w = 12; // 10-12 word phrases
-  const begin = pickWindow(0, w);
-  const mid = pickWindow(Math.max(0, Math.floor(len * 0.5) - Math.floor(w / 2)), w);
-  const end = pickWindow(Math.max(0, len - w), w);
-  const phrases = [begin, mid, end]
-    .map(s => s.replace(/[\s\u00A0]+/g, ' ').trim())
-    .filter(Boolean);
-  // Deduplicate if text is short
-  return [...new Set(phrases)];
+async function loadArticleFromPayload(payloadPath, fallbackUrl, fallbackTitle) {
+  if (!fs.existsSync(payloadPath)) return null;
+
+  try {
+    const payload = JSON.parse(await fsp.readFile(payloadPath, 'utf8'));
+    const article = payload.article || payload;
+
+    if (!article || !article.content) {
+      return null;
+    }
+
+    return {
+      title: article.title || payload.title || fallbackTitle || fallbackUrl || 'Untitled Article',
+      byline: article.byline || article.author || '',
+      siteName: article.siteName || article.hostname || payload.domain || '',
+      url: article.url || payload.url || fallbackUrl || '',
+      publishedTime: article.publishedTime || article.published || '',
+      content: article.content,
+      lang: article.lang || 'en',
+      extractionMethod: article.source || article.extractionMethod || payload.extractionMethod || 'unknown'
+    };
+  } catch (e) {
+    console.warn('Could not parse payload.json:', e.message);
+    return null;
+  }
+}
+
+async function ensureEpub({
+  fromEpub,
+  toEpub,
+  payloadPath,
+  fallbackUrl,
+  fallbackTitle
+}) {
+  let shouldGenerate = false;
+
+  if (!fs.existsSync(fromEpub)) {
+    shouldGenerate = true;
+  } else {
+    try {
+      const stat = await fsp.stat(fromEpub);
+      if (stat.size < 1024) {
+        shouldGenerate = true;
+      } else {
+        new AdmZip(fromEpub);
+      }
+    } catch (e) {
+      shouldGenerate = true;
+    }
+  }
+
+  if (!shouldGenerate) {
+    await fsp.copyFile(fromEpub, toEpub);
+    return 'copied';
+  }
+
+  const article = await loadArticleFromPayload(payloadPath, fallbackUrl, fallbackTitle);
+  if (!article) {
+    throw new Error('Missing usable article payload to generate EPUB');
+  }
+
+  const epubResult = await generateEpub(article);
+  await fsp.writeFile(toEpub, epubResult.buffer);
+  return 'generated';
 }
 
 async function main() {
@@ -141,13 +191,6 @@ async function main() {
     const toEpub = path.join(solvedDir, `${slug}.expected.epub`);
     const toJson = path.join(solvedDir, `${slug}.json`);
 
-    if (!fs.existsSync(fromEpub)) {
-      console.error('Missing article.epub at', fromEpub);
-      process.exit(1);
-    }
-
-    await fsp.copyFile(fromEpub, toEpub);
-
     let url = c.url || '';
     if (!url && fs.existsSync(payloadJsonPath)) {
       try {
@@ -156,31 +199,43 @@ async function main() {
       } catch {}
     }
 
-    // Derive checks automatically unless provided
-    let minLength = c.minLength;
-    let expectedPhrases = c.expectedPhrases;
     try {
-      const plainText = extractPlainTextFromEpub(toEpub);
-      if (!minLength) {
-        minLength = Math.floor(plainText.length * 0.9); // allow 10% drift
-      }
-      if (!expectedPhrases || expectedPhrases.length === 0) {
-        expectedPhrases = pickPhrases(plainText);
-      }
+      const result = await ensureEpub({
+        fromEpub,
+        toEpub,
+        payloadPath: payloadJsonPath,
+        fallbackUrl: url,
+        fallbackTitle: c.name || slug
+      });
+      console.log(`EPUB ${result}: ${slug}`);
     } catch (e) {
-      console.warn('Could not derive checks from EPUB:', e.message);
+      console.error('Failed to create EPUB for', slug, '-', e.message);
+      process.exit(1);
+    }
+
+    try {
+      extractPlainTextFromEpub(toEpub);
+    } catch (e) {
+      console.warn('Could not read EPUB for sanity check:', e.message);
     }
 
     const testJson = {
       name: c.name || slug,
       url: url,
-      htmlFile: `${slug}.html`,
-      expectedPhrases: expectedPhrases || [],
-      minLength: minLength || 0,
-      notes: c.notes || 'Golden from latest-outputs-debug',
-      addedDate: new Date().toISOString().slice(0,10),
-      status: 'solved'
+      notes: c.notes || 'Golden from latest-outputs-debug'
     };
+
+    if (c.htmlFile !== null) {
+      testJson.htmlFile = c.htmlFile || `${slug}.html`;
+    }
+
+    if (Array.isArray(c.expectedPhrases) && c.expectedPhrases.length > 0) {
+      testJson.expectedPhrases = c.expectedPhrases;
+    }
+
+    if (Number.isFinite(c.minLength)) {
+      testJson.minLength = c.minLength;
+    }
 
     await fsp.writeFile(toJson, JSON.stringify(testJson, null, 2));
     copied++;

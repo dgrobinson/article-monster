@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Unsolved Extraction Test Case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "name",
+    "url"
+  ],
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "url": {
+      "type": "string"
+    },
+    "htmlFile": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "expectedPhrases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "minLength": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "htmlFile"
+      ]
+    },
+    {
+      "required": [
+        "content"
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
 const { createTransport } = require('nodemailer');
+const { getPayloadMetrics, storeKindlePayload } = require('./kindleArchive');
 
 async function sendToKindle(article, debugLogger = null) {
   try {
@@ -31,6 +32,38 @@ async function sendToKindle(article, debugLogger = null) {
 
     // Create clean HTML content for Kindle
     const htmlContent = createKindleHTML(article);
+    const payloadMetrics = getPayloadMetrics(htmlContent);
+
+    log('kindle', 'Kindle payload metrics', {
+      contentLength: payloadMetrics.contentLength,
+      imageCount: payloadMetrics.imageCount,
+      hash: payloadMetrics.hash
+    });
+
+    let archiveMetadata = null;
+    let archiveHostname = null;
+    if (article.url) {
+      try {
+        archiveHostname = new URL(article.url).hostname;
+      } catch {
+        archiveHostname = null;
+      }
+    }
+    try {
+      archiveMetadata = await storeKindlePayload({
+        html: htmlContent,
+        title: article.title,
+        url: article.url,
+        hostname: archiveHostname || undefined,
+        metrics: payloadMetrics
+      });
+      log('kindle', 'Kindle payload archived', {
+        id: archiveMetadata.id,
+        hash: archiveMetadata.hash
+      });
+    } catch (error) {
+      log('kindle', 'Kindle payload archive failed', { error: error.message });
+    }
 
     // Email options
     const sanitizedFilename = `${sanitizeFilename(article.title)}.html`;
@@ -63,7 +96,8 @@ async function sendToKindle(article, debugLogger = null) {
     return {
       success: true,
       messageId: result.messageId,
-      emailContent: htmlContent
+      emailContent: htmlContent,
+      archive: archiveMetadata
     };
 
   } catch (error) {
@@ -186,4 +220,4 @@ function formatDate(dateString) {
   }
 }
 
-module.exports = { sendToKindle };
+module.exports = { sendToKindle, createKindleHTML };

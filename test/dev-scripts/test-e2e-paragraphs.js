@@ -2,6 +2,9 @@ const puppeteer = require('puppeteer');
 const fs = require('fs').promises;
 const path = require('path');
 const https = require('https');
+const { allowLiveFetch } = require('../support/network-guard');
+
+const repoRoot = path.join(__dirname, '..', '..');
 
 // Configuration
 const SERVICE_URL = process.env.SERVICE_URL || 'https://seal-app-t4vff.ondigitalocean.app';
@@ -9,6 +12,10 @@ const ZOTERO_API_KEY = process.env.ZOTERO_API_KEY;
 const ZOTERO_USER_ID = process.env.ZOTERO_USER_ID;
 
 async function runE2ETest() {
+  if (!allowLiveFetch) {
+    console.error('Live fetch disabled. Set ALLOW_LIVE_FETCH=true to run test-e2e-paragraphs.');
+    process.exit(1);
+  }
   console.log('Starting E2E paragraph preservation test...');
   
   const browser = await puppeteer.launch({
@@ -50,7 +57,7 @@ async function runE2ETest() {
     
     // Load test article (Baldwin article from test cases)
     const testHtml = await fs.readFile(
-      path.join(__dirname, 'test-cases/solved/newyorker-baldwin.html'),
+      path.join(repoRoot, 'test-cases', 'solved', 'newyorker-baldwin.html'),
       'utf8'
     );
     
@@ -63,7 +70,7 @@ async function runE2ETest() {
     
     // Inject the bookmarklet code
     const bookmarkletCode = await fs.readFile(
-      path.join(__dirname, 'public/bookmarklet.js'),
+      path.join(repoRoot, 'public', 'bookmarklet.js'),
       'utf8'
     );
     
@@ -155,7 +162,7 @@ async function runE2ETest() {
     
     // Save the extracted content for analysis
     await fs.writeFile(
-      'test-extraction-result.json',
+      path.join(__dirname, 'test-extraction-result.json'),
       JSON.stringify(extractionResult, null, 2)
     );
     console.log('\nExtraction result saved to test-extraction-result.json');

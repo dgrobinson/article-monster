@@ -66,6 +66,7 @@ Bookmarklet behavior:
 4) Add coverage
 - Add or update test cases that exercise each directive.
 - Ensure test harness uses configFetcher and preprocessing.
+ - Keep directive tests fixture-only in cloud; use `ALLOW_LIVE_FETCH=true` for local live validation.
 
 ## Deliverables
 - Updated parser and bookmarklet support for the listed directives.
