@@ -12,6 +12,7 @@
     "test:pdf": "node test/validate-extraction.js test-cases/pdf-references",
     "sync:goldens": "node scripts/sync-goldens.js",
     "preview:kindle": "node scripts/preview-kindle-archive.js",
+    "capture:bookmarklet": "node scripts/capture-bookmarklet.js",
     "lint": "npx eslint src/**/*.js public/**/*.js --ignore-pattern node_modules/",
     "lint:fix": "npx eslint src/**/*.js public/**/*.js --fix --ignore-pattern node_modules/",
     "update:site-configs": "git subtree pull --prefix=site-configs https://github.com/fivefilters/ftr-site-config master --squash"

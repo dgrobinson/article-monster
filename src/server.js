@@ -17,9 +17,14 @@ console.log('Environment variables loaded:', {
 });
 const express = require('express');
 const { extractArticle } = require('./articleExtractor');
-const { sendToKindle } = require('./kindleSender');
+const { sendToKindle, createKindleHTML } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
-const { listKindlePayloads, getKindlePayload } = require('./kindleArchive');
+const {
+  listKindlePayloads,
+  getKindlePayload,
+  storeKindlePayload,
+  getPayloadMetrics
+} = require('./kindleArchive');
 const ConfigFetcher = require('./configFetcher');
 const DebugLogger = require('./debugLogger');
 const GitHubIssues = require('./githubIssues');
@@ -490,6 +495,64 @@ app.get('/debug/kindle-payloads/:id', async (req, res) => {
     }
     return res.status(500).json({
       error: 'Failed to fetch Kindle payload',
+      message: error.message
+    });
+  }
+});
+
+app.post('/debug/capture-article', async (req, res) => {
+  if (!authorizeKindleArchive(req, res)) return;
+
+  try {
+    const { url, article } = req.body || {};
+
+    if (!article) {
+      return res.status(400).json({ error: 'Article content is required' });
+    }
+
+    const processedArticle = { ...article };
+    if (url && !processedArticle.url) {
+      processedArticle.url = url;
+    }
+
+    if (article.content_b64) {
+      try {
+        const decoded = Buffer.from(article.content_b64, 'base64').toString('utf8');
+        const rawContent = article.content || '';
+        processedArticle.content = decoded.length > rawContent.length ? decoded : rawContent;
+      } catch (error) {
+        processedArticle.content = article.content || '';
+      }
+    }
+
+    const htmlContent = createKindleHTML(processedArticle);
+    const metrics = getPayloadMetrics(htmlContent);
+
+    let hostname = null;
+    if (processedArticle.url) {
+      try {
+        hostname = new URL(processedArticle.url).hostname;
+      } catch {
+        hostname = null;
+      }
+    }
+
+    const archiveMetadata = await storeKindlePayload({
+      html: htmlContent,
+      title: processedArticle.title,
+      url: processedArticle.url,
+      hostname: hostname || undefined,
+      metrics
+    });
+
+    res.json({
+      success: true,
+      archive: archiveMetadata,
+      metrics
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: 'Failed to capture article payload',
       message: error.message
     });
   }
