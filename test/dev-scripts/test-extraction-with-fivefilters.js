@@ -115,8 +115,17 @@ function extractPlainTextFromEpub(epubPath) {
       xhtml += zip.readAsText(entry);
     }
   });
+  const withoutMeta = xhtml
+    .replace(/<div class="meta">[\s\S]*?<\/div>/gi, ' ')
+    .replace(/<div class="source">[\s\S]*?<\/div>/gi, ' ');
+  const contentMarker = /<div class="content">/i;
+  const markerIndex = withoutMeta.search(contentMarker);
+  const withoutHeader = markerIndex === -1
+    ? withoutMeta.replace(/<h1[\s\S]*?<\/h1>/i, ' ')
+    : withoutMeta.slice(0, markerIndex).replace(/<h1[\s\S]*?<\/h1>/i, ' ') +
+        withoutMeta.slice(markerIndex);
   return stripHtml(
-    xhtml
+    withoutHeader
       .replace(/<script[\s\S]*?<\/script>/gi, ' ')
       .replace(/<style[\s\S]*?<\/style>/gi, ' ')
   );
