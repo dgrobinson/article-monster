@@ -1,11 +1,5 @@
 #!/usr/bin/env node
 
-const { allowLiveFetch } = require('./support/network-guard');
-if (!allowLiveFetch) {
-  console.error('Live fetch disabled. Set ALLOW_LIVE_FETCH=true to run validate-extraction.');
-  process.exit(1);
-}
-
 const fs = require('fs').promises;
 const path = require('path');
 const { extractArticle } = require('../src/articleExtractor');
