@@ -19,4 +19,4 @@ This directory contains historical documentation that was relevant during the de
 
 All major issues documented in these files have been resolved as of commit 4119be9. The system now works reliably for complex sites including The New Yorker Baldwin article.
 
-For current documentation, see the repository root and active files referenced in `CLAUDE.md`.
+For current documentation, see `README.md`, `AGENTS.md`/`CLAUDE.md`, and the active files under `docs/`.

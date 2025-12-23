@@ -114,11 +114,13 @@ The bookmarklet runs Mozilla Readability.js in your browser to extract clean art
 
 ## Development & Future Plans
 
-- **Future Enhancements**: See [METADATA_ROADMAP.md](./METADATA_ROADMAP.md) for planned metadata improvements
-- **Contributing**: See [CONTRIBUTING_TO_FIVEFILTERS.md](./CONTRIBUTING_TO_FIVEFILTERS.md) for site extraction rules
-- **Debug System**: See [DEBUG_SYSTEM.md](./DEBUG_SYSTEM.md) for comprehensive debugging capabilities
+- **Implementation Plan**: See [FIVEFILTERS_IMPLEMENTATION_PLAN.md](./FIVEFILTERS_IMPLEMENTATION_PLAN.md) for directive inventory and status
+- **Test Harness Rebuild**: See [docs/test-harness-rebuild.md](./docs/test-harness-rebuild.md) for the current harness plan
+- **EPUB Image Fix**: See [docs/EPUB_IMAGE_FIX.md](./docs/EPUB_IMAGE_FIX.md) for the image handling roadmap
 - **Kindle Payload Loop**: See [docs/kindle-loop.md](./docs/kindle-loop.md) for archived payloads and preview workflow
 - **Parser Bug Intake**: See [docs/parser-bug-intake.md](./docs/parser-bug-intake.md) for reproducible parser bug reports
+- **Architecture Decisions**: See [docs/adr/](./docs/adr/)
+- **Archived References**: See [docs/archive/README.md](./docs/archive/README.md) (historical: [docs/archive/METADATA_ROADMAP.md](./docs/archive/METADATA_ROADMAP.md), [docs/archive/CONTRIBUTING_TO_FIVEFILTERS.md](./docs/archive/CONTRIBUTING_TO_FIVEFILTERS.md), [docs/archive/DEBUG_SYSTEM.md](./docs/archive/DEBUG_SYSTEM.md))
 
 ## Troubleshooting
 

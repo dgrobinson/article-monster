@@ -1,5 +1,7 @@
 # Claude Code Context for Article Monster
 
+Sync note: AGENTS.md and CLAUDE.md are kept identical. Update both together to avoid drift.
+
 ## Project Overview
 
 Article Monster is a bookmarklet service that extracts articles from web pages and sends them to Kindle/Zotero. It implements a subset of FiveFilters Full-Text RSS functionality for client-side article extraction.
@@ -117,6 +119,8 @@ This infrastructure was crucial for identifying the root causes above.
 - ❌ Server-side preprocessing pipeline
 
 ## Architecture Decisions
+
+Before performing any nontrivial change, agents must read all ADRs in `docs/adr/` on first inference per session, and re-check ADRs when encountering conflicts or uncertainty. Adhere to accepted decisions unless an ADR update is explicitly proposed and accepted.
 
 **Why Client-Side Extraction:**
 - Avoids CORS issues with direct page scraping

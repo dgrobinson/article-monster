@@ -1,6 +1,12 @@
 {
-  "name": "Sapienism — Burning Bridges, Skipping Stones",
+  "name": "Sapienism - Burning Bridges, Skipping Stones",
   "url": "https://www.sapienism.com/post/burning-bridges-skipping-stones",
-  "notes": "Issue #36 - Zotero attachment upload issue, extraction works correctly (full content refresh)",
-  "htmlFile": "sapienism-burning-bridges.html"
+  "htmlFile": "sapienism-burning-bridges.html",
+  "expectedPhrases": [
+    "there are people with a heart of stone, there are stones with a heart of man.",
+    "Life is skipping stones, and we should hope to hop as many times as possible",
+    "the record is 88"
+  ],
+  "minLength": 5000,
+  "notes": "Issue #36 - Zotero attachment upload issue; raw HTML snapshot captured from sapienism.com (curl)."
 }

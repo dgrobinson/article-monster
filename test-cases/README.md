@@ -8,6 +8,7 @@ HTML preprocessing -> XPath extraction -> Readability fallback.
 - `solved/`: Regression tests. JSON metadata plus `.expected.epub` goldens when available.
 - `schemas/`: JSON schemas for unsolved and solved cases.
 - `examples/`: Legacy HTML snapshots (not wired into the harness).
+- `pdf-references/`: PDF-based reference cases; see `test-cases/pdf-references/README.md`.
 
 ## Schemas
 - `schemas/unsolved.schema.json`:
@@ -38,5 +39,7 @@ Goldens are generated from production debug outputs:
 ## Running tests
 - `npm test` (runs both harness modes)
 - `npm run test:pdf` (manual PDF reference validation)
+
+See `docs/test-harness-rebuild.md` for planned schema and golden updates.
 
 Note: failed unsolved cases are reported but do not fail `npm test` unless you run only unsolved cases.
