@@ -129,6 +129,9 @@ jobs:
   build:
     needs: [test, lint]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     outputs:
       image-tag: ${{ steps.meta.outputs.tags }}
       image-digest: ${{ steps.build.outputs.digest }}
@@ -164,7 +167,7 @@ jobs:
       with:
         context: .
         file: ./Dockerfile.prod
-        push: true
+        push: ${{ github.event_name != 'pull_request' }}
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
@@ -174,6 +177,7 @@ jobs:
   security-scan:
     needs: build
     runs-on: ubuntu-latest
+    if: github.event_name != 'pull_request'
     steps:
     - name: Run Trivy vulnerability scanner
       uses: aquasecurity/trivy-action@master
