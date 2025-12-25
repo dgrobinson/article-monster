@@ -2,6 +2,13 @@ const Epub = require('epub-gen');
 const path = require('path');
 const fs = require('fs').promises;
 
+function extractTextTail(html, tailLength) {
+  const safeHtml = typeof html === 'string' ? html : '';
+  const text = safeHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const limit = Number.isFinite(tailLength) ? tailLength : 200;
+  return text.slice(Math.max(0, text.length - limit));
+}
+
 async function generateEpub(article) {
   try {
     console.log(`Generating EPUB for: "${article.title}"`);
@@ -17,7 +24,8 @@ async function generateEpub(article) {
         paragraphCount: (article.content?.match(/<p>/gi) || []).length,
         lineBreakCount: (article.content?.match(/<br>/gi) || []).length,
         newlineCount: (article.content?.match(/\n/g) || []).length,
-        imageCount: (article.content?.match(/<img/gi) || []).length
+        imageCount: (article.content?.match(/<img/gi) || []).length,
+        tailPreview: extractTextTail(article.content, 200)
       },
       debugInfo: article.debugInfo || null
     };

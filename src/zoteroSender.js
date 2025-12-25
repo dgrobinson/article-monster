@@ -1,6 +1,21 @@
 const axios = require('axios');
 const { generateEpub } = require('./epubGenerator');
 
+function summarizeHtmlContent(html, tailLength) {
+  const safeHtml = typeof html === 'string' ? html : '';
+  const text = safeHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const limit = Number.isFinite(tailLength) ? tailLength : 200;
+  const tailPreview = text.slice(Math.max(0, text.length - limit));
+  return {
+    htmlLength: safeHtml.length,
+    textLength: text.length,
+    paragraphCount: (safeHtml.match(/<p[^>]*>/gi) || []).length,
+    lineBreakCount: (safeHtml.match(/<br[^>]*>/gi) || []).length,
+    newlineCount: (safeHtml.match(/\n/g) || []).length,
+    tailPreview
+  };
+}
+
 async function sendToZotero(article, debugLogger = null) {
   try {
     const log = (category, message, data) => {
@@ -45,8 +60,14 @@ async function sendToZotero(article, debugLogger = null) {
     let attachmentKey = null;
     let epubBase64 = null;
     try {
+      log('zotero', 'EPUB input stats', summarizeHtmlContent(article.content));
       log('zotero', 'Generating EPUB for Zotero attachment');
       const epub = await generateEpub(article);
+      log('zotero', 'EPUB generated', {
+        filename: epub.filename,
+        sizeBytes: epub.size,
+        sizeKB: (epub.size / 1024).toFixed(2)
+      });
       epubBase64 = epub.toString('base64');
 
       // Step 3: Upload EPUB as attachment
