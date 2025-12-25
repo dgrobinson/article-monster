@@ -100,6 +100,31 @@
   function Readability(doc, options) {
     this._doc = doc;
     this._options = options || {};
+    this._lightClean = this._options.lightClean !== false;
+    this._revertForcedParagraphElements = this._options.revertForcedParagraphElements !== false;
+    this._weightAttributes = this._options.weightAttributes !== false;
+    this._cleanConditionallyEnabled = this._options.cleanConditionally !== false;
+    this._disablePostFilter = this._options.disablePostFilter === true;
+    this._regexps = {
+      unlikelyCandidates: /display\s*:\s*none|ignore|\binfo|annoy|clock|date|time|author|intro|links|hidd?e|about|archive|\bprint|bookmark|tags|share|search|social|robot|published|combx|comment|mast(?:head)|subscri|community|category|disqus|extra|head(?:er|note)|floor|foot(?:er|note)|menu|tool|function|nav|remark|rss|shoutbox|tool|widget|meta|banner|sponsor|adsense|inner-?ad|ad-|sponsor|\badv\b|\bads\b|agr?egate?|pager|sidebar|popup|tweet|twitter/i,
+      okMaybeItsACandidate: /article\b|contain|\bcontent|column|general|detail|shadow|lightbox|blog|body|entry|main|page/i,
+      positive: /read|full|article|body|\bcontent|contain|entry|main|markdown|page|attach|pagination|post|text|blog|story/i,
+      negative: /bottom|stat|info|discuss|e[\-]?mail|comment|reply|log.{2}(n|ed)|sign|single|combx|com-|contact|_nav|link|media|\bout|promo|\bad-|related|scroll|shoutbox|sidebar|sponsor|shopping|teaser/i,
+      killBreaks: /(<br\s*\/?>([ \r\n\s]|&nbsp;?)*)+/gi,
+      media: /\/\/(?:[^\.\?/]+\.)?(?:youtu(?:be)?|soundcloud|vimeo|pornhub|xvideos|twitvid|rutube|viddler)\.(?:com|be|org|net)/i
+    };
+    this._domainRegExp = null;
+    try {
+      var host = (doc && doc.location && doc.location.hostname)
+        ? doc.location.hostname
+        : (window.location && window.location.hostname);
+      if (host) {
+        host = host.replace(/www\d*\./i, '');
+        if (host) {
+          this._domainRegExp = new RegExp(host.replace(/\./g, '\\.'));
+        }
+      }
+    } catch {}
   }
 
   Readability.prototype = {
@@ -1103,75 +1128,295 @@
       return null;
     },
 
-    // Content pruning (matches PHP Readability::prepArticle)
-    _pruneContent: function(element) {
-      // Remove service data attributes
-      var serviceData = element.querySelectorAll('[data-candidate]');
-      for (var i = 0; i < serviceData.length; i++) {
-        serviceData[i].removeAttribute('data-candidate');
+    _getInnerText: function(element, normalizeSpaces, flattenLines) {
+      if (!element || !element.textContent) return '';
+      var text = String(element.textContent).trim();
+      if (flattenLines) {
+        text = text.replace(/(?:[\r\n](?:\s|&nbsp;)*)+/g, '');
+      } else if (normalizeSpaces) {
+        text = text.replace(/\s\s+/g, ' ');
+      }
+      return text;
+    },
+
+    _cleanStyles: function(element) {
+      if (!element || !element.querySelectorAll) return;
+      var elems = element.querySelectorAll('*');
+      for (var i = 0; i < elems.length; i++) {
+        elems[i].removeAttribute('style');
+      }
+    },
+
+    _killBreaks: function(element) {
+      if (!element || !element.innerHTML) return;
+      element.innerHTML = element.innerHTML.replace(this._regexps.killBreaks, '<br />');
+    },
+
+    _getCommaCount: function(text) {
+      if (!text) return 0;
+      return (text.match(/,/g) || []).length;
+    },
+
+    _getLinkDensity: function(element, excludeExternal) {
+      if (!element) return 0;
+      var links = element.getElementsByTagName('a');
+      var textLength = this._getInnerText(element, true, true).length;
+      var linkLength = 0;
+
+      for (var i = 0; i < links.length; i++) {
+        var href = links[i].getAttribute('href') || '';
+        if (excludeExternal && this._domainRegExp && !this._domainRegExp.test(href)) {
+          continue;
+        }
+        linkLength += this._getInnerText(links[i], true, false).length;
       }
 
-      // Remove unrelated links and other elements
-      var nofollowLinks = element.querySelectorAll('a[rel="nofollow"]');
-      for (var i = nofollowLinks.length - 1; i >= 0; i--) {
-        if (nofollowLinks[i] && nofollowLinks[i].remove) {
-          nofollowLinks[i].remove();
+      if (textLength > 0 && linkLength > 0) {
+        return linkLength / textLength;
+      }
+      return 0;
+    },
+
+    _weightAttribute: function(element, attribute) {
+      if (!element || !element.hasAttribute || !element.hasAttribute(attribute)) {
+        return 0;
+      }
+
+      var weight = 0;
+      var value = element.getAttribute(attribute) || '';
+      value = value.trim();
+
+      if (value) {
+        if (this._regexps.negative.test(value)) {
+          weight -= 25;
+        }
+        if (this._regexps.positive.test(value)) {
+          weight += 25;
+        }
+        if (this._regexps.unlikelyCandidates.test(value)) {
+          weight -= 5;
+        }
+        if (this._regexps.okMaybeItsACandidate.test(value)) {
+          weight += 5;
         }
       }
 
-      // Clean out junk from the article content (matches PHP clean() calls)
-      var junkSelectors = ['input', 'button', 'nav', 'object', 'iframe', 'canvas'];
-      for (var i = 0; i < junkSelectors.length; i++) {
-        var elements = element.querySelectorAll(junkSelectors[i]);
-        for (var j = elements.length - 1; j >= 0; j--) {
-          if (elements[j] && elements[j].remove) {
-            elements[j].remove();
+      return weight;
+    },
+
+    _getWeight: function(element) {
+      if (!this._weightAttributes) return 0;
+      var weight = 0;
+      weight += this._weightAttribute(element, 'class');
+      weight += this._weightAttribute(element, 'id');
+      return weight;
+    },
+
+    _clean: function(element, tag) {
+      if (!element) return;
+      var targetList = element.getElementsByTagName(tag);
+      var isEmbed = (tag === 'audio' || tag === 'video' || tag === 'iframe' || tag === 'object' || tag === 'embed');
+
+      for (var i = targetList.length - 1; i >= 0; i--) {
+        var node = targetList[i];
+        if (isEmbed) {
+          var attrValues = (node.getAttribute('src') || '') + ' ' + (node.getAttribute('href') || '');
+          if (this._regexps.media.test(attrValues) || this._regexps.media.test(node.innerHTML || '')) {
+            continue;
+          }
+        }
+        if (node.parentNode) {
+          node.parentNode.removeChild(node);
+        }
+      }
+    },
+
+    _cleanConditionally: function(element, tag) {
+      if (!this._cleanConditionallyEnabled || !element) {
+        return;
+      }
+
+      var tagsList = element.getElementsByTagName(tag);
+      var MIN_COMMAS_IN_PARAGRAPH = 6;
+
+      for (var i = tagsList.length - 1; i >= 0; i--) {
+        var node = tagsList[i];
+        var weight = this._getWeight(node);
+        var contentScore = 0;
+        if (node.hasAttribute && node.hasAttribute('readability')) {
+          contentScore = parseInt(node.getAttribute('readability'), 10) || 0;
+        }
+
+        if (weight + contentScore < 0) {
+          if (node.parentNode) {
+            node.parentNode.removeChild(node);
+          }
+          continue;
+        }
+
+        if (this._getCommaCount(this._getInnerText(node, true, false)) < MIN_COMMAS_IN_PARAGRAPH) {
+          var p = node.getElementsByTagName('p').length;
+          var img = node.getElementsByTagName('img').length;
+          var li = node.getElementsByTagName('li').length - 100;
+          var input = node.getElementsByTagName('input').length;
+          var a = node.getElementsByTagName('a').length;
+
+          var embedCount = 0;
+          var embeds = node.getElementsByTagName('embed');
+          for (var e1 = 0; e1 < embeds.length; e1++) {
+            if (this._regexps.media.test(embeds[e1].getAttribute('src') || '')) {
+              embedCount += 1;
+            }
+          }
+          var iframes = node.getElementsByTagName('iframe');
+          for (var e2 = 0; e2 < iframes.length; e2++) {
+            if (this._regexps.media.test(iframes[e2].getAttribute('src') || '')) {
+              embedCount += 1;
+            }
+          }
+
+          var linkDensity = this._getLinkDensity(node, true);
+          var contentLength = this._getInnerText(node, true, false).length;
+          var toRemove = false;
+
+          if (this._lightClean) {
+            if (li > p && tag !== 'ul' && tag !== 'ol') {
+              toRemove = true;
+            } else if (input > Math.floor(p / 3)) {
+              toRemove = true;
+            } else if (contentLength < 6 && (embedCount === 0 && (img === 0 || img > 2))) {
+              toRemove = true;
+            } else if (weight < 25 && linkDensity > 0.25) {
+              toRemove = true;
+            } else if (a > 2 && weight >= 25 && linkDensity > 0.5) {
+              toRemove = true;
+            } else if (embedCount > 3) {
+              toRemove = true;
+            }
+          } else {
+            if (img > p) {
+              toRemove = true;
+            } else if (li > p && tag !== 'ul' && tag !== 'ol') {
+              toRemove = true;
+            } else if (input > Math.floor(p / 3)) {
+              toRemove = true;
+            } else if (contentLength < 25 && (img === 0 || img > 2)) {
+              toRemove = true;
+            } else if (weight < 25 && linkDensity > 0.2) {
+              toRemove = true;
+            } else if (weight >= 25 && linkDensity > 0.5) {
+              toRemove = true;
+            } else if ((embedCount === 1 && contentLength < 75) || embedCount > 1) {
+              toRemove = true;
+            }
+          }
+
+          if (toRemove && node.parentNode) {
+            node.parentNode.removeChild(node);
           }
         }
       }
-
-      // Remove h1 elements (already have title)
-      var h1Elements = element.querySelectorAll('h1');
-      for (var i = h1Elements.length - 1; i >= 0; i--) {
-        if (h1Elements[i] && h1Elements[i].remove) {
-          h1Elements[i].remove();
-        }
-      }
-
-      // Clean up empty elements and normalize whitespace
-      this._cleanEmptyElements(element);
     },
 
-    _cleanEmptyElements: function(element) {
-      // Remove elements that are empty or contain only whitespace
-      var emptyElements = element.querySelectorAll('p:empty, div:empty, span:empty');
-      for (var i = 0; i < emptyElements.length; i++) {
-        if (emptyElements[i] && emptyElements[i].remove) {
-          emptyElements[i].remove();
-        }
-      }
-
-      // Clean up elements that only contain whitespace
-      var textNodes = document.createTreeWalker(
-        element,
-        NodeFilter.SHOW_TEXT,
-        null,
-        false
-      );
-
-      var node;
-      while (node = textNodes.nextNode()) {
-        if (node.nodeValue && /^\s*$/.test(node.nodeValue)) {
-          // Node contains only whitespace
-          var parent = node.parentNode;
-          if (parent && parent.childNodes.length === 1) {
-            // Parent only contains this whitespace node, remove parent
-            if (parent.remove) {
-              parent.remove();
+    _cleanHeaders: function(element) {
+      if (!element) return;
+      for (var headerIndex = 1; headerIndex < 3; headerIndex++) {
+        var headers = element.getElementsByTagName('h' + headerIndex);
+        for (var i = headers.length - 1; i >= 0; i--) {
+          if (this._getWeight(headers[i]) < 0 || this._getLinkDensity(headers[i], false) > 0.33) {
+            if (headers[i].parentNode) {
+              headers[i].parentNode.removeChild(headers[i]);
             }
           }
         }
       }
+    },
+
+    _applyPostFilters: function(element) {
+      if (this._disablePostFilter || !element || !element.innerHTML) return;
+      try {
+        var html = element.innerHTML;
+        html = html.replace(/<br\s*\/?>\s*<p/gi, '<p');
+        html = html.replace(/<(?:a|div|p)[^>]+\/>/gi, '');
+        html = html.replace(/\n+/g, '\n');
+        html = html.replace(/<pre[^>]*>\s*<code/gi, '<pre');
+        html = html.replace(/<\/code>\s*<\/pre>/gi, '</pre>');
+        html = html.replace(/<([hb]r)>/gi, '<$1 />');
+        element.innerHTML = html;
+      } catch {}
+    },
+
+    // Content pruning (mirrors PHP Readability::prepArticle)
+    _pruneContent: function(element) {
+      if (!element) return;
+
+      this._cleanStyles(element);
+      this._killBreaks(element);
+
+      if (this._revertForcedParagraphElements) {
+        var styled = element.querySelectorAll('p[data-readability-styled]');
+        for (var s = styled.length - 1; s >= 0; s--) {
+          var styledNode = styled[s];
+          var textNode = (element.ownerDocument || this._doc).createTextNode(styledNode.textContent || '');
+          if (styledNode.parentNode) {
+            styledNode.parentNode.replaceChild(textNode, styledNode);
+          }
+        }
+      }
+
+      var serviceData = element.querySelectorAll('[data-candidate]');
+      for (var i = serviceData.length - 1; i >= 0; i--) {
+        serviceData[i].removeAttribute('data-candidate');
+      }
+
+      var nofollowLinks = element.querySelectorAll('a[rel="nofollow"]');
+      for (var j = nofollowLinks.length - 1; j >= 0; j--) {
+        if (nofollowLinks[j] && nofollowLinks[j].remove) {
+          nofollowLinks[j].remove();
+        }
+      }
+
+      this._clean(element, 'input');
+      this._clean(element, 'button');
+      this._clean(element, 'nav');
+      this._clean(element, 'object');
+      this._clean(element, 'iframe');
+      this._clean(element, 'canvas');
+      this._clean(element, 'h1');
+
+      var h2s = element.getElementsByTagName('h2');
+      if (h2s.length === 1) {
+        var h2Text = this._getInnerText(h2s[0], true, true);
+        if (h2Text.length < 100) {
+          this._clean(element, 'h2');
+        }
+      }
+
+      this._cleanHeaders(element);
+
+      this._cleanConditionally(element, 'form');
+      this._cleanConditionally(element, 'table');
+      this._cleanConditionally(element, 'ul');
+      this._cleanConditionally(element, 'div');
+
+      var paragraphs = element.getElementsByTagName('p');
+      for (var p = paragraphs.length - 1; p >= 0; p--) {
+        var paragraph = paragraphs[p];
+        var imgCount = paragraph.getElementsByTagName('img').length;
+        var embedCount = paragraph.getElementsByTagName('embed').length;
+        var objectCount = paragraph.getElementsByTagName('object').length;
+        var videoCount = paragraph.getElementsByTagName('video').length;
+        var audioCount = paragraph.getElementsByTagName('audio').length;
+        var text = this._getInnerText(paragraph, false, false).replace(/\s+/g, '');
+
+        if (imgCount === 0 && embedCount === 0 && objectCount === 0 && videoCount === 0 && audioCount === 0 && text.length === 0) {
+          if (paragraph.parentNode) {
+            paragraph.parentNode.removeChild(paragraph);
+          }
+        }
+      }
+
+      this._applyPostFilters(element);
     },
 
     // HTML tidy functionality (basic cleanup)
