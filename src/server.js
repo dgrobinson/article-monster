@@ -16,6 +16,8 @@ console.log('Environment variables loaded:', {
   ENABLE_KINDLE_ARCHIVE_DEBUG: process.env.ENABLE_KINDLE_ARCHIVE_DEBUG || 'NOT SET'
 });
 const express = require('express');
+const fs = require('fs');
+const path = require('path');
 const { extractArticle } = require('./articleExtractor');
 const { sendToKindle, createKindleHTML } = require('./kindleSender');
 const { sendToZotero } = require('./zoteroSender');
@@ -103,22 +105,97 @@ function isRateLimited(ip) {
   return false;
 }
 
-function getBlockedWebApp(hostname) {
-  const normalized = (hostname || '').toLowerCase();
-  if (!normalized) return null;
-  if (normalized === 'docs.google.com' || normalized === 'drive.google.com') {
-    return 'Google Docs or Drive';
+const BLOCKED_WEBAPPS_PATH = path.join(__dirname, '..', 'public', 'blocked-webapps.json');
+const FALLBACK_BLOCKED_WEBAPPS = [
+  {
+    name: 'Google Docs or Drive',
+    hosts: ['docs.google.com', 'drive.google.com']
+  },
+  {
+    name: 'Notion',
+    hosts: ['notion.so', '*.notion.so']
+  },
+  {
+    name: 'Slack',
+    hosts: ['slack.com', '*.slack.com']
+  },
+  {
+    name: 'Workday',
+    hosts: ['workday.com', '*.workday.com', 'myworkday.com', '*.myworkday.com']
   }
-  if (normalized === 'notion.so' || normalized.endsWith('.notion.so')) {
-    return 'Notion';
+];
+let blockedWebAppsCache = null;
+
+function normalizeBlockedWebApps(payload) {
+  if (!payload || typeof payload !== 'object') return null;
+  const apps = payload.apps || payload.blocked_apps || payload.blockedWebApps;
+  if (!Array.isArray(apps)) return null;
+  const parsed = [];
+  for (const app of apps) {
+    const entry = app || {};
+    const name = entry.name || entry.label || entry.app || entry.title || 'Blocked app';
+    const hosts = entry.hosts || entry.domains || entry.hostnames;
+    if (!Array.isArray(hosts)) continue;
+    const cleanHosts = hosts
+      .filter(host => typeof host === 'string' && host.trim().length > 0)
+      .map(host => host.trim());
+    if (cleanHosts.length === 0) continue;
+    parsed.push({ name: String(name), hosts: cleanHosts });
   }
-  if (normalized === 'slack.com' || normalized === 'app.slack.com' || normalized.endsWith('.slack.com')) {
-    return 'Slack';
+  return parsed.length > 0 ? parsed : null;
+}
+
+function loadBlockedWebApps() {
+  if (blockedWebAppsCache) return blockedWebAppsCache;
+  try {
+    const raw = fs.readFileSync(BLOCKED_WEBAPPS_PATH, 'utf8');
+    const parsed = normalizeBlockedWebApps(JSON.parse(raw));
+    if (parsed) {
+      blockedWebAppsCache = parsed;
+      return blockedWebAppsCache;
+    }
+  } catch (error) {
+    console.warn('Blocked web apps config load failed:', error.message);
   }
-  if (normalized === 'workday.com' || normalized.endsWith('.workday.com') || normalized === 'myworkday.com' || normalized.endsWith('.myworkday.com')) {
-    return 'Workday';
+  blockedWebAppsCache = FALLBACK_BLOCKED_WEBAPPS;
+  return blockedWebAppsCache;
+}
+
+function normalizeHostname(hostname) {
+  return (hostname || '').toLowerCase();
+}
+
+function hostMatchesPattern(hostname, pattern) {
+  const normalizedHost = normalizeHostname(hostname);
+  const normalizedPattern = normalizeHostname(pattern);
+  if (!normalizedHost || !normalizedPattern) return false;
+  if (normalizedHost === normalizedPattern) return true;
+  if (normalizedPattern.startsWith('*.') || normalizedPattern.startsWith('.')) {
+    const suffix = normalizedPattern.startsWith('*.') ? normalizedPattern.slice(1) : normalizedPattern;
+    const root = suffix.slice(1);
+    return normalizedHost.endsWith(suffix) && normalizedHost !== root;
+  }
+  return false;
+}
+
+function matchBlockedWebApps(hostname, apps) {
+  if (!hostname || !apps || apps.length === 0) return null;
+  for (const app of apps) {
+    const hosts = app && app.hosts ? app.hosts : [];
+    for (const host of hosts) {
+      if (hostMatchesPattern(hostname, host)) {
+        return app.name || 'Blocked app';
+      }
+    }
   }
   return null;
+}
+
+function getBlockedWebApp(hostname) {
+  const normalized = normalizeHostname(hostname);
+  if (!normalized) return null;
+  const apps = loadBlockedWebApps();
+  return matchBlockedWebApps(normalized, apps);
 }
 
 function validateReportUrl(url) {
