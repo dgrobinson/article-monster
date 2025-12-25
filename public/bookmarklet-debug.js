@@ -111,6 +111,12 @@
     if (normalized === 'notion.so' || normalized.endsWith('.notion.so')) {
       return 'Notion';
     }
+    if (normalized === 'app.slack.com' || normalized.endsWith('.slack.com')) {
+      return 'Slack';
+    }
+    if (normalized === 'myworkday.com' || normalized.endsWith('.myworkday.com')) {
+      return 'Workday';
+    }
     return null;
   }
 

@@ -5,7 +5,7 @@ A cloud service that sends web articles to both Kindle and Zotero with a single 
 ## Features
 
 ### Bookmarklet Service
-- 🔐 **Logged-in article support** - works on paywalled sites you're logged into, but blocks private web apps (Google Docs, Notion)
+- 🔐 **Logged-in article support** - works on paywalled sites you're logged into, but blocks private web apps (Google Docs, Notion, Slack, Workday)
 - 📧 **Kindle integration** - sends clean HTML that Kindle converts automatically
 - 📚 **Zotero integration** - creates proper citations with EPUB attachments for highlighting
 - 🎯 **Browser-side extraction** - uses Mozilla Readability.js in your browser
