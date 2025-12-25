@@ -167,6 +167,22 @@ function sanitizeHtmlForDelivery(html) {
     };
   }
 
+  function stripInvalidImageTags(input) {
+    let removedCount = 0;
+    const cleaned = input.replace(/<img\b[^>]*>/gi, (tag) => {
+      const quotedMatch = tag.match(/\bsrc\s*=\s*(['"])(.*?)\1/i);
+      const unquotedMatch = tag.match(/\bsrc\s*=\s*([^\s>]+)/i);
+      const src = quotedMatch ? quotedMatch[2] : (unquotedMatch ? unquotedMatch[1] : '');
+      if (!src || src.trim() === '' || src.toLowerCase() === 'undefined' || src.toLowerCase() === 'null') {
+        removedCount += 1;
+        return '';
+      }
+      return tag;
+    });
+
+    return { content: cleaned, removedCount };
+  }
+
   const patterns = [
     { key: 'script', regex: /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi },
     { key: 'style', regex: /<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi },
@@ -183,6 +199,10 @@ function sanitizeHtmlForDelivery(html) {
     removed[key] = matches ? matches.length : 0;
     sanitized = sanitized.replace(regex, '');
   });
+
+  const imageResult = stripInvalidImageTags(sanitized);
+  sanitized = imageResult.content;
+  removed.invalid_images = imageResult.removedCount;
 
   return {
     content: sanitized,
