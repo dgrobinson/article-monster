@@ -1,0 +1,802 @@
+[
+  {
+    "timestamp": 1,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1766687561081,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-12-25T18:32:42.117Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1766687561081,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-12-25T18:32:42.117Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for sapienism.com",
+    "data": {
+      "t": 1766687561318,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "sapienism.com"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.118Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.sapienism.com",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.sapienism.com"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.118Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1766687561338,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "sapienism.com"
+      }
+    },
+    "time": "2025-12-25T18:32:42.119Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"sapienism.com\"}",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"sapienism.com\"}"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.119Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Using cached FiveFilters config for sapienism.com",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "Using cached FiveFilters config for",
+        "sapienism.com"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.119Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Auto-detecting title: no title rules or extraction failed",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "Auto-detecting title: no title rules or extraction failed"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.120Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "config.title: [] length: 0",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "config.title:",
+        "[]",
+        "length:",
+        "0"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.120Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "titleExtracted: false",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "titleExtracted:",
+        "false"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.120Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "autodetect_on_failure: null",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "autodetect_on_failure:",
+        "null"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.120Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.120Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: SapienisM",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "SapienisM"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.121Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle - using document title: Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using document title:",
+        "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.121Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher",
+    "data": {
+      "t": 1766687561338,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.121Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Auto-detected title result: Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+    "data": {
+      "t": 1766687561339,
+      "level": "log",
+      "args": [
+        "Auto-detected title result:",
+        "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.121Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Trying body XPath: //body",
+    "data": {
+      "t": 1766687561339,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//body"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.121Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Body matched: 1 element(s) for XPath: //body",
+    "data": {
+      "t": 1766687561339,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "1",
+        "element(s) for XPath:",
+        "//body"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.121Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1766687561343,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.122Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1766687561343,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+        "contentLength": 530700,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-12-25T18:32:42.122Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\",\"contentLength\":530700,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1766687561343,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\",\"contentLength\":530700,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.122Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 312 newlines",
+    "data": {
+      "t": 1766687561344,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 312 newlines"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.122Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 312 newlines",
+    "data": {
+      "t": 1766687561349,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 312 newlines"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.122Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 312 newlines",
+    "data": {
+      "t": 1766687561349,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 312 newlines"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.122Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Content to encode starts with: var bodyCacheable = true;\n \n var exclusionReason = {\"shouldRender\":true,\"forced\":false};\n var ssrInf",
+    "data": {
+      "t": 1766687561350,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "var bodyCacheable = true;\n \n var exclusionReason = {\"shouldRender\":true,\"forced\":false};\n var ssrInf"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.122Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Successfully encoded 531348 chars to base64",
+    "data": {
+      "t": 1766687561355,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "531348",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.123Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "=== ARTICLE EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1766687561355,
+      "level": "log",
+      "args": [
+        "=== ARTICLE EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-12-25T18:32:42.123Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Title: Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+    "data": {
+      "t": 1766687561355,
+      "level": "log",
+      "args": [
+        "Title:",
+        "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.123Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Content length: 531348",
+    "data": {
+      "t": 1766687561355,
+      "level": "log",
+      "args": [
+        "Content length:",
+        "531348"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.123Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Text content length: 446071",
+    "data": {
+      "t": 1766687561355,
+      "level": "log",
+      "args": [
+        "Text content length:",
+        "446071"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.123Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Extraction method: ",
+    "data": {
+      "t": 1766687561355,
+      "level": "log",
+      "args": [
+        "Extraction method:",
+        null
+      ]
+    },
+    "time": "2025-12-25T18:32:42.123Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Extraction note: ",
+    "data": {
+      "t": 1766687561355,
+      "level": "log",
+      "args": [
+        "Extraction note:",
+        null
+      ]
+    },
+    "time": "2025-12-25T18:32:42.124Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Has images: ",
+    "data": {
+      "t": 1766687561355,
+      "level": "log",
+      "args": [
+        "Has images:",
+        null
+      ]
+    },
+    "time": "2025-12-25T18:32:42.124Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content structure: 44 <p> tags, 37 <br> tags",
+    "data": {
+      "t": 1766687561356,
+      "level": "log",
+      "args": [
+        "Content structure:",
+        "44",
+        "<p> tags,",
+        "37",
+        "<br> tags"
+      ]
+    },
+    "time": "2025-12-25T18:32:42.124Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Content preview: \n<script type=\"text/javascript\">\n var bodyCacheable = true;\n \n var exclusionReason = {\"shouldRender\":true,\"forced\":false};\n var ssrInfo = {\"cacheExclusionReason\":\"\",\"renderBodyTime\":2503,\"renderTimeSt...",
+    "data": {
+      "t": 1766687561356,
+      "level": "log",
+      "args": [
+        "Content preview:",
+        "\n<script type=\"text/javascript\">\n var bodyCacheable = true;\n \n var exclusionReason = {\"shouldRender\":true,\"forced\":false};\n var ssrInfo = {\"cacheExclusionReason\":\"\",\"renderBodyTime\":2503,\"renderTimeSt..."
+      ]
+    },
+    "time": "2025-12-25T18:32:42.124Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "=== END EXTRACTION DEBUG ===",
+    "data": {
+      "t": 1766687561356,
+      "level": "log",
+      "args": [
+        "=== END EXTRACTION DEBUG ==="
+      ]
+    },
+    "time": "2025-12-25T18:32:42.124Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.sapienism.com/post/burning-bridges-skipping-stones",
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "hasContent": true,
+      "hasBase64": true,
+      "debugCaptureOnly": false
+    },
+    "time": "2025-12-25T18:32:42.124Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "content",
+    "message": "raw-content-stats",
+    "data": {
+      "htmlLength": 531348,
+      "textLength": 431289,
+      "paragraphCount": 44,
+      "lineBreakCount": 37,
+      "newlineCount": 312,
+      "tailPreview": "\":{},\"roles\":{}}},\"14bcded7-0066-7c35-14d7-466cb3f09103\":{\"burning-bridges-skipping-stones\":\"b4f2ed8f-c890-4a29-8591-df52f8176818\"}},\"ooi\":{\"failedInSsr\":{}}} 📖 Extracting with site-specific rules..."
+    },
+    "time": "2025-12-25T18:32:42.131Z"
+  },
+  {
+    "timestamp": 25,
+    "category": "content",
+    "message": "decoded-content-stats",
+    "data": {
+      "htmlLength": 531348,
+      "textLength": 431289,
+      "paragraphCount": 44,
+      "lineBreakCount": 37,
+      "newlineCount": 312,
+      "tailPreview": "\":{},\"roles\":{}}},\"14bcded7-0066-7c35-14d7-466cb3f09103\":{\"burning-bridges-skipping-stones\":\"b4f2ed8f-c890-4a29-8591-df52f8176818\"}},\"ooi\":{\"failedInSsr\":{}}} 📖 Extracting with site-specific rules..."
+    },
+    "time": "2025-12-25T18:32:42.141Z"
+  },
+  {
+    "timestamp": 34,
+    "category": "content",
+    "message": "selected-content-stats",
+    "data": {
+      "htmlLength": 531348,
+      "textLength": 431289,
+      "paragraphCount": 44,
+      "lineBreakCount": 37,
+      "newlineCount": 312,
+      "tailPreview": "\":{},\"roles\":{}}},\"14bcded7-0066-7c35-14d7-466cb3f09103\":{\"burning-bridges-skipping-stones\":\"b4f2ed8f-c890-4a29-8591-df52f8176818\"}},\"ooi\":{\"failedInSsr\":{}}} 📖 Extracting with site-specific rules..."
+    },
+    "time": "2025-12-25T18:32:42.150Z"
+  },
+  {
+    "timestamp": 120,
+    "category": "content",
+    "message": "server-sanitized",
+    "data": {
+      "removed": {
+        "script": 45,
+        "style": 1,
+        "noscript": 0,
+        "template": 0,
+        "indicator": 1,
+        "image_src_updated": 11,
+        "image_src_upgraded": 11,
+        "image_srcset_used": 3,
+        "image_data_attr_used": 8,
+        "invalid_images": 2
+      },
+      "before": {
+        "htmlLength": 531348,
+        "textLength": 431289,
+        "paragraphCount": 44,
+        "lineBreakCount": 37,
+        "newlineCount": 312,
+        "tailPreview": "\":{},\"roles\":{}}},\"14bcded7-0066-7c35-14d7-466cb3f09103\":{\"burning-bridges-skipping-stones\":\"b4f2ed8f-c890-4a29-8591-df52f8176818\"}},\"ooi\":{\"failedInSsr\":{}}} 📖 Extracting with site-specific rules..."
+      },
+      "after": {
+        "htmlLength": 96167,
+        "textLength": 15747,
+        "paragraphCount": 43,
+        "lineBreakCount": 37,
+        "newlineCount": 179,
+        "tailPreview": "ly doing this… Israel-Hamas War Art Society 367 367 views 0 0 comments Recent Posts See All Better Dreams 201 1 comment 1 Into the Rain 146 0 comments 0 מפה, מקרא ומצפן 106 0 comments 0 bottom of page"
+      }
+    },
+    "time": "2025-12-25T18:32:42.236Z"
+  },
+  {
+    "timestamp": 121,
+    "category": "processing",
+    "message": "Processing article: Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+    "data": {},
+    "time": "2025-12-25T18:32:42.237Z"
+  },
+  {
+    "timestamp": 121,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "contentLength": 96167,
+      "textContentLength": 15747,
+      "hasContent": true,
+      "paragraphCount": 43,
+      "lineBreakCount": 37,
+      "newlineCount": 179,
+      "tailPreview": "ly doing this… Israel-Hamas War Art Society 367 367 views 0 0 comments Recent Posts See All Better Dreams 201 1 comment 1 Into the Rain 146 0 comments 0 מפה, מקרא ומצפן 106 0 comments 0 bottom of page"
+    },
+    "time": "2025-12-25T18:32:42.237Z"
+  },
+  {
+    "timestamp": 121,
+    "category": "content",
+    "message": "content-tail-preview",
+    "data": {
+      "tailPreview": "ly doing this… Israel-Hamas War Art Society 367 367 views 0 0 comments Recent Posts See All Better Dreams 201 1 comment 1 Into the Rain 146 0 comments 0 מפה, מקרא ומצפן 106 0 comments 0 bottom of page"
+    },
+    "time": "2025-12-25T18:32:42.237Z"
+  },
+  {
+    "timestamp": 122,
+    "category": "sending",
+    "message": "Sending to platforms",
+    "data": {
+      "kindle": true,
+      "zotero": true
+    },
+    "time": "2025-12-25T18:32:42.238Z"
+  },
+  {
+    "timestamp": 123,
+    "category": "kindle",
+    "message": "Sending to Kindle: \"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\"",
+    "data": {},
+    "time": "2025-12-25T18:32:42.239Z"
+  },
+  {
+    "timestamp": 123,
+    "category": "kindle",
+    "message": "Article metadata",
+    "data": {
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "siteName": "sapienism.com",
+      "url": "https://www.sapienism.com/post/burning-bridges-skipping-stones",
+      "publishedTime": "2025-08-02T22:54:40.417Z",
+      "contentLength": 96167,
+      "hasImages": true
+    },
+    "time": "2025-12-25T18:32:42.239Z"
+  },
+  {
+    "timestamp": 150,
+    "category": "kindle",
+    "message": "Kindle HTML stats",
+    "data": {
+      "htmlLength": 98193,
+      "textLength": 16759,
+      "paragraphCount": 45,
+      "lineBreakCount": 40,
+      "newlineCount": 248,
+      "tailPreview": "mment 1 Into the Rain 146 0 comments 0 מפה, מקרא ומצפן 106 0 comments 0 bottom of page Original URL: https://www.sapienism.com/post/burning-bridges-skipping-stones Sent via Article Bookmarklet Service"
+    },
+    "time": "2025-12-25T18:32:42.266Z"
+  },
+  {
+    "timestamp": 150,
+    "category": "kindle",
+    "message": "Kindle payload metrics",
+    "data": {
+      "contentLength": 98193,
+      "imageCount": 12,
+      "hash": "c9f6c7c00996e8806baa28f5bb60e96526cd56ca7903742df1205cc971849bf6"
+    },
+    "time": "2025-12-25T18:32:42.266Z"
+  },
+  {
+    "timestamp": 151,
+    "category": "zotero",
+    "message": "Sending to Zotero: \"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\"",
+    "data": {},
+    "time": "2025-12-25T18:32:42.267Z"
+  },
+  {
+    "timestamp": 152,
+    "category": "zotero",
+    "message": "Creating Zotero item",
+    "data": {},
+    "time": "2025-12-25T18:32:42.268Z"
+  },
+  {
+    "timestamp": 231,
+    "category": "kindle",
+    "message": "Kindle payload archived",
+    "data": {
+      "id": "2025-12-25T18-32-42-267Z_www.sapienism.com_burning-bridges-skipping-stones-suffering-in-the-israel-hamas-war-urges-us-to-find-the-philosopher-s-stone_c9f6c7c00996",
+      "hash": "c9f6c7c00996e8806baa28f5bb60e96526cd56ca7903742df1205cc971849bf6"
+    },
+    "time": "2025-12-25T18:32:42.347Z"
+  },
+  {
+    "timestamp": 232,
+    "category": "kindle",
+    "message": "Email preparation",
+    "data": {
+      "filename": "Burning-Bridges,-Skipping-Stones-Suffering-in-the-Israel-Hamas-War-urges-us-to-f_MJLS5RHO.html",
+      "contentSizeKB": "95.89"
+    },
+    "time": "2025-12-25T18:32:42.348Z"
+  },
+  {
+    "timestamp": 516,
+    "category": "zotero",
+    "message": "Successfully created Zotero item",
+    "data": {
+      "itemKey": "ESMJ2WIH"
+    },
+    "time": "2025-12-25T18:32:42.632Z"
+  },
+  {
+    "timestamp": 517,
+    "category": "zotero",
+    "message": "EPUB input stats",
+    "data": {
+      "htmlLength": 96167,
+      "textLength": 15747,
+      "paragraphCount": 43,
+      "lineBreakCount": 37,
+      "newlineCount": 179,
+      "tailPreview": "ly doing this… Israel-Hamas War Art Society 367 367 views 0 0 comments Recent Posts See All Better Dreams 201 1 comment 1 Into the Rain 146 0 comments 0 מפה, מקרא ומצפן 106 0 comments 0 bottom of page"
+    },
+    "time": "2025-12-25T18:32:42.633Z"
+  },
+  {
+    "timestamp": 518,
+    "category": "zotero",
+    "message": "Generating EPUB for Zotero attachment",
+    "data": {},
+    "time": "2025-12-25T18:32:42.634Z"
+  },
+  {
+    "timestamp": 1114,
+    "category": "zotero",
+    "message": "EPUB generated",
+    "data": {
+      "filename": "Burning-Bridges,-Skipping-Stones-Suffering-in-the-Israel-Hamas-War-urges-us-to-f_MJLS5RPQ.epub",
+      "sizeBytes": 27988,
+      "sizeKB": "27.33"
+    },
+    "time": "2025-12-25T18:32:43.230Z"
+  },
+  {
+    "timestamp": 1114,
+    "category": "zotero",
+    "message": "Uploading EPUB attachment to Zotero",
+    "data": {},
+    "time": "2025-12-25T18:32:43.230Z"
+  },
+  {
+    "timestamp": 1700,
+    "category": "zotero",
+    "message": "Adding item to collection",
+    "data": {
+      "collection": "2JDUKWCZ"
+    },
+    "time": "2025-12-25T18:32:43.816Z"
+  },
+  {
+    "timestamp": 1749,
+    "category": "zotero",
+    "message": "Successfully sent to Zotero",
+    "data": {
+      "itemKey": "ESMJ2WIH",
+      "attachmentKey": "239FNGJW"
+    },
+    "time": "2025-12-25T18:32:43.865Z"
+  },
+  {
+    "timestamp": 2458,
+    "category": "kindle",
+    "message": "Successfully sent to Kindle",
+    "data": {
+      "messageId": "<7444d4f0-9dab-01d6-90e7-420b0114eb6f@gmail.com>",
+      "filename": "Burning-Bridges,-Skipping-Stones-Suffering-in-the-Israel-Hamas-War-urges-us-to-f_MJLS5RHO.html",
+      "subject": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "sizekB": "95.89"
+    },
+    "time": "2025-12-25T18:32:44.574Z"
+  }
+]

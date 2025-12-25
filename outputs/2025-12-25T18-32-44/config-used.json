@@ -1,0 +1,35 @@
+{
+  "title": [],
+  "body": [
+    "//body"
+  ],
+  "author": [],
+  "strip": [],
+  "date": [],
+  "find_string": [],
+  "replace_string": [],
+  "strip_id_or_class": [],
+  "strip_attr": [],
+  "post_strip_attr": [],
+  "dissolve": [],
+  "skip_id_or_class": [],
+  "strip_image_src": [],
+  "single_page_link": [],
+  "next_page_link": [],
+  "test_url": [
+    "https://www.sapienism.com/post/burning-bridges-skipping-stones"
+  ],
+  "if_page_contains": [],
+  "native_ad_clue": [],
+  "src_lazy_load_attr": [],
+  "prune": true,
+  "tidy": true,
+  "autodetect_on_failure": null,
+  "autodetect_next_page": null,
+  "parser": null,
+  "strip_comments": null,
+  "skip_json_ld": null,
+  "convert_double_br_tags": null,
+  "insert_detected_image": null,
+  "htmlPreprocessing": []
+}
