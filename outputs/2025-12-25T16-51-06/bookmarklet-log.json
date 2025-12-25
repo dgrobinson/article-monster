@@ -1,0 +1,453 @@
+[
+  {
+    "t": 1766681465400,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1766681465400,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1766681465595,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "sapienism.com"
+    ]
+  },
+  {
+    "t": 1766681465613,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.sapienism.com"
+    ]
+  },
+  {
+    "t": 1766681465613,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "sapienism.com"
+    }
+  },
+  {
+    "t": 1766681465613,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"sapienism.com\"}"
+    ]
+  },
+  {
+    "t": 1766681465613,
+    "level": "log",
+    "args": [
+      "Auto-detecting title: no title rules or extraction failed"
+    ]
+  },
+  {
+    "t": 1766681465613,
+    "level": "log",
+    "args": [
+      "config.title:",
+      "[]",
+      "length:",
+      "0"
+    ]
+  },
+  {
+    "t": 1766681465613,
+    "level": "log",
+    "args": [
+      "titleExtracted:",
+      "false"
+    ]
+  },
+  {
+    "t": 1766681465613,
+    "level": "log",
+    "args": [
+      "autodetect_on_failure:",
+      "null"
+    ]
+  },
+  {
+    "t": 1766681465614,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1766681465614,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "SapienisM"
+    ]
+  },
+  {
+    "t": 1766681465614,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using document title:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1766681465614,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher"
+    ]
+  },
+  {
+    "t": 1766681465614,
+    "level": "log",
+    "args": [
+      "Auto-detected title result:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1766681465614,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//body"
+    ]
+  },
+  {
+    "t": 1766681465614,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "1",
+      "element(s) for XPath:",
+      "//body"
+    ]
+  },
+  {
+    "t": 1766681465621,
+    "category": "content",
+    "message": "content-stats",
+    "details": {
+      "htmlLength": 531004,
+      "textLength": 445742,
+      "paragraphCount": 44,
+      "lineBreakCount": 37,
+      "newlineCount": 312,
+      "tailPreview": "-89ce41d0e0c9\":{\"initialData\":{\"counters\":{},\"roles\":{}}},\"14bcded7-0066-7c35-14d7-466cb3f09103\":{\"burning-bridges-skipping-stones\":\"b4f2ed8f-c890-4a29-8591-df52f8176818\"}},\"ooi\":{\"failedInSsr\":{}}} 📖 Extracting with site-specific rules...",
+      "stage": "site-config-body",
+      "xpath": "//body",
+      "elementCount": 1
+    }
+  },
+  {
+    "t": 1766681465621,
+    "level": "log",
+    "args": [
+      "[bm:content]",
+      "content-stats",
+      "{\"htmlLength\":531004,\"textLength\":445742,\"paragraphCount\":44,\"lineBreakCount\":37,\"newlineCount\":312,\"tailPreview\":\"-89ce41d0e0c9\\\":{\\\"initialData\\\":{\\\"counters\\\":{},\\\"roles\\\":{}}},\\\"14bcded7-0066-7c35-14d7-466cb3f09103\\\":{\\\"burning-bridges-skipping-stones\\\":\\\"b4f2ed8f-c890-4a29-8591-df52f8176818\\\"}},\\\"ooi\\\":{\\\"failedInSsr\\\":{}}} 📖 Extracting with site-specific rules...\",\"stage\":\"site-config-body\",\"xpath\":\"//body\",\"elementCount\":1}"
+    ]
+  },
+  {
+    "t": 1766681465621,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1766681465621,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "contentLength": 531004,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1766681465621,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\",\"contentLength\":531004,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1766681465623,
+    "category": "content",
+    "message": "content-stats",
+    "details": {
+      "htmlLength": 531004,
+      "textLength": 445742,
+      "paragraphCount": 44,
+      "lineBreakCount": 37,
+      "newlineCount": 312,
+      "tailPreview": "-89ce41d0e0c9\":{\"initialData\":{\"counters\":{},\"roles\":{}}},\"14bcded7-0066-7c35-14d7-466cb3f09103\":{\"burning-bridges-skipping-stones\":\"b4f2ed8f-c890-4a29-8591-df52f8176818\"}},\"ooi\":{\"failedInSsr\":{}}} 📖 Extracting with site-specific rules...",
+      "stage": "post-extraction",
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1766681465623,
+    "level": "log",
+    "args": [
+      "[bm:content]",
+      "content-stats",
+      "{\"htmlLength\":531004,\"textLength\":445742,\"paragraphCount\":44,\"lineBreakCount\":37,\"newlineCount\":312,\"tailPreview\":\"-89ce41d0e0c9\\\":{\\\"initialData\\\":{\\\"counters\\\":{},\\\"roles\\\":{}}},\\\"14bcded7-0066-7c35-14d7-466cb3f09103\\\":{\\\"burning-bridges-skipping-stones\\\":\\\"b4f2ed8f-c890-4a29-8591-df52f8176818\\\"}},\\\"ooi\\\":{\\\"failedInSsr\\\":{}}} 📖 Extracting with site-specific rules...\",\"stage\":\"post-extraction\",\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1766681465624,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 312 newlines"
+    ]
+  },
+  {
+    "t": 1766681465627,
+    "category": "content",
+    "message": "content-stats",
+    "details": {
+      "htmlLength": 531004,
+      "textLength": 431289,
+      "paragraphCount": 44,
+      "lineBreakCount": 37,
+      "newlineCount": 312,
+      "tailPreview": "-89ce41d0e0c9\":{\"initialData\":{\"counters\":{},\"roles\":{}}},\"14bcded7-0066-7c35-14d7-466cb3f09103\":{\"burning-bridges-skipping-stones\":\"b4f2ed8f-c890-4a29-8591-df52f8176818\"}},\"ooi\":{\"failedInSsr\":{}}} 📖 Extracting with site-specific rules...",
+      "stage": "pre-fix-images"
+    }
+  },
+  {
+    "t": 1766681465627,
+    "level": "log",
+    "args": [
+      "[bm:content]",
+      "content-stats",
+      "{\"htmlLength\":531004,\"textLength\":431289,\"paragraphCount\":44,\"lineBreakCount\":37,\"newlineCount\":312,\"tailPreview\":\"-89ce41d0e0c9\\\":{\\\"initialData\\\":{\\\"counters\\\":{},\\\"roles\\\":{}}},\\\"14bcded7-0066-7c35-14d7-466cb3f09103\\\":{\\\"burning-bridges-skipping-stones\\\":\\\"b4f2ed8f-c890-4a29-8591-df52f8176818\\\"}},\\\"ooi\\\":{\\\"failedInSsr\\\":{}}} 📖 Extracting with site-specific rules...\",\"stage\":\"pre-fix-images\"}"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_24205875f12c41a29e22b5f57f9c7086~mv2.jpg/v1/fill/w_105,h_105,al_c,q_80,usm_0.66_1.00_0.01,enc_avif,quality_auto/a62535_24205875f12c41a29e22b5f57f9c7086~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/1bf8c6_785af82af5f440328cf921c3d8e9643c%7Emv2.jpg/v1/fill/w_45,h_45,al_c,lg_1,q_80,enc_avif,quality_auto/1bf8c6_785af82af5f440328cf921c3d8e9643c%7Emv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_b35a0f3e2f944b9b810aaae251232fab~mv2.jpg/v1/fill/w_147,h_196,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_b35a0f3e2f944b9b810aaae251232fab~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_5dc20b647d2b4c78a04bef2527019e2f~mv2.jpg/v1/fill/w_147,h_186,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_5dc20b647d2b4c78a04bef2527019e2f~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_11c7b0323b3f424b8c0cc3e7b99da29b~mv2.jpg/v1/fill/w_100,h_132,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_11c7b0323b3f424b8c0cc3e7b99da29b~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_3475b90c432749d28ee5229346ddd615~mv2.jpg/v1/fill/w_147,h_91,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_3475b90c432749d28ee5229346ddd615~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_f7412ddd970245f193453cba057a3b97~mv2.jpg/v1/fill/w_153,h_89,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_f7412ddd970245f193453cba057a3b97~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_c45969ac120541beb915b281c6e2eb59~mv2.jpg/v1/fill/w_147,h_89,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_c45969ac120541beb915b281c6e2eb59~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_9bfa282e710943bebdcd19f517285cb1~mv2.jpg/v1/fill/w_147,h_110,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_9bfa282e710943bebdcd19f517285cb1~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_a00bca252d8a423fad6f936dc14b1874~mv2.jpg/v1/fill/w_123,h_184,al_c,q_80,usm_0.66_1.00_0.01,blur_2,enc_avif,quality_auto/a62535_a00bca252d8a423fad6f936dc14b1874~mv2.jpg"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_4faa80153aa548c6948ad3816113abff~mv2.jpg/v1/fill/w_1480,h_1000,fp_0.50_0.50,q_90/a62535_4faa80153aa548c6948ad3816113abff~mv2.webp"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      "https://static.wixstatic.com/media/a62535_3a092925521340fa928f20a584f88da8~mv2.jpg/v1/fill/w_1480,h_1000,fp_0.50_0.50,q_90/a62535_3a092925521340fa928f20a584f88da8~mv2.webp"
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      ""
+    ]
+  },
+  {
+    "t": 1766681465632,
+    "level": "log",
+    "args": [
+      "Fixed image:",
+      ""
+    ]
+  },
+  {
+    "t": 1766681465635,
+    "category": "content",
+    "message": "content-stats",
+    "details": {
+      "htmlLength": 532224,
+      "textLength": 431289,
+      "paragraphCount": 44,
+      "lineBreakCount": 37,
+      "newlineCount": 312,
+      "tailPreview": "-89ce41d0e0c9\":{\"initialData\":{\"counters\":{},\"roles\":{}}},\"14bcded7-0066-7c35-14d7-466cb3f09103\":{\"burning-bridges-skipping-stones\":\"b4f2ed8f-c890-4a29-8591-df52f8176818\"}},\"ooi\":{\"failedInSsr\":{}}} 📖 Extracting with site-specific rules...",
+      "stage": "post-fix-images"
+    }
+  },
+  {
+    "t": 1766681465635,
+    "level": "log",
+    "args": [
+      "[bm:content]",
+      "content-stats",
+      "{\"htmlLength\":532224,\"textLength\":431289,\"paragraphCount\":44,\"lineBreakCount\":37,\"newlineCount\":312,\"tailPreview\":\"-89ce41d0e0c9\\\":{\\\"initialData\\\":{\\\"counters\\\":{},\\\"roles\\\":{}}},\\\"14bcded7-0066-7c35-14d7-466cb3f09103\\\":{\\\"burning-bridges-skipping-stones\\\":\\\"b4f2ed8f-c890-4a29-8591-df52f8176818\\\"}},\\\"ooi\\\":{\\\"failedInSsr\\\":{}}} 📖 Extracting with site-specific rules...\",\"stage\":\"post-fix-images\"}"
+    ]
+  },
+  {
+    "t": 1766681465636,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 312 newlines"
+    ]
+  },
+  {
+    "t": 1766681465637,
+    "category": "content",
+    "message": "content-stats",
+    "details": {
+      "htmlLength": 532224,
+      "textLength": 445742,
+      "paragraphCount": 44,
+      "lineBreakCount": 37,
+      "newlineCount": 312,
+      "tailPreview": "-89ce41d0e0c9\":{\"initialData\":{\"counters\":{},\"roles\":{}}},\"14bcded7-0066-7c35-14d7-466cb3f09103\":{\"burning-bridges-skipping-stones\":\"b4f2ed8f-c890-4a29-8591-df52f8176818\"}},\"ooi\":{\"failedInSsr\":{}}} 📖 Extracting with site-specific rules...",
+      "stage": "pre-encode"
+    }
+  },
+  {
+    "t": 1766681465637,
+    "level": "log",
+    "args": [
+      "[bm:content]",
+      "content-stats",
+      "{\"htmlLength\":532224,\"textLength\":445742,\"paragraphCount\":44,\"lineBreakCount\":37,\"newlineCount\":312,\"tailPreview\":\"-89ce41d0e0c9\\\":{\\\"initialData\\\":{\\\"counters\\\":{},\\\"roles\\\":{}}},\\\"14bcded7-0066-7c35-14d7-466cb3f09103\\\":{\\\"burning-bridges-skipping-stones\\\":\\\"b4f2ed8f-c890-4a29-8591-df52f8176818\\\"}},\\\"ooi\\\":{\\\"failedInSsr\\\":{}}} 📖 Extracting with site-specific rules...\",\"stage\":\"pre-encode\"}"
+    ]
+  },
+  {
+    "t": 1766681465638,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 312 newlines"
+    ]
+  },
+  {
+    "t": 1766681465638,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "var bodyCacheable = true;\n \n var exclusionReason = {\"shouldRender\":true,\"forced\":false};\n var ssrInf"
+    ]
+  },
+  {
+    "t": 1766681465645,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "532224",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1766681465645,
+    "category": "content",
+    "message": "base64-encoded",
+    "details": {
+      "contentLength": 532224,
+      "base64Length": 710084
+    }
+  },
+  {
+    "t": 1766681465645,
+    "level": "log",
+    "args": [
+      "[bm:content]",
+      "base64-encoded",
+      "{\"contentLength\":532224,\"base64Length\":710084}"
+    ]
+  }
+]
