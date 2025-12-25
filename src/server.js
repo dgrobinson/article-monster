@@ -167,6 +167,177 @@ function sanitizeHtmlForDelivery(html) {
     };
   }
 
+  function parseImgTag(tag) {
+    const match = tag.match(/^<img\b([\s\S]*?)\/?>$/i);
+    if (!match) return null;
+    const attrString = match[1] || '';
+    const attrs = {};
+    const order = [];
+    const attrRegex = /([^\s=/>]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g;
+    let attrMatch;
+    while ((attrMatch = attrRegex.exec(attrString))) {
+      const rawName = attrMatch[1];
+      if (!rawName) continue;
+      const name = rawName.toLowerCase();
+      const value = attrMatch[2] ?? attrMatch[3] ?? attrMatch[4] ?? '';
+      if (!Object.prototype.hasOwnProperty.call(attrs, name)) {
+        order.push(name);
+      }
+      attrs[name] = value;
+    }
+    return {
+      attrs,
+      order,
+      selfClosing: /\/>\s*$/i.test(tag)
+    };
+  }
+
+  function buildImgTag(attrs, order, selfClosing) {
+    const parts = [];
+    order.forEach((name) => {
+      if (!Object.prototype.hasOwnProperty.call(attrs, name)) return;
+      const value = attrs[name];
+      if (value === null || value === undefined) {
+        parts.push(name);
+        return;
+      }
+      const escaped = String(value).replace(/"/g, '&quot;');
+      parts.push(`${name}="${escaped}"`);
+    });
+    const suffix = selfClosing ? ' />' : '>';
+    return `<img${parts.length ? ' ' + parts.join(' ') : ''}${suffix}`;
+  }
+
+  function isLikelyUrl(value) {
+    if (!value) return false;
+    return /^(https?:)?\/\//i.test(value) || /^data:image\//i.test(value);
+  }
+
+  function extractSizeHints(url) {
+    if (!url) return 0;
+    let maxSize = 0;
+    const patterns = [
+      /(?:[?&](?:w|width|h|height)=)(\d{2,5})/gi,
+      /\b(?:w|width|h|height)_([0-9]{2,5})\b/gi,
+      /\b([0-9]{2,5})x([0-9]{2,5})\b/gi
+    ];
+    patterns.forEach((pattern) => {
+      let match;
+      while ((match = pattern.exec(url))) {
+        const a = parseInt(match[1], 10);
+        const b = match[2] ? parseInt(match[2], 10) : 0;
+        if (Number.isFinite(a) && a > maxSize) maxSize = a;
+        if (Number.isFinite(b) && b > maxSize) maxSize = b;
+      }
+    });
+    return maxSize;
+  }
+
+  function scoreImageUrl(url) {
+    if (!url) return -1;
+    if (/^data:image\//i.test(url)) return 0;
+    const size = extractSizeHints(url);
+    return size > 0 ? size : 1;
+  }
+
+  function parseSrcsetCandidates(srcset) {
+    if (!srcset) return [];
+    const candidates = [];
+    const parts = srcset.split(',');
+    parts.forEach((part) => {
+      const trimmed = part.trim();
+      if (!trimmed) return;
+      const segments = trimmed.split(/\s+/);
+      const url = segments[0];
+      if (!url) return;
+      let descriptorScore = 0;
+      const descriptor = segments[1] || '';
+      if (descriptor.endsWith('w')) {
+        const width = parseInt(descriptor, 10);
+        if (Number.isFinite(width)) descriptorScore = width;
+      } else if (descriptor.endsWith('x')) {
+        const density = parseFloat(descriptor);
+        if (Number.isFinite(density)) descriptorScore = Math.round(density * 1000);
+      }
+      candidates.push({
+        url,
+        score: descriptorScore
+      });
+    });
+    return candidates;
+  }
+
+  function normalizeImageSources(input) {
+    let upgradedCount = 0;
+    let updatedCount = 0;
+    let srcsetUsed = 0;
+    let dataAttrUsed = 0;
+
+    const cleaned = input.replace(/<img\b[^>]*>/gi, (tag) => {
+      const parsed = parseImgTag(tag);
+      if (!parsed) return tag;
+      const { attrs, order, selfClosing } = parsed;
+      const src = attrs.src || '';
+      let bestUrl = src;
+      let bestScore = scoreImageUrl(src);
+      let bestSource = null;
+
+      const srcsetValue = attrs.srcset || attrs['data-srcset'] || '';
+      const srcsetCandidates = parseSrcsetCandidates(srcsetValue);
+      srcsetCandidates.forEach((candidate) => {
+        if (!isLikelyUrl(candidate.url)) return;
+        const candidateScore = Math.max(candidate.score, scoreImageUrl(candidate.url));
+        if (candidateScore > bestScore) {
+          bestScore = candidateScore;
+          bestUrl = candidate.url;
+          bestSource = 'srcset';
+        }
+      });
+
+      Object.keys(attrs).forEach((name) => {
+        if (!name || !name.startsWith('data-')) return;
+        if (!/(src|image|img|media|original|hires|highres|large|full|zoom|file)/i.test(name)) return;
+        const value = attrs[name];
+        if (!isLikelyUrl(value)) return;
+        const candidateScore = scoreImageUrl(value);
+        if (candidateScore > bestScore) {
+          bestScore = candidateScore;
+          bestUrl = value;
+          bestSource = name;
+        }
+      });
+
+      if (bestUrl && bestUrl !== src && isLikelyUrl(bestUrl)) {
+        attrs.src = bestUrl;
+        if (!order.includes('src')) {
+          order.unshift('src');
+        }
+        updatedCount += 1;
+        if (bestScore > scoreImageUrl(src)) {
+          upgradedCount += 1;
+        }
+        if (bestSource === 'srcset') {
+          srcsetUsed += 1;
+        } else if (bestSource) {
+          dataAttrUsed += 1;
+        }
+        return buildImgTag(attrs, order, selfClosing);
+      }
+
+      return tag;
+    });
+
+    return {
+      content: cleaned,
+      meta: {
+        image_src_updated: updatedCount,
+        image_src_upgraded: upgradedCount,
+        image_srcset_used: srcsetUsed,
+        image_data_attr_used: dataAttrUsed
+      }
+    };
+  }
+
   function stripInvalidImageTags(input) {
     let removedCount = 0;
     const cleaned = input.replace(/<img\b[^>]*>/gi, (tag) => {
@@ -199,6 +370,13 @@ function sanitizeHtmlForDelivery(html) {
     removed[key] = matches ? matches.length : 0;
     sanitized = sanitized.replace(regex, '');
   });
+
+  const imageNormalization = normalizeImageSources(sanitized);
+  sanitized = imageNormalization.content;
+  removed.image_src_updated = imageNormalization.meta.image_src_updated;
+  removed.image_src_upgraded = imageNormalization.meta.image_src_upgraded;
+  removed.image_srcset_used = imageNormalization.meta.image_srcset_used;
+  removed.image_data_attr_used = imageNormalization.meta.image_data_attr_used;
 
   const imageResult = stripInvalidImageTags(sanitized);
   sanitized = imageResult.content;
