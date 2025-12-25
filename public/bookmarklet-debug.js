@@ -9,6 +9,138 @@
   }
   window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = true;
 
+  var BLOCKLIST_CACHE_KEY = 'articleMonsterBlockedWebApps';
+  var BLOCKLIST_CACHE_MS = 60 * 60 * 1000;
+  var FALLBACK_BLOCKED_WEBAPPS = [
+    {
+      name: 'Google Docs or Drive',
+      hosts: ['docs.google.com', 'drive.google.com']
+    },
+    {
+      name: 'Notion',
+      hosts: ['notion.so', '*.notion.so']
+    },
+    {
+      name: 'Slack',
+      hosts: ['slack.com', '*.slack.com']
+    },
+    {
+      name: 'Workday',
+      hosts: ['workday.com', '*.workday.com', 'myworkday.com', '*.myworkday.com']
+    }
+  ];
+
+  function normalizeHostname(hostname) {
+    return (hostname || '').toLowerCase();
+  }
+
+  function parseBlockedWebApps(payload) {
+    if (!payload || typeof payload !== 'object') return null;
+    var apps = payload.apps || payload.blocked_apps || payload.blockedWebApps;
+    if (!Array.isArray(apps)) return null;
+    var parsed = [];
+    for (var i = 0; i < apps.length; i++) {
+      var app = apps[i] || {};
+      var name = app.name || app.label || app.app || app.title || 'Blocked app';
+      var hosts = app.hosts || app.domains || app.hostnames;
+      if (!Array.isArray(hosts)) continue;
+      var cleanHosts = [];
+      for (var j = 0; j < hosts.length; j++) {
+        if (typeof hosts[j] === 'string' && hosts[j].trim().length > 0) {
+          cleanHosts.push(hosts[j].trim());
+        }
+      }
+      if (cleanHosts.length === 0) continue;
+      parsed.push({ name: String(name), hosts: cleanHosts });
+    }
+    return parsed.length > 0 ? parsed : null;
+  }
+
+  function loadBlockedWebAppsFromCache() {
+    try {
+      var cached = sessionStorage.getItem(BLOCKLIST_CACHE_KEY);
+      if (!cached) return null;
+      var data = JSON.parse(cached);
+      if (!data || !Array.isArray(data.apps)) return null;
+      if (Date.now() - data.timestamp > BLOCKLIST_CACHE_MS) return null;
+      return data.apps;
+    } catch {
+      return null;
+    }
+  }
+
+  function storeBlockedWebAppsCache(apps) {
+    try {
+      sessionStorage.setItem(BLOCKLIST_CACHE_KEY, JSON.stringify({
+        apps: apps,
+        timestamp: Date.now()
+      }));
+    } catch {}
+  }
+
+  function fetchBlockedWebAppsSync() {
+    try {
+      var serviceOrigin = getServiceOrigin();
+      var xhr = new XMLHttpRequest();
+      xhr.open('GET', serviceOrigin + '/blocked-webapps.json', false);
+      xhr.send();
+      if (xhr.status !== 200) return null;
+      var payload = JSON.parse(xhr.responseText);
+      return parseBlockedWebApps(payload);
+    } catch {
+      return null;
+    }
+  }
+
+  function hostMatchesPattern(hostname, pattern) {
+    var normalizedHost = normalizeHostname(hostname);
+    var normalizedPattern = normalizeHostname(pattern);
+    if (!normalizedHost || !normalizedPattern) return false;
+    if (normalizedHost === normalizedPattern) return true;
+    if (normalizedPattern.indexOf('*.') === 0 || normalizedPattern.indexOf('.') === 0) {
+      var suffix = normalizedPattern.indexOf('*.') === 0 ? normalizedPattern.slice(1) : normalizedPattern;
+      var root = suffix.slice(1);
+      return normalizedHost.endsWith(suffix) && normalizedHost !== root;
+    }
+    return false;
+  }
+
+  function matchBlockedWebApps(hostname, apps) {
+    if (!hostname || !apps || apps.length === 0) return null;
+    for (var i = 0; i < apps.length; i++) {
+      var app = apps[i];
+      var hosts = app && app.hosts ? app.hosts : [];
+      for (var j = 0; j < hosts.length; j++) {
+        if (hostMatchesPattern(hostname, hosts[j])) {
+          return app.name || 'Blocked app';
+        }
+      }
+    }
+    return null;
+  }
+
+  function getBlockedWebApp(hostname) {
+    var normalized = normalizeHostname(hostname);
+    if (!normalized) return null;
+    var apps = loadBlockedWebAppsFromCache();
+    if (!apps) {
+      apps = fetchBlockedWebAppsSync();
+      if (apps) {
+        storeBlockedWebAppsCache(apps);
+      } else {
+        apps = FALLBACK_BLOCKED_WEBAPPS;
+      }
+    }
+    return matchBlockedWebApps(normalized, apps);
+  }
+
+  var blockedApp = getBlockedWebApp(window.location.hostname);
+  if (blockedApp) {
+    window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = false;
+    alert('Blocked for safety. This looks like a private web app (' + blockedApp + '). Article Monster does not extract from authenticated web apps.');
+    return;
+  }
+
   var rawHTML = document.documentElement.outerHTML;
   var fullHTML = rawHTML
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '[SCRIPT REMOVED]')

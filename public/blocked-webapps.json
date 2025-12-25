@@ -1,0 +1,20 @@
+{
+  "apps": [
+    {
+      "name": "Google Docs or Drive",
+      "hosts": ["docs.google.com", "drive.google.com"]
+    },
+    {
+      "name": "Notion",
+      "hosts": ["notion.so", "*.notion.so"]
+    },
+    {
+      "name": "Slack",
+      "hosts": ["slack.com", "*.slack.com"]
+    },
+    {
+      "name": "Workday",
+      "hosts": ["workday.com", "*.workday.com", "myworkday.com", "*.myworkday.com"]
+    }
+  ]
+}

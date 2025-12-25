@@ -112,6 +112,54 @@
             margin-right: 10px;
             font-weight: bold;
         }
+
+        .blocked-app-card {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 12px;
+            margin: 10px 0;
+        }
+
+        .blocked-app-hosts {
+            margin-top: 6px;
+        }
+
+        .blocked-app-host-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 6px 0;
+            border-top: 1px solid #eef0f2;
+        }
+
+        .blocked-app-host-row:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .blocked-app-host-label {
+            color: #555;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        .blocked-app-remove {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .blocked-app-remove:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body data-github-repo="dgrobinson/article-monster">
@@ -213,13 +261,38 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
     <div class="section">
         <h2>✨ Features</h2>
         <ul>
-            <li>🔐 <strong>Works with authenticated content</strong> - extracts articles from sites you're logged into</li>
+            <li>🔐 <strong>Logged-in article support</strong> - works on paywalled sites you're logged into, but blocks private web apps (Google Docs, Notion, Slack, Workday)</li>
             <li>📧 <strong>Kindle integration</strong> - sends clean HTML that converts automatically</li>
             <li>📚 <strong>Zotero integration</strong> - creates proper citations with EPUB attachments</li>
             <li>🎯 <strong>Browser-side extraction</strong> - no server-side web scraping needed</li>
             <li>⚡ <strong>Fast processing</strong> - parallel sending to both platforms</li>
             <li>🛡️ <strong>Safe for your Zotero library</strong> - uses test collections first</li>
         </ul>
+    </div>
+
+    <div class="section">
+        <h2>🔒 Blocked web apps</h2>
+        <p>These domains are blocked so private, logged-in apps do not get sent to the server.</p>
+        <div id="blocked-webapps-status" style="color: #7f8c8d;">Loading blocked list...</div>
+        <div id="blocked-webapps-list"></div>
+
+        <form id="blocked-webapps-form" onsubmit="return addBlockedWebApp(event)" style="margin-top: 15px;">
+            <div style="margin-bottom: 10px;">
+                <label for="blocked-app-name"><strong>App name (optional)</strong></label><br>
+                <input id="blocked-app-name" type="text" placeholder="e.g., Internal Wiki" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="blocked-app-host"><strong>Domain or URL</strong></label><br>
+                <input id="blocked-app-host" type="text" placeholder="example.com or https://app.example.com" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;" required>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="blocked-app-token"><strong>Admin token (only if required)</strong></label><br>
+                <input id="blocked-app-token" type="password" placeholder="Optional" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+            </div>
+            <button type="submit" style="background:#3498db; color:white; border:none; padding:10px 16px; border-radius:6px; font-weight:bold;">Add block</button>
+            <span id="blocked-webapps-form-status" style="margin-left:10px; font-size: 0.95em;"></span>
+        </form>
+        <p><small>Removal is admin-only for now.</small></p>
     </div>
 
     <div class="section">
@@ -308,10 +381,241 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
             textarea.setSelectionRange(0, 0);
             textarea.blur();
         }
-        
+
+        function extractBlockedWebApps(payload) {
+            if (!payload || typeof payload !== 'object') return [];
+            const apps = payload.apps || payload.blocked_apps || payload.blockedWebApps;
+            return Array.isArray(apps) ? apps : [];
+        }
+
+        function renderBlockedWebApps(apps) {
+            const listEl = document.getElementById('blocked-webapps-list');
+            const statusEl = document.getElementById('blocked-webapps-status');
+            if (!listEl || !statusEl) return;
+
+            listEl.innerHTML = '';
+            if (!apps || apps.length === 0) {
+                statusEl.textContent = 'No blocked web apps configured.';
+                return;
+            }
+
+            statusEl.textContent = '';
+            apps.forEach(app => {
+                const card = document.createElement('div');
+                card.className = 'blocked-app-card';
+
+                const title = document.createElement('div');
+                title.textContent = app.name || 'Blocked app';
+
+                const hosts = document.createElement('div');
+                hosts.className = 'blocked-app-hosts';
+                const hostList = Array.isArray(app.hosts) ? app.hosts : [];
+                hostList.forEach(host => {
+                    const row = document.createElement('div');
+                    row.className = 'blocked-app-host-row';
+
+                    const label = document.createElement('div');
+                    label.className = 'blocked-app-host-label';
+                    label.textContent = host;
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'blocked-app-remove';
+                    removeBtn.textContent = 'Remove';
+                    removeBtn.onclick = () => removeBlockedWebApp(app.name || 'Blocked app', host, removeBtn);
+
+                    row.appendChild(label);
+                    row.appendChild(removeBtn);
+                    hosts.appendChild(row);
+                });
+
+                card.appendChild(title);
+                card.appendChild(hosts);
+                listEl.appendChild(card);
+            });
+        }
+
+        function loadBlockedWebApps() {
+            const statusEl = document.getElementById('blocked-webapps-status');
+            if (statusEl) {
+                statusEl.textContent = 'Loading blocked list...';
+            }
+
+            fetch('/blocked-webapps.json?v=' + Date.now())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to load block list');
+                    }
+                    return response.json();
+                })
+                .then(payload => {
+                    renderBlockedWebApps(extractBlockedWebApps(payload));
+                })
+                .catch(error => {
+                    const listEl = document.getElementById('blocked-webapps-list');
+                    if (listEl) listEl.innerHTML = '';
+                    if (statusEl) {
+                        statusEl.textContent = 'Could not load blocked list.';
+                    }
+                });
+        }
+
+        function normalizeHostInput(input) {
+            let value = (input || '').trim();
+            if (!value) return '';
+
+            if (value.indexOf('*') !== -1) {
+                if (value.indexOf('://') !== -1) {
+                    value = value.split('://')[1];
+                }
+                value = value.split('/')[0];
+                value = value.split('?')[0];
+                value = value.split('#')[0];
+                value = value.toLowerCase();
+            } else if (value.indexOf('://') !== -1 || value.indexOf('/') !== -1 || value.indexOf('?') !== -1) {
+                try {
+                    const parsed = new URL(value.indexOf('://') !== -1 ? value : 'https://' + value);
+                    value = parsed.hostname;
+                } catch (err) {}
+            }
+
+            value = value.toLowerCase();
+            value = value.replace(/:\d+$/, '');
+            value = value.replace(/\.$/, '');
+            if (value.startsWith('.')) {
+                value = '*'+ value;
+            }
+            if (value.indexOf('*') !== -1 && value.indexOf('*.') !== 0) {
+                return '';
+            }
+            return value;
+        }
+
+        function addBlockedWebApp(e) {
+            e.preventDefault();
+            const statusEl = document.getElementById('blocked-webapps-form-status');
+            const nameEl = document.getElementById('blocked-app-name');
+            const hostEl = document.getElementById('blocked-app-host');
+            const tokenEl = document.getElementById('blocked-app-token');
+
+            if (!statusEl || !hostEl) return false;
+
+            const rawHost = hostEl.value;
+            const normalizedHost = normalizeHostInput(rawHost);
+            if (!normalizedHost) {
+                statusEl.textContent = 'Enter a valid domain or URL.';
+                statusEl.style.color = '#c0392b';
+                return false;
+            }
+
+            const payload = {
+                host: normalizedHost
+            };
+            const name = nameEl && nameEl.value ? nameEl.value.trim() : '';
+            if (name) {
+                payload.name = name;
+            }
+
+            const headers = {
+                'Content-Type': 'application/json'
+            };
+            const token = tokenEl && tokenEl.value ? tokenEl.value.trim() : '';
+            if (token) {
+                headers['x-blocklist-token'] = token;
+            }
+
+            statusEl.textContent = 'Adding...';
+            statusEl.style.color = '#7f8c8d';
+
+            fetch('/blocked-webapps', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload)
+            })
+                .then(response => response.json().then(data => ({ ok: response.ok, data })))
+                .then(result => {
+                    if (!result.ok) {
+                        const message = result.data && (result.data.error || result.data.message) ? (result.data.error || result.data.message) : 'Failed to update block list.';
+                        throw new Error(message);
+                    }
+                    statusEl.textContent = 'Added ' + normalizedHost + '.';
+                    statusEl.style.color = '#155724';
+                    hostEl.value = '';
+                    loadBlockedWebApps();
+                })
+                .catch(error => {
+                    statusEl.textContent = error.message || 'Failed to update block list.';
+                    statusEl.style.color = '#c0392b';
+                });
+
+            return false;
+        }
+
+        function removeBlockedWebApp(appName, host, button) {
+            const statusEl = document.getElementById('blocked-webapps-form-status');
+            const tokenEl = document.getElementById('blocked-app-token');
+            const token = tokenEl && tokenEl.value ? tokenEl.value.trim() : '';
+
+            if (!token) {
+                if (statusEl) {
+                    statusEl.textContent = 'Admin token required to remove.';
+                    statusEl.style.color = '#c0392b';
+                }
+                return;
+            }
+
+            const confirmed = window.confirm('Remove ' + host + ' from ' + appName + '?');
+            if (!confirmed) return;
+
+            if (button) {
+                button.disabled = true;
+            }
+
+            if (statusEl) {
+                statusEl.textContent = 'Removing...';
+                statusEl.style.color = '#7f8c8d';
+            }
+
+            fetch('/blocked-webapps/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-blocklist-token': token
+                },
+                body: JSON.stringify({
+                    name: appName,
+                    host: host
+                })
+            })
+                .then(response => response.json().then(data => ({ ok: response.ok, data })))
+                .then(result => {
+                    if (!result.ok) {
+                        const message = result.data && (result.data.error || result.data.message) ? (result.data.error || result.data.message) : 'Failed to update block list.';
+                        throw new Error(message);
+                    }
+                    if (statusEl) {
+                        statusEl.textContent = 'Removed ' + host + '.';
+                        statusEl.style.color = '#155724';
+                    }
+                    loadBlockedWebApps();
+                })
+                .catch(error => {
+                    if (statusEl) {
+                        statusEl.textContent = error.message || 'Failed to update block list.';
+                        statusEl.style.color = '#c0392b';
+                    }
+                })
+                .finally(() => {
+                    if (button) {
+                        button.disabled = false;
+                    }
+                });
+        }
+
         // Initialize
         generateBookmarklet();
         checkStatus();
+        loadBlockedWebApps();
         
         // Refresh status every 30 seconds
         setInterval(checkStatus, 30000);
