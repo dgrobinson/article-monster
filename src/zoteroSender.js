@@ -68,7 +68,7 @@ async function sendToZotero(article, debugLogger = null) {
         sizeBytes: epub.size,
         sizeKB: (epub.size / 1024).toFixed(2)
       });
-      epubBase64 = epub.toString('base64');
+      epubBase64 = epub && epub.buffer ? epub.buffer.toString('base64') : null;
 
       // Step 3: Upload EPUB as attachment
       log('zotero', 'Uploading EPUB attachment to Zotero');
