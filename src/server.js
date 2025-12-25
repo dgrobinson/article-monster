@@ -156,6 +156,42 @@ function summarizeHtmlContent(html, tailLength) {
   };
 }
 
+function sanitizeHtmlForDelivery(html) {
+  const safeHtml = typeof html === 'string' ? html : '';
+  if (!safeHtml) {
+    return {
+      content: safeHtml,
+      textContent: '',
+      removed: {},
+      changed: false
+    };
+  }
+
+  const patterns = [
+    { key: 'script', regex: /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi },
+    { key: 'style', regex: /<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi },
+    { key: 'noscript', regex: /<noscript\b[^<]*(?:(?!<\/noscript>)<[^<]*)*<\/noscript>/gi },
+    { key: 'template', regex: /<template\b[^<]*(?:(?!<\/template>)<[^<]*)*<\/template>/gi },
+    { key: 'indicator', regex: /<div[^>]*id=["']article-bookmarklet-indicator["'][^>]*>[\s\S]*?<\/div>/gi }
+  ];
+
+  let sanitized = safeHtml;
+  const removed = {};
+
+  patterns.forEach(({ key, regex }) => {
+    const matches = sanitized.match(regex);
+    removed[key] = matches ? matches.length : 0;
+    sanitized = sanitized.replace(regex, '');
+  });
+
+  return {
+    content: sanitized,
+    textContent: compactWhitespace(sanitized.replace(/<[^>]*>/g, ' ')),
+    removed,
+    changed: sanitized !== safeHtml
+  };
+}
+
 function buildContentDiagnosticsFromPayload(article) {
   const rawStats = summarizeHtmlContent(article?.content || '');
   let decodedStats = null;
@@ -405,6 +441,26 @@ app.post('/process-article', async (req, res) => {
       decoded: decodedStats,
       selected: selectedStats
     };
+
+    if (!debugCaptureOnly && articlePayload.content) {
+      const sanitized = sanitizeHtmlForDelivery(articlePayload.content);
+      if (sanitized.changed) {
+        articlePayload.content = sanitized.content;
+        articlePayload.textContent = sanitized.textContent || articlePayload.textContent;
+        if (sanitized.textContent) {
+          articlePayload.length = sanitized.textContent.length;
+        }
+
+        const sanitizedStats = summarizeHtmlContent(articlePayload.content);
+        debugLogger.log('content', 'server-sanitized', {
+          removed: sanitized.removed,
+          before: selectedStats,
+          after: sanitizedStats
+        });
+        selectedStats = sanitizedStats;
+        contentDiagnostics.sanitized = sanitizedStats;
+      }
+    }
 
     debugLogger.log('processing', `Processing article: ${articlePayload.title || url}`);
 
