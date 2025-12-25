@@ -167,6 +167,75 @@ function sanitizeHtmlForDelivery(html) {
     };
   }
 
+  function stripEmptyLineBlocks(input) {
+    let cleaned = input;
+    let removedCount = 0;
+    const patterns = [
+      /<div\b[^>]*>\s*<span\b[^>]*>\s*<br\b[^>]*>\s*<\/span>\s*<\/div>/gi,
+      /<div\b[^>]*>\s*<br\b[^>]*>\s*<\/div>/gi,
+      /<p\b[^>]*>\s*<br\b[^>]*>\s*<\/p>/gi
+    ];
+
+    patterns.forEach((regex) => {
+      const matches = cleaned.match(regex);
+      if (matches) {
+        removedCount += matches.length;
+        cleaned = cleaned.replace(regex, '');
+      }
+    });
+
+    return { content: cleaned, removedCount };
+  }
+
+  function normalizeImageTags(input) {
+    let cleaned = input;
+    let pinMediaSwaps = 0;
+    let srcsetRemoved = 0;
+    let sizesRemoved = 0;
+
+    cleaned = cleaned.replace(/<img\b[^>]*>/gi, (tag) => {
+      let updated = tag;
+      const pinMatch = updated.match(/\bdata-pin-media\s*=\s*(['"])(.*?)\1/i);
+      if (pinMatch && pinMatch[2]) {
+        const pinUrl = pinMatch[2];
+        if (/\bsrc\s*=/.test(updated)) {
+          updated = updated.replace(/\bsrc\s*=\s*(['"])[^'"]*\1/i, `src="${pinUrl}"`);
+        } else {
+          updated = updated.replace(/<img\b/i, `<img src="${pinUrl}"`);
+        }
+        pinMediaSwaps += 1;
+      }
+
+      if (/\ssrcset\s*=/.test(updated)) {
+        updated = updated.replace(/\ssrcset\s*=\s*(['"])[\s\S]*?\1/gi, '');
+        srcsetRemoved += 1;
+      }
+
+      if (/\ssizes\s*=/.test(updated)) {
+        updated = updated.replace(/\ssizes\s*=\s*(['"])[\s\S]*?\1/gi, '');
+        sizesRemoved += 1;
+      }
+
+      return updated;
+    });
+
+    const blurMatches = cleaned.match(/,blur_\d+/gi);
+    const blurRemoved = blurMatches ? blurMatches.length : 0;
+    if (blurRemoved > 0) {
+      cleaned = cleaned.replace(/,blur_\d+/gi, '');
+    }
+
+    return {
+      content: cleaned,
+      meta: {
+        pinMediaSwaps,
+        srcsetRemoved,
+        sizesRemoved,
+        blurRemoved
+      }
+    };
+  }
+
   function stripInvalidImageTags(input) {
     let removedCount = 0;
     const cleaned = input.replace(/<img\b[^>]*>/gi, (tag) => {
@@ -200,9 +269,20 @@ function sanitizeHtmlForDelivery(html) {
     sanitized = sanitized.replace(regex, '');
   });
 
+  const imageNormalization = normalizeImageTags(sanitized);
+  sanitized = imageNormalization.content;
+  removed.pin_media_swaps = imageNormalization.meta.pinMediaSwaps;
+  removed.srcset_removed = imageNormalization.meta.srcsetRemoved;
+  removed.sizes_removed = imageNormalization.meta.sizesRemoved;
+  removed.blur_params = imageNormalization.meta.blurRemoved;
+
   const imageResult = stripInvalidImageTags(sanitized);
   sanitized = imageResult.content;
   removed.invalid_images = imageResult.removedCount;
+
+  const emptyBlocks = stripEmptyLineBlocks(sanitized);
+  sanitized = emptyBlocks.content;
+  removed.empty_line_blocks = emptyBlocks.removedCount;
 
   return {
     content: sanitized,

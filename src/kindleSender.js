@@ -155,10 +155,10 @@ function createKindleHTML(article) {
         }
         .content {
             font-size: 1.1em;
-            line-height: 1.8;
+            line-height: 1.6;
         }
         .content p {
-            margin-bottom: 1em;
+            margin-bottom: 0.6em;
         }
         .content img {
             max-width: 100%;
