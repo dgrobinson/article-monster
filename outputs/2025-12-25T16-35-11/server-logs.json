@@ -1,0 +1,751 @@
+[
+  {
+    "timestamp": 0,
+    "category": "client:extraction",
+    "message": "Starting article extraction",
+    "data": {
+      "t": 1766680510895,
+      "category": "extraction",
+      "message": "Starting article extraction",
+      "details": null
+    },
+    "time": "2025-12-25T16:35:11.823Z"
+  },
+  {
+    "timestamp": 0,
+    "category": "client:log",
+    "message": "[bm:extraction] Starting article extraction ",
+    "data": {
+      "t": 1766680510895,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Starting article extraction",
+        ""
+      ]
+    },
+    "time": "2025-12-25T16:35:11.823Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Using fresh FiveFilters config for newyorker.com",
+    "data": {
+      "t": 1766680511014,
+      "level": "log",
+      "args": [
+        "Using fresh FiveFilters config for",
+        "newyorker.com"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.824Z"
+  },
+  {
+    "timestamp": 1,
+    "category": "client:log",
+    "message": "Starting HTML preprocessing with 1 rules",
+    "data": {
+      "t": 1766680511016,
+      "level": "log",
+      "args": [
+        "Starting HTML preprocessing with",
+        "1",
+        "rules"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.824Z"
+  },
+  {
+    "timestamp": 2,
+    "category": "client:log",
+    "message": "Applied HTML preprocessing: <header -> <em",
+    "data": {
+      "t": 1766680511018,
+      "level": "log",
+      "args": [
+        "Applied HTML preprocessing:",
+        "<header",
+        "->",
+        "<em"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.825Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Auto-generated closing tag rule: </header> -> </em>",
+    "data": {
+      "t": 1766680511018,
+      "level": "log",
+      "args": [
+        "Auto-generated closing tag rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.826Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "Applied auto-generated rule: </header> -> </em>",
+    "data": {
+      "t": 1766680511020,
+      "level": "log",
+      "args": [
+        "Applied auto-generated rule:",
+        "</header>",
+        "->",
+        "</em>"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.826Z"
+  },
+  {
+    "timestamp": 3,
+    "category": "client:log",
+    "message": "_extractWithSiteConfig called for hostname: www.newyorker.com",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "_extractWithSiteConfig called for hostname:",
+        "www.newyorker.com"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.826Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:site-config",
+    "message": "_extractWithSiteConfig enter",
+    "data": {
+      "t": 1766680511036,
+      "category": "site-config",
+      "message": "_extractWithSiteConfig enter",
+      "details": {
+        "hostname": "newyorker.com"
+      }
+    },
+    "time": "2025-12-25T16:35:11.827Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "[bm:site-config] _extractWithSiteConfig enter {\"hostname\":\"newyorker.com\"}",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "[bm:site-config]",
+        "_extractWithSiteConfig enter",
+        "{\"hostname\":\"newyorker.com\"}"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.827Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "Auto-detecting title: no title rules or extraction failed",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "Auto-detecting title: no title rules or extraction failed"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.827Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "config.title: [] length: 0",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "config.title:",
+        "[]",
+        "length:",
+        "0"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.827Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "titleExtracted: false",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "titleExtracted:",
+        "false"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.827Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "autodetect_on_failure: null",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "autodetect_on_failure:",
+        "null"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.827Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle called - document.title: What if Readers Like A.I.-Generated Fiction? | The New Yorker",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "_getArticleTitle called - document.title:",
+        "What if Readers Like A.I.-Generated Fiction? | The New Yorker"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.827Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle - h1 found: What if Readers Like A.I.-Generated Fiction?",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - h1 found:",
+        "What if Readers Like A.I.-Generated Fiction?"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.827Z"
+  },
+  {
+    "timestamp": 4,
+    "category": "client:log",
+    "message": "_getArticleTitle - using h1 title: What if Readers Like A.I.-Generated Fiction?",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "_getArticleTitle - using h1 title:",
+        "What if Readers Like A.I.-Generated Fiction?"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.827Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "_getArticleTitle final result: What if Readers Like A.I.-Generated Fiction?",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "_getArticleTitle final result:",
+        "What if Readers Like A.I.-Generated Fiction?"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.828Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Auto-detected title result: What if Readers Like A.I.-Generated Fiction?",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "Auto-detected title result:",
+        "What if Readers Like A.I.-Generated Fiction?"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.828Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Trying body XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1766680511036,
+      "level": "log",
+      "args": [
+        "Trying body XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.828Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Body matched: 6 element(s) for XPath: //em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+    "data": {
+      "t": 1766680511037,
+      "level": "log",
+      "args": [
+        "Body matched:",
+        "6",
+        "element(s) for XPath:",
+        "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.828Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:log",
+    "message": "Combined 6 body elements into single container",
+    "data": {
+      "t": 1766680511037,
+      "level": "log",
+      "args": [
+        "Combined",
+        "6",
+        "body elements into single container"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.828Z"
+  },
+  {
+    "timestamp": 5,
+    "category": "client:content",
+    "message": "content-stats",
+    "data": {
+      "t": 1766680511038,
+      "category": "content",
+      "message": "content-stats",
+      "details": {
+        "htmlLength": 43279,
+        "textLength": 26681,
+        "paragraphCount": 43,
+        "lineBreakCount": 0,
+        "newlineCount": 0,
+        "tailPreview": "lost my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human. ♦",
+        "stage": "site-config-body",
+        "xpath": "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']",
+        "elementCount": 6
+      }
+    },
+    "time": "2025-12-25T16:35:11.828Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "[bm:content] content-stats {\"htmlLength\":43279,\"textLength\":26681,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"lost my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human. ♦\",\"stage\":\"site-config-body\",\"xpath\":\"//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']\",\"elementCount\":6}",
+    "data": {
+      "t": 1766680511038,
+      "level": "log",
+      "args": [
+        "[bm:content]",
+        "content-stats",
+        "{\"htmlLength\":43279,\"textLength\":26681,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"lost my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human. ♦\",\"stage\":\"site-config-body\",\"xpath\":\"//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']\",\"elementCount\":6}"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.829Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "Extraction successful using FiveFilters XPath rules",
+    "data": {
+      "t": 1766680511038,
+      "level": "log",
+      "args": [
+        "Extraction successful using FiveFilters XPath rules"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.829Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:extraction",
+    "message": "Article extracted",
+    "data": {
+      "t": 1766680511038,
+      "category": "extraction",
+      "message": "Article extracted",
+      "details": {
+        "title": "What if Readers Like A.I.-Generated Fiction?",
+        "contentLength": 43279,
+        "method": "unknown"
+      }
+    },
+    "time": "2025-12-25T16:35:11.829Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "[bm:extraction] Article extracted {\"title\":\"What if Readers Like A.I.-Generated Fiction?\",\"contentLength\":43279,\"method\":\"unknown\"}",
+    "data": {
+      "t": 1766680511038,
+      "level": "log",
+      "args": [
+        "[bm:extraction]",
+        "Article extracted",
+        "{\"title\":\"What if Readers Like A.I.-Generated Fiction?\",\"contentLength\":43279,\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.829Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:content",
+    "message": "content-stats",
+    "data": {
+      "t": 1766680511038,
+      "category": "content",
+      "message": "content-stats",
+      "details": {
+        "htmlLength": 43279,
+        "textLength": 26681,
+        "paragraphCount": 43,
+        "lineBreakCount": 0,
+        "newlineCount": 0,
+        "tailPreview": "lost my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human. ♦",
+        "stage": "post-extraction",
+        "method": "unknown"
+      }
+    },
+    "time": "2025-12-25T16:35:11.829Z"
+  },
+  {
+    "timestamp": 6,
+    "category": "client:log",
+    "message": "[bm:content] content-stats {\"htmlLength\":43279,\"textLength\":26681,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"lost my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human. ♦\",\"stage\":\"post-extraction\",\"method\":\"unknown\"}",
+    "data": {
+      "t": 1766680511039,
+      "level": "log",
+      "args": [
+        "[bm:content]",
+        "content-stats",
+        "{\"htmlLength\":43279,\"textLength\":26681,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"lost my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human. ♦\",\"stage\":\"post-extraction\",\"method\":\"unknown\"}"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.829Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1766680511039,
+      "level": "log",
+      "args": [
+        "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.830Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:content",
+    "message": "content-stats",
+    "data": {
+      "t": 1766680511039,
+      "category": "content",
+      "message": "content-stats",
+      "details": {
+        "htmlLength": 43279,
+        "textLength": 26776,
+        "paragraphCount": 43,
+        "lineBreakCount": 0,
+        "newlineCount": 0,
+        "tailPreview": "my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦",
+        "stage": "pre-fix-images"
+      }
+    },
+    "time": "2025-12-25T16:35:11.830Z"
+  },
+  {
+    "timestamp": 7,
+    "category": "client:log",
+    "message": "[bm:content] content-stats {\"htmlLength\":43279,\"textLength\":26776,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦\",\"stage\":\"pre-fix-images\"}",
+    "data": {
+      "t": 1766680511039,
+      "level": "log",
+      "args": [
+        "[bm:content]",
+        "content-stats",
+        "{\"htmlLength\":43279,\"textLength\":26776,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦\",\"stage\":\"pre-fix-images\"}"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.830Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "Fixed image: https://media.newyorker.com/photos/694067535734848d6c5e17bb/16:9/w_1280,c_limit/Still.png",
+    "data": {
+      "t": 1766680511039,
+      "level": "log",
+      "args": [
+        "Fixed image:",
+        "https://media.newyorker.com/photos/694067535734848d6c5e17bb/16:9/w_1280,c_limit/Still.png"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.831Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:content",
+    "message": "content-stats",
+    "data": {
+      "t": 1766680511040,
+      "category": "content",
+      "message": "content-stats",
+      "details": {
+        "htmlLength": 43294,
+        "textLength": 26776,
+        "paragraphCount": 43,
+        "lineBreakCount": 0,
+        "newlineCount": 0,
+        "tailPreview": "my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦",
+        "stage": "post-fix-images"
+      }
+    },
+    "time": "2025-12-25T16:35:11.831Z"
+  },
+  {
+    "timestamp": 8,
+    "category": "client:log",
+    "message": "[bm:content] content-stats {\"htmlLength\":43294,\"textLength\":26776,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦\",\"stage\":\"post-fix-images\"}",
+    "data": {
+      "t": 1766680511040,
+      "level": "log",
+      "args": [
+        "[bm:content]",
+        "content-stats",
+        "{\"htmlLength\":43294,\"textLength\":26776,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦\",\"stage\":\"post-fix-images\"}"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.831Z"
+  },
+  {
+    "timestamp": 9,
+    "category": "client:log",
+    "message": "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1766680511040,
+      "level": "log",
+      "args": [
+        "After fixImageUrls: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.832Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:content",
+    "message": "content-stats",
+    "data": {
+      "t": 1766680511040,
+      "category": "content",
+      "message": "content-stats",
+      "details": {
+        "htmlLength": 43294,
+        "textLength": 26681,
+        "paragraphCount": 43,
+        "lineBreakCount": 0,
+        "newlineCount": 0,
+        "tailPreview": "lost my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human. ♦",
+        "stage": "pre-encode"
+      }
+    },
+    "time": "2025-12-25T16:35:11.833Z"
+  },
+  {
+    "timestamp": 10,
+    "category": "client:log",
+    "message": "[bm:content] content-stats {\"htmlLength\":43294,\"textLength\":26681,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"lost my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human. ♦\",\"stage\":\"pre-encode\"}",
+    "data": {
+      "t": 1766680511040,
+      "level": "log",
+      "args": [
+        "[bm:content]",
+        "content-stats",
+        "{\"htmlLength\":43294,\"textLength\":26681,\"paragraphCount\":43,\"lineBreakCount\":0,\"newlineCount\":0,\"tailPreview\":\"lost my older sister. I, too, prayed that she would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human. ♦\",\"stage\":\"pre-encode\"}"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.833Z"
+  },
+  {
+    "timestamp": 14,
+    "category": "client:log",
+    "message": "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines",
+    "data": {
+      "t": 1766680511040,
+      "level": "log",
+      "args": [
+        "Encoding content with: 0 <p> tags, 0 <br> tags, 0 newlines"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.837Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "Content to encode starts with: <figure data-testid=\"cne-audio-e",
+    "data": {
+      "t": 1766680511040,
+      "level": "log",
+      "args": [
+        "Content to encode starts with:",
+        "<figure data-testid=\"cne-audio-e"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.838Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "Successfully encoded 43294 chars to base64",
+    "data": {
+      "t": 1766680511041,
+      "level": "log",
+      "args": [
+        "Successfully encoded",
+        "43294",
+        "chars to base64"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.838Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:content",
+    "message": "base64-encoded",
+    "data": {
+      "t": 1766680511041,
+      "category": "content",
+      "message": "base64-encoded",
+      "details": {
+        "contentLength": 43294,
+        "base64Length": 58608
+      }
+    },
+    "time": "2025-12-25T16:35:11.838Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "client:log",
+    "message": "[bm:content] base64-encoded {\"contentLength\":43294,\"base64Length\":58608}",
+    "data": {
+      "t": 1766680511041,
+      "level": "log",
+      "args": [
+        "[bm:content]",
+        "base64-encoded",
+        "{\"contentLength\":43294,\"base64Length\":58608}"
+      ]
+    },
+    "time": "2025-12-25T16:35:11.838Z"
+  },
+  {
+    "timestamp": 15,
+    "category": "request",
+    "message": "Article processing started",
+    "data": {
+      "url": "https://www.newyorker.com/culture/the-weekend-essay/what-if-readers-like-ai-generated-fiction",
+      "title": "What if Readers Like A.I.-Generated Fiction?",
+      "hasContent": true,
+      "hasBase64": true,
+      "debugCaptureOnly": true
+    },
+    "time": "2025-12-25T16:35:11.838Z"
+  },
+  {
+    "timestamp": 17,
+    "category": "content",
+    "message": "raw-content-stats",
+    "data": {
+      "htmlLength": 43294,
+      "textLength": 26776,
+      "paragraphCount": 43,
+      "lineBreakCount": 0,
+      "newlineCount": 0,
+      "tailPreview": " would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦"
+    },
+    "time": "2025-12-25T16:35:11.840Z"
+  },
+  {
+    "timestamp": 19,
+    "category": "content",
+    "message": "decoded-content-stats",
+    "data": {
+      "htmlLength": 43294,
+      "textLength": 26776,
+      "paragraphCount": 43,
+      "lineBreakCount": 0,
+      "newlineCount": 0,
+      "tailPreview": " would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦"
+    },
+    "time": "2025-12-25T16:35:11.842Z"
+  },
+  {
+    "timestamp": 22,
+    "category": "content",
+    "message": "selected-content-stats",
+    "data": {
+      "htmlLength": 43294,
+      "textLength": 26776,
+      "paragraphCount": 43,
+      "lineBreakCount": 0,
+      "newlineCount": 0,
+      "tailPreview": " would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦"
+    },
+    "time": "2025-12-25T16:35:11.845Z"
+  },
+  {
+    "timestamp": 24,
+    "category": "processing",
+    "message": "Processing article: What if Readers Like A.I.-Generated Fiction?",
+    "data": {},
+    "time": "2025-12-25T16:35:11.847Z"
+  },
+  {
+    "timestamp": 24,
+    "category": "extraction",
+    "message": "Article extraction stats",
+    "data": {
+      "title": "What if Readers Like A.I.-Generated Fiction?",
+      "contentLength": 43294,
+      "textContentLength": 26681,
+      "hasContent": true,
+      "paragraphCount": 43,
+      "lineBreakCount": 0,
+      "newlineCount": 0,
+      "tailPreview": " would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦"
+    },
+    "time": "2025-12-25T16:35:11.847Z"
+  },
+  {
+    "timestamp": 26,
+    "category": "content",
+    "message": "content-tail-preview",
+    "data": {
+      "tailPreview": " would live. I’m looking forward to picking up the thread that Han cast out. I’m looking forward to holding it and wondering, along with her and everyone else, about the purpose of being human.&nbsp;♦"
+    },
+    "time": "2025-12-25T16:35:11.849Z"
+  },
+  {
+    "timestamp": 28,
+    "category": "debug",
+    "message": "Captured page HTML",
+    "data": {
+      "length": 1905531
+    },
+    "time": "2025-12-25T16:35:11.851Z"
+  }
+]

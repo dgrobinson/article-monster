@@ -1,0 +1,67 @@
+{
+  "title": [],
+  "body": [
+    "//em[@data-testid='SplitScreenContentHeaderWrapper'] | //div[@class='body__inner-container']"
+  ],
+  "author": [
+    "//meta[@property=\"article:author\"]/@content"
+  ],
+  "strip": [
+    "//button[@id=\"bookmark\"]",
+    "//div[@data-testid=\"ResponsiveClipVideoContainer\"]",
+    "//div[@data-testid=\"ContentHeaderRubric\"]",
+    "//h1",
+    "//div[@data-testid=\"BylinesWrapper\"]",
+    "//time",
+    "//ul[@data-testid=\"socialIconslist\"]",
+    "//div[contains(concat(' ', normalize-space(@class), ' '), ' caption ')]",
+    "//div[@data-testid=\"GenericCallout\"]",
+    "//figure[@data-testid=\"IframeEmbed\"]",
+    "//div[contains(concat(' ', normalize-space(@class), ' '), ' responsive-cartoon ')]"
+  ],
+  "date": [
+    "//meta[@property=\"article:published_time\"]/@content",
+    "//article//time[contains(@class, 'content-header__publish-date')]"
+  ],
+  "find_string": [
+    "<header"
+  ],
+  "replace_string": [
+    "<em"
+  ],
+  "strip_id_or_class": [
+    "full-bleed-ad"
+  ],
+  "strip_attr": [],
+  "post_strip_attr": [],
+  "dissolve": [],
+  "skip_id_or_class": [],
+  "strip_image_src": [],
+  "single_page_link": [],
+  "next_page_link": [],
+  "test_url": [
+    "https://www.newyorker.com/magazine/2016/02/08/mothers-day-fiction-george-saunders",
+    "https://www.newyorker.com/online/blogs/culture/2012/06/mug-shot-web-sites.html",
+    "https://www.newyorker.com/reporting/2013/04/22/130422fa_fact_bilger?currentPage=all&mobify=0",
+    "https://www.newyorker.com/magazine/2023/11/20/a-coder-considers-the-waning-days-of-the-craft",
+    "https://www.newyorker.com/cartoons/blitts-kvetchbook/a-man-of-substance"
+  ],
+  "if_page_contains": [],
+  "native_ad_clue": [],
+  "src_lazy_load_attr": [],
+  "prune": false,
+  "tidy": false,
+  "autodetect_on_failure": null,
+  "autodetect_next_page": null,
+  "parser": null,
+  "strip_comments": null,
+  "skip_json_ld": null,
+  "convert_double_br_tags": null,
+  "insert_detected_image": null,
+  "htmlPreprocessing": [
+    {
+      "find": "<header",
+      "replace": "<em"
+    }
+  ]
+}
