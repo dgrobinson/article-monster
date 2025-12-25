@@ -1,0 +1,294 @@
+[
+  {
+    "t": 1766683680377,
+    "category": "extraction",
+    "message": "Starting article extraction",
+    "details": null
+  },
+  {
+    "t": 1766683680377,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Starting article extraction",
+      ""
+    ]
+  },
+  {
+    "t": 1766683680612,
+    "level": "log",
+    "args": [
+      "Using fresh FiveFilters config for",
+      "sapienism.com"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "_extractWithSiteConfig called for hostname:",
+      "www.sapienism.com"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "category": "site-config",
+    "message": "_extractWithSiteConfig enter",
+    "details": {
+      "hostname": "sapienism.com"
+    }
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "[bm:site-config]",
+      "_extractWithSiteConfig enter",
+      "{\"hostname\":\"sapienism.com\"}"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "Using cached FiveFilters config for",
+      "sapienism.com"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "Auto-detecting title: no title rules or extraction failed"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "config.title:",
+      "[]",
+      "length:",
+      "0"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "titleExtracted:",
+      "false"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "autodetect_on_failure:",
+      "null"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "_getArticleTitle called - document.title:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - h1 found:",
+      "SapienisM"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "_getArticleTitle - using document title:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "_getArticleTitle final result:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "Auto-detected title result:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "Trying body XPath:",
+      "//body"
+    ]
+  },
+  {
+    "t": 1766683680631,
+    "level": "log",
+    "args": [
+      "Body matched:",
+      "1",
+      "element(s) for XPath:",
+      "//body"
+    ]
+  },
+  {
+    "t": 1766683680634,
+    "level": "log",
+    "args": [
+      "Extraction successful using FiveFilters XPath rules"
+    ]
+  },
+  {
+    "t": 1766683680635,
+    "category": "extraction",
+    "message": "Article extracted",
+    "details": {
+      "title": "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone",
+      "contentLength": 530700,
+      "method": "unknown"
+    }
+  },
+  {
+    "t": 1766683680635,
+    "level": "log",
+    "args": [
+      "[bm:extraction]",
+      "Article extracted",
+      "{\"title\":\"Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone\",\"contentLength\":530700,\"method\":\"unknown\"}"
+    ]
+  },
+  {
+    "t": 1766683680635,
+    "level": "log",
+    "args": [
+      "Before fixImageUrls: 0 <p> tags, 0 <br> tags, 312 newlines"
+    ]
+  },
+  {
+    "t": 1766683680641,
+    "level": "log",
+    "args": [
+      "After fixImageUrls: 0 <p> tags, 0 <br> tags, 312 newlines"
+    ]
+  },
+  {
+    "t": 1766683680642,
+    "level": "log",
+    "args": [
+      "Encoding content with: 0 <p> tags, 0 <br> tags, 312 newlines"
+    ]
+  },
+  {
+    "t": 1766683680642,
+    "level": "log",
+    "args": [
+      "Content to encode starts with:",
+      "var bodyCacheable = true;\n \n var exclusionReason = {\"shouldRender\":true,\"forced\":false};\n var ssrInf"
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "Successfully encoded",
+      "531348",
+      "chars to base64"
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "=== ARTICLE EXTRACTION DEBUG ==="
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "Title:",
+      "Burning Bridges, Skipping Stones: Suffering in the Israel-Hamas War urges us to find the philosopher’s stone"
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "Content length:",
+      "531348"
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "Text content length:",
+      "446071"
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "Extraction method:",
+      null
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "Extraction note:",
+      null
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "Has images:",
+      null
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "Content structure:",
+      "44",
+      "<p> tags,",
+      "37",
+      "<br> tags"
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "Content preview:",
+      "\n<script type=\"text/javascript\">\n var bodyCacheable = true;\n \n var exclusionReason = {\"shouldRender\":true,\"forced\":false};\n var ssrInfo = {\"cacheExclusionReason\":\"\",\"renderBodyTime\":2503,\"renderTimeSt..."
+    ]
+  },
+  {
+    "t": 1766683680649,
+    "level": "log",
+    "args": [
+      "=== END EXTRACTION DEBUG ==="
+    ]
+  }
+]
