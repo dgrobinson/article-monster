@@ -123,10 +123,42 @@
 
         .blocked-app-hosts {
             margin-top: 6px;
+        }
+
+        .blocked-app-host-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 6px 0;
+            border-top: 1px solid #eef0f2;
+        }
+
+        .blocked-app-host-row:first-child {
+            border-top: none;
+            padding-top: 0;
+        }
+
+        .blocked-app-host-label {
             color: #555;
             font-family: 'Monaco', 'Consolas', monospace;
             font-size: 12px;
             word-break: break-all;
+        }
+
+        .blocked-app-remove {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .blocked-app-remove:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -377,7 +409,25 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
 
                 const hosts = document.createElement('div');
                 hosts.className = 'blocked-app-hosts';
-                hosts.textContent = Array.isArray(app.hosts) ? app.hosts.join(', ') : '';
+                const hostList = Array.isArray(app.hosts) ? app.hosts : [];
+                hostList.forEach(host => {
+                    const row = document.createElement('div');
+                    row.className = 'blocked-app-host-row';
+
+                    const label = document.createElement('div');
+                    label.className = 'blocked-app-host-label';
+                    label.textContent = host;
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'blocked-app-remove';
+                    removeBtn.textContent = 'Remove';
+                    removeBtn.onclick = () => removeBlockedWebApp(app.name || 'Blocked app', host, removeBtn);
+
+                    row.appendChild(label);
+                    row.appendChild(removeBtn);
+                    hosts.appendChild(row);
+                });
 
                 card.appendChild(title);
                 card.appendChild(hosts);
@@ -499,6 +549,67 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
                 });
 
             return false;
+        }
+
+        function removeBlockedWebApp(appName, host, button) {
+            const statusEl = document.getElementById('blocked-webapps-form-status');
+            const tokenEl = document.getElementById('blocked-app-token');
+            const token = tokenEl && tokenEl.value ? tokenEl.value.trim() : '';
+
+            if (!token) {
+                if (statusEl) {
+                    statusEl.textContent = 'Admin token required to remove.';
+                    statusEl.style.color = '#c0392b';
+                }
+                return;
+            }
+
+            const confirmed = window.confirm('Remove ' + host + ' from ' + appName + '?');
+            if (!confirmed) return;
+
+            if (button) {
+                button.disabled = true;
+            }
+
+            if (statusEl) {
+                statusEl.textContent = 'Removing...';
+                statusEl.style.color = '#7f8c8d';
+            }
+
+            fetch('/blocked-webapps/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'x-blocklist-token': token
+                },
+                body: JSON.stringify({
+                    name: appName,
+                    host: host
+                })
+            })
+                .then(response => response.json().then(data => ({ ok: response.ok, data })))
+                .then(result => {
+                    if (!result.ok) {
+                        const message = result.data && (result.data.error || result.data.message) ? (result.data.error || result.data.message) : 'Failed to update block list.';
+                        throw new Error(message);
+                    }
+                    if (statusEl) {
+                        statusEl.textContent = 'Removed ' + host + '.';
+                        statusEl.style.color = '#155724';
+                    }
+                    loadBlockedWebApps();
+                })
+                .catch(error => {
+                    if (statusEl) {
+                        statusEl.textContent = error.message || 'Failed to update block list.';
+                        statusEl.style.color = '#c0392b';
+                    }
+                })
+                .finally(() => {
+                    if (button) {
+                        button.disabled = false;
+                    }
+                });
         }
 
         // Initialize

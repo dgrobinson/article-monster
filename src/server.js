@@ -353,6 +353,22 @@ function authorizeBlocklistEdit(req, res) {
   return true;
 }
 
+function authorizeBlocklistRemoval(req, res) {
+  const token = process.env.BLOCKLIST_EDIT_TOKEN;
+  if (!token) {
+    res.status(403).json({ error: 'Blocklist removal disabled' });
+    return false;
+  }
+
+  const provided = req.get('x-blocklist-token') || req.body?.token || req.query.token;
+  if (provided !== token) {
+    res.status(401).json({ error: 'Unauthorized' });
+    return false;
+  }
+
+  return true;
+}
+
 // Endpoint to report a broken extraction which opens a GitHub issue
 app.post('/report-issue', async (req, res) => {
   try {
@@ -499,6 +515,61 @@ app.post('/blocked-webapps', (req, res) => {
     added,
     app: target.name,
     apps
+  });
+});
+
+app.post('/blocked-webapps/remove', (req, res) => {
+  if (!authorizeBlocklistRemoval(req, res)) return;
+
+  const { name, host } = req.body || {};
+  if (!host) {
+    return res.status(400).json({ error: 'host is required' });
+  }
+
+  const normalizedHost = normalizeHostPattern(host);
+  if (!normalizedHost) {
+    return res.status(400).json({ error: 'Invalid host' });
+  }
+
+  const { payload, apps } = readBlockedWebAppsFile();
+  const targetName = typeof name === 'string' && name.trim() ? name.trim().toLowerCase() : null;
+  const removed = [];
+
+  const nextApps = apps
+    .map((app) => {
+      const appName = app.name || DEFAULT_BLOCKED_APP_NAME;
+      const hosts = Array.isArray(app.hosts) ? app.hosts.slice() : [];
+      if (!targetName || appName.toLowerCase() === targetName) {
+        const filtered = hosts.filter(entry => entry.toLowerCase() !== normalizedHost);
+        if (filtered.length !== hosts.length) {
+          removed.push({ app: appName, host: normalizedHost });
+        }
+        return { name: appName, hosts: filtered };
+      }
+      return { name: appName, hosts };
+    })
+    .filter(app => app.hosts.length > 0);
+
+  if (removed.length === 0) {
+    return res.status(404).json({ error: 'Host not found' });
+  }
+
+  const updatedPayload = payload && typeof payload === 'object' ? { ...payload, apps: nextApps } : { apps: nextApps };
+  try {
+    fs.writeFileSync(BLOCKED_WEBAPPS_PATH, JSON.stringify(updatedPayload, null, 2) + '\n');
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to update blocklist',
+      message: error.message
+    });
+  }
+
+  blockedWebAppsCache = nextApps;
+
+  return res.json({
+    success: true,
+    removed,
+    apps: nextApps
   });
 });
 
