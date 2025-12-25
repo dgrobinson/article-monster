@@ -224,12 +224,12 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
 
     <div class="section">
         <h2>🐞 Report a broken extraction</h2>
-        <p>If a page doesn't parse correctly, open a GitHub issue so you can paste screenshots.</p>
+        <p>If a page doesn't parse correctly, open a freeform GitHub issue and paste screenshots there.</p>
         <p><small>You'll need to be logged into GitHub. A new tab will open.</small></p>
         <form id="report-form" onsubmit="return openIssue(event)">
             <div style="margin-bottom: 10px;">
-                <label for="issue-url"><strong>Article URL</strong></label><br>
-                <input id="issue-url" type="url" placeholder="https://example.com/article" required style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
+                <label for="issue-url"><strong>Article URL (optional)</strong></label><br>
+                <input id="issue-url" type="text" placeholder="https://example.com/article" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:6px;">
             </div>
             <div style="margin-bottom: 10px;">
                 <label for="issue-notes"><strong>Notes (optional)</strong></label><br>
@@ -327,32 +327,22 @@ ZOTERO_TEST_COLLECTION=collection-key-optional
 
             const repo = document.body.dataset.githubRepo || 'dgrobinson/article-monster';
             let hostname = '';
-            try {
-                hostname = new URL(url).hostname;
-            } catch (err) {
-                statusEl.textContent = '❌ Please enter a valid URL.';
-                statusEl.style.color = '#721c24';
-                return false;
+            if (url) {
+                try {
+                    hostname = new URL(url).hostname;
+                } catch (err) {
+                    hostname = '';
+                }
             }
 
-            const title = `Broken extraction: ${hostname}`;
+            const title = hostname ? `Broken extraction: ${hostname}` : 'Broken extraction';
             const body = [
-                `URL: ${url}`,
+                url ? `URL: ${url}` : 'URL:',
                 '',
-                notes ? `Notes:\n${notes}` : 'Notes:',
-                '',
-                'Screenshots: (paste here)',
-                '',
-                'Checklist:',
-                '- [ ] Reproduce with bookmarklet',
-                '- [ ] Check /site-config for hostname',
-                '- [ ] Compare against FiveFilters reference',
-                '- [ ] Document extraction differences',
-                '- [ ] Add golden test case',
-                '- [ ] Consider custom extraction logic if needed'
+                notes ? `Notes:\n${notes}` : 'Notes:'
             ].join('\n');
 
-            const issueUrl = `https://github.com/${repo}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}`;
+            const issueUrl = `https://github.com/${repo}/issues/new?title=${encodeURIComponent(title)}&body=${encodeURIComponent(body)}&labels=${encodeURIComponent('bug,extraction')}`;
             const popup = window.open(issueUrl, '_blank', 'noopener');
             if (!popup) {
                 statusEl.innerHTML = `Popup blocked. <a href="${issueUrl}" target="_blank" rel="noopener noreferrer">Open the GitHub issue</a>`;

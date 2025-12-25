@@ -188,18 +188,12 @@ app.post('/report-issue', async (req, res) => {
     const body = [
       `URL: ${url}`,
       '',
-      notes ? `Notes:\n\n${notes}` : null,
+      notes ? `Notes:\n${notes}` : 'Notes:',
       '',
       `Reported at: ${new Date().toISOString()}`,
       `Reported from: ${clientIp}`,
       '',
-      'Checklist:',
-      '- [ ] Reproduce with bookmarklet',
-      '- [ ] Check /site-config for hostname',
-      '- [ ] Compare against FiveFilters reference',
-      '- [ ] Document extraction differences',
-      '- [ ] Add golden test case',
-      '- [ ] Consider custom extraction logic if needed'
+      'Agent fill-in: logs, config, repro, and comparison notes.'
     ].filter(Boolean).join('\n');
 
     const issue = await issues.createIssue({
