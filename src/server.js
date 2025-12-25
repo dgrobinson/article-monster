@@ -289,7 +289,16 @@ app.post('/process-article', async (req, res) => {
   const debugLogger = new DebugLogger();
 
   try {
-    const { url, article, debugInfo } = req.body;
+    const {
+      url,
+      article,
+      debugInfo,
+      page_html: pageHtml,
+      title: titleOverride,
+      debug_capture_only: debugCaptureOnlyRaw
+    } = req.body || {};
+    const debugCaptureOnly = debugCaptureOnlyRaw === true;
+    const articlePayload = article || {};
 
     // Store bookmarklet debug info if provided
     const bookmarkletLog = debugInfo || [];
@@ -311,19 +320,24 @@ app.post('/process-article', async (req, res) => {
       return res.status(400).json({ error: 'URL is required' });
     }
 
-    if (!article) {
+    if (!article && !debugCaptureOnly) {
       return res.status(400).json({ error: 'Extracted article content is required' });
+    }
+
+    if (!articlePayload.title && titleOverride) {
+      articlePayload.title = titleOverride;
     }
 
     debugLogger.log('request', 'Article processing started', {
       url,
-      title: article.title,
-      hasContent: !!article.content,
-      hasBase64: !!article.content_b64
+      title: articlePayload.title,
+      hasContent: !!articlePayload.content,
+      hasBase64: !!articlePayload.content_b64,
+      debugCaptureOnly
     });
 
     // Compare raw content with base64 decoded content to debug paragraph issue
-    const rawContent = article.content;
+    const rawContent = articlePayload.content;
     let decodedContent = null;
     const rawStats = summarizeHtmlContent(rawContent);
     let decodedStats = null;
@@ -331,11 +345,11 @@ app.post('/process-article', async (req, res) => {
 
     debugLogger.log('content', 'raw-content-stats', rawStats);
 
-    if (article.content_b64) {
+    if (articlePayload.content_b64) {
       console.log('Received both raw and base64 content, comparing...');
       try {
         // Decode base64
-        decodedContent = Buffer.from(article.content_b64, 'base64').toString('utf8');
+        decodedContent = Buffer.from(articlePayload.content_b64, 'base64').toString('utf8');
         decodedStats = summarizeHtmlContent(decodedContent);
         debugLogger.log('content', 'decoded-content-stats', decodedStats);
 
@@ -370,21 +384,21 @@ app.post('/process-article', async (req, res) => {
         // Use decoded content if it's complete (longer than raw, indicating raw was truncated)
         if (decodedContent.length > rawContent.length) {
           console.log('Using base64 decoded content (longer, likely complete)');
-          article.content = decodedContent;
+          articlePayload.content = decodedContent;
         } else {
           console.log('Using raw content (same or longer than decoded)');
-          article.content = rawContent;
+          articlePayload.content = rawContent;
         }
       } catch (e) {
         console.warn('Failed to decode content_b64:', e.message);
-        article.content = rawContent;
+        articlePayload.content = rawContent;
       }
     } else if (rawContent) {
       // Only raw content available
       debugLogger.log('content', 'raw-only-content', rawStats);
     }
 
-    selectedStats = summarizeHtmlContent(article.content);
+    selectedStats = summarizeHtmlContent(articlePayload.content);
     debugLogger.log('content', 'selected-content-stats', selectedStats);
     const contentDiagnostics = {
       raw: rawStats,
@@ -392,14 +406,14 @@ app.post('/process-article', async (req, res) => {
       selected: selectedStats
     };
 
-    debugLogger.log('processing', `Processing article: ${article.title || url}`);
+    debugLogger.log('processing', `Processing article: ${articlePayload.title || url}`);
 
     // Log article size for debugging
     debugLogger.log('extraction', 'Article extraction stats', {
-      title: article.title,
-      contentLength: article.content?.length || 0,
-      textContentLength: article.textContent?.length || 0,
-      hasContent: !!article.content,
+      title: articlePayload.title,
+      contentLength: articlePayload.content?.length || 0,
+      textContentLength: articlePayload.textContent?.length || 0,
+      hasContent: !!articlePayload.content,
       paragraphCount: selectedStats.paragraphCount,
       lineBreakCount: selectedStats.lineBreakCount,
       newlineCount: selectedStats.newlineCount,
@@ -415,7 +429,7 @@ app.post('/process-article', async (req, res) => {
 
     // Article content is already extracted by the bookmarklet
     const processedArticle = {
-      ...article,
+      ...articlePayload,
       url: url,
       processedAt: new Date().toISOString()
     };
@@ -427,6 +441,45 @@ app.post('/process-article', async (req, res) => {
       configUsed = await configFetcher.getConfigForSite(hostname);
     } catch {
       debugLogger.log('config', 'No site config found', { hostname });
+    }
+
+    const pageHtmlLength = typeof pageHtml === 'string' ? pageHtml.length : 0;
+    if (pageHtmlLength > 0) {
+      debugLogger.log('debug', 'Captured page HTML', { length: pageHtmlLength });
+    }
+
+    if (debugCaptureOnly) {
+      const response = {
+        success: true,
+        debugOnly: true,
+        article: {
+          title: processedArticle.title,
+          url: processedArticle.url
+        },
+        kindle: 'skipped',
+        zotero: 'skipped'
+      };
+
+      const extractionData = {
+        url,
+        title: processedArticle.title || url || 'Unknown',
+        success: true,
+        extraction_status: 'debug-only',
+        kindle_status: response.kindle,
+        zotero_status: response.zotero,
+        bookmarklet_log: bookmarkletLog,
+        payload: req.body,
+        config_used: configUsed,
+        content_diagnostics: contentDiagnostics,
+        email_content: '',
+        epub_base64: ''
+      };
+
+      debugLogger.captureToGitHub(extractionData).catch(err => {
+        console.error('Debug capture failed (non-blocking):', err.message);
+      });
+
+      return res.json(response);
     }
 
     debugLogger.log('sending', 'Sending to platforms', { kindle: true, zotero: true });
@@ -458,7 +511,7 @@ app.post('/process-article', async (req, res) => {
     // Capture debug output to GitHub if enabled
     const extractionData = {
       url,
-      title: article.title,
+      title: processedArticle.title,
       success: response.kindle === 'sent' || response.zotero === 'sent',
       extraction_status: 'success',
       kindle_status: response.kindle,
