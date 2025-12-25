@@ -125,6 +125,14 @@ const FALLBACK_BLOCKED_WEBAPPS = [
   }
 ];
 let blockedWebAppsCache = null;
+const DEFAULT_BLOCKED_APP_NAME = 'Custom';
+
+function cloneBlockedApps(apps) {
+  return (apps || []).map((app) => ({
+    name: app.name,
+    hosts: Array.isArray(app.hosts) ? app.hosts.slice() : []
+  }));
+}
 
 function normalizeBlockedWebApps(payload) {
   if (!payload || typeof payload !== 'object') return null;
@@ -157,12 +165,50 @@ function loadBlockedWebApps() {
   } catch (error) {
     console.warn('Blocked web apps config load failed:', error.message);
   }
-  blockedWebAppsCache = FALLBACK_BLOCKED_WEBAPPS;
+  blockedWebAppsCache = cloneBlockedApps(FALLBACK_BLOCKED_WEBAPPS);
   return blockedWebAppsCache;
+}
+
+function readBlockedWebAppsFile() {
+  let payload = null;
+  try {
+    const raw = fs.readFileSync(BLOCKED_WEBAPPS_PATH, 'utf8');
+    payload = JSON.parse(raw);
+  } catch (error) {
+    console.warn('Blocked web apps config read failed:', error.message);
+  }
+
+  const normalizedApps = normalizeBlockedWebApps(payload);
+  return {
+    payload: payload && typeof payload === 'object' ? payload : {},
+    apps: normalizedApps ? cloneBlockedApps(normalizedApps) : cloneBlockedApps(FALLBACK_BLOCKED_WEBAPPS)
+  };
 }
 
 function normalizeHostname(hostname) {
   return (hostname || '').toLowerCase();
+}
+
+function normalizeHostPattern(input) {
+  if (!input) return null;
+  let value = String(input).trim().toLowerCase();
+  if (!value) return null;
+
+  if (value.includes('://')) {
+    value = value.split('://')[1];
+  }
+  value = value.split('/')[0];
+  value = value.split('?')[0];
+  value = value.split('#')[0];
+  value = value.replace(/:\d+$/, '');
+  value = value.replace(/\.$/, '');
+  if (value.startsWith('.')) {
+    value = `*${value}`;
+  }
+  if (value.includes('*') && !value.startsWith('*.')) {
+    return null;
+  }
+  return value || null;
 }
 
 function hostMatchesPattern(hostname, pattern) {
@@ -294,6 +340,19 @@ function authorizeKindleArchive(req, res) {
   return true;
 }
 
+function authorizeBlocklistEdit(req, res) {
+  const token = process.env.BLOCKLIST_EDIT_TOKEN;
+  if (token) {
+    const provided = req.get('x-blocklist-token') || req.body?.token || req.query.token;
+    if (provided !== token) {
+      res.status(401).json({ error: 'Unauthorized' });
+      return false;
+    }
+  }
+
+  return true;
+}
+
 // Endpoint to report a broken extraction which opens a GitHub issue
 app.post('/report-issue', async (req, res) => {
   try {
@@ -377,6 +436,70 @@ app.get('/site-config/:hostname', async (req, res) => {
       message: error.message
     });
   }
+});
+
+app.post('/blocked-webapps', (req, res) => {
+  if (!authorizeBlocklistEdit(req, res)) return;
+
+  const { name, host, hosts } = req.body || {};
+  const hostList = Array.isArray(hosts) ? hosts : (host ? [host] : []);
+  if (hostList.length === 0) {
+    return res.status(400).json({ error: 'host is required' });
+  }
+
+  const normalizedHosts = hostList
+    .map(normalizeHostPattern)
+    .filter(Boolean);
+
+  if (normalizedHosts.length === 0) {
+    return res.status(400).json({ error: 'No valid hosts provided' });
+  }
+
+  const { payload, apps } = readBlockedWebAppsFile();
+  const appName = typeof name === 'string' && name.trim() ? name.trim() : DEFAULT_BLOCKED_APP_NAME;
+  let target = apps.find(app => app.name.toLowerCase() === appName.toLowerCase());
+  if (!target) {
+    target = { name: appName, hosts: [] };
+    apps.push(target);
+  }
+
+  const added = [];
+  normalizedHosts.forEach((hostPattern) => {
+    const alreadyListed = target.hosts.some(existing => existing.toLowerCase() === hostPattern);
+    if (!alreadyListed) {
+      target.hosts.push(hostPattern);
+      added.push(hostPattern);
+    }
+  });
+
+  if (added.length === 0) {
+    return res.json({
+      success: true,
+      message: 'Already blocked',
+      apps
+    });
+  }
+
+  target.hosts.sort();
+
+  const updatedPayload = payload && typeof payload === 'object' ? { ...payload, apps } : { apps };
+  try {
+    fs.writeFileSync(BLOCKED_WEBAPPS_PATH, JSON.stringify(updatedPayload, null, 2) + '\n');
+  } catch (error) {
+    return res.status(500).json({
+      error: 'Failed to update blocklist',
+      message: error.message
+    });
+  }
+
+  blockedWebAppsCache = apps;
+
+  return res.json({
+    success: true,
+    added,
+    app: target.name,
+    apps
+  });
 });
 
 // Main bookmarklet endpoint
