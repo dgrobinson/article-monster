@@ -80,6 +80,18 @@
     } catch {}
   }
 
+  function getBlockedWebApp(hostname) {
+    var normalized = (hostname || '').toLowerCase();
+    if (!normalized) return null;
+    if (normalized === 'docs.google.com' || normalized === 'drive.google.com') {
+      return 'Google Docs or Drive';
+    }
+    if (normalized === 'notion.so' || normalized.endsWith('.notion.so')) {
+      return 'Notion';
+    }
+    return null;
+  }
+
   // Configuration - replace with your actual service URL
   const SERVICE_URL = (window.__BOOKMARKLET_SERVICE_URL__ || 'https://seal-app-t4vff.ondigitalocean.app/process-article');
   var MAX_PAGINATION_PAGES = 5;
@@ -94,6 +106,17 @@
     }
 
     window.articleBookmarkletProcessing = true;
+
+    var blockedApp = getBlockedWebApp(window.location.hostname);
+    if (blockedApp) {
+      logDebug('guard', 'Blocked authenticated web app extraction', {
+        hostname: window.location.hostname,
+        app: blockedApp
+      });
+      showResult('Blocked for safety.\n\nThis looks like a private web app (' + blockedApp + '). Article Monster does not extract from authenticated web apps to avoid sending private data to the server.\n\nIf this is a public article, open the public URL and try again.');
+      window.articleBookmarkletProcessing = false;
+      return;
+    }
   }
 
   // Simplified Readability implementation (must be defined before use)

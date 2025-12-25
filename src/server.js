@@ -103,6 +103,18 @@ function isRateLimited(ip) {
   return false;
 }
 
+function getBlockedWebApp(hostname) {
+  const normalized = (hostname || '').toLowerCase();
+  if (!normalized) return null;
+  if (normalized === 'docs.google.com' || normalized === 'drive.google.com') {
+    return 'Google Docs or Drive';
+  }
+  if (normalized === 'notion.so' || normalized.endsWith('.notion.so')) {
+    return 'Notion';
+  }
+  return null;
+}
+
 function validateReportUrl(url) {
   let parsedUrl;
   try {
@@ -300,6 +312,33 @@ app.post('/process-article', async (req, res) => {
     const debugCaptureOnly = debugCaptureOnlyRaw === true;
     const articlePayload = article || {};
 
+    if (!url) {
+      return res.status(400).json({ error: 'URL is required' });
+    }
+
+    let parsedUrl;
+    try {
+      parsedUrl = new URL(url);
+    } catch {
+      return res.status(400).json({ error: 'Invalid URL' });
+    }
+
+    const blockedApp = getBlockedWebApp(parsedUrl.hostname);
+    if (blockedApp) {
+      debugLogger.log('request', 'Blocked authenticated web app extraction', {
+        url,
+        hostname: parsedUrl.hostname,
+        app: blockedApp,
+        debugCaptureOnly
+      });
+      return res.status(403).json({
+        error: 'Blocked for safety',
+        blocked: true,
+        app: blockedApp,
+        hostname: parsedUrl.hostname
+      });
+    }
+
     // Store bookmarklet debug info if provided
     const bookmarkletLog = debugInfo || [];
 
@@ -314,10 +353,6 @@ app.post('/process-article', async (req, res) => {
           // Best-effort only
         }
       });
-    }
-
-    if (!url) {
-      return res.status(400).json({ error: 'URL is required' });
     }
 
     if (!article && !debugCaptureOnly) {

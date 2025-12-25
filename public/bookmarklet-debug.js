@@ -9,6 +9,13 @@
   }
   window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = true;
 
+  var blockedApp = getBlockedWebApp(window.location.hostname);
+  if (blockedApp) {
+    window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = false;
+    alert('Blocked for safety. This looks like a private web app (' + blockedApp + '). Article Monster does not extract from authenticated web apps.');
+    return;
+  }
+
   var rawHTML = document.documentElement.outerHTML;
   var fullHTML = rawHTML
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '[SCRIPT REMOVED]')
@@ -93,6 +100,18 @@
       }
     }
     return window.location.origin;
+  }
+
+  function getBlockedWebApp(hostname) {
+    var normalized = (hostname || '').toLowerCase();
+    if (!normalized) return null;
+    if (normalized === 'docs.google.com' || normalized === 'drive.google.com') {
+      return 'Google Docs or Drive';
+    }
+    if (normalized === 'notion.so' || normalized.endsWith('.notion.so')) {
+      return 'Notion';
+    }
+    return null;
   }
 
   function captureDebugSnapshot(payload) {
