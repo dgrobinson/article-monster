@@ -251,7 +251,8 @@ function createSingleChapterEpub(article) {
   return [
     {
       title: article.title,
-      data: createEpubContent(article)
+      data: createEpubContent(article),
+      beforeToc: true
     }
   ];
 }
