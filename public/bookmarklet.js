@@ -2012,6 +2012,20 @@
           logContentStats('post-extraction', article.content, article.textContent, {
             method: article.extractionMethod || 'unknown'
           });
+
+          var sanitized = sanitizeExtractedContent(article.content);
+          if (sanitized && sanitized.content) {
+            if (sanitized.content !== article.content) {
+              logContentStats('post-sanitize', sanitized.content, sanitized.textContent, {
+                method: article.extractionMethod || 'unknown'
+              });
+            }
+            article.content = sanitized.content;
+            if (sanitized.textContent !== null && sanitized.textContent !== undefined) {
+              article.textContent = sanitized.textContent;
+              article.length = sanitized.textContent.length;
+            }
+          }
         }
 
         // Debug: Check content structure before fixImageUrls
@@ -2275,6 +2289,39 @@
     } catch (e) {
       console.error('Error fixing image URLs:', e);
       return html; // Return original HTML if fixing fails
+    }
+  }
+
+  function sanitizeExtractedContent(html) {
+    if (!html || typeof html !== 'string') {
+      return { content: html || '', textContent: null };
+    }
+
+    try {
+      var container = document.createElement('div');
+      container.innerHTML = html;
+
+      var indicatorNodes = container.querySelectorAll('#article-bookmarklet-indicator');
+      for (var i = indicatorNodes.length - 1; i >= 0; i--) {
+        if (indicatorNodes[i] && indicatorNodes[i].remove) {
+          indicatorNodes[i].remove();
+        }
+      }
+
+      var junkNodes = container.querySelectorAll('script, style, noscript, template');
+      for (var j = junkNodes.length - 1; j >= 0; j--) {
+        if (junkNodes[j] && junkNodes[j].remove) {
+          junkNodes[j].remove();
+        }
+      }
+
+      return {
+        content: container.innerHTML,
+        textContent: container.textContent || container.innerText || ''
+      };
+    } catch (e) {
+      console.warn('sanitizeExtractedContent failed:', e);
+      return { content: html, textContent: null };
     }
   }
 
