@@ -1,6 +1,21 @@
 const { createTransport } = require('nodemailer');
 const { getPayloadMetrics, storeKindlePayload } = require('./kindleArchive');
 
+function summarizeHtmlContent(html, tailLength) {
+  const safeHtml = typeof html === 'string' ? html : '';
+  const text = safeHtml.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+  const limit = Number.isFinite(tailLength) ? tailLength : 200;
+  const tailPreview = text.slice(Math.max(0, text.length - limit));
+  return {
+    htmlLength: safeHtml.length,
+    textLength: text.length,
+    paragraphCount: (safeHtml.match(/<p[^>]*>/gi) || []).length,
+    lineBreakCount: (safeHtml.match(/<br[^>]*>/gi) || []).length,
+    newlineCount: (safeHtml.match(/\n/g) || []).length,
+    tailPreview
+  };
+}
+
 async function sendToKindle(article, debugLogger = null) {
   try {
     const log = (category, message, data) => {
@@ -33,6 +48,8 @@ async function sendToKindle(article, debugLogger = null) {
     // Create clean HTML content for Kindle
     const htmlContent = createKindleHTML(article);
     const payloadMetrics = getPayloadMetrics(htmlContent);
+
+    log('kindle', 'Kindle HTML stats', summarizeHtmlContent(htmlContent));
 
     log('kindle', 'Kindle payload metrics', {
       contentLength: payloadMetrics.contentLength,

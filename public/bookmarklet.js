@@ -47,6 +47,39 @@
     });
   })();
 
+  function summarizeContentStats(html, textOverride) {
+    var safeHtml = typeof html === 'string' ? html : '';
+    var text = (typeof textOverride === 'string' && textOverride.trim().length > 0)
+      ? textOverride
+      : safeHtml.replace(/<[^>]*>/g, ' ');
+    text = text.replace(/\s+/g, ' ').trim();
+    var tailLength = 240;
+    var tail = text.slice(Math.max(0, text.length - tailLength));
+    return {
+      htmlLength: safeHtml.length,
+      textLength: text.length,
+      paragraphCount: (safeHtml.match(/<p[^>]*>/gi) || []).length,
+      lineBreakCount: (safeHtml.match(/<br[^>]*>/gi) || []).length,
+      newlineCount: (safeHtml.match(/\n/g) || []).length,
+      tailPreview: tail
+    };
+  }
+
+  function logContentStats(stage, html, textOverride, extra) {
+    try {
+      var stats = summarizeContentStats(html, textOverride);
+      stats.stage = stage;
+      if (extra && typeof extra === 'object') {
+        for (var key in extra) {
+          if (Object.prototype.hasOwnProperty.call(extra, key)) {
+            stats[key] = extra[key];
+          }
+        }
+      }
+      logDebug('content', 'content-stats', stats);
+    } catch {}
+  }
+
   // Configuration - replace with your actual service URL
   const SERVICE_URL = (window.__BOOKMARKLET_SERVICE_URL__ || 'https://seal-app-t4vff.ondigitalocean.app/process-article');
   var MAX_PAGINATION_PAGES = 5;
@@ -679,6 +712,10 @@
               result.content = cleanElement.innerHTML;
               result.textContent = cleanElement.textContent || cleanElement.innerText || '';
               result.length = result.textContent.length;
+              logContentStats('site-config-body', result.content, result.textContent, {
+                xpath: config.body[i],
+                elementCount: elements.length
+              });
 
               // Only accept if we have some content (basic sanity check)
               if (result.textContent && result.textContent.trim().length > 0) {
@@ -1971,6 +2008,12 @@
           method: article.extractionMethod || 'unknown'
         });
 
+        if (article.content) {
+          logContentStats('post-extraction', article.content, article.textContent, {
+            method: article.extractionMethod || 'unknown'
+          });
+        }
+
         // Debug: Check content structure before fixImageUrls
         if (article.content) {
           const beforeBrCount = (article.content.match(/<br>/gi) || []).length;
@@ -1979,7 +2022,9 @@
           console.log(`Before fixImageUrls: ${beforePCount} <p> tags, ${beforeBrCount} <br> tags, ${beforeNewlineCount} newlines`);
 
           // Fix image URLs to ensure they're absolute
+          logContentStats('pre-fix-images', article.content, null);
           article.content = fixImageUrls(article.content);
+          logContentStats('post-fix-images', article.content, null);
 
           // Debug: Check content structure after fixImageUrls
           const afterBrCount = (article.content.match(/<br>/gi) || []).length;
@@ -2005,6 +2050,7 @@
         let contentB64 = null;
         try {
           if (enhancedArticle.content) {
+            logContentStats('pre-encode', enhancedArticle.content, enhancedArticle.textContent);
             // Debug: Check what we're encoding
             const brCount = (enhancedArticle.content.match(/<br>/gi) || []).length;
             const newlineCount = (enhancedArticle.content.match(/\n/g) || []).length;
@@ -2020,9 +2066,14 @@
             // But this might be altering whitespace characters
             contentB64 = btoa(unescape(encodeURIComponent(enhancedArticle.content)));
             console.log('Successfully encoded', enhancedArticle.content.length, 'chars to base64');
+            logDebug('content', 'base64-encoded', {
+              contentLength: enhancedArticle.content.length,
+              base64Length: contentB64.length
+            });
           }
         } catch (e) {
           console.error('Failed to base64-encode content:', e);
+          logDebug('content', 'base64-encode-failed', { error: e.message });
         }
 
         var debugHookResult = null;

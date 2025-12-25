@@ -137,6 +137,50 @@ function validateReportUrl(url) {
   return parsedUrl;
 }
 
+function compactWhitespace(text) {
+  return text.replace(/\s+/g, ' ').trim();
+}
+
+function summarizeHtmlContent(html, tailLength) {
+  const safeHtml = typeof html === 'string' ? html : '';
+  const text = compactWhitespace(safeHtml.replace(/<[^>]*>/g, ' '));
+  const limit = Number.isFinite(tailLength) ? tailLength : 200;
+  const tailPreview = text.slice(Math.max(0, text.length - limit));
+  return {
+    htmlLength: safeHtml.length,
+    textLength: text.length,
+    paragraphCount: (safeHtml.match(/<p[^>]*>/gi) || []).length,
+    lineBreakCount: (safeHtml.match(/<br[^>]*>/gi) || []).length,
+    newlineCount: (safeHtml.match(/\n/g) || []).length,
+    tailPreview
+  };
+}
+
+function buildContentDiagnosticsFromPayload(article) {
+  const rawStats = summarizeHtmlContent(article?.content || '');
+  let decodedStats = null;
+  let selectedStats = rawStats;
+
+  if (article?.content_b64) {
+    try {
+      const decoded = Buffer.from(article.content_b64, 'base64').toString('utf8');
+      decodedStats = summarizeHtmlContent(decoded);
+      if (decodedStats.htmlLength > rawStats.htmlLength) {
+        selectedStats = decodedStats;
+      }
+    } catch {
+      decodedStats = null;
+      selectedStats = rawStats;
+    }
+  }
+
+  return {
+    raw: rawStats,
+    decoded: decodedStats,
+    selected: selectedStats
+  };
+}
+
 function authorizeKindleArchive(req, res) {
   if (process.env.ENABLE_KINDLE_ARCHIVE_DEBUG !== 'true') {
     res.status(404).json({ error: 'Not found' });
@@ -281,12 +325,19 @@ app.post('/process-article', async (req, res) => {
     // Compare raw content with base64 decoded content to debug paragraph issue
     const rawContent = article.content;
     let decodedContent = null;
+    const rawStats = summarizeHtmlContent(rawContent);
+    let decodedStats = null;
+    let selectedStats = null;
+
+    debugLogger.log('content', 'raw-content-stats', rawStats);
 
     if (article.content_b64) {
       console.log('Received both raw and base64 content, comparing...');
       try {
         // Decode base64
         decodedContent = Buffer.from(article.content_b64, 'base64').toString('utf8');
+        decodedStats = summarizeHtmlContent(decodedContent);
+        debugLogger.log('content', 'decoded-content-stats', decodedStats);
 
         // Compare structures
         const rawBrCount = (rawContent.match(/<br>/gi) || []).length;
@@ -302,10 +353,18 @@ app.post('/process-article', async (req, res) => {
 
         if (rawContent.length !== decodedContent.length) {
           console.warn(`Content length mismatch! Raw: ${rawContent.length}, Decoded: ${decodedContent.length}`);
+          debugLogger.log('content', 'content-length-mismatch', {
+            rawLength: rawContent.length,
+            decodedLength: decodedContent.length
+          });
         }
 
         if (rawNewlineCount !== decodedNewlineCount) {
           console.warn(`Newline count mismatch! Raw: ${rawNewlineCount}, Decoded: ${decodedNewlineCount}`);
+          debugLogger.log('content', 'newline-count-mismatch', {
+            rawNewlineCount,
+            decodedNewlineCount
+          });
         }
 
         // Use decoded content if it's complete (longer than raw, indicating raw was truncated)
@@ -322,11 +381,16 @@ app.post('/process-article', async (req, res) => {
       }
     } else if (rawContent) {
       // Only raw content available
-      const brCount = (rawContent.match(/<br>/gi) || []).length;
-      const newlineCount = (rawContent.match(/\n/g) || []).length;
-      const pCount = (rawContent.match(/<p>/gi) || []).length;
-      console.log(`Raw content only: ${pCount} <p> tags, ${brCount} <br> tags, ${newlineCount} newlines`);
+      debugLogger.log('content', 'raw-only-content', rawStats);
     }
+
+    selectedStats = summarizeHtmlContent(article.content);
+    debugLogger.log('content', 'selected-content-stats', selectedStats);
+    const contentDiagnostics = {
+      raw: rawStats,
+      decoded: decodedStats,
+      selected: selectedStats
+    };
 
     debugLogger.log('processing', `Processing article: ${article.title || url}`);
 
@@ -335,13 +399,18 @@ app.post('/process-article', async (req, res) => {
       title: article.title,
       contentLength: article.content?.length || 0,
       textContentLength: article.textContent?.length || 0,
-      hasContent: !!article.content
+      hasContent: !!article.content,
+      paragraphCount: selectedStats.paragraphCount,
+      lineBreakCount: selectedStats.lineBreakCount,
+      newlineCount: selectedStats.newlineCount,
+      tailPreview: selectedStats.tailPreview
     });
 
     // Log content preview to check for truncation
-    if (article.content && article.content.length > 1000) {
-      const plainEnd = article.content.substring(Math.max(0, article.content.length - 500)).replace(/<[^>]*>/g, '').trim();
-      console.log('Content ends with:', plainEnd.substring(plainEnd.length - 200));
+    if (selectedStats.tailPreview) {
+      debugLogger.log('content', 'content-tail-preview', {
+        tailPreview: selectedStats.tailPreview
+      });
     }
 
     // Article content is already extracted by the bookmarklet
@@ -397,6 +466,7 @@ app.post('/process-article', async (req, res) => {
       bookmarklet_log: bookmarkletLog,
       payload: req.body,
       config_used: configUsed,
+      content_diagnostics: contentDiagnostics,
       email_content: results[0].value?.emailContent || '',
       epub_base64: results[1].value?.epubBase64 || results[0].value?.epubBase64 || ''
     };
@@ -412,6 +482,7 @@ app.post('/process-article', async (req, res) => {
     debugLogger.log('error', 'Error processing article', { error: error.message, stack: error.stack });
 
     // Still try to capture debug on error
+    const errorContentDiagnostics = buildContentDiagnosticsFromPayload(req.body.article || {});
     const extractionData = {
       url: req.body.url,
       title: req.body.article?.title || 'Unknown',
@@ -422,6 +493,7 @@ app.post('/process-article', async (req, res) => {
       bookmarklet_log: bookmarkletLog,
       payload: req.body,
       config_used: null,
+      content_diagnostics: errorContentDiagnostics,
       email_content: '',
       epub_base64: '',
       error: error.message
