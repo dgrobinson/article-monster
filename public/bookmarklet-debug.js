@@ -9,15 +9,19 @@
   }
   window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = true;
 
-  var fullHTML = document.documentElement.outerHTML
+  var rawHTML = document.documentElement.outerHTML;
+  var fullHTML = rawHTML
     .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '[SCRIPT REMOVED]')
     .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '[STYLE REMOVED]');
 
   var debugHandled = false;
+  var debugCaptureSent = false;
 
   window.__ARTICLE_MONSTER_DEBUG_HOOK__ = function(payload) {
     if (debugHandled) return { skipSend: true };
     debugHandled = true;
+
+    captureDebugSnapshot(payload);
 
     var article = (payload && payload.article) || {};
     var normalized = {
@@ -55,6 +59,7 @@
       extractionNote: 'No production extraction result returned'
     };
 
+    captureDebugSnapshot({ article: fallbackArticle, debugInfo: [] });
     showDebugComparison(fullHTML, fallbackArticle, true);
     window.__ARTICLE_MONSTER_DEBUG_ACTIVE__ = false;
   }, 12000);
@@ -88,6 +93,75 @@
       }
     }
     return window.location.origin;
+  }
+
+  function captureDebugSnapshot(payload) {
+    if (debugCaptureSent) return;
+    debugCaptureSent = true;
+
+    var serviceUrl = window.__BOOKMARKLET_SERVICE_URL__ || (getServiceOrigin() + '/process-article');
+    var articlePayload = (payload && payload.article) || {};
+    if (payload && payload.content_b64 && !articlePayload.content_b64) {
+      articlePayload = Object.assign({}, articlePayload, { content_b64: payload.content_b64 });
+    }
+
+    var body = {
+      url: window.location.href,
+      title: articlePayload.title || document.title || '',
+      article: articlePayload,
+      page_html: rawHTML,
+      debug_capture_only: true,
+      debug_source: 'bookmarklet-debug',
+      debugInfo: (payload && payload.debugInfo) || []
+    };
+
+    showUploadStatus('Uploading debug snapshot...');
+    fetch(serviceUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    }).then(function(response) {
+      if (!response.ok) {
+        throw new Error('Upload failed (' + response.status + ')');
+      }
+      return response.json().catch(function() { return {}; });
+    }).then(function() {
+      showUploadStatus('Debug snapshot uploaded.', false, true);
+    }).catch(function(error) {
+      showUploadStatus('Debug upload failed: ' + error.message, true);
+    });
+  }
+
+  function showUploadStatus(message, isError, autoHide) {
+    var id = 'article-monster-debug-upload';
+    var banner = document.getElementById(id);
+    if (!banner) {
+      banner = document.createElement('div');
+      banner.id = id;
+      banner.style.cssText = [
+        'position:fixed',
+        'top:0',
+        'left:0',
+        'right:0',
+        'z-index:2000001',
+        'padding:8px 12px',
+        'font:13px/1.4 -apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif',
+        'text-align:center'
+      ].join(';');
+      document.body.appendChild(banner);
+    }
+
+    banner.textContent = message;
+    banner.style.background = isError ? '#b00020' : '#2c3e50';
+    banner.style.color = '#fff';
+
+    if (autoHide) {
+      setTimeout(function() {
+        if (banner && banner.parentNode) {
+          banner.parentNode.removeChild(banner);
+        }
+      }, 2500);
+    }
   }
 
   function showDebugComparison(fullHTML, extractedArticle, isExtractionFailure) {
