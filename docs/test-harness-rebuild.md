@@ -3,7 +3,13 @@ name: test-harness-rebuild
 description: Rebuild extraction test harness to mirror bookmarklet flow with EPUB-based goldens
 ---
 
-# Plan
+# Test Harness Rebuild (Completed)
+
+Status: completed during the anchor batch. The final plan lives at `docs/plans/archived/01-anchor/test-harness.md`.
+
+Current harness documentation lives in `test-cases/README.md`.
+
+# Plan (Historical)
 
 Rebuild the extraction test harness to mirror the bookmarklet pipeline (preprocess -> XPath -> Readability fallback) and reduce drift. Keep separate schemas for unsolved vs goldens, and rely on EPUB goldens for completeness (pagination out of scope).
 

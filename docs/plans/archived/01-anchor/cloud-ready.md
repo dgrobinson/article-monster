@@ -35,7 +35,7 @@ Cloud-safe equivalents:
 - test-cases/**
 - scripts/**
 - package.json
-- docs/batches/01-anchor/*.md
+- docs/batches/anchor/*.md
  - test/support/network-guard.js
  - test/support/fixtures.js
  - test/fixtures/manifest.json

@@ -17,12 +17,13 @@ Out of scope:
 - Adding new parser features unrelated to the guardrail.
 
 ## Key Files
-- docs/batches/01-anchor/README.md
-- docs/batches/01-anchor/parser-guardrail.md
+- docs/batches/anchor/README.md
+- docs/plans/archived/01-anchor/parser-guardrail.md
 - src/configFetcher.js
 - public/bookmarklet.js (parser-related logic only)
-- scripts/ (new guardrail check)
-- .github/workflows/ (wire guardrail into CI)
+- scripts/check-parser-guardrail.js
+- package.json
+- .github/workflows/ci-cd.yml
 
 ## Plan
 1) Codify the guardrail
@@ -30,13 +31,13 @@ Out of scope:
 - Capture examples of disallowed patterns (hostname string checks, domain-specific regexes) and permitted patterns (config-driven behavior).
 
 2) Implement detection
-- Add a lightweight script (e.g., scripts/check-parser-guardrail.js) that scans parser-related files for hostname literals and domain conditionals.
-- Provide an allowlist for clearly non-hostname strings to avoid noise.
+- Add a lightweight script (`scripts/check-parser-guardrail.js`) that scans parser-related files for hostname literals.
+- Provide a small allowlist for non-parser hostnames (blocked web apps, service origin).
 - Ensure the script exits non-zero with actionable messaging on violations.
 
 3) Integrate with CI
-- Hook the guardrail script into the existing CI workflow (npm script or GitHub Actions step) so PRs fail on violations.
-- Add a local npm script alias to make it easy to run before pushing.
+- Hook the guardrail script into the existing CI workflow so PRs fail on violations.
+- Add a local npm script alias (`npm run check:parser-guardrail`).
 
 4) Add coverage and examples
 - Include a small test fixture that intentionally violates the guardrail to verify detection.
@@ -44,7 +45,7 @@ Out of scope:
 
 5) Communicate and maintain
 - Update developer-facing docs (README or AGENTS) with a brief “no parser special-casing” reminder and how to run the check.
-- Note how to extend the allowlist if legitimate non-hostname strings are flagged.
+- Note how to extend the allowlist in `scripts/check-parser-guardrail.js` if legitimate non-parser hostnames are flagged.
 
 ## Deliverables
 - Guardrail documentation and examples.

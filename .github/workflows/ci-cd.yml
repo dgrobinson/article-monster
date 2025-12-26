@@ -67,6 +67,9 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
+    - name: Run parser guardrail
+      run: npm run check:parser-guardrail
+
     - name: Run lint
       run: |
         set -o pipefail
