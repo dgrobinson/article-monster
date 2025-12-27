@@ -1,17 +1,19 @@
 # Batch Index
 
-Naming theme: nautical. Use the alphabetical codename list so the letter distance
-shows how far apart two batch names are. Update this file when a new batch starts.
+Naming theme: nautical. Use one codename per letter (e.g., anchor, bowline, compass, dock)
+so the letter distance shows how far apart two batch names are. Update this file
+when a new batch starts.
 
 ## Current and Next
-- 01-anchor: current batch.
-- 02-compass: next batch; CI cleanup is a core focus.
+- anchor: closed (see docs/plans/archived/anchor).
+- bowline: current batch; CI cleanup is a core focus.
+- compass: next batch.
 
 ## Alphabetical Codenames (A-Z)
 - A: anchor
-- B: bow
+- B: bowline
 - C: compass
-- D: deck
+- D: dock
 - E: ebb
 - F: fathom
 - G: gaff

@@ -1,4 +1,4 @@
-# docs-cleanup (anchor batch)
+# docs-cleanup (bowline batch)
 
 Worktree: docs-cleanup
 Terminal: docs-cleanup
@@ -8,10 +8,10 @@ Resolve doc drift and broken links, and make the current state and next steps ob
 
 ## Scope
 In scope:
-- Update README links to point at current docs.
-- Refresh test-cases/README.md to match the actual folder structure.
-- Decide how AGENTS.md and CLAUDE.md stay in sync.
-- Update archive index to reflect active docs.
+- Re-check README links for drift and fix any broken references.
+- Verify test-cases/README.md still matches the current harness layout.
+- Reconcile AGENTS.md and CLAUDE.md (carryover).
+- Update archive index only if new docs moved or renamed.
 
 Out of scope:
 - Changes to extraction logic or test harness behavior.
@@ -27,21 +27,17 @@ Out of scope:
 - docs/EPUB_IMAGE_FIX.md
 
 ## Plan
-1) Fix README links
-- Point metadata roadmap, debug system, and contributing docs to their current locations.
+1) Audit doc links for drift
+- Re-verify README.md and test-cases/README.md pointers against current file paths.
 - If a doc is archived, link to docs/archive/* and note that it is historical.
 
-2) Refresh test-cases/README.md
-- Describe current structure (solved, unsolved, goldens) and how tests run now.
-- Remove references to paths or scripts that no longer exist.
-
-3) Reconcile AGENTS.md vs CLAUDE.md
-- Pick one as canonical and make the other a thin pointer, or keep them identical with a note.
+2) Reconcile AGENTS.md vs CLAUDE.md
+- Keep them identical (preferred) or make one a thin pointer.
 - Ensure ADR-reading requirement remains prominent.
 
-4) Update archive index
-- Verify docs/archive/README.md matches what is actually archived.
-- Add any missing pointers from active docs to the archive index.
+3) Update archive index (if needed)
+- Confirm docs/archive/README.md matches what is actually archived.
+- Add missing pointers when files move.
 
 ## Deliverables
 - Updated README.md with valid, current links.
@@ -60,4 +56,4 @@ Out of scope:
 - If the test harness plan changes doc structure, apply those changes here too.
 
 ## Archive
-Move to docs/plans/archived/01-anchor/docs-cleanup.md when complete.
+Move to docs/plans/archived/bowline/docs-cleanup.md when complete.

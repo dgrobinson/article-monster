@@ -65,4 +65,4 @@ Out of scope:
 - Touches public/bookmarklet.js; coordinate with other plans editing that file.
 
 ## Archive
-Move to docs/plans/archived/01-anchor/debug-media.md when complete.
+Move to docs/plans/archived/anchor/debug-media.md when complete.

@@ -79,4 +79,4 @@ Out of scope:
 - Coordinate with docs cleanup for test-cases/README.md edits.
 
 ## Archive
-Move to docs/plans/archived/01-anchor/test-harness.md when complete.
+Move to docs/plans/archived/anchor/test-harness.md when complete.

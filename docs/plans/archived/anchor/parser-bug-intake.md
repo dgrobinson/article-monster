@@ -56,4 +56,4 @@ Out of scope:
 - Minimal overlap with other worktrees; no shared code changes beyond `src/configFetcher.js` usage.
 
 ## Archive
-Move to docs/plans/archived/01-anchor/parser-bug-intake.md when complete.
+Move to docs/plans/archived/anchor/parser-bug-intake.md when complete.

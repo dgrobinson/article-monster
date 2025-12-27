@@ -32,6 +32,11 @@ Define any unavoidable jargon briefly.
 - Never push directly to `main`. Use a feature branch and open a PR.
 - If a direct push happens, create a revert PR and explain the fix in ELI5 terms.
 
+## Parser Guardrail (No Site-Specific Logic)
+
+- Do not add hostname-based conditionals in parser or extraction code; rely on FiveFilters site configs.
+- Run `npm run check:parser-guardrail` before pushing; CI enforces this rule.
+
 ## State & Deployment Clarity
 
 - Always make changes via a PR; testing is only expected after the change is on `main` and deployed.

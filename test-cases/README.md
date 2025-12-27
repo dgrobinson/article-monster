@@ -40,6 +40,6 @@ Goldens are generated from production debug outputs:
 - `npm test` (runs both harness modes)
 - `npm run test:pdf` (manual PDF reference validation)
 
-See `docs/test-harness-rebuild.md` for planned schema and golden updates.
+See `docs/test-harness-rebuild.md` for historical plan context and completion notes.
 
 Note: failed unsolved cases are reported but do not fail `npm test` unless you run only unsolved cases.

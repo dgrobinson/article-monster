@@ -35,7 +35,7 @@ Cloud-safe equivalents:
 - test-cases/**
 - scripts/**
 - package.json
-- docs/batches/01-anchor/*.md
+- docs/batches/anchor/*.md
  - test/support/network-guard.js
  - test/support/fixtures.js
  - test/fixtures/manifest.json
@@ -120,4 +120,4 @@ Local opt-ins:
 - directives-cleaning: add fixture cases per directive.
 
 ## Archive
-Move to docs/plans/archived/01-anchor/cloud-ready.md when complete.
+Move to docs/plans/archived/anchor/cloud-ready.md when complete.
