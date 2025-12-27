@@ -17,7 +17,7 @@ while restoring a single canonical plan for the anchor batch.
 
 ## Inputs
 - Open PR list: `gh pr list --state open --json number,title,headRefName,updatedAt,author,isDraft,labels`
-- Canonical plans: `docs/batches/01-anchor/*.md` from the orchestration repo.
+- Canonical plans: `docs/batches/anchor/*.md` from the orchestration repo.
 - ADRs: `docs/adr/` (ADR-001 and ADR-002).
 - Agent repos: `/Users/dgrobinson/code/agents/<agent-name>/`.
 
@@ -30,7 +30,7 @@ while restoring a single canonical plan for the anchor batch.
 ## Plan
 
 ### 1) Establish the canonical plan docs
-1. Treat the orchestration repo as canonical for `docs/batches/01-anchor/*.md`.
+1. Treat the orchestration repo as canonical for `docs/batches/anchor/*.md`.
 2. Compare each agent repo plan file to canonical:
    - Note missing files (common when agents did not receive a plan).
    - Note differences that may represent new decisions.
@@ -42,8 +42,8 @@ while restoring a single canonical plan for the anchor batch.
 
 Suggested command:
 ```
-diff -u /path/to/orchestration/docs/batches/01-anchor/<file>.md \
-  /path/to/agent/docs/batches/01-anchor/<file>.md
+diff -u /path/to/orchestration/docs/batches/anchor/<file>.md \
+  /path/to/agent/docs/batches/anchor/<file>.md
 ```
 
 ### 2) Inventory open PRs
@@ -93,9 +93,9 @@ Keep explanations in plain language and define jargon.
 
 ## Outputs
 - A reconciled list of PRs with merge order.
-- Canonical plan docs in `docs/batches/01-anchor/`.
+- Canonical plan docs in `docs/batches/anchor/`.
 - ELI5 summary of decisions and next steps.
-- Next batch: `02-compass` (nautical theme), with CI cleanup as a core focus.
+- Next batch: `bowline` (nautical theme), with CI cleanup as a core focus.
 
 ## Verification
 - `npm test` passes for merged changes.

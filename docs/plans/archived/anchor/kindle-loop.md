@@ -62,4 +62,4 @@ Out of scope:
 - docs-cleanup: link the loop doc from README or docs index.
 
 ## Archive
-Move to docs/plans/archived/01-anchor/kindle-loop.md when complete.
+Move to docs/plans/archived/anchor/kindle-loop.md when complete.

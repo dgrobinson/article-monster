@@ -84,4 +84,4 @@ Bookmarklet behavior:
 - Overlaps with pagination and debug alignment in public/bookmarklet.js; avoid large refactors.
 
 ## Archive
-Move to docs/plans/archived/01-anchor/directives-cleaning.md when complete.
+Move to docs/plans/archived/anchor/directives-cleaning.md when complete.

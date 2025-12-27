@@ -68,4 +68,4 @@ Out of scope:
 - Overlaps with directive work in public/bookmarklet.js; avoid large refactors.
 
 ## Archive
-Move to docs/plans/archived/01-anchor/pagination.md when complete.
+Move to docs/plans/archived/anchor/pagination.md when complete.

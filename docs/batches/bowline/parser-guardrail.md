@@ -1,4 +1,4 @@
-# parser-guardrail (anchor batch)
+# parser-guardrail (bowline batch)
 
 Worktree: parser-guardrail  
 Terminal: parser-guardrail
@@ -17,8 +17,8 @@ Out of scope:
 - Adding new parser features unrelated to the guardrail.
 
 ## Key Files
-- docs/batches/01-anchor/README.md
-- docs/batches/01-anchor/parser-guardrail.md
+- docs/batches/bowline/README.md
+- docs/batches/bowline/parser-guardrail.md
 - src/configFetcher.js
 - public/bookmarklet.js (parser-related logic only)
 - scripts/ (new guardrail check)
@@ -64,4 +64,4 @@ Out of scope:
 - Overlaps with directives-cleaning and pagination work if they touch parser files; coordinate to avoid conflicting CI updates.
 
 ## Archive
-Move to docs/plans/archived/01-anchor/parser-guardrail.md when complete.
+Move to docs/plans/archived/bowline/parser-guardrail.md when complete.
