@@ -36,6 +36,6 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "puppeteer": "^24.16.2"
+    "puppeteer": "^24.34.0"
   }
 }
