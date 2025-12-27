@@ -10,6 +10,7 @@
     "test:extract": "node test/dev-scripts/test-extraction.js && node test/dev-scripts/test-extraction-with-fivefilters.js && node test/dev-scripts/test-directives-cleaning.js && node test/dev-scripts/test-pagination-extraction.js",
     "test:fixtures": "node test/dev-scripts/test-pagination-fixtures.js && node test/dev-scripts/test-debug-media-fixtures.js",
     "test:pdf": "node test/validate-extraction.js test-cases/pdf-references",
+    "check:parser-guardrail": "node scripts/check-parser-guardrail.js",
     "sync:goldens": "node scripts/sync-goldens.js",
     "preview:kindle": "node scripts/preview-kindle-archive.js",
     "capture:bookmarklet": "node scripts/capture-bookmarklet.js",
